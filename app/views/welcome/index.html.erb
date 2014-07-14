@@ -5,3 +5,15 @@
           <%= link_to "看看書 ", "#",:class => "btn btn-primary btn-lg" %>
         </p>
       </div>
+
+      <div class="row-fluid">
+        <div id="chat_history" class="well span12"></div>
+      </div>
+      <div class="row-fluid">
+        <div class="input-append span10">
+          <div id="mypad"  style="border-style: solid; border-width:1px">
+            <canvas id="m" ></canvas>
+          </div>
+          <input id="new_message" class="span" />{:type => 'text', :prompt => 'New message'}<button id="send_message" class="btn">Send</button>
+        </div>
+      </div>
