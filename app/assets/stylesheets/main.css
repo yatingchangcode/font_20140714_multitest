@@ -1,0 +1,15 @@
+/*
+ *              |.)|
+ * Copyright by |(.| Yan Inc.
+*/
+.orgincanvas{
+	/*
+	border:solid #6E67A5;
+	*/
+	background-color:white;
+	position:relative;
+}
+
+.hidden{
+	display:none;
+}
