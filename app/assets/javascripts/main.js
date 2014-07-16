@@ -2,8 +2,8 @@ var ocan;
 var originCanvas2d;
 var isDrawing = false;
 var lastX,lastY;
-var originWidth = 300;
-var originHeight = 300;
+var originWidth = 500;
+var originHeight = 500;
 var originBorder = 3;
 var originOffset = {};
 var originLineWidth = Math.min(originWidth, originHeight) / 60;
@@ -39,8 +39,8 @@ this.ChatApp = (function() {
 
   function ChatApp(currentChannel, username) {
     ocan = document.getElementById('origin');
-    ocan.width = 300;
-    ocan.height = 300;
+    ocan.width = originWidth;
+    ocan.height = originHeight;
     //$(ocan).css('border-width', originBorder);
     originOffset.left = ocan.offsetLeft;
     originOffset.top = ocan.offsetTop;

@@ -6,7 +6,6 @@ class ChatsController < WebsocketRails::BaseController
 
   def controller_down_location
     broadcast_message :down_location, { :x => message[:x],:y => message[:y]}
-    p "down"
   end
 
   def controller_move_location
