@@ -67,11 +67,21 @@ this.ChatApp = (function() {
     $('#origin').mousedown(this.downMypad);
     $('#origin').mousemove(this.moveMypad);
     $('#origin').mouseup(this.upMypad);
+    $(document.getElementById('clearBtn')).click(this.clear);
+
     this.dispatcher.bind('down_location', this.receiveDown);
     this.dispatcher.bind('move_location', this.receiveMove);
     this.dispatcher.bind('up_location', this.receiveUp);
+    this.dispatcher.bind('clear',function(){
+      originCanvas2d.drawImage(backImg, 0, 0, originWidth, originHeight);
+      multipleCanvas2d.drawImage(backImg, 0, 0, multipleWidth, multipleHeight);
+    })
     $('#send_message').click(this.sendMessage);
     return this.dispatcher.bind('new_message', this.new_message);
+  };
+
+  ChatApp.prototype.clear = function(e) {
+    return this.dispatcher.trigger('clear', {});
   };
 
   ChatApp.prototype.downMypad = function(e) {

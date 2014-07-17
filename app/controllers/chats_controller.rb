@@ -4,16 +4,21 @@ class ChatsController < WebsocketRails::BaseController
     broadcast_message :new_message, { :text => message[:text]}
   end
 
-  def controller_down_location
+  def down_location
     broadcast_message :down_location, { :x => message[:x],:y => message[:y]}
   end
 
-  def controller_move_location
+  def move_location
     broadcast_message :move_location, { :x => message[:x],:y => message[:y]}
   end
 
-  def controller_up_location
+  def up_location
     broadcast_message :up_location, {}
+  end
+
+  def clear
+    broadcast_message :clear, {}
+    p 'clear'
   end
 
   def client_connected
