@@ -8,6 +8,7 @@ this.ChatApp = (function() {
 
 
   function ChatApp(currentChannel, username) {
+    this.user_id = 1;
     ocan = document.getElementById('origin');
     originOffset.left = ocan.offsetLeft;
     originOffset.top = ocan.offsetTop;
@@ -30,25 +31,16 @@ this.ChatApp = (function() {
     $('#origin').mousedown(this.downMypad);
     $('#origin').mousemove(this.moveMypad);
     $('#origin').mouseup(this.upMypad);
-    $('#origin2').mousedown(this.downMypad);
-    $('#origin2').mousemove(this.moveMypad);
-    $('#origin2').mouseup(this.upMypad);
     var a = this
     $("#clearBtn").click(function(){
-      a.dispatcher.trigger('clear',{});
+      a.dispatcher.trigger('clear',{user_id: a.user_id});
     });
-
-    this.dispatcher.bind('get_user_count', function(data){
-      $('#user_count').text(data.user_count);
-    });
-    this.dispatcher.trigger('get_user_count');
 
     this.dispatcher.bind('down_location', this.receiveDown);
     this.dispatcher.bind('move_location', this.receiveMove);
     this.dispatcher.bind('up_location', this.receiveUp);
     this.dispatcher.bind('clear',function(){
       CM('origin').clear();
-      CM('origin2').clear();
     })
     $('#send_message').click(this.sendMessage);
     return this.dispatcher.bind('new_message', this.new_message);
@@ -58,6 +50,7 @@ this.ChatApp = (function() {
 
   ChatApp.prototype.downMypad = function(e) {
     return this.dispatcher.trigger('down_location', {
+      user_id: this.user_id,
       x: e.clientX - originOffset.left,
       y: e.clientY - originOffset.top,
     });
@@ -65,6 +58,7 @@ this.ChatApp = (function() {
 
   ChatApp.prototype.moveMypad = function(e) {
     return this.dispatcher.trigger('move_location', {
+      user_id: this.user_id,
       x: (e.clientX - originOffset.left),
       y: (e.clientY - originOffset.top)
     });
@@ -116,24 +110,6 @@ this.ChatApp = (function() {
 
 })();
 
-
-
-
-$(document).ready(function() {
-  CM.prop({
-  width: 500,
-  height: 500,
-  lineWidth: 6,
-  lineColor: '#a0e0e0',
-  targetZoomScale: 1,
-  backgroundImage: '/assets/block-524.png'
-});
-
-  CM.reg('origin');
-  CM.reg('origin2');
-
-  return window.chatApp = new ChatApp;
-});
 
 
 

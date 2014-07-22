@@ -1,11 +1,33 @@
       <div class="jumbotron">
-        <h1>一字千金 讀取頁面</h1><div id="user_count">a</div>
+        <h1>一字千金 讀取頁面</h1> 同時上線人數<span id="user_count">0</span>人
       </div>
       <div style="float:left;">
-        <%= render "main" %>
+        <% @range.each do |x| %>
+        <canvas id="origin_<%= x %>" class="orgincanvas"></canvas>
+        <% end %>
       </div>
       <canvas id="multiple" class="orgincanvas hidden"></canvas>
 
       <% content_for :javascripts do %>
-      <script src="/assets/read.js"></script>
+      <%= javascript_include_tag 'chats' %>
+      <script>
+      $(document).ready(function() {
+        CM.prop({
+          width: 500,
+          height: 500,
+          lineWidth: 6,
+          lineColor: '#a0e0e0',
+          targetZoomScale: 0.1,
+          backgroundImage: '/assets/block-524.png'
+        });
+        for(var i = 1;i <= <%= @count %>;i++){
+
+          CM.reg('origin_'+i);
+        }
+        window.chatApp = new ChatApp(500,500);
+        window.chatApp.bindEvents();
+
+        return;
+      });
+      </script>
       <% end %>

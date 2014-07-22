@@ -12,16 +12,12 @@ class ChatsController < WebsocketRails::BaseController
     send_message :get_user_count, data
   end
 
-  def new_message
-    broadcast_message :new_message, { :text => message[:text]}
-  end
-
   def down_location
-    broadcast_message :down_location, { :x => message[:x],:y => message[:y]}
+    broadcast_message :down_location, {:user_id => message[:user_id], :x => message[:x], :y => message[:y]}
   end
 
   def move_location
-    broadcast_message :move_location, { :x => message[:x],:y => message[:y]}
+    broadcast_message :move_location, {:user_id => message[:user_id], :x => message[:x], :y => message[:y]}
   end
 
   def up_location
@@ -29,8 +25,8 @@ class ChatsController < WebsocketRails::BaseController
   end
 
   def clear
-    p 'clear'
-    broadcast_message :clear, {}
+    p message[:user_id]
+    broadcast_message :clear, {:user_id => message[:user_id]}
   end
 
 
