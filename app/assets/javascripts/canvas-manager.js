@@ -212,25 +212,46 @@
 	
 	/**
 	 * Register and new a canvas instance.
-	 * @param {String|HTMLCanvasElement} id A id string or the canvas dom element.
+	 * @param {String|HTMLCanvasElement|Array.<String|HTMLCanvasElement>} id A id string or the canvas dom element.
 	 */
 	CM.reg = function(id){
-		var el = getEl_(id);
-		var cid = getId_(el);
-		if(!instanceMap_[cid]){
-			instanceMap_[cid] = new CanvasInstance(el || cid);
+		var ids;
+		if(Object.prototype.toString.call(id) == '[object Array]'){
+			ids = id.slice(0);
+		}else ids = [id];
+		for(var i = 0, len = ids.length; i<len; i++){
+			var id = ids[i];
+			var el = getEl_(id);
+			var cid = getId_(el);
+			if(!instanceMap_[cid]){
+				instanceMap_[cid] = new CanvasInstance(el || cid);
+			}	
 		}
 	};
 	
 	/**
 	 * Unregister and delete the specified canvas id/element.
-	 * @param {String|HTMLCanvasElement} id A id string or the canvas dom element.
+	 * @param {String|HTMLCanvasElement|Array.<String|HTMLCanvasElement>} id A id string or the canvas dom element.
 	 */
 	CM.unreg = function(id){
+		/*
 		var el = getEl_(id);
 		var cid = getId_(el);
 		if(instanceMap_[cid]){
 			instanceMap_[cid] = null;
+		}
+		*/
+		var ids;
+		if(Object.prototype.toString.call(id) == '[object Array]'){
+			ids = id.slice(0);
+		}else ids = [id];
+		for(var i = 0, len = ids.length; i<len; i++){
+			var id = ids[i];
+			var el = getEl_(id);
+			var cid = getId_(el);
+			if(instanceMap_[cid]){
+				instanceMap_[cid] = null;
+			}	
 		}
 	}
 	
