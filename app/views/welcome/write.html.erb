@@ -26,10 +26,9 @@
         CM.reg('origin_<%= @user_id %>');
         ocan = document.getElementById('origin_<%= @user_id %>');
         window.chatApp = new ChatApp(ocan.offsetLeft,ocan.offsetTop,'<%= @user_id %>');
-        window.chatApp.bindEvents();
         window.chatApp.triggerEvents();
+        window.chatApp.bindEvents();
 
-        return ;
       });
       </script>
       <% end %>

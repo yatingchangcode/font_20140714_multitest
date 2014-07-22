@@ -18,7 +18,9 @@ class @ChatApp
     @dispatcher.bind 'move_location', @receiveMove
     @dispatcher.bind 'up_location', @receiveUp
     @dispatcher.bind 'clear', @receiveClear
-    @dispatcher.trigger 'get_user_count', @getUserCount
+
+    @dispatcher.trigger 'get_user_count'
+    @dispatcher.bind 'get_user_count', @getUserCount
 
 
   downMypad: (e) =>
@@ -54,7 +56,7 @@ class @ChatApp
   receiveClear: (message) => 
     CM('origin_'+message.user_id).clear();
 
-  getUserCount = (data) =>
+  getUserCount: (data) ->
     $('#user_count').text(data.user_count);
 
 
