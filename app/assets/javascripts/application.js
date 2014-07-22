@@ -12,7 +12,12 @@
 //
 //= require jquery
 //= require jquery_ujs
-//= require turbolinks
-//= require_tree .
 //= require websocket_rails/main
-
+//= require 'canvas-manager'
+//= require 'b64'
+//= require 'canvas-to-blob'
+//= require 'FileSaver'
+//= require 'GIFEncoder'
+//= require 'LZWEncoder'
+//= require 'mjbuilder'
+//= require 'NeuQuant'

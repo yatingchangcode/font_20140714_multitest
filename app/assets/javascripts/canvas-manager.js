@@ -266,15 +266,6 @@
 })(window);
 
 
-CM.prop({
-	width: 500,
-	height: 500,
-	lineWidth: 6,
-	lineColor: '#a0e0e0',
-	targetZoomScale: 0.25,
-	backgroundImage: 'assets/block-524.png'
-});
-
 // ***** After window ready *****
 // register canvas
 // CM.reg('multiple');

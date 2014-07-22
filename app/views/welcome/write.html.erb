@@ -1,0 +1,15 @@
+      <div class="jumbotron">
+        <h1>一字千金 模擬測試寫入頁面</h1><div id="user_count">a</div>
+      </div>
+      <div style="float:left;">
+        <div style="height:30px;width:300px;padding:5px 0;">
+          <button id="clearBtn" style="font-size:15px;">Clear</button>
+          <button id="prevBtn" style="font-size:15px;">Prev</button>
+        </div>
+        <%= render "main" %>
+      </div>
+      <canvas id="multiple" class="orgincanvas hidden"></canvas>
+
+      <% content_for :javascripts do %>
+      <script src="/assets/write.js"></script>
+      <% end %>

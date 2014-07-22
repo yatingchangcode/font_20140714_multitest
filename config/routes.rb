@@ -8,6 +8,8 @@ Rails.application.routes.draw do
   resources :welcome do
     collection do
       get 'demo'
+      get 'write'
+      get 'read'
     end
   end 
   # Example of regular route:
