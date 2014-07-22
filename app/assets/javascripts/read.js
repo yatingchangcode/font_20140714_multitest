@@ -5,16 +5,7 @@ var originOffset = {};
 var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
 this.ChatApp = (function() {
-  ChatApp.prototype.messageTemplate = function(message, channelName) {
-    if (channelName == null) {
-      channelName = 'broadcast';
-    }
-    return "<div>\n  <span>\n    <label class='label label-" + (channelName === 'broadcast' ? 'warning' : 'info') + "'>\n      [" + channelName + "]\n    </label> " + message + "\n  </span>\n</div>";
-  };
 
-  ChatApp.prototype.joinTemplate = function(channelName) {
-    return "<div>\n  <span>\n    <label class='label label-'>\n      [Joined Channel]\n    </label> " + channelName + "\n  </span>\n</div>";
-  };
 
   function ChatApp(currentChannel, username) {
     ocan = document.getElementById('origin');
@@ -106,9 +97,6 @@ this.ChatApp = (function() {
     return $('#new_message').val('');
   };
 
-  ChatApp.prototype.new_message = function(message) {
-    return $('#chat_history').append(this.messageTemplate(message.text));
-  };
 
   return ChatApp;
 
