@@ -1,27 +1,6 @@
-var ocan;
-var originCanvas2d;
 var isDrawing = false;
-var lastX,lastY;
-var originWidth = 500;
-var originHeight = 500;
-var originBorder = 3;
+
 var originOffset = {};
-var originLineWidth = Math.min(originWidth, originHeight) / 60;
-
-var scale = 8;
-var rootScale = Math.pow(scale, 1/2);
-
-var mcan;
-var multipleCanvas2d;
-var multipleWidth = rootScale * originWidth;
-var multipleHeight = rootScale * originHeight;
-var multipleLineWidth = Math.min(multipleWidth, multipleHeight) / 60;
-
-//var aviBuilder = new movbuilder.MotionJPEGBuilder();
-//aviBuilder.setup(originWidth, originHeight, 30);
-
-var dataurls = [];
-var backImg;
 
 var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
@@ -39,15 +18,8 @@ this.ChatApp = (function() {
 
   function ChatApp(currentChannel, username) {
     ocan = document.getElementById('origin');
-    ocan.width = originWidth;
-    ocan.height = originHeight;
-    //$(ocan).css('border-width', originBorder);
     originOffset.left = ocan.offsetLeft;
     originOffset.top = ocan.offsetTop;
-    originCanvas2d = ocan.getContext("2d");
-    originCanvas2d.lineWidth = originLineWidth;
-    originCanvas2d.lineCap = 'round';
-    originCanvas2d.strokeStyle = '#00ccff';
 
     this.currentChannel = currentChannel != null ? currentChannel : void 0;
     this.username = username != null ? username : void 0;
@@ -67,22 +39,31 @@ this.ChatApp = (function() {
     $('#origin').mousedown(this.downMypad);
     $('#origin').mousemove(this.moveMypad);
     $('#origin').mouseup(this.upMypad);
-    $(document.getElementById('clearBtn')).click(this.clear);
+    $('#origin2').mousedown(this.downMypad);
+    $('#origin2').mousemove(this.moveMypad);
+    $('#origin2').mouseup(this.upMypad);
+    var a = this
+    $("#clearBtn").click(function(){
+      a.dispatcher.trigger('clear',{});
+    });
+
+    this.dispatcher.bind('get_user_count', function(data){
+      $('#user_count').text(data.user_count);
+    });
+    this.dispatcher.trigger('get_user_count');
 
     this.dispatcher.bind('down_location', this.receiveDown);
     this.dispatcher.bind('move_location', this.receiveMove);
     this.dispatcher.bind('up_location', this.receiveUp);
     this.dispatcher.bind('clear',function(){
-      originCanvas2d.drawImage(backImg, 0, 0, originWidth, originHeight);
-      multipleCanvas2d.drawImage(backImg, 0, 0, multipleWidth, multipleHeight);
+      CM('origin').clear();
+      CM('origin2').clear();
     })
     $('#send_message').click(this.sendMessage);
     return this.dispatcher.bind('new_message', this.new_message);
   };
 
-  ChatApp.prototype.clear = function(e) {
-    return this.dispatcher.trigger('clear', {});
-  };
+
 
   ChatApp.prototype.downMypad = function(e) {
     return this.dispatcher.trigger('down_location', {
@@ -106,46 +87,14 @@ this.ChatApp = (function() {
   ChatApp.prototype.receiveDown = function(message) {
     isDrawing = true;
     //aviBuilder.setup(1280, 720, 60);
-
-    lastX = message.x;
-    lastY = message.y;
     
-    originCanvas2d.beginPath();
-    multipleCanvas2d.beginPath();
-    
-    
-    originCanvas2d.moveTo(lastX - 0.1, lastY - 0.1);
-    multipleCanvas2d.moveTo(rootScale * (lastX - 0.1), rootScale * (lastY - 0.1));
-    
-    originCanvas2d.lineTo(lastX, lastY);
-    multipleCanvas2d.lineTo(rootScale * lastX, rootScale * lastY);
-    
-    originCanvas2d.stroke();
-    multipleCanvas2d.stroke();
+    CM('origin').point({ x: message.x, y: message.y });
 
   };
 
   ChatApp.prototype.receiveMove = function(message) {
     if(isDrawing){
-      calx = message.x;
-      caly = message.y;
-      originCanvas2d.beginPath();
-      multipleCanvas2d.beginPath();
-      
-      originCanvas2d.moveTo(lastX, lastY);
-      multipleCanvas2d.moveTo(rootScale * lastX, rootScale * lastY);
-      
-      originCanvas2d.lineTo(calx, caly);
-      multipleCanvas2d.lineTo(rootScale * calx, rootScale * caly);
-      
-      originCanvas2d.stroke();
-      multipleCanvas2d.stroke();
-      
-      //aviBuilder.addCanvasFrame(ocan);
-      //dataurls.push(mcan.toDataURL());
-      
-      lastX = calx;
-      lastY = caly;
+      CM('origin').line({ x: message.x, y: message.y });
     }
   };
 
@@ -180,35 +129,12 @@ this.ChatApp = (function() {
 })();
 
 
-function initMultipleCanvas(){
-  mcan = document.getElementById('multiple'); 
-  mcan.width = Math.round(multipleWidth);
-  mcan.height = Math.round(multipleHeight);
-  //$(mcan).css('border-width', originBorder * rootScale);
-  multipleCanvas2d = mcan.getContext("2d");
-  multipleCanvas2d.lineWidth = multipleLineWidth;
-  multipleCanvas2d.lineCap = 'round';
-  multipleCanvas2d.strokeStyle = '#00ccff';
-}
+
 
 $(document).ready(function() {
-  initMultipleCanvas();
-  
-  backImg = new Image();
-  backImg.onload = function(){
-    originCanvas2d.drawImage(backImg, 0, 0, originWidth, originHeight);
-    multipleCanvas2d.drawImage(backImg, 0, 0, multipleWidth, multipleHeight);
-  };
-  backImg.src = "assets/block-524.png";
-  
-  $("#clearBtn").click(function(){
-    originCanvas2d.drawImage(backImg, 0, 0, originWidth, originHeight);
-    multipleCanvas2d.drawImage(backImg, 0, 0, multipleWidth, multipleHeight);
-  });
-  
-  $("#prevBtn").click(function(){
+  CM.reg('origin');
+  CM.reg('origin2');
 
-  });
   return window.chatApp = new ChatApp;
 });
 
