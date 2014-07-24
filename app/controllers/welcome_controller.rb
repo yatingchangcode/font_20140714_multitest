@@ -8,6 +8,8 @@ class WelcomeController < ApplicationController
     @count = 20
 
     @range = 1..@count
+
+    @user_unregs = [2,3]
   end
 
 end
