@@ -12,6 +12,7 @@ class @ChatApp
     $('#origin_'+@user_id).mousemove @moveMypad
     $('#origin_'+@user_id).mouseup @upMypad
     $('#clearBtn').click @clearMypad
+    @dispatcher.trigger 'get_write_count'
 
   bindEvents: ->
     @dispatcher.bind 'down_location', @receiveDown
@@ -21,6 +22,7 @@ class @ChatApp
 
     @dispatcher.trigger 'get_user_count'
     @dispatcher.bind 'get_user_count', @getUserCount
+    @dispatcher.bind 'get_write_count', @getWriteCount
 
 
   downMypad: (e) =>
@@ -58,5 +60,8 @@ class @ChatApp
 
   getUserCount: (data) ->
     $('#user_count').text(data.user_count);
+
+  getWriteCount: (data) ->
+    $('#write_count').text(data.write_count);
 
 
