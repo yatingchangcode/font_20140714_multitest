@@ -6,10 +6,13 @@ class WritesController < WebsocketRails::BaseController
     p 'init'
   end
 
-  def get_write_count
+  def add_write_count
     # perform application setup here
     controller_store[:write_count] += 1
+  end
 
+  def get_write_count
+    # perform application setup here
     data = {:write_count => controller_store[:write_count]}
     broadcast_message :get_write_count, data
   end

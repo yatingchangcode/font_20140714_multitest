@@ -12,7 +12,7 @@ class @ChatApp
     $('#origin_'+@user_id).mousemove @moveMypad
     $('#origin_'+@user_id).mouseup @upMypad
     $('#clearBtn').click @clearMypad
-    @dispatcher.trigger 'get_write_count'
+    @dispatcher.trigger 'add_write_count'
 
   bindEvents: ->
     @dispatcher.bind 'down_location', @receiveDown
@@ -22,6 +22,7 @@ class @ChatApp
 
     @dispatcher.trigger 'get_user_count'
     @dispatcher.bind 'get_user_count', @getUserCount
+    @dispatcher.trigger 'get_write_count'
     @dispatcher.bind 'get_write_count', @getWriteCount
 
 
