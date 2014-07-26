@@ -12,6 +12,7 @@ gem 'devise-i18n'
 gem "omniauth"
 gem "omniauth-facebook"
 gem "auto-facebook", git: 'https://github.com/motephyr/auto-facebook.git'
+gem "subprocess"
 
 group :production do
   gem 'rails_12factor'

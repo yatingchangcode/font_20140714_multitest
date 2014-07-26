@@ -11,15 +11,27 @@ WebsocketRails::EventMap.describe do
   #     subscribe :new, :to => ProductController, :with_method => :new_product
   #   end
   # The above will handle an event triggered on the client like `product.new`.
-  subscribe :get_user_count, :to => ChatsController, :with_method => :get_user_count
-  subscribe :get_write_count, :to => WritesController, :with_method => :get_write_count
-  subscribe :add_write_count, :to => WritesController, :with_method => :add_write_count
+
+
+
+
+  subscribe :action, :to => WritesController, :with_method => :receiveAlert
+  # read trigger start or stop, write bind receiveAlert
+
+  subscribe :open_file, :to => ChatsController, :with_method => :open_file
+  subscribe :save_file, :to => ChatsController, :with_method => :save_file
+  subscribe :close_file, :to => ChatsController, :with_method => :close_file
+
   subscribe :down_location, :to => WritesController, :with_method => :down_location
   subscribe :move_location, :to => WritesController, :with_method => :move_location
   subscribe :up_location, :to => WritesController, :with_method => :up_location
   subscribe :clear, :to => WritesController, :with_method => :clear
-  subscribe :new_message, :to => ChatsController, :with_method => :new_message
+
+
 
   subscribe :client_connected, to: ChatsController, with_method: :client_connected
+  subscribe :client_connected, :to => ChatsController, :with_method => :get_user_count
+
   subscribe :client_disconnected, to: ChatsController, with_method: :client_disconnected  
+  subscribe :client_disconnected, :to => ChatsController, :with_method => :get_user_count
 end

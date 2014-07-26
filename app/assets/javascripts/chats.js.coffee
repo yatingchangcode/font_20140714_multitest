@@ -4,7 +4,7 @@
 class @ChatApp
 
   constructor: (@left ,@top, @user_id,@currentChannel = undefined, @username = undefined) ->
-    @dispatcher = new WebSocketRails(window.location.host + "/websocket")
+    @dispatcher = new WebSocketRails(window.location.host + "/websocket?client_id=" + @user_id)
     @originOffset = {left: @left, top: @top}
 
   triggerEvents: ->
@@ -12,19 +12,23 @@ class @ChatApp
     $('#origin_'+@user_id).mousemove @moveMypad
     $('#origin_'+@user_id).mouseup @upMypad
     $('#clearBtn').click @clearMypad
-    @dispatcher.trigger 'add_write_count'
 
-  bindEvents: ->
+    @dispatcher.bind 'receiveAlert', @receiveAlert
+
+  bindEvents: (number) ->
     @dispatcher.bind 'down_location', @receiveDown
     @dispatcher.bind 'move_location', @receiveMove
     @dispatcher.bind 'up_location', @receiveUp
     @dispatcher.bind 'clear', @receiveClear
 
-    @dispatcher.trigger 'get_user_count'
     @dispatcher.bind 'get_user_count', @getUserCount
-    @dispatcher.trigger 'get_write_count'
     @dispatcher.bind 'get_write_count', @getWriteCount
 
+    i = 0
+    while i <= 20
+      $('#start_'+i).click @start
+      $('#stop_'+i).click @stop
+      i++
 
   downMypad: (e) =>
     @dispatcher.trigger 'down_location', 
@@ -64,5 +68,14 @@ class @ChatApp
 
   getWriteCount: (data) ->
     $('#write_count').text(data.write_count);
+
+  receiveAlert: (data) ->
+    alert(data.message);
+
+  start: (e) =>
+    @dispatcher.trigger 'action' , user_id: 14, action: "start"
+
+  stop: (e) =>
+    @dispatcher.trigger 'action' , user_id: 14, action: "stop"
 
 

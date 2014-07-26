@@ -7,6 +7,8 @@
       <div style="float:left;">
         <% @range.each do |x| %>
         <canvas id="origin_<%= x %>" class="orgincanvas"></canvas>
+        <button id="start_<%= x %>" style="font-size:15px;">Start</button>
+        <button id="stop_<%= x %>" style="font-size:15px;">Stop</button>
         <% end %>
       </div>
       <canvas id="multiple" class="orgincanvas hidden"></canvas>
@@ -18,8 +20,8 @@
         CM.prop({
           width: 500,
           height: 500,
-          lineWidth: 6,
-          lineColor: '#a0e0e0',
+          lineWidth: 15,
+          lineColor: '#333333',
           targetZoomScale: 0.1,
           backgroundImage: '/assets/block-524.png'
         });
@@ -29,8 +31,8 @@
         <% @user_unregs.each do |user_unreg| %>
           CM.unreg('origin_<%= user_unreg %>');
         <% end %>
-        window.chatApp = new ChatApp(500,500);
-        window.chatApp.bindEvents();
+        window.chatApp = new ChatApp(500,500,'0');
+        window.chatApp.bindEvents(20);
 
       });
       </script>

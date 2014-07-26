@@ -3,13 +3,9 @@ class WritesController < WebsocketRails::BaseController
   def initialize_session
     # perform application setup here
     controller_store[:write_count] = 0
-    p 'init'
   end
 
-  def add_write_count
-    # perform application setup here
-    controller_store[:write_count] += 1
-  end
+
 
   def get_write_count
     # perform application setup here
@@ -33,5 +29,12 @@ class WritesController < WebsocketRails::BaseController
     p message[:user_id]
     broadcast_message :clear, {:user_id => message[:user_id]}
   end
+
+  def receiveAlert
+    connection = WebsocketRails.users[message[:user_id]]
+    data = {:message => message[:action]}
+    connection.send_message :receiveAlert, data
+  end
+
 
 end
