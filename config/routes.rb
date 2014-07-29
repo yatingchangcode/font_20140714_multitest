@@ -5,11 +5,15 @@ Rails.application.routes.draw do
   # You can have the root of your site routed with "root"
   root 'welcome#index'
 
+  arrayMap = (1..6).map { |x| %Q(get 'index#{x}'\n)}
+  arrayMapReduce = arrayMap.reduce { |x,y| x+y }
+
   resources :welcome do
     collection do
       get 'demo'
       get 'write'
       get 'read'
+      eval(arrayMapReduce)
     end
   end 
   # Example of regular route:
