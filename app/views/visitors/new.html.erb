@@ -1,0 +1,18 @@
+<div class="row">
+  <div class="col-md-12">
+    <%= link_to "回上一頁",:back,class: "btn btn-lg btn-warning"  %>
+  </div>
+</div>
+<%= simple_form_for [@game,@visitor] do |f| %>
+
+  <div class="group">
+    <%= f.input :image , :as => :file %>
+  </div>
+  <div class="group">
+    <%= f.input :name %>
+  </div>
+  <br>
+  <%= f.submit "Submit", :disable_with => 'Submiting...' %>
+
+  
+<% end %>

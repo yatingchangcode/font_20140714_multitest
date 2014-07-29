@@ -3,7 +3,7 @@ Rails.application.routes.draw do
   # See how all your routes lay out with "rake routes".
 
   # You can have the root of your site routed with "root"
-  root 'welcome#index'
+  root 'games#index'
 
   arrayMap = (1..6).map { |x| %Q(get 'index#{x}'\n)}
   arrayMapReduce = arrayMap.reduce { |x,y| x+y }
@@ -16,6 +16,10 @@ Rails.application.routes.draw do
       eval(arrayMapReduce)
     end
   end 
+
+  resources :games do
+    resources :visitors
+  end
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
 

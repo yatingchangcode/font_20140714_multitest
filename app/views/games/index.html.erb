@@ -1,0 +1,21 @@
+<div class="row">
+  <div class="col-md-12">
+        <%#= link_to "新的比賽",create_game_path,class: "btn btn-lg btn-primary"  %>
+        <%= form_for @game , :url => games_path , :html => {:method => :post} do |f| %> 
+          <%= f.submit "新的比賽" %>
+          <% end %>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-12">
+    <h2>過去的比賽：</h2>
+    <% if @games.present? %>
+    <% @games.each do |g| %>
+    <%= link_to "Game#{g.id}#{g.created_at}",game_path(g) %>
+    <% end %>
+    <% else %>
+      尚無記錄
+    <% end %>
+  </div>
+</div>
