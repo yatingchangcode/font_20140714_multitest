@@ -16,4 +16,8 @@ class GamesController < ApplicationController
 
     redirect_to game_path(@game)
   end
+
+  def stage1
+    @game = Game.find(params[:id])
+  end
 end

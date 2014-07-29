@@ -19,6 +19,11 @@ Rails.application.routes.draw do
 
   resources :games do
     resources :visitors
+    member do
+      get 'stage1'
+      get 'stage2'
+      get 'stage3'
+    end
   end
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'

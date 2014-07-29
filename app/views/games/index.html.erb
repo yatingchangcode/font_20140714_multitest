@@ -12,7 +12,8 @@
     <h2>過去的比賽：</h2>
     <% if @games.present? %>
     <% @games.each do |g| %>
-    <%= link_to "Game#{g.id}#{g.created_at}",game_path(g) %>
+    <%= link_to "Game#{g.id}-#{g.created_at}",game_path(g) %>
+    <br>
     <% end %>
     <% else %>
       尚無記錄

@@ -14,6 +14,9 @@ gem "omniauth-facebook"
 gem "auto-facebook", git: 'https://github.com/motephyr/auto-facebook.git'
 gem "subprocess"
 
+gem 'carrierwave'
+gem "mini_magick"
+
 group :production do
   gem "pg"
 end
