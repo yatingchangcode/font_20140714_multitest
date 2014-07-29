@@ -7,15 +7,8 @@
 	/**
 	 * Point object contains x and y coordinates.
 	 * @typedef {Object} Point
-	 * @property {number} x The x coordinate.
-	 * @property {number} y The y coordinate.
-	 */
-	
-	/**
-	 * Draw parameter config
-	 * @typedef {Object} DrawConfig
-	 * @property {Array.<string>} id The canvas id collection
-	 * @property {Point} point A point Object, contains x and y coordinates.
+	 * @property {Number} x The x coordinate.
+	 * @property {Number} y The y coordinate.
 	 */
 	 
 	/**
@@ -47,10 +40,9 @@
 		lineWidth: 9,
 		lineCap: 'round',
 		lineColor: '#00ccff',
-		targetZoomScale: 1
+		targetZoomScale: 1,
 		// backgroundImage
 	};
-	
 	
 	/**
 	 * Get exist id or auto increment id.
@@ -119,13 +111,17 @@
 		if(back){
 			if(typeof back == 'string'){
 				this.backImg_ = new Image();
-				this.backImg_.onload = function(){
-					con.drawImage(this, 0, 0, w, h);
-				};
+				this.backImg_.onload = (function(scope, context){
+					return function(){
+						context.drawImage(this, 0, 0, w, h);
+						scope.backImgLoad_ = true;
+					}
+				})(this, con);
 				this.backImg_.src = back;
 			}else if(Object.prototype.toString.call(back) == '[object HTMLImageElement]'){
 				this.backImg_ = back;
 				con.drawImage(back, 0, 0, w, h);
+				this.backImgLoad_ = true;
 			}else{
 				console.error('CM can not handle the invalid image url/element.');
 			}
@@ -133,7 +129,7 @@
 		
 		this.context_.lineWidth = minWidth / (sourceMinWidth / prop_.lineWidth);
 		this.context_.lineCap = prop_.lineCap;
-		this.context_.strokeStyle = prop_.lineColor;	
+		this.context_.strokeStyle = prop_.lineColor;
 	}
 	
 	/**
@@ -152,7 +148,11 @@
 		con.moveTo(x, y);
 		con.stroke();
 		if(typeof callback == 'function'){
-			callback();
+			setTimeout((function(scope, point){
+				return function(){
+					callback.call(scope, point);
+				};
+			})(this, pt), 0);
 		}
 		return this;
 	};
@@ -171,20 +171,32 @@
 		con.moveTo(x, y);
 		con.stroke();
 		if(typeof callback == 'function'){
-			callback();
+			setTimeout((function(scope, point){
+				return function(){
+					callback.call(scope, point);
+				};
+			})(this, pt), 0);
 		}
 		return this;
 	};
 	
 	/**
 	 * Clear the canvas to blank or background image if its exist.
+	 * @param {Function|null} callback
 	 * @return {CanvasInstance}
 	 */
-	CanvasInstance.prototype.clear = function(){
+	CanvasInstance.prototype.clear = function(callback){
 		if(this.backImg_){
 			this.context_.drawImage(this.backImg_, 0, 0, this.width_, this.height_);
 		}else{
 			this.context_.clearRect(0, 0, this.width_, this.height_);
+		}
+		if(typeof callback == 'function'){
+			setTimeout((function(scope){
+				return function(){
+					callback.call(scope);
+				};
+			})(this), 0);
 		}
 		return this;
 	};
@@ -234,13 +246,6 @@
 	 * @param {String|HTMLCanvasElement|Array.<String|HTMLCanvasElement>} id A id string or the canvas dom element.
 	 */
 	CM.unreg = function(id){
-		/*
-		var el = getEl_(id);
-		var cid = getId_(el);
-		if(instanceMap_[cid]){
-			instanceMap_[cid] = null;
-		}
-		*/
 		var ids;
 		if(Object.prototype.toString.call(id) == '[object Array]'){
 			ids = id.slice(0);
@@ -251,14 +256,14 @@
 			var cid = getId_(el);
 			if(instanceMap_[cid]){
 				instanceMap_[cid] = null;
-			}	
+			}
 		}
 	}
 	
 	/**
 	 * Gets or sets the common properties of canvas manager
-	 * @param {Object|null} property A canvas manager properties.
-	 * @param {Object}
+	 * @param {CanvasMgrProp|null} property A canvas manager properties.
+	 * @param {CanvasMgrProp}
 	 */
 	CM.prop = function(property){
 		if(Object.prototype.toString.call(property) == '[object Object]'){
@@ -296,5 +301,30 @@
 // CM('multiple').line({ x: x, y: y });
 // CM('multiple').clear();
 
-
+/*
+	
+	CanvasInstance.prototype.stopRecord = function(stamp, resultsCallback){
+		this.recording_ = false;
+		stamp = stamp || (new Date()).getTime();
+		this.recordEndTime_ = stamp;
+		if(this.recordCanvas_){
+			this.drawHistory_.push(record_(stamp, this.recordCanvas_));
+			this.recordCanvas_ = null;
+		}
+		//saveAs(dataURLtoBlob(this.drawHistory_[this.drawHistory_.length-1].el.toDataURL()),'ssss.png');
+		//saveAs(dataURLtoBlob(this.drawHistory_[0].el.toDataURL()),'ssss.png');
+		var item;
+		var timeseq = 0;
+		while(item = this.drawHistory_.shift()){
+			isLast = this.drawHistory_.length == 0;
+			setTimeout((function(scope, t, last){
+				return function(){	
+					//saveAs(dataURLtoBlob(t.el.toDataURL()),'ssss_' + t.stamp + '_.png');
+					scope.compiledHistory_.push({stamp:t.stamp, base64:t.el.toDataURL()});
+					if(last) resultsCallback(scope.compiledHistory_);
+				};
+			})(this, item, isLast), timeseq += 2);
+		}
+	};
+*/
 
