@@ -1,0 +1,20 @@
+defaults: &defaults
+  app_name: "一字千金"
+  domain: "http://www.child4fun.com"
+  facebook_admins: "1711272827"
+  facebook_app_id: "652264738144338"
+  facebook_secret: "3de11519c1136c1b71216ee790533e7f"
+  filepicker_api_key: "AIfvVxeeARtO8oib3x8hVz"
+  filepicker_secret_key: "TRX2HQBY5ZE7DFHQHAIMCAHLQ4"
+  default_logo_url: "/logo.png"
+
+development:
+  <<: *defaults
+  domain: "http://childview.dev"
+
+test:
+  <<: *defaults
+  domain: "http://childview.dev"
+
+production:
+  <<: *defaults
