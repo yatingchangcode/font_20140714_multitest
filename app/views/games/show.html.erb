@@ -20,12 +20,12 @@
       </thead>
       <tbody>
 
-        <% @visitors.each_with_index do |v,index| %>
+        <% @visitors.each do |v| %>
         <tr>
-          <td><%= index %></td>
+          <td><%= v.number %></td>
           <td><%= render_visitor_photo(v.image,"thumb") %></td>
           <td><%= v.name %></td>
-          <td><input type="checkbox" name="joinGame" value="<%= index %>" /></td>
+          <td><input type="checkbox" name="joinGame" value="<%= v.number %>" /></td>
         </tr>
         <% end %>
 

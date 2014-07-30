@@ -6,7 +6,7 @@ class VisitorsController < ApplicationController
 
   def create
     @visitor = @game.visitors.build(visitor_params)
-    @visitor.number = @game.visitors.size +1
+    @visitor.number = @game.visitors.size
 
     if @visitor.save
       redirect_to game_path(@game)
