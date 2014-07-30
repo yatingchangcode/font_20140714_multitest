@@ -1,0 +1,33 @@
+      <div class="jumbotron">
+        <h1>一字千金 軌跡錄影程式</h1>
+      </div>
+      <div style="float:left;">
+
+      </div>
+
+      <% content_for :javascripts do %>
+      <%= javascript_include_tag 'chats' %>
+      <script>
+      $(document).ready(function() {
+        CR.prop({
+          width: 500,
+          height: 500,
+          lineWidth: 15,
+          lineColor: '#333333',
+          frameRate: 25,
+          backgroundImage: '/assets/block-524.png'
+        });
+
+        for(var i = 1;i <= <%= @count %>;i++){
+          CR.reg(i.toString());
+        }
+        window.chatApp = new ChatApp(500,500,'0');
+        window.chatApp.bindEvents(<%= @count %>);
+        
+        //window.chatApp = new ChatApp();
+        //window.chatApp.triggerEvents();
+        //window.chatApp.bindEvents();
+
+      });
+      </script>
+      <% end %>

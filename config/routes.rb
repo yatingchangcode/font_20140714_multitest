@@ -13,6 +13,7 @@ Rails.application.routes.draw do
       get 'demo'
       get 'write'
       get 'read'
+      get 'record'
       eval(arrayMapReduce)
     end
   end 
