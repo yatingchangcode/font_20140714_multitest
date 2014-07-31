@@ -25,7 +25,7 @@ class ChatsController < WebsocketRails::BaseController
   def save_file 
     file_path = controller_store[:user_id_file_path][message[:user_id]]
     enc   = Base64.decode64(message[:base64])
-    f = File.open("#{file_path}/#{message[:timestamp]}.jpg", 'wb') {|f| f.write(enc)}
+    f = File.open("#{file_path}/#{message[:timestamp]}.png", 'wb') {|f| f.write(enc)}
   end
 
   def close_file
