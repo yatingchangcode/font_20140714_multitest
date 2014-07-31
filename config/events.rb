@@ -15,7 +15,7 @@ WebsocketRails::EventMap.describe do
 
 
 
-  subscribe :action, :to => WritesController, :with_method => :receiveAlert
+  subscribe :action, :to => WritesController, :with_method => :action
   # read trigger start or stop, write bind receiveAlert
 
   subscribe :open_file, :to => ChatsController, :with_method => :open_file
@@ -26,7 +26,7 @@ WebsocketRails::EventMap.describe do
   subscribe :move_location, :to => WritesController, :with_method => :move_location
   subscribe :up_location, :to => WritesController, :with_method => :up_location
   subscribe :clear, :to => WritesController, :with_method => :clear
-
+  subscribe :submit, :to => WritesController, :with_method => :submit
 
 
   subscribe :client_connected, to: ChatsController, with_method: :client_connected
