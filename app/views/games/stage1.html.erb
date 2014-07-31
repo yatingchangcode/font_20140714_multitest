@@ -7,7 +7,23 @@
 <div class="row">
   <div class="col-md-12">
     <h1>Game <%= @game.id %> > Stage 1</h1>
-    <h2>規則設定 限時 <input type="number"/> 秒</h2>
-    <%= link_to "確認","/welcome/read",class: "btn btn-lg btn-success"  %>
+    <h2>規則</h2>
+    <h2>1.不顯示秒數</h2>
+    <h2>2.限時 <input id="second" type="number"/> 秒</h2>
+    <%= link_to "確認","#",id: "confirm", class: "btn btn-lg btn-success"  %>
   </div>
 </div>
+
+
+<% content_for :javascripts do %>
+<script type="text/javascript">
+$(document).ready(function(){
+
+  document.getElementById('confirm').onclick = function(e){
+    e.preventDefault();
+    var second = document.getElementById('second');
+    location.href = '/welcome/read?join_visitors_number=<%= @join_visitors_number %>&second='+second.value;
+  }
+});
+</script>
+<% end %>

@@ -19,5 +19,15 @@ class GamesController < ApplicationController
 
   def stage1
     @game = Game.find(params[:id])
+
+    @show_second = false
+    @join_visitors_number = params[:join_visitors_number]
+  end
+
+  def stage2
+    @game = Game.find(params[:id])
+
+    @show_second = true
+    @join_visitors_number = params[:join_visitors_number]
   end
 end
