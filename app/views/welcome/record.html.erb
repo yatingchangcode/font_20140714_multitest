@@ -42,7 +42,7 @@
               scope.dispatcher.trigger("save_file", {
                 user_id: uid,
                 timestamp: data[i].stamp.toString(),
-                base64: data[i].base64
+                base64: data[i].base64.split(',')[1]
               });
               i++;
             }
