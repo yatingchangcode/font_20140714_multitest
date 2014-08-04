@@ -31,34 +31,34 @@ class @ChatApp
       i++
 
   downMypad: (e) =>
+    @isDrawing = true
     @dispatcher.trigger 'down_location', 
       user_id: @user_id,
       x: e.clientX - @originOffset.left,
       y: e.clientY - @originOffset.top
 
   moveMypad: (e) =>
-    @dispatcher.trigger 'move_location',       
-      user_id: @user_id,
-      x: e.clientX - @originOffset.left,
-      y: e.clientY - @originOffset.top
+    if @isDrawing 
+      @dispatcher.trigger 'move_location',       
+        user_id: @user_id,
+        x: e.clientX - @originOffset.left,
+        y: e.clientY - @originOffset.top
 
   upMypad: (e) =>
+    @isDrawing = false
     @dispatcher.trigger 'up_location' , user_id: @user_id
 
   clearMypad: (e) =>
     @dispatcher.trigger 'clear' , user_id: @user_id
 
   receiveDown: (message) =>
-    @isDrawing = true
     CM('origin_'+message.user_id).point({ x: message.x, y: message.y })
 
-
   receiveMove: (message) =>
-    if @isDrawing 
-      CM('origin_'+message.user_id).line({ x: message.x, y: message.y })
+    CM('origin_'+message.user_id).line({ x: message.x, y: message.y })
 
   receiveUp: (message) =>
-    @isDrawing = false
+    return
 
   receiveClear: (message) => 
     CM('origin_'+message.user_id).clear();
