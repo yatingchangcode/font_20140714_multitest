@@ -13,7 +13,7 @@ class @ChatApp
     $('#origin_'+@user_id).mouseup @upMypad
     $('#clearBtn').click @clearMypad
 
-    @dispatcher.bind 'receiveAlert', @receiveAlert
+    @dispatcher.bind 'action', @receiveAlert
 
   bindEvents: (number) ->
     @dispatcher.bind 'down_location', @receiveDown
@@ -70,7 +70,7 @@ class @ChatApp
     $('#write_count').text(data.write_count);
 
   receiveAlert: (data) ->
-    alert(data.message);
+    #alert(data.message);
 
   start: (e) =>
     @dispatcher.trigger 'action' , user_id: 14, action: "start"

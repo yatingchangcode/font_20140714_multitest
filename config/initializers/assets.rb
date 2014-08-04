@@ -1,1 +1,1 @@
-Rails.application.config.assets.precompile += %w( chats.js )
+Rails.application.config.assets.precompile += %w( chats.js pinhole.js )

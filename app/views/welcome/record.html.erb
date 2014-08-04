@@ -1,12 +1,17 @@
       <div class="jumbotron">
-        <h1>一字千金 軌跡錄影程式</h1>
+        <h2>一字千金 軌跡錄影程式</h2>
       </div>
-      <div style="float:left;">
-
+      <div class="row">
+        <% @range.each do |x| %>
+        <div class="col-md-3">
+          <div><%= x %>號參賽者</div>
+          <div id="console_<%= x %>" style="border:1px solid black;line-height:95%;width:100%;height:200px;margin-bottom:12px;overflow:auto;">te_st<br/>test<br/>test<br/>test<br/>test<br/>test<br/>test<br/>test<br/>test<br/>test<br/>test<br/>test<br/>test<br/>test<br/>test<br/>test<br/>test<br/>test</div>
+        </div>
+        <% end %>
       </div>
-
+        
       <% content_for :javascripts do %>
-      <%= javascript_include_tag 'chats' %>
+      <%= javascript_include_tag 'pinhole' %>
       <script>
       $(document).ready(function() {
         CR.prop({
@@ -21,12 +26,32 @@
         for(var i = 1;i <= <%= @count %>;i++){
           CR.reg(i.toString());
         }
-        window.chatApp = new ChatApp(500,500,'0');
-        window.chatApp.bindEvents(<%= @count %>);
-        
-        //window.chatApp = new ChatApp();
-        //window.chatApp.triggerEvents();
-        //window.chatApp.bindEvents();
+        window.pinhole = new Pinhole('0');
+		window.pinhole.bindEvents();
+		
+        window.stopCallBack = function(uid) {
+          var scope = window.pinhole;
+          return function(data) {
+            var i, len;
+            scope.dispatcher.trigger("open_file", {
+              user_id: uid
+            });
+            i = 0;
+            len = data.length;
+            while (i < len) {
+              scope.dispatcher.trigger("save_file", {
+                user_id: uid,
+                timestamp: data[i].stamp.toString(),
+                base64: data[i].base64.split(',')[1]
+              });
+              i++;
+            }
+            scope.dispatcher.trigger("close_file", {
+              user_id: uid
+            });
+          };
+        };
+      
 
       });
       </script>

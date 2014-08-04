@@ -14,11 +14,11 @@ class WritesController < WebsocketRails::BaseController
   end
 
   def down_location
-    broadcast_message :down_location, {:user_id => message[:user_id], :x => message[:x], :y => message[:y]}
+    broadcast_message :down_location, {:user_id => message[:user_id], :x => message[:x], :y => message[:y], :stamp => message[:stamp]}
   end
 
   def move_location
-    broadcast_message :move_location, {:user_id => message[:user_id], :x => message[:x], :y => message[:y]}
+    broadcast_message :move_location, {:user_id => message[:user_id], :x => message[:x], :y => message[:y], :stamp => message[:stamp]}
   end
 
   def up_location
@@ -27,13 +27,17 @@ class WritesController < WebsocketRails::BaseController
 
   def clear
     p message[:user_id]
-    broadcast_message :clear, {:user_id => message[:user_id]}
+    broadcast_message :clear, {:user_id => message[:user_id], :stamp => message[:stamp]}
+  end
+  
+  def submit
+    broadcast_message :submit, {:user_id => message[:user_id], :stamp => message[:stamp]}
   end
 
-  def receiveAlert
-    connection = WebsocketRails.users[message[:user_id]]
-    data = {:message => message[:action]}
-    connection.send_message :receiveAlert, data
+  def action
+    connection = WebsocketRails.users[0]
+    data = {:action => message[:action], :user_id => message[:user_id].to_s, :stamp => message[:stamp]}
+    connection.send_message :action, data
   end
 
 

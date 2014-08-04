@@ -14,6 +14,8 @@ class WelcomeController < ApplicationController
 
   def record
     @count = 20
+    @range = 1..@count
+    
   end
 
 end
