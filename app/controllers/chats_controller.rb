@@ -17,18 +17,27 @@ class ChatsController < WebsocketRails::BaseController
 
 
   def open_file
+    p "open_file"
     random_name = SecureRandom.hex(6)
-    file_path = Dir.mktmpdir("#{message[:user_id]}/#{random_name}")
-    controller_store[:user_id_file_path] << { :message[:user_id] => file_path}
+    
+    tmp_path ||= File.expand_path(File.join("record"), Rails.public_path)
+
+    file_path = FileUtils.mkdir_p("#{tmp_path}/#{message[:user_id]}/#{random_name}")
+   
+    controller_store[:user_id_file_path][message[:user_id]] = file_path
   end
 
   def save_file 
-    file_path = controller_store[:user_id_file_path][message[:user_id]]
+    p "save_file"
+    file_path = controller_store[:user_id_file_path][message[:user_id]][0]
+    file_name = message[:timestamp]
+
     enc   = Base64.decode64(message[:base64])
-    f = File.open("#{file_path}/#{message[:timestamp]}.png", 'wb') {|f| f.write(enc)}
+    f = File.open("#{file_path}/#{file_name}.png", 'wb') {|f| f.write(enc)}
   end
 
   def close_file
+    p "close_file"
     #controller_store[:user_id_file] - :message[:user_id]
     begin
       p Subprocess.check_call(['ls', '-al', 'tmp'])
