@@ -38,9 +38,9 @@ class ChatsController < WebsocketRails::BaseController
 
   def close_file
     p "close_file"
-    #controller_store[:user_id_file] - :message[:user_id]
+    file_path = controller_store[:user_id_file_path][message[:user_id]][0]
     begin
-      p Subprocess.check_call(['ls', '-al', 'tmp'])
+      p Subprocess.check_call(["ffmpeg", "-framerate", "50", "-i", "#{file_path}/%d.png", "#{file_path}/video.mp4", "-y"])
     rescue Subprocess::NonZeroExit => e
       puts e.message
       puts "Why aren't llamas one of your favorite animals?"
