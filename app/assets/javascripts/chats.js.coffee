@@ -24,11 +24,18 @@ class @ChatApp
     @dispatcher.bind 'get_user_count', @getUserCount
     @dispatcher.bind 'get_write_count', @getWriteCount
 
-    i = 0
-    while i <= 20
-      $('#start_'+i).click @start
-      $('#stop_'+i).click @stop
-      i++
+    if number
+      i = 1
+      while i <= number
+        start = $('#start_'+i);
+        stop = $('#stop_'+i);
+        start.click @action
+        start.attr 'uid' , i
+        start.attr 'action' , 'start'
+        stop.click @action
+        stop.attr 'uid' , i
+        stop.attr 'action' , 'stop'
+        i++
 
   downMypad: (e) =>
     @isDrawing = true
@@ -72,10 +79,9 @@ class @ChatApp
   receiveAlert: (data) ->
     #alert(data.message);
 
-  start: (e) =>
-    @dispatcher.trigger 'action' , user_id: 14, action: "start"
-
-  stop: (e) =>
-    @dispatcher.trigger 'action' , user_id: 14, action: "stop"
+  action: (e) =>
+    uid = $(e.currentTarget).attr 'uid'
+    action = $(e.currentTarget).attr 'action'
+    @dispatcher.trigger 'action' , user_id: uid, action: action
 
 
