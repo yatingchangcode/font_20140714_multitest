@@ -14,15 +14,21 @@ class WritesController < WebsocketRails::BaseController
   end
 
   def down_location
-    broadcast_message :down_location, {:user_id => message[:user_id], :x => message[:x], :y => message[:y], :stamp => message[:stamp]}
+    manager_connection = WebsocketRails.users[0]
+    data = {:user_id => message[:user_id], :x => message[:x], :y => message[:y], :stamp => message[:stamp]}
+    manager_connection.send_message :down_location, data
   end
 
   def move_location
-    broadcast_message :move_location, {:user_id => message[:user_id], :x => message[:x], :y => message[:y], :stamp => message[:stamp]}
+    manager_connection = WebsocketRails.users[0]
+    data = {:user_id => message[:user_id], :x => message[:x], :y => message[:y], :stamp => message[:stamp]}
+    manager_connection.send_message :move_location, data
   end
 
   def up_location
-    broadcast_message :up_location, {}
+    manager_connection = WebsocketRails.users[0]
+    data = {}
+    manager_connection.send_message :up_location, data
   end
 
   def clear
@@ -31,13 +37,18 @@ class WritesController < WebsocketRails::BaseController
   end
   
   def submit
-    broadcast_message :submit, {:user_id => message[:user_id], :stamp => message[:stamp]}
+    manager_connection = WebsocketRails.users[0]
+    data = {:user_id => message[:user_id], :stamp => message[:stamp]}
+    manager_connection.send_message :submit, data
   end
 
   def action
-    connection = WebsocketRails.users[0]
-    data = {:action => message[:action], :user_id => message[:user_id].to_s, :stamp => message[:stamp]}
-    connection.send_message :action, data
+    trigger_id = message[:user_id]
+    manager_connection = WebsocketRails.users[0]
+    trigger_connection = WebsocketRails.users[trigger_id.to_i]
+    data = {:action => message[:action], :user_id => trigger_id.to_s, :stamp => message[:stamp]}
+    manager_connection.send_message :action, data
+    trigger_connection.send_message :action, data
   end
 
 
