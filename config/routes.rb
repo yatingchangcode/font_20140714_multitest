@@ -10,6 +10,7 @@ Rails.application.routes.draw do
 
   resources :welcome do
     collection do
+      get 'index'
       get 'demo'
       get 'write'
       get 'read'
