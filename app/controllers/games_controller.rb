@@ -30,4 +30,14 @@ class GamesController < ApplicationController
     @show_second = true
     @join_visitors_number = params[:join_visitors_number]
   end
+
+  def server
+    @game = Game.find(params[:id])
+
+    @visitors = @game.visitors.where(id: params[:join_visitors_number].split(","))
+
+    @range = 1..@visitors.size
+
+    @user_unregs = [2,3]
+  end
 end

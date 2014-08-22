@@ -25,6 +25,7 @@ Rails.application.routes.draw do
       get 'stage1'
       get 'stage2'
       get 'stage3'
+      get 'server'
     end
   end
   # Example of regular route:

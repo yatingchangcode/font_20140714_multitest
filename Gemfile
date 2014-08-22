@@ -28,8 +28,6 @@ group :development do
   gem "better_errors", "~> 0.9.0"
   gem "magic_encoding"
   gem "annotate"
-  gem "pry-nav"
-  gem "pry-remote"
 
   gem "letter_opener"
   gem 'meta_request'

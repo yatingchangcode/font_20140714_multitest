@@ -45,7 +45,7 @@ class @ChatApp
     CM('origin_'+message.user_id).clear();
 
   receiveAlert: (data) ->
-    alert(data);
+    alert(data.action);
 
   action: (e) =>
     uid = $(e.currentTarget).attr 'uid'
