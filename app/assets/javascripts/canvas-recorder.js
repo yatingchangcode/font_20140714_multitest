@@ -89,7 +89,9 @@
 		
 		var computedRecords = [];
 		var frameCount = 0;
-		var lessNear;			
+		var lessNear;
+		var stampStep = startTime;
+		var base64Step;
 		while(it <= endTime){
 			for(var i = 0; i < data.length; i++){
 				var current = data[i];
@@ -335,7 +337,7 @@
 			self.status_ = Status_.COMPILING;
 			
 			var frameRate = prop_.frameRate || 25;
-			var compiled = [];
+			//var compiled = [];
 			var compilingTemp = self.history_.slice(0);
 			var item;
 			var timeseq = 0;
@@ -343,11 +345,11 @@
 				isLast = compilingTemp.length == 0;
 				setTimeout((function(scope, t, last){
 					return function(){	
-						//scope.compiledHistory_.push({stamp:t.stamp, base64:t.el.toDataURL()});
-						compiled.push({stamp:t.stamp, base64:t.el.toDataURL()});
+						scope.compiledHistory_.push({stamp:t.stamp, base64:t.el.toDataURL()});
+						//compiled.push({stamp:t.stamp, base64:t.el.toDataURL()});
 						if(last){
 							scope.status_ -= Status_.COMPILING;
-							resultsCallback.call(scope, arrangeFrame_(compiled, frameRate));
+							resultsCallback.call(scope, arrangeFrame_(scope.compiledHistory_.slice(0), frameRate));
 						}
 					};
 				})(self, item, isLast), timeseq += 3);
