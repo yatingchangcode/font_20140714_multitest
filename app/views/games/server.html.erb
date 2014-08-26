@@ -2,7 +2,7 @@
         <h5>一字千金 操作後台</h5>
         <p>目前上線人數<span id="user_count">0</span>人</p>
       </div>
-      <div style="float:left;">
+      <div style="">
         <div class="row">
           <% @visitors.each do |x| %>
           <div class="col-md-3">
@@ -54,10 +54,12 @@
         window.chatApp.bindEvents(20);
 
         $('#allGamer').click(function(){
-          $('[name="gamer"]').each(function(){
-            $(this).attr('checked', true);
-          });
-        })
+          $('[name="gamer"]').each((function(toCheck){
+            return function(){
+              this.checked = toCheck;
+            };
+          })(this.checked === true));
+        });
 
         //Todo
         $('#yes_button').click(function(){
