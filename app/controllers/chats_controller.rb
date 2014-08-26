@@ -51,13 +51,13 @@ class ChatsController < WebsocketRails::BaseController
 
   def client_connected
     controller_store[:user_count] += 1
-    p "user_count #{controller_store[:user_count]} ,user connected #{Time.now}"
+    p "user_count #{controller_store[:user_count]} ,user #{params[:client_id]} connected #{Time.now}"
     WebsocketRails.users[params[:client_id]] = connection
   end
 
   def client_disconnected
     controller_store[:user_count] -= 1
-    p "user_count #{controller_store[:user_count]} ,user disconnected #{Time.now}"
+    p "user_count #{controller_store[:user_count]} ,user #{params[:client_id]} disconnected #{Time.now}"
     known_connections = WebsocketRails.users[client_id]
     known_connections.connections.delete connection
   end
