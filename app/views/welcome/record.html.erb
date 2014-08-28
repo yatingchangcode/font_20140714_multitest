@@ -13,6 +13,11 @@
       <% content_for :javascripts do %>
       <%= javascript_include_tag 'pinhole' %>
       <script>
+
+      var preActionCount = 0;
+      var fileSaveActionCount = 0;
+      var delayTime = 60;
+
       $(document).ready(function() {
         CR.prop({
           width: 500,
@@ -36,6 +41,39 @@
           var pre = element.html();
           element.html(pre + 'STOP<br/>');
           return function(data) {
+            
+            setTimeout((function(dispatcher, id){
+              return function(){
+                dispatcher.trigger("open_file", {
+                  user_id: id
+                });
+              };
+            })(scope.dispatcher, uid), fileSaveActionCount++ * delayTime);
+
+
+            for (var i = 0, len = data.length; i < len; i++){
+              var frameInfo = {
+                user_id: uid, 
+                timestamp: data[i].stamp.toString(), 
+                base64: data[i].base64.split(',')[1]
+              };
+              setTimeout((function(dispatcher, obj){
+                return function(){
+                  dispatcher.trigger("save_file", obj);
+                };
+              })(scope.dispatcher, frameInfo), fileSaveActionCount++ * delayTime);
+
+            }
+
+            setTimeout((function(dispatcher, id){
+              return function(){
+                dispatcher.trigger("close_file", {
+                  user_id: id
+                });
+              };
+            })(scope.dispatcher, uid), fileSaveActionCount++ * delayTime);
+
+            /*
             var i, len;
             scope.dispatcher.trigger("open_file", {
               user_id: uid
@@ -43,18 +81,34 @@
             i = 0;
             len = data.length;
             while (i < len) {
-              scope.dispatcher.trigger("save_file", {
-                user_id: uid,
-                timestamp: data[i].stamp.toString(),
+              setTimeout((function(dispatcher, last, obj){
+                return function(){
+                  dispatcher.trigger("save_file", obj);
+                  if(last){
+                    dispatcher.trigger("close_file", {user_id: obj.user_id});
+                  }
+                };
+              })(scope.dispatcher, (i + 1 == len), {
+                user_id: uid, 
+                timestamp: data[i].stamp.toString(), 
                 base64: data[i].base64.split(',')[1]
-              });
+              }), fileSaveActionCount * 60);
+              
+              fileSaveActionCount++;
               i++;
             }
-            scope.dispatcher.trigger("close_file", {
-              user_id: uid
-            });
+            */
+
           };
         };
+
+        setInterval(function(){
+          if(fileSaveActionCount == preActionCount){
+            fileSaveActionCount = preActionCount = 0;
+          }else{
+            preActionCount = fileSaveActionCount;
+          }
+        },1300);
 
         window.startCallBack = function(){
           var id = this.id_;

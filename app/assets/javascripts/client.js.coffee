@@ -42,7 +42,7 @@ class @ChatApp
 
   clearMypad: (e) =>
     @dispatcher.trigger 'clear' , user_id: @user_id
-    CM('origin_'+message.user_id).clear();
+    CM('origin_'+ @user_id).clear();
 
   receiveAlert: (data) ->
     alert(data.action);
