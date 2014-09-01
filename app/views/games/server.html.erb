@@ -5,20 +5,23 @@
       <div style="">
         <div class="row">
           <% @visitors.each do |x| %>
-          <div class="col-md-3">
-            <div class="row">
-              <div class="col-md-1">
-                <input type="checkbox" name="gamer" value="<%= x.id %>"/>
-              </div>
-              <div class="col-md-3">
-                <%= render_gamer_photo(x.image,"thumb") %>
-                <p><%= x.name %></p>
-              </div>
-              <div class="col-md-6">
-                <canvas id="origin_<%= x.id %>" class="orgincanvas"></canvas>
-              </div>
+          <%= div_for(x, class: "col-md-3") do %>
+          <div class="row">
+            <div class="col-md-1">
+              <input type="checkbox" name="gamer" value="<%= x.id %>"/>
+            </div>
+            <div class="col-md-3">
+              <%= render_gamer_photo(x.image,"thumb") %>
+              <p><%= x.name %></p>
+            </div>
+            <div class="col-md-6">
+              <canvas id="origin_<%= x.id %>" class="orgincanvas" style="z-index:1"></canvas>
+              <img id="yes_<%= x.id %>" src="/assets/O-mark.png" height="150" style="display:none;z-index:10;position:absolute;right:-20px;bottom:8px;" ></img>
+              <img id="no_<%= x.id %>" src="/assets/X-Mark.png" height="150" style="display:none;z-index:10;position:absolute;right:-20px;bottom:8px;" ></img>
+
             </div>
           </div>
+          <% end %>
           <% end %>
         </div>
         <div class="row">
@@ -53,68 +56,92 @@
         window.chatApp = new ChatApp(500,500,'0');
         window.chatApp.bindEvents(20);
 
+        var afterAction = function(property){
+          var array = [];
+          $('[name="gamer"]').each(function(){
+            if (this.checked) {
+              array.push(this.value);
+              this.checked = false;
+            }
+          });
+          $('#allGamer').attr('checked',false);
+
+          return array;
+        }
+
         $('#allGamer').click(function(){
           $('[name="gamer"]').each((function(toCheck){
             return function(){
-              this.checked = toCheck;
+              if (this.disabled == false){
+                this.checked = toCheck;
+              }
             };
           })(this.checked === true));
         });
 
-        //Todo
         $('#yes_button').click(function(){
-          var array = [];
-          $('[name="gamer"]').each(function(){
-            if (this.checked) {
-              array.push(this.value);
-            }
-          });
-          alert("answer right:"+array);
+          var array = afterAction(this);
+          for (var x in array){
+            var yesImg = $('#yes_' + array[x]);
+            yesImg.show();
+
+            setTimeout(( function(item){
+              var f = function(){
+                item.hide();
+              };
+              return f
+            })(yesImg), 3000);
+          }
+          //alert("answer right:"+array);
         });
 
-        //Todo
         $('#no_button').click(function(){
-          var array = [];
-          $('[name="gamer"]').each(function(){
-            if (this.checked) {
-              array.push(this.value);
-            }
-          });
-          alert("answer wrong:"+array);
+          var array = afterAction(this);
+          for (var x in array){
+            var noImg = $('#no_' + array[x]);
+            noImg.show();
+
+            setTimeout((function(item){
+              var f = function(){
+                item.hide();
+              };
+              return f
+            })(noImg), 3000);
+          }
+          //alert("answer wrong:"+array);
         });
 
         $('#out_button').click(function(){
-          var array = [];
           $('[name="gamer"]').each(function(){
             if (this.checked) {
               CM.unreg('origin_'+this.value);
-              array.push(this.value);
+              this.disabled = true;
             }
           });
-          alert("outer:"+array);
+          var array = afterAction(this);
+          for (var x in array){
+            $('#visitor_'+array[x]).attr('style','opacity:0.2');
+          }
+          //alert("outer:"+array);
         });
 
         $('#start_button').click(function(){
-          var array = [];
           $('[name="gamer"]').each(function(){
             if (this.checked) {
               window.chatApp.action(this.value,'start');
-
-              array.push(this.value);
             }
           });
+          var array = afterAction(this);
           alert("start:"+array);
         });
 
         $('#stop_button').click(function(){
-          var array = [];
           $('[name="gamer"]').each(function(){
             if (this.checked) {
               window.chatApp.action(this.value,'stop');
-
-              array.push(this.value);
             }
           });
+          var array = afterAction(this);
           alert("stop:"+array);
         });
 
