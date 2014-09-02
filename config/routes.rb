@@ -28,7 +28,7 @@ Rails.application.routes.draw do
       get 'server'
     end
     collection do
-      get 'get_visitor_photo'
+      get 'get_game_data'
     end
   end
   # Example of regular route:

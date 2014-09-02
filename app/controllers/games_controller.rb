@@ -22,6 +22,7 @@ class GamesController < ApplicationController
 
     @show_second = false
     @join_visitors_number = params[:join_visitors_number]
+    session[:stage] = "stage1"
   end
 
   def stage2
@@ -29,25 +30,28 @@ class GamesController < ApplicationController
 
     @show_second = true
     @join_visitors_number = params[:join_visitors_number]
+    session[:stage] = "stage2"
   end
 
   def server
     @game = Game.find(params[:id])
     session[:game] = params[:id]
-    @visitors = @game.visitors.where(id: params[:join_visitors_number].split(","))
 
+    @visitors = @game.visitors.where(id: params[:join_visitors_number].split(","))
     @range = 1..@visitors.size
+    @second = params[:second]
+    session[:second] = params[:second]
 
     #@user_unregs = [2,3]
   end
 
-  def get_visitor_photo
+  def get_game_data
     if session[:game].present?
       @game = Game.find(session[:game])
       @visitor = @game.visitors.find(params[:id])
 
       respond_to do |format|
-        format.json { render :json => @visitor }
+        format.json { render :json => { visitor: @visitor,second: session[:second], stage: session[:stage]} }
       end
     else
       respond_to do |format|

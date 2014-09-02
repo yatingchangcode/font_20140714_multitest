@@ -1,6 +1,7 @@
       <div class="jumbotron">
         <h5>一字千金 操作後台</h5>
         <p>目前上線人數<span id="user_count">0</span>人</p>
+        <p>倒數計時 <span id="second" style="color:red"><%= @second %></span> 秒 </p>
       </div>
       <div style="">
         <div class="row">
@@ -131,19 +132,33 @@
               window.chatApp.action(this.value,'start');
             }
           });
-          var array = afterAction(this);
-          alert("start:"+array);
+          var alarm = setInterval(function(){
+            if (parseInt($('#second').text()) != 0){
+              $('#second').text(parseInt($('#second').text()) - 1);
+            }else{
+              clearInterval(alarm);
+              $('[name="gamer"]').each(function(){
+                if (this.checked) {
+                  window.chatApp.action(this.value,'stop');
+                }
+              });
+              var array = afterAction(this);
+              alert("stop:"+array);
+            }
+          },1000);
+          //var array = afterAction(this);
+          //alert("start:"+array);
         });
 
-        $('#stop_button').click(function(){
-          $('[name="gamer"]').each(function(){
-            if (this.checked) {
-              window.chatApp.action(this.value,'stop');
-            }
-          });
-          var array = afterAction(this);
-          alert("stop:"+array);
-        });
+        // $('#stop_button').click(function(){
+        //   $('[name="gamer"]').each(function(){
+        //     if (this.checked) {
+        //       window.chatApp.action(this.value,'stop');
+        //     }
+        //   });
+        //   var array = afterAction(this);
+        //   alert("stop:"+array);
+        // });
 
       });
       </script>

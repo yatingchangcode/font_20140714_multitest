@@ -71,6 +71,19 @@ $(document).ready(function(){
     }
     location.href = '/games/<%= @game.id %>/stage1?join_visitors_number=' + join_visitors_number;
   }
+
+  document.getElementById('stage2').onclick = function(e){
+    e.preventDefault();
+    var checkboxes = document.getElementsByName('joinGame');
+
+    var join_visitors_number = [];
+    for (var i = 0; i < checkboxes.length; i++){
+      if(checkboxes[i].checked){
+        join_visitors_number.push(checkboxes[i].value);
+      }
+    }
+    location.href = '/games/<%= @game.id %>/stage2?join_visitors_number=' + join_visitors_number;
+  }
 });
 </script>
 <% end %>
