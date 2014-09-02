@@ -33,11 +33,27 @@ class GamesController < ApplicationController
 
   def server
     @game = Game.find(params[:id])
-
+    session[:game] = params[:id]
     @visitors = @game.visitors.where(id: params[:join_visitors_number].split(","))
 
     @range = 1..@visitors.size
 
-    @user_unregs = [2,3]
+    #@user_unregs = [2,3]
+  end
+
+  def get_visitor_photo
+    if session[:game].present?
+      @game = Game.find(session[:game])
+      @visitor = @game.visitors.find(params[:id])
+
+      respond_to do |format|
+        format.json { render :json => @visitor }
+      end
+    else
+      respond_to do |format|
+        format.json { render :json => "false" }
+      end
+    end
+
   end
 end

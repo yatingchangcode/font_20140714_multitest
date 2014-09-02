@@ -27,6 +27,9 @@ Rails.application.routes.draw do
       get 'stage3'
       get 'server'
     end
+    collection do
+      get 'get_visitor_photo'
+    end
   end
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
