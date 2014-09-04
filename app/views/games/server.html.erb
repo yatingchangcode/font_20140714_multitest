@@ -6,23 +6,23 @@
       <div style="">
         <div class="row">
           <% @visitors.each do |x| %>
-          <%= div_for(x, class: "col-md-3") do %>
+          <div class="visitor col-md-3" id="visitor_<%= x.number %>">
           <div class="row">
             <div class="col-md-1">
-              <input type="checkbox" name="gamer" value="<%= x.id %>"/>
+              <input type="checkbox" name="gamer" value="<%= x.number %>"/>
             </div>
             <div class="col-md-3">
               <%= render_gamer_photo(x.image,"thumb") %>
               <p><%= x.name %></p>
             </div>
             <div class="col-md-6">
-              <canvas id="origin_<%= x.id %>" class="orgincanvas" style="z-index:1"></canvas>
-              <img id="yes_<%= x.id %>" src="/assets/O-mark.png" height="150" style="display:none;z-index:10;position:absolute;right:-20px;bottom:8px;" ></img>
-              <img id="no_<%= x.id %>" src="/assets/X-Mark.png" height="150" style="display:none;z-index:10;position:absolute;right:-20px;bottom:8px;" ></img>
+              <canvas id="origin_<%= x.number %>" class="orgincanvas" style="z-index:1"></canvas>
+              <img id="yes_<%= x.number %>" src="/assets/O-mark.png" height="150" style="display:none;z-index:10;position:absolute;right:-20px;bottom:8px;" ></img>
+              <img id="no_<%= x.number %>" src="/assets/X-Mark.png" height="150" style="display:none;z-index:10;position:absolute;right:-20px;bottom:8px;" ></img>
 
             </div>
           </div>
-          <% end %>
+          </div>
           <% end %>
         </div>
         <div class="row">
@@ -41,6 +41,13 @@
       <% content_for :javascripts do %>
       <%= javascript_include_tag 'server' %>
       <script>
+
+      var receiveSubmitHandler = function(o){
+        $('#visitor_'+o.user_id).css("background-color", "#f0f0f0");
+      };
+      window.timeRemaining = parseInt(<%= @second %>);
+      window.alarm = null;
+
       $(document).ready(function() {
         CM.prop({
           width: 500,
@@ -51,7 +58,7 @@
           backgroundImage: '/assets/block-524.png'
         });
         <% @visitors.each do |visitor| %>
-        CM.reg('origin_<%= visitor.id %>');
+        CM.reg('origin_<%= visitor.number %>');
         <% end %>
 
         window.chatApp = new ChatApp(500,500,'0');
@@ -61,10 +68,12 @@
           var array = [];
           $('[name="gamer"]').each(function(){
             if (this.checked) {
+              $('#visitor_'+this.value).css("background-color", "");
               array.push(this.value);
               this.checked = false;
             }
           });
+          $('#second').text(window.timeRemaining);
           $('#allGamer').attr('checked',false);
 
           return array;
@@ -127,19 +136,23 @@
         });
 
         $('#start_button').click(function(){
+          if(window.alarm) return;
           $('[name="gamer"]').each(function(){
             if (this.checked) {
               window.chatApp.action(this.value,'start');
+              $('#visitor_'+this.value).css("background-color", "");
             }
           });
-          var alarm = setInterval(function(){
+          window.alarm = setInterval(function(){
             if (parseInt($('#second').text()) != 0){
               $('#second').text(parseInt($('#second').text()) - 1);
             }else{
-              clearInterval(alarm);
+              clearInterval(window.alarm);
+              window.alarm = null;
               $('[name="gamer"]').each(function(){
                 if (this.checked) {
                   window.chatApp.action(this.value,'stop');
+                  receiveSubmitHandler({user_id:this.value});
                 }
               });
               var array = afterAction(this);

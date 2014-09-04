@@ -42,18 +42,18 @@ class GamesController < ApplicationController
     @game = Game.find(params[:id])
     @@game = params[:id]
 
-    @visitors = @game.visitors.where(id: params[:join_visitors_number].split(","))
+    @visitors = @game.visitors.where(number: params[:join_visitors_number].split(","))
     @range = 1..@visitors.size
     @second = params[:second]
     @@second = params[:second]
 
-    #@user_unregs = [2,3]
+    #@user_unregs = [1,4]
   end
 
   def get_game_data
     if @@game.present?
       @game = Game.find(@@game)
-      @visitor = @game.visitors.find(params[:id])
+      @visitor = @game.visitors.where(number: params[:id]).first
 
       respond_to do |format|
         format.json { render :json => { visitor: @visitor,second: @@second, stage: @@stage} }

@@ -33,6 +33,7 @@ class @ChatApp
 
   receiveSubmit: (message) =>
     @action message.user_id, "stop"
+    receiveSubmitHandler message
 
   getUserCount: (data) ->
     $('#user_count').text(data.user_count);
