@@ -209,23 +209,25 @@
 	 * @return {RecorderInstance}
 	 */
 	RecorderInstance.prototype.point = function(pt, callback){
-		var con = this.context_;
-		var x = this.scale_ * pt.x;
-		var y = this.scale_ * pt.y;
-		con.beginPath();
-		con.moveTo(x - 0.1, y - 0.1);
-		con.lineTo(x, y);
-		con.moveTo(x, y);
-		con.stroke();
-		if(this.status_){
-			this.history_.push(record_(pt.stamp, this.el_));
-		}
-		if(typeof callback == 'function'){
-			setTimeout((function(scope, point){
-				return function(){
-					callback.call(scope, point);
-				};
-			})(this, pt), 0);
+		if(this.status_ > Status_.COMPILING){
+			var con = this.context_;
+			var x = this.scale_ * pt.x;
+			var y = this.scale_ * pt.y;
+			con.beginPath();
+			con.moveTo(x - 0.1, y - 0.1);
+			con.lineTo(x, y);
+			con.moveTo(x, y);
+			con.stroke();
+			if(this.status_){
+				this.history_.push(record_(pt.stamp, this.el_));
+			}
+			if(typeof callback == 'function'){
+				setTimeout((function(scope, point){
+					return function(){
+						callback.call(scope, point);
+					};
+				})(this, pt), 0);
+			}	
 		}
 		return this;
 	};
@@ -237,21 +239,23 @@
 	 * @return {RecorderInstance}
 	 */
 	RecorderInstance.prototype.line = function(pt, callback){
-		var con = this.context_;
-		var x = this.scale_ * pt.x;
-		var y = this.scale_ * pt.y;
-		con.lineTo(x, y);
-		con.moveTo(x, y);
-		con.stroke();
-		if(this.status_){
-			this.history_.push(record_(pt.stamp, this.el_));
-		}
-		if(typeof callback == 'function'){
-			setTimeout((function(scope, point){
-				return function(){
-					callback.call(scope, point);
-				};
-			})(this, pt), 0);
+		if(this.status_ > Status_.COMPILING){
+			var con = this.context_;
+			var x = this.scale_ * pt.x;
+			var y = this.scale_ * pt.y;
+			con.lineTo(x, y);
+			con.moveTo(x, y);
+			con.stroke();
+			if(this.status_){
+				this.history_.push(record_(pt.stamp, this.el_));
+			}
+			if(typeof callback == 'function'){
+				setTimeout((function(scope, point){
+					return function(){
+						callback.call(scope, point);
+					};
+				})(this, pt), 0);
+			}
 		}
 		return this;
 	};
@@ -263,20 +267,22 @@
 	 * @return {RecorderInstance}
 	 */
 	RecorderInstance.prototype.clear = function(stamp, callback){
-		if(this.backImg_){
-			this.context_.drawImage(this.backImg_, 0, 0, this.width_, this.height_);
-		}else{
-			this.context_.clearRect(0, 0, this.width_, this.height_);
-		}
-		if(this.status_){
-			this.history_.push(record_(stamp, this.el_));
-		}
-		if(typeof callback == 'function'){
-			setTimeout((function(scope, s){
-				return function(){
-					callback.call(scope, s);
-				};
-			})(this, stamp), 0);
+		if(this.status_ > Status_.COMPILING){
+			if(this.backImg_){
+				this.context_.drawImage(this.backImg_, 0, 0, this.width_, this.height_);
+			}else{
+				this.context_.clearRect(0, 0, this.width_, this.height_);
+			}
+			if(this.status_){
+				this.history_.push(record_(stamp, this.el_));
+			}
+			if(typeof callback == 'function'){
+				setTimeout((function(scope, s){
+					return function(){
+						callback.call(scope, s);
+					};
+				})(this, stamp), 0);
+			}
 		}
 		return this;
 	};
