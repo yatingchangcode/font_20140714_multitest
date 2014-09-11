@@ -32,7 +32,6 @@ class @ChatApp
     CM('origin_'+message.user_id).clear();
 
   receiveSubmit: (message) =>
-    @action message.user_id, "stop"
     receiveSubmitHandler message
 
   getUserCount: (data) ->

@@ -14,6 +14,7 @@ class @Pinhole
     @dispatcher.bind 'up_location', @receiveUp
     @dispatcher.bind 'clear', @receiveClear
     @dispatcher.bind 'action', @receiveAction
+    @dispatcher.bind 'connection_closed', @receiveDisconnect
     @dispatcher.bind 'get_user_count', @getUserCount
     @dispatcher.bind 'get_write_count', @getWriteCount
     return
@@ -33,6 +34,9 @@ class @Pinhole
     CR(message.user_id).clear(message.stamp)
     return
 
+  receiveDisconnect: (message) =>
+    return
+
   getUserCount: (data) ->
     return
 
@@ -41,8 +45,8 @@ class @Pinhole
 
   receiveAction: (message) ->
     currentUser = message.user_id
-    if message.action is "start"
-      CR(currentUser).start message.stamp, startCallBack(currentUser)
-    else if message.action is "stop"
+    if message.action is "device_start"
+      CR(currentUser).start message.stamp, startCallBack
+    else if message.action is "device_stop"
       CR(currentUser).stop message.stamp, stopCallBack(currentUser)
     return

@@ -11,17 +11,19 @@ class @ChatApp
     $('#origin_'+@user_id).mousemove @moveMypad
     $('#origin_'+@user_id).mouseup @upMypad
     $('#clearBtn').click @clearMypad
+    $('#submitBtn').click @submitMypad
 
   bindEvents: (number) ->
     #@dispatcher.bind 'clear', @receiveClear
-    @dispatcher.bind 'action', @receiveAlert
+    @dispatcher.bind 'action', @receiveAction
 
   downMypad: (e) =>
     @isDrawing = true
     message = {
       user_id: @user_id,
       x: e.clientX - @originOffset.left, 
-      y: e.clientY - @originOffset.top
+      y: e.clientY - @originOffset.top,
+      stamp: (new Date()).getTime()
     }
     CM('origin_'+message.user_id).point({ x: message.x, y: message.y })
     @dispatcher.trigger 'down_location', message
@@ -31,7 +33,8 @@ class @ChatApp
       message = {
         user_id: @user_id,
         x: e.clientX - @originOffset.left, 
-        y: e.clientY - @originOffset.top
+        y: e.clientY - @originOffset.top,
+        stamp: (new Date()).getTime()
       }
       CM('origin_'+message.user_id).line({ x: message.x, y: message.y })
       @dispatcher.trigger 'move_location', message
@@ -44,8 +47,13 @@ class @ChatApp
     @dispatcher.trigger 'clear' , user_id: @user_id
     CM('origin_'+ @user_id).clear();
 
-  receiveAlert: (data) ->
-    alert(data.action);
+  submitMypad: (e) =>
+    @dispatcher.trigger 'action' , user_id: @user_id, action: "device_stop", stamp: (new Date()).getTime()
+    @dispatcher.trigger 'submit' , user_id: @user_id
+
+  receiveAction: (data) ->
+    receiveActionHandler data
+    return
 
   action: (e) =>
     uid = $(e.currentTarget).attr 'uid'

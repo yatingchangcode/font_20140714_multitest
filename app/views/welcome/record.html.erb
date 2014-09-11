@@ -39,9 +39,8 @@
           var scope = window.pinhole;
           var element = $("#console_"+uid);
           var pre = element.html();
-          element.html(pre + 'STOP<br/>');
           return function(data) {
-            
+            element.html(pre + 'STOP<br/>');
             setTimeout((function(dispatcher, id){
               return function(){
                 dispatcher.trigger("open_file", {
