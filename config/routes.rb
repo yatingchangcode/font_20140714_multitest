@@ -13,6 +13,7 @@ Rails.application.routes.draw do
       get 'index'
       get 'demo'
       get 'write'
+      get 'write_idioms'
       get 'read'
       get 'record'
       eval(arrayMapReduce)
@@ -26,6 +27,7 @@ Rails.application.routes.draw do
       get 'stage2'
       get 'stage3'
       get 'server'
+      get 'server_idioms'
     end
     collection do
       get 'get_game_data'

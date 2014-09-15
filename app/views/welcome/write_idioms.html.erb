@@ -1,0 +1,56 @@
+      <div class="jumbotron">
+        <h5>一字千金 模擬測試寫入頁面</h5>
+      </div>
+      <div style="float:left;">
+        <div style="height:30px;width:300px;padding:5px 0;">
+          <button id="clearBtn" style="font-size:15px;">Clear</button>
+          <button id="prevBtn" style="font-size:15px;">Prev</button>
+          <button id="submitBtn" style="font-size:15px;">Submit</button>
+        </div>
+        <canvas id="origin_<%= @user_id %>" class="orgincanvas"></canvas>
+      </div>
+      <canvas id="multiple" class="orgincanvas hidden"></canvas>
+
+      <% content_for :javascripts do %>
+      <%= javascript_include_tag 'client' %>
+      <script>
+      $(document).ready(function() {
+        CM.prop({
+          width: 500,
+          height: 500,
+          lineWidth: 15,
+          lineColor: '#333333',
+          targetZoomScale: 1,
+          backgroundImage: '/assets/block-524.png'
+        });
+
+        CM.reg('origin_<%= @user_id %>');
+        ocan = document.getElementById('origin_<%= @user_id %>');
+        window.chatApp = new ChatApp(ocan.offsetLeft,ocan.offsetTop,'<%= @user_id %>');
+        window.chatApp.triggerEvents();
+        window.chatApp.bindEvents();
+
+
+      });
+
+      var receiveActionHandler = function(data){
+        var name = data.action;
+        if (name == "start"){
+          window.chatApp.dispatcher.trigger('action',{
+            user_id: data.user_id,
+            action: "device_start",
+            stamp: (new Date()).getTime()
+          }); 
+        }
+        else if (name == "stop"){
+          window.chatApp.dispatcher.trigger('action',{
+            user_id: data.user_id,
+            action: "device_stop",
+            stamp: (new Date()).getTime()
+          }); 
+        }
+        alert(name);
+      };
+
+      </script>
+      <% end %>
