@@ -2,17 +2,19 @@
         <h5>一字千金 模擬測試寫入頁面</h5>
       </div>
       <div style="float:left;">
-        <div style="height:30px;width:300px;padding:5px 0;">
+        <div style="height:30px;padding:5px 0;">
           <button id="clearBtn" style="font-size:15px;">Clear</button>
           <button id="prevBtn" style="font-size:15px;">Prev</button>
           <button id="submitBtn" style="font-size:15px;">Submit</button>
+          <input id="block" type="number" value="1" />
+          <button id="submitBlock" style="font-size:15px;">指定格子</button>
         </div>
         <canvas id="origin_<%= @user_id %>" class="orgincanvas"></canvas>
       </div>
       <canvas id="multiple" class="orgincanvas hidden"></canvas>
 
       <% content_for :javascripts do %>
-      <%= javascript_include_tag 'client' %>
+      <%= javascript_include_tag 'writes_idioms' %>
       <script>
       $(document).ready(function() {
         CM.prop({
@@ -26,9 +28,12 @@
 
         CM.reg('origin_<%= @user_id %>');
         ocan = document.getElementById('origin_<%= @user_id %>');
-        window.chatApp = new ChatApp(ocan.offsetLeft,ocan.offsetTop,'<%= @user_id %>');
-        window.chatApp.triggerEvents();
-        window.chatApp.bindEvents();
+
+        $('#submitBlock').click(function(){
+          window.chatApp = new ChatApp(ocan.offsetLeft,ocan.offsetTop,'<%= @user_id %>','stage3',$('#block').val());
+          window.chatApp.triggerEvents();
+          window.chatApp.bindEvents();
+        });
 
 
       });

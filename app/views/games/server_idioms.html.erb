@@ -26,7 +26,7 @@
       <canvas id="multiple" class="orgincanvas hidden"></canvas>
 
       <% content_for :javascripts do %>
-      <%= javascript_include_tag 'server' %>
+      <%= javascript_include_tag 'server_idioms' %>
       <script>
 
       var receiveSubmitHandler = function(o){
@@ -48,7 +48,7 @@
         CM.reg('origin_<%= x %>');
         <% end %>
 
-        window.chatApp = new ChatApp(500,500,'0');
+        window.chatApp = new ChatApp(500,500,'0','stage3');
         window.chatApp.bindEvents(20);
 
         var afterAction = function(property){

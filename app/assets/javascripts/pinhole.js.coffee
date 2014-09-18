@@ -1,7 +1,7 @@
 
 class @Pinhole
 
-  constructor: (@user_id, @currentChannel = undefined, @username = undefined) ->
+  constructor: (@user_id, @stage_name = "stage1and2",@currentChannel = undefined) ->
     @dispatcher = new WebSocketRails(window.location.host + "/websocket?client_id=" + @user_id)
     @passBuffer = []
 

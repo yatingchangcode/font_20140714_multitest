@@ -1,4 +1,4 @@
-class WritesIdiomsController < ApplicationController
+class WritesIdiomsController < WebsocketRails::BaseController
 
   def initialize_session
     # perform application setup here
