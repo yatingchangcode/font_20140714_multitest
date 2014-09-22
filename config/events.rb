@@ -17,7 +17,7 @@ WebsocketRails::EventMap.describe do
   subscribe :save_file, :to => ChatsController, :with_method => :save_file
   subscribe :close_file, :to => ChatsController, :with_method => :close_file
 
-  namespace :stage1and2 do
+  # namespace :stage1and2 do
     subscribe :down_location, :to => WritesController, :with_method => :down_location
     subscribe :move_location, :to => WritesController, :with_method => :move_location
     subscribe :up_location, :to => WritesController, :with_method => :up_location
@@ -25,9 +25,9 @@ WebsocketRails::EventMap.describe do
     subscribe :submit, :to => WritesController, :with_method => :submit
     subscribe :action, :to => WritesController, :with_method => :action
     # read trigger start or stop, write bind receiveAlert
-  end
+  # end
 
-  namespace :stage3 do
+  namespace :idioms do
     subscribe :down_location, :to => WritesIdiomsController, :with_method => :down_location
     subscribe :move_location, :to => WritesIdiomsController, :with_method => :move_location
     subscribe :up_location, :to => WritesIdiomsController, :with_method => :up_location

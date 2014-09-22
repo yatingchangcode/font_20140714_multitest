@@ -30,7 +30,7 @@
         ocan = document.getElementById('origin_<%= @user_id %>');
 
         $('#submitBlock').click(function(){
-          window.chatApp = new ChatApp(ocan.offsetLeft,ocan.offsetTop,'<%= @user_id %>','stage3',$('#block').val());
+          window.chatApp = new ChatApp(ocan.offsetLeft,ocan.offsetTop,'<%= @user_id %>',$('#block').val());
           window.chatApp.triggerEvents();
           window.chatApp.bindEvents();
         });

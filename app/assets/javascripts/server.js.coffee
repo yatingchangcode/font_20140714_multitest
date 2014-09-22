@@ -3,7 +3,7 @@
 
 class @ChatApp
 
-  constructor: (@left ,@top, @user_id,@stage_name = "stage1and2",@currentChannel = undefined) ->
+  constructor: (@left ,@top, @user_id,@currentChannel = undefined) ->
     @dispatcher = new WebSocketRails(window.location.host + "/websocket?client_id=" + @user_id)
     @originOffset = {left: @left, top: @top}
 
