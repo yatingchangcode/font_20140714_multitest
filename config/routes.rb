@@ -28,6 +28,7 @@ Rails.application.routes.draw do
       get 'server'
       get 'server_idioms'
       get 'record'
+      get 'tvwall'
     end
     collection do
       get 'get_game_data'

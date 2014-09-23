@@ -13,7 +13,7 @@ class @ChatApp
     $('#clearBtn').click @clearMypad
     $('#submitBtn').click @submitMypad
 
-  bindEvents: (number) ->
+  bindEvents: ->
     #@dispatcher.bind 'clear', @receiveClear
     @dispatcher.bind 'action', @receiveAction
 
