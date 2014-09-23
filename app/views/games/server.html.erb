@@ -1,7 +1,7 @@
       <div class="jumbotron">
-        <h5>一字千金 操作後台</h5>
-        <p>目前上線人數<span id="user_count">0</span>人</p>
-        <p>倒數計時 <span id="second" style="color:red"><%= @second %></span> 秒 </p>
+        <h2>一字千金 操作後台</h2>
+        <h4>目前上線人數<span id="user_count">0</span>人</h4>
+        <h4>倒數計時 <span id="second" style="color:red"><%= @second %></span> 秒 </h4>
       </div>
       <div style="">
         <div class="row">
@@ -43,7 +43,7 @@
       <script>
 
       var receiveSubmitHandler = function(o){
-        $('#visitor_'+o.user_id).css("background-color", "#f0f0f0");
+        $('#visitor_'+o.user_id).css("background-color", "#e0e0e0");
       };
       window.timeRemaining = parseInt(<%= @second %>);
       window.alarm = null;
@@ -156,22 +156,33 @@
                 }
               });
               var array = afterAction(this);
-              alert("stop:"+array);
+              //alert("stop:"+array);
             }
           },1000);
           //var array = afterAction(this);
           //alert("start:"+array);
         });
 
-        // $('#stop_button').click(function(){
-        //   $('[name="gamer"]').each(function(){
-        //     if (this.checked) {
-        //       window.chatApp.action(this.value,'stop');
-        //     }
-        //   });
-        //   var array = afterAction(this);
-        //   alert("stop:"+array);
-        // });
+         $('#stop_button').click(function(){
+            /*
+           $('[name="gamer"]').each(function(){
+             if (this.checked) {
+               window.chatApp.action(this.value,'stop');
+             }
+           });
+           var array = afterAction(this);
+           //alert("stop:"+array);
+           */
+           clearInterval(window.alarm);
+              window.alarm = null;
+              $('[name="gamer"]').each(function(){
+                if (this.checked) {
+                  window.chatApp.action(this.value,'stop');
+                  receiveSubmitHandler({user_id:this.value});
+                }
+              });
+              var array = afterAction(this);
+         });
 
       });
       </script>
