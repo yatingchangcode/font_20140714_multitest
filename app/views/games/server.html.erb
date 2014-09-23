@@ -47,6 +47,7 @@
       };
       window.timeRemaining = parseInt(<%= @second %>);
       window.alarm = null;
+      window.open("record?join_visitors_number=<%= params[:join_visitors_number] %>","recordWindow","width=800, height=800");
 
       $(document).ready(function() {
         CM.prop({

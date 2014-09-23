@@ -28,9 +28,10 @@
           backgroundImage: '/assets/block-524.png'
         });
 
-        for(var i = 1;i <= <%= @count %>;i++){
+        for(var i = 1;i <= <%= @visitors.size %>;i++){
           CR.reg(i.toString());
         }
+
         //window.pinhole = new Pinhole('0');
         window.pinhole = new Pinhole('record');
 		    window.pinhole.bindEvents();

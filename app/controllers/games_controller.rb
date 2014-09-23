@@ -1,8 +1,8 @@
 class GamesController < ApplicationController
 
-   @@game = 0
-   @@second = 0
-   @@stage = ""
+  @@game = 0
+  @@second = 0
+  @@stage = ""
 
   def index
     @games = Game.all
@@ -57,6 +57,13 @@ class GamesController < ApplicationController
     @visitors = @game.visitors.where(number: params[:join_visitors_number].split(","))
     @range = 1..@visitors.size
 
+  end
+
+  def record
+    @game = Game.find(params[:id])
+    @visitors = @game.visitors.where(number: params[:join_visitors_number].split(","))
+    @range = 1..@visitors.size
+    
   end
 
   def get_game_data
