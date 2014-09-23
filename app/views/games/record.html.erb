@@ -5,7 +5,7 @@
         <% @visitors.each do |x| %>
         <div class="col-md-3">
           <div><%= x.number %>號參賽者</div>
-          <div id="console_<%= x %>" style="border:1px solid black;line-height:95%;width:100%;height:200px;margin-bottom:12px;overflow:auto;"></div>
+          <div id="console_<%= x.number %>" style="border:1px solid black;line-height:95%;width:100%;height:200px;margin-bottom:12px;overflow:auto;"></div>
         </div>
         <% end %>
       </div>
