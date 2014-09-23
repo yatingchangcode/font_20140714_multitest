@@ -12,7 +12,7 @@
               <input type="checkbox" name="gamer" value="<%= x.number %>"/>
             </div>
             <div class="col-md-3">
-              <%= render_gamer_photo(x.image,"thumb") %>
+              <%= render_gamer_photo(x.image,"thumb",50,50) %>
               <p><%= x.name %></p>
             </div>
             <div class="col-md-6">
@@ -47,8 +47,8 @@
       };
       window.timeRemaining = parseInt(<%= @second %>);
       window.alarm = null;
-      window.open("tvwall?join_visitors_number=<%= params[:join_visitors_number] %>","tvwallWindow","width=800, height=800");
-      window.open("record?join_visitors_number=<%= params[:join_visitors_number] %>","recordWindow","width=800, height=800");
+      window.open("tvwall?join_visitors_number=<%= params[:join_visitors_number] %>&second=<%= @second %>","tvwallWindow","width=800, height=800");
+      window.open("record?join_visitors_number=<%= params[:join_visitors_number] %>&second=<%= @second %>","recordWindow","width=800, height=800");
 
       $(document).ready(function() {
         CM.prop({

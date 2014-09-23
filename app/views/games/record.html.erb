@@ -2,9 +2,9 @@
         <h2>一字千金 軌跡錄影程式</h2>
       </div>
       <div class="row">
-        <% @range.each do |x| %>
+        <% @visitors.each do |x| %>
         <div class="col-md-3">
-          <div><%= x %>號參賽者</div>
+          <div><%= x.number %>號參賽者</div>
           <div id="console_<%= x %>" style="border:1px solid black;line-height:95%;width:100%;height:200px;margin-bottom:12px;overflow:auto;"></div>
         </div>
         <% end %>
@@ -28,9 +28,9 @@
           backgroundImage: '/assets/block-524.png'
         });
 
-        for(var i = 1;i <= <%= @visitors.size %>;i++){
-          CR.reg(i.toString());
-        }
+        <% @visitors.each do |visitor| %>
+        CR.reg('<%= visitor.number %>');
+        <% end %>
 
         //window.pinhole = new Pinhole('0');
         window.pinhole = new Pinhole('record');

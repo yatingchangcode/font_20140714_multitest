@@ -1,25 +1,47 @@
-      <div class="jumbotron">
-        <p>倒數計時 <span id="second" style="color:red"><%= @second %></span> 秒 </p>
-      </div>
-      <div style="">
+<% content_for :stylesheets do %>
+<style type="text/css">
+
+body {
+  background-color: #000000
+}
+
+h4 {
+  color: #ffffff
+}
+
+.border_radius{
+  border: 2px solid #D6D6D6;
+  -webkit-border-radius: 100px;
+  -moz-border-radius: 100px;
+  border-radius: 100px;
+}
+
+.block{
+  padding-top:10px;
+  background-color: #339933;
+  opacity: 0.9;
+  /*
+  border: 2px solid;
+  border-color:white;
+  */
+  margin:10px;
+}
+
+</style>
+<% end %>
         <div class="row">
           <% @visitors.each do |x| %>
-          <div class="visitor col-md-3" id="visitor_<%= x.number %>">
-          <div class="row">
-            <div class="col-md-3">
-              <%= render_gamer_photo(x.image,"thumb") %>
-              <p><%= x.name %></p>
-            </div>
-            <div class="col-md-6">
+          <div class="visitor col-md-2 block" id="visitor_<%= x.number %>">
+              <%= render_gamer_photo(x.image,"medium",158,158,"border_radius") %>
+              <h4 style="padding-left:55px">挑戰者</h4>
+              <h4 style="padding-left:60px"><%= x.name %></h4>
               <canvas id="origin_<%= x.number %>" class="orgincanvas" style="z-index:1"></canvas>
               <img id="yes_<%= x.number %>" src="/assets/O-mark.png" height="150" style="display:none;z-index:10;position:absolute;right:-20px;bottom:8px;" ></img>
               <img id="no_<%= x.number %>" src="/assets/X-Mark.png" height="150" style="display:none;z-index:10;position:absolute;right:-20px;bottom:8px;" ></img>
-            </div>
-          </div>
+
           </div>
           <% end %>
         </div>
-      </div>
       <canvas id="multiple" class="orgincanvas hidden"></canvas>
 
       <% content_for :javascripts do %>
