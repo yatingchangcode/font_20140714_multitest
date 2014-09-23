@@ -15,7 +15,6 @@ Rails.application.routes.draw do
       get 'write'
       get 'write_idioms'
       get 'read'
-      get 'record'
       eval(arrayMapReduce)
     end
   end 
@@ -28,6 +27,8 @@ Rails.application.routes.draw do
       get 'stage3'
       get 'server'
       get 'server_idioms'
+      get 'record'
+      get 'tvwall'
     end
     collection do
       get 'get_game_data'

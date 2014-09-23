@@ -7,7 +7,7 @@ module VisitorsHelper
 
       case size
       when :medium
-        volume = "300x300"
+        volume = "400x400"
       else
         volume = "100x100"
       end
@@ -15,17 +15,17 @@ module VisitorsHelper
       image_url = "http://placehold.it/#{volume}&text=No Pic"
     end
 
-    image_tag(image_url, :class => "thumb")
+    image_tag(image_url, :class => size)
   end
 
-  def render_gamer_photo(photo,size="thumb")
+  def render_gamer_photo(photo,size="thumb",length,width,className)
     if photo.present?
       image_url = photo.send(size).url
     else
 
       case size
       when :medium
-        volume = "300x300"
+        volume = "400x400"
       else
         volume = "100x100"
       end
@@ -33,6 +33,6 @@ module VisitorsHelper
       image_url = "http://placehold.it/#{volume}&text=No Pic"
     end
 
-    image_tag(image_url, :class => "thumb", length: 50, width: 50)
+    image_tag(image_url, :class => "#{size} #{className}", length: length, width: width)
   end
 end

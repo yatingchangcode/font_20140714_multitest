@@ -12,7 +12,7 @@
               <input type="checkbox" name="gamer" value="<%= x.number %>"/>
             </div>
             <div class="col-md-3">
-              <%= render_gamer_photo(x.image,"thumb") %>
+              <%= render_gamer_photo(x.image,"thumb",50,50) %>
               <p><%= x.name %></p>
             </div>
             <div class="col-md-6">
@@ -47,6 +47,8 @@
       };
       window.timeRemaining = parseInt(<%= @second %>);
       window.alarm = null;
+      window.open("tvwall?join_visitors_number=<%= params[:join_visitors_number] %>&second=<%= @second %>","tvwallWindow","width=800, height=800");
+      window.open("record?join_visitors_number=<%= params[:join_visitors_number] %>&second=<%= @second %>","recordWindow","width=800, height=800");
 
       $(document).ready(function() {
         CM.prop({
@@ -62,7 +64,7 @@
         <% end %>
 
         window.chatApp = new ChatApp(500,500,'0');
-        window.chatApp.bindEvents(20);
+        window.chatApp.bindEvents();
 
         var afterAction = function(property){
           var array = [];
@@ -90,34 +92,20 @@
         });
 
         $('#yes_button').click(function(){
-          var array = afterAction(this);
-          for (var x in array){
-            var yesImg = $('#yes_' + array[x]);
-            yesImg.show();
-
-            setTimeout(( function(item){
-              var f = function(){
-                item.hide();
-              };
-              return f
-            })(yesImg), 3000);
-          }
+          $('[name="gamer"]').each(function(){
+            if (this.checked) {
+              window.chatApp.right(this.value);
+            }
+          });
           //alert("answer right:"+array);
         });
 
         $('#no_button').click(function(){
-          var array = afterAction(this);
-          for (var x in array){
-            var noImg = $('#no_' + array[x]);
-            noImg.show();
-
-            setTimeout((function(item){
-              var f = function(){
-                item.hide();
-              };
-              return f
-            })(noImg), 3000);
-          }
+          $('[name="gamer"]').each(function(){
+            if (this.checked) {
+              window.chatApp.wrong(this.value);
+            }
+          });
           //alert("answer wrong:"+array);
         });
 

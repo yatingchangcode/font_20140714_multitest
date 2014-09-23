@@ -8,7 +8,7 @@ class @Pinhole
   triggerEvents: ->
     return
 
-  bindEvents: () ->
+  bindEvents: ->
     @dispatcher.bind 'down_location', @receiveDown
     @dispatcher.bind 'move_location', @receiveMove
     @dispatcher.bind 'up_location', @receiveUp
