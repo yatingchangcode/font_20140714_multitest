@@ -27,7 +27,9 @@ class GamesController < ApplicationController
 
     @show_second = false
     @join_visitors_number = params[:join_visitors_number]
-    @@stage = "stage1"
+
+    @@game = params[:id]
+    @@stage = "1"
   end
 
   def stage2
@@ -35,15 +37,16 @@ class GamesController < ApplicationController
 
     @show_second = true
     @join_visitors_number = params[:join_visitors_number]
-    @@stage = "stage2"
+
+    @@game = params[:id]
+    @@stage = "2"
   end
 
   def server
     @game = Game.find(params[:id])
-    @@game = params[:id]
-
     @visitors = @game.visitors.where(number: params[:join_visitors_number].split(","))
     @range = 1..@visitors.size
+
     @second = params[:second]
     @@second = params[:second]
 
@@ -52,10 +55,9 @@ class GamesController < ApplicationController
 
   def tvwall
     @game = Game.find(params[:id])
-    @@game = params[:id]
-
     @visitors = @game.visitors.where(number: params[:join_visitors_number].split(","))
     @range = 1..@visitors.size
+
     @second = params[:second]
     @@second = params[:second]
 
@@ -64,8 +66,6 @@ class GamesController < ApplicationController
 
   def server_idioms
     @game = Game.find(params[:id])
-    @@game = params[:id]
-
     @visitors = @game.visitors.where(number: params[:join_visitors_number].split(","))
     @range = 1..@visitors.size
 
@@ -75,6 +75,8 @@ class GamesController < ApplicationController
     @game = Game.find(params[:id])
     @visitors = @game.visitors.where(number: params[:join_visitors_number].split(","))
     @range = 1..@visitors.size
+
+    @stage = @@stage
     
   end
 
@@ -84,7 +86,7 @@ class GamesController < ApplicationController
       @visitor = @game.visitors.where(number: params[:id]).first
 
       respond_to do |format|
-        format.json { render :json => { visitor: @visitor,second: @@second, stage: @@stage} }
+        format.json { render :json => { visitor: @visitor,second: @@second,game: @@game, stage: @@stage} }
       end
     else
       respond_to do |format|

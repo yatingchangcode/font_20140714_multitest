@@ -35,7 +35,7 @@
         //window.pinhole = new Pinhole('0');
         window.pinhole = new Pinhole('record');
 		    window.pinhole.bindEvents();
-		
+
         window.stopCallBack = function(uid) {
           var scope = window.pinhole;
           var element = $("#console_"+uid);
@@ -45,7 +45,9 @@
             setTimeout((function(dispatcher, id){
               return function(){
                 dispatcher.trigger("open_file", {
-                  user_id: id
+                  user_id: id,
+                  game: <%= @game.id %>,
+                  stage: <%= @stage %>
                 });
               };
             })(scope.dispatcher, uid), fileSaveActionCount++ * delayTime);

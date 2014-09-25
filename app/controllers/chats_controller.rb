@@ -14,17 +14,19 @@ class ChatsController < WebsocketRails::BaseController
     connection.send_message :get_user_count, data
   end
 
-
-
   def open_file
     p message[:user_id]+" open_file"
-    random_name = SecureRandom.hex(6)
-    
-    tmp_path ||= File.expand_path(File.join("record"), Rails.public_path)
 
-    file_path = FileUtils.mkdir_p("#{tmp_path}/#{message[:user_id]}/#{random_name}")
+    @game = Game.find(message[:game])
+    @visitor = @game.visitors.find_by(number: message[:user_id])
+
+    file_name = "#{@visitor.name}_stage#{message[:stage]}_#{Time.now.strftime("%Y%m%d_%H%M%S")}"
    
+    record_path ||= File.expand_path(File.join("record"), Rails.public_path)
+    file_path = FileUtils.mkdir_p("#{record_path}/game#{message[:game]}_#{@game.created_at.strftime("%Y%m%d")}/#{file_name}")
+    
     controller_store[:user_id_file_path][message[:user_id]] = file_path
+    p controller_store[:user_id_file_path]
   end
 
   def save_file 
@@ -40,7 +42,7 @@ class ChatsController < WebsocketRails::BaseController
     p message[:user_id]+" close_file"
     file_path = controller_store[:user_id_file_path][message[:user_id]][0]
     begin
-      p Subprocess.check_call(["ffmpeg", "-framerate", "50", "-i", "#{file_path}/%d.png", "#{file_path}/video.mp4", "-y"])
+      p Subprocess.check_call(["ffmpeg", "-framerate", "50", "-i", "#{file_path}/%d.png", "#{file_path}.mp4", "-y"])
     rescue Subprocess::NonZeroExit => e
       puts e.message
       puts "Why aren't llamas one of your favorite animals?"
