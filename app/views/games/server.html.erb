@@ -1,7 +1,11 @@
       <div class="jumbotron">
         <h2>一字千金 操作後台</h2>
         <h4>目前上線人數<span id="user_count">0</span>人</h4>
-        <h4>倒數計時 <span id="second" style="color:red"><%= @second %></span> 秒 </h4>
+        <% if !@second.nil?  %>
+          <h4>倒數計時 <span id="second" style="color:red"><%= @second %></span> 秒 </h4>
+        <% else %>
+          <h4>不倒數計時</h4>
+        <% end %>
       </div>
       <div style="">
         <div class="row">
@@ -131,22 +135,24 @@
               $('#visitor_'+this.value).css("background-color", "");
             }
           });
-          window.alarm = setInterval(function(){
-            if (parseInt($('#second').text()) != 0){
-              $('#second').text(parseInt($('#second').text()) - 1);
-            }else{
-              clearInterval(window.alarm);
-              window.alarm = null;
-              $('[name="gamer"]').each(function(){
-                if (this.checked) {
-                  window.chatApp.action(this.value,'stop');
-                  receiveSubmitHandler({user_id:this.value});
-                }
-              });
-              var array = afterAction(this);
-              //alert("stop:"+array);
-            }
-          },1000);
+          if ($('#second').text() != ''){
+            window.alarm = setInterval(function(){
+              if (parseInt($('#second').text()) != 0){
+                $('#second').text(parseInt($('#second').text()) - 1);
+              }else{
+                clearInterval(window.alarm);
+                window.alarm = null;
+                $('[name="gamer"]').each(function(){
+                  if (this.checked) {
+                    window.chatApp.action(this.value,'stop');
+                    receiveSubmitHandler({user_id:this.value});
+                  }
+                });
+                var array = afterAction(this);
+                //alert("stop:"+array);
+              }
+            },1000);
+          }
           //var array = afterAction(this);
           //alert("start:"+array);
         });
