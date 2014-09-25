@@ -42,7 +42,18 @@ class GamesController < ApplicationController
     @@stage = "2"
   end
 
-  def server
+  def server1
+    @game = Game.find(params[:id])
+    @visitors = @game.visitors.where(number: params[:join_visitors_number].split(","))
+    @range = 1..@visitors.size
+
+    @second = params[:second]
+    @@second = params[:second]
+
+    #@user_unregs = [1,4]
+  end
+
+  def server2
     @game = Game.find(params[:id])
     @visitors = @game.visitors.where(number: params[:join_visitors_number].split(","))
     @range = 1..@visitors.size

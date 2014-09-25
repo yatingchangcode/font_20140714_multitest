@@ -1,0 +1,182 @@
+      <div class="jumbotron">
+        <h2>一字千金 操作後台</h2>
+<!--         <h4>目前上線人數<span id="user_count">0</span>人</h4>
+ -->      </div>
+      <div style="">
+        <div class="row">
+          <% @visitors.each do |x| %>
+          <div class="visitor col-md-3" id="visitor_<%= x.number %>">
+            <div class="row">
+              <div class="col-md-1">
+                <input type="checkbox" name="gamer" value="<%= x.number %>"/>
+              </div>
+              <div class="col-md-3">
+                <%= render_gamer_photo(x.image,"thumb",50,50) %>
+                <p><%= x.name %></p>
+                <span id="second_<%= x.number %>" style="color:red"><%= @second %></span>
+              </div>
+              <div class="col-md-6">
+                <canvas id="origin_<%= x.number %>" class="orgincanvas" style="z-index:1"></canvas>
+                <img id="yes_<%= x.number %>" src="/assets/O-mark.png" height="150" style="display:none;z-index:10;position:absolute;right:-20px;bottom:8px;" ></img>
+                <img id="no_<%= x.number %>" src="/assets/X-Mark.png" height="150" style="display:none;z-index:10;position:absolute;right:-20px;bottom:8px;" ></img>
+
+              </div>
+            </div>
+          </div>
+          <% end %>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <input type="checkbox" id="allGamer"/>全選
+            <button id="yes_button" style="font-size:15px;">答對</button>
+            <button id="no_button" style="font-size:15px;">答錯</button>
+            <button id="out_button" style="font-size:15px;">淘汰</button>
+            <button id="start_button" style="font-size:15px;">Start</button>
+            <button id="stop_button" style="font-size:15px;">Stop</button>
+          </div>
+        </div>
+      </div>
+      <canvas id="multiple" class="orgincanvas hidden"></canvas>
+
+      <% content_for :javascripts do %>
+      <%= javascript_include_tag 'server' %>
+      <script>
+
+      var receiveSubmitHandler = function(o){
+        $('#visitor_'+o.user_id).css("background-color", "#e0e0e0");
+      };
+      window.alarm = null;
+      window.open("tvwall?join_visitors_number=<%= params[:join_visitors_number] %>&second=<%= @second %>","tvwallWindow","width=800, height=800");
+      window.open("record?join_visitors_number=<%= params[:join_visitors_number] %>&second=<%= @second %>","recordWindow","width=800, height=800");
+
+      $(document).ready(function() {
+        CM.prop({
+          width: 500,
+          height: 500,
+          lineWidth: 15,
+          lineColor: '#333333',
+          targetZoomScale: 0.1,
+          backgroundImage: '/assets/block-524.png'
+        });
+        <% @visitors.each do |visitor| %>
+        CM.reg('origin_<%= visitor.number %>');
+        <% end %>
+
+        window.chatApp = new ChatApp(500,500,'0');
+        window.chatApp.bindEvents();
+
+        var afterAction = function(property){
+          var array = [];
+          $('[name="gamer"]').each(function(){
+            if (this.checked) {
+              $('#visitor_'+this.value).css("background-color", "");
+              array.push(this.value);
+              this.checked = false;
+            }
+          });
+          $('#allGamer').attr('checked',false);
+
+          return array;
+        }
+
+        $('#allGamer').click(function(){
+          $('[name="gamer"]').each((function(toCheck){
+            return function(){
+              if (this.disabled == false){
+                this.checked = toCheck;
+              }
+            };
+          })(this.checked === true));
+        });
+
+        $('#yes_button').click(function(){
+          $('[name="gamer"]').each(function(){
+            if (this.checked) {
+              window.chatApp.right(this.value);
+            }
+          });
+          //alert("answer right:"+array);
+        });
+
+        $('#no_button').click(function(){
+          $('[name="gamer"]').each(function(){
+            if (this.checked) {
+              window.chatApp.wrong(this.value);
+            }
+          });
+          //alert("answer wrong:"+array);
+        });
+
+        $('#out_button').click(function(){
+          $('[name="gamer"]').each(function(){
+            if (this.checked) {
+              CM.unreg('origin_'+this.value);
+              this.disabled = true;
+            }
+          });
+          var array = afterAction(this);
+          for (var x in array){
+            $('#visitor_'+array[x]).attr('style','opacity:0.2');
+          }
+          //alert("outer:"+array);
+        });
+
+        $('#start_button').click(function(){
+          if(window.alarm) return;
+          $('[name="gamer"]').each(function(){
+            if (this.checked) {
+              window.chatApp.action(this.value,'start');
+              $('#visitor_'+this.value).css("background-color", "");
+            }
+          });
+
+          $('[name="gamer"]').each(function(){
+            if (this.checked) {
+
+              (function (thisvalue) {
+               window.alarm = setInterval(function(){
+                if (parseInt($('#second_'+thisvalue).text()) != 0){
+                  console.log($('#second_'+thisvalue).text());
+                  $('#second_'+thisvalue).text(parseInt($('#second_'+thisvalue).text()) - 1);
+                }else{
+                  clearInterval(window.alarm);
+                  window.alarm = null;
+                  window.chatApp.action(thisvalue,'stop');
+                  receiveSubmitHandler({user_id:thisvalue});
+                }
+              },1000); 
+             })(this.value);
+
+           }
+         });
+          var array = afterAction(this);
+                //alert("stop:"+array);
+
+          //var array = afterAction(this);
+          //alert("start:"+array);
+        });
+
+      $('#stop_button').click(function(){
+            /*
+           $('[name="gamer"]').each(function(){
+             if (this.checked) {
+               window.chatApp.action(this.value,'stop');
+             }
+           });
+           var array = afterAction(this);
+           //alert("stop:"+array);
+           */
+           clearInterval(window.alarm);
+           window.alarm = null;
+           $('[name="gamer"]').each(function(){
+            if (this.checked) {
+              window.chatApp.action(this.value,'stop');
+              receiveSubmitHandler({user_id:this.value});
+            }
+          });
+           var array = afterAction(this);
+         });
+
+    });
+      </script>
+      <% end %>
