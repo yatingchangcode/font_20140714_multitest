@@ -16,7 +16,7 @@ class WritesIdiomsController < WebsocketRails::BaseController
   def down_location
     manager_connection = WebsocketRails.users[0]
     record_connection = WebsocketRails.users["record"]
-    data = {:user_id => message[:user_id],block: message[:block], :x => message[:x], :y => message[:y], :stamp => message[:stamp]}
+    data = {:user_id => message[:user_id],block: transfer_column_row_to_block(message[:block]), :x => message[:x], :y => message[:y], :stamp => message[:stamp]}
     manager_connection.send_message :down_location, data
     record_connection.send_message :down_location, data
   end
@@ -24,7 +24,7 @@ class WritesIdiomsController < WebsocketRails::BaseController
   def move_location
     manager_connection = WebsocketRails.users[0]
     record_connection = WebsocketRails.users["record"]
-    data = {:user_id => message[:user_id],block: message[:block], :x => message[:x], :y => message[:y], :stamp => message[:stamp]}
+    data = {:user_id => message[:user_id],block: transfer_column_row_to_block(message[:block]), :x => message[:x], :y => message[:y], :stamp => message[:stamp]}
     manager_connection.send_message :move_location, data
     record_connection.send_message :move_location, data
   end
@@ -39,15 +39,21 @@ class WritesIdiomsController < WebsocketRails::BaseController
 
   def clear
     p message[:user_id]
-    broadcast_message :clear, {:user_id => message[:user_id],block: message[:block], :stamp => message[:stamp]}
+    broadcast_message :clear, {:user_id => message[:user_id],block: transfer_column_row_to_block(message[:block]), :stamp => message[:stamp]}
   end
   
   def submit
     manager_connection = WebsocketRails.users[0]
     record_connection = WebsocketRails.users["record"]
-    data = {:user_id => message[:user_id],block: message[:block], :stamp => message[:stamp]}
+    data = {:user_id => message[:user_id],block: transfer_column_row_to_block(message[:block]), :stamp => message[:stamp]}
     manager_connection.send_message :submit, data
     record_connection.send_message :submit, data
+  end
+
+  private 
+
+  def transfer_column_row_to_block(hash)
+    (hash[:row].to_i - 1)* 12 + hash[:column].to_i
   end
   
 

@@ -6,7 +6,9 @@
           <button id="clearBtn" style="font-size:15px;">Clear</button>
           <button id="prevBtn" style="font-size:15px;">Prev</button>
           <button id="submitBtn" style="font-size:15px;">Submit</button>
-          <input id="block" type="number" value="1" />
+          <input id="row" type="number" value="1" />
+          <input id="column" type="number" value="1" />
+          
           <button id="submitBlock" style="font-size:15px;">指定格子</button>
         </div>
         <canvas id="origin_<%= @user_id %>" class="orgincanvas"></canvas>
@@ -30,7 +32,7 @@
         ocan = document.getElementById('origin_<%= @user_id %>');
 
         $('#submitBlock').click(function(){
-          window.chatApp = new ChatApp(ocan.offsetLeft,ocan.offsetTop,'<%= @user_id %>',$('#block').val());
+          window.chatApp = new ChatApp(ocan.offsetLeft,ocan.offsetTop,'<%= @user_id %>',{row: $('#row').val(), column:$('#column').val()});
           window.chatApp.triggerEvents();
           window.chatApp.bindEvents();
         });
