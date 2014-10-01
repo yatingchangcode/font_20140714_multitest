@@ -28,8 +28,7 @@ class GamesController < ApplicationController
     @show_second = false
     @join_visitors_number = params[:join_visitors_number]
 
-    @@game = params[:id]
-    @@stage = "1"
+
   end
 
   def stage2
@@ -38,8 +37,6 @@ class GamesController < ApplicationController
     @show_second = true
     @join_visitors_number = params[:join_visitors_number]
 
-    @@game = params[:id]
-    @@stage = "2"
   end
 
   def server1
@@ -50,6 +47,8 @@ class GamesController < ApplicationController
     @second = params[:second]
     @@second = params[:second]
 
+    @@game = params[:id]
+    @@stage = "1"
     #@user_unregs = [1,4]
   end
 
@@ -61,6 +60,8 @@ class GamesController < ApplicationController
     @second = params[:second]
     @@second = params[:second]
 
+    @@game = params[:id]
+    @@stage = "2"
     #@user_unregs = [1,4]
   end
 
@@ -79,6 +80,13 @@ class GamesController < ApplicationController
     @game = Game.find(params[:id])
     @visitors = @game.visitors.where(number: params[:join_visitors_number].split(","))
     @range = 1..@visitors.size
+
+    # for idioms stage, rule is 60 seconds
+    @second = "60"
+    @@second = "60"
+
+    @@game = params[:id]
+    @@stage = "idioms"
 
   end
 
