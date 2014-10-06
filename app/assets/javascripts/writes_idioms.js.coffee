@@ -57,6 +57,9 @@ class @ChatApp
   moveBlock: =>
     @dispatcher.trigger @stage_name+'.move_block' , user_id: @user_id,block: @block
 
+  endRound: =>
+    @dispatcher.trigger @stage_name+'.end_round' , user_id: @user_id,blocks: [@block]
+
   receiveAction: (data) ->
     receiveActionHandler data
     return

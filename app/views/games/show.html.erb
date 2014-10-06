@@ -95,7 +95,7 @@ $(document).ready(function(){
         join_visitors_number.push(checkboxes[i].value);
       }
     }
-    location.href = '/games/<%= @game.id %>/server_idioms?join_visitors_number=' + join_visitors_number;
+    location.href = '/games/<%= @game.id %>/stage_idioms?join_visitors_number=' + join_visitors_number;
   }
 });
 </script>

@@ -24,7 +24,7 @@ Rails.application.routes.draw do
     member do
       get 'stage1'
       get 'stage2'
-      get 'stage3'
+      get 'stage_idioms'
       get 'server1'
       get 'server2'
       get 'server_idioms'

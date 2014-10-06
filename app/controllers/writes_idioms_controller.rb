@@ -3,6 +3,8 @@ class WritesIdiomsController < WebsocketRails::BaseController
   def initialize_session
     # perform application setup here
     controller_store[:write_count] = 0
+
+    controller_store[:user_id_write_block] = {}
   end
 
 
@@ -56,6 +58,14 @@ class WritesIdiomsController < WebsocketRails::BaseController
     data = {:user_id => message[:user_id],block: transfer_column_row_to_block(message[:block]), :stamp => message[:stamp]}
     manager_connection.send_message :move_block, data
     record_connection.send_message :move_block, data
+  end
+
+  def end_round
+    controller_store[:user_id_write_block][message[:user_id]] = message[:blocks]
+
+    manager_connection = WebsocketRails.users[0]
+    data = {:user_id => message[:user_id]}
+    manager_connection.send_message :end_round, data
   end
 
   private 
