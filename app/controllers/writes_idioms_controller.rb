@@ -50,6 +50,14 @@ class WritesIdiomsController < WebsocketRails::BaseController
     record_connection.send_message :submit, data
   end
 
+  def move_block
+    manager_connection = WebsocketRails.users[0]
+    record_connection = WebsocketRails.users["record"]
+    data = {:user_id => message[:user_id],block: transfer_column_row_to_block(message[:block]), :stamp => message[:stamp]}
+    manager_connection.send_message :move_block, data
+    record_connection.send_message :move_block, data
+  end
+
   private 
 
   def transfer_column_row_to_block(hash)

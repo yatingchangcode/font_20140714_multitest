@@ -14,7 +14,7 @@ class @ChatApp
     @dispatcher.bind 'down_location', @receiveDown
     @dispatcher.bind 'move_location', @receiveMove
     @dispatcher.bind 'up_location', @receiveUp
-    @dispatcher.bind 'submit', @receiveSubmit
+    @dispatcher.bind 'move_block', @receiveMoveBlock
     @dispatcher.bind 'clear', @receiveClear
     @dispatcher.bind 'get_user_count', @getUserCount
     @dispatcher.bind 'get_write_count', @getWriteCount
@@ -31,8 +31,8 @@ class @ChatApp
   receiveClear: (message) => 
     CM('origin_'+message.block).clear();
 
-  receiveSubmit: (message) =>
-    receiveSubmitHandler message
+  receiveMoveBlock: (message) =>
+    receiveMoveBlockHandler message
 
   getUserCount: (data) ->
     $('#user_count').text(data.user_count);

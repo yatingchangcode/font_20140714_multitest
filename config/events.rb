@@ -35,6 +35,7 @@ WebsocketRails::EventMap.describe do
     subscribe :up_location, :to => WritesIdiomsController, :with_method => :up_location
     subscribe :clear, :to => WritesIdiomsController, :with_method => :clear
     subscribe :submit, :to => WritesIdiomsController, :with_method => :submit
+    subscribe :move_block, :to => WritesIdiomsController, :with_method => :move_block
   end
 
 

@@ -2,12 +2,11 @@
         <h5>一字千金 操作後台</h5>
 <!--         <p>目前上線人數<span id="user_count">0</span>人</p>
  -->      </div>
-      <div style="">
-        <div class="row">
+        <div class="row" style="background-image: url('/assets/idioms_totalBlocks_2960x2000.png');background-size: 1200px 800px;padding-top:30px;padding-left:15px" >
           <% (1..96).to_a.each do |x| %>
 
-            <div class="col-md-1">
-              <canvas id="origin_<%= x %>" style="z-index:1"></canvas>
+            <div class="col-md-1" style="font-size:0px;line-height:0;width: 8.25%;">
+              <canvas id="origin_<%= x %>" style="z-index:1;"></canvas>
             </div>
 
           <% end %>
@@ -22,27 +21,26 @@
             <button id="stop_button" style="font-size:15px;">Stop</button>
           </div>
         </div>
-      </div>
       <canvas id="multiple" class="orgincanvas hidden"></canvas>
 
       <% content_for :javascripts do %>
       <%= javascript_include_tag 'server_idioms' %>
       <script>
 
-      var receiveSubmitHandler = function(o){
-        $('#visitor_'+o.user_id).css("background-color", "#f0f0f0");
+      var receiveMoveBlockHandler = function(o){
+        var ballColourArray = ["white","blue","green","yellow","black"];
+        $('#origin_'+o.block).css("border", "2px solid "+ ballColourArray[o.user_id%ballColourArray.length] );
       };
       window.timeRemaining = parseInt(<%= @second %>);
       window.alarm = null;
 
       $(document).ready(function() {
         CM.prop({
-          width: 300,
-          height: 300,
+          width: 500,
+          height: 500,
           lineWidth: 15,
           lineColor: '#333333',
-          targetZoomScale: 0.1,
-          backgroundImage: '/assets/block-524.png'
+          targetZoomScale: 0.035
         });
         <% (1..96).each do |x| %>
         CM.reg('origin_<%= x %>');
@@ -55,7 +53,7 @@
           var array = [];
           $('[name="gamer"]').each(function(){
             if (this.checked) {
-              $('#visitor_'+this.value).css("background-color", "");
+              $('#origin_'+this.value).css("border", "");
               array.push(this.value);
               this.checked = false;
             }
