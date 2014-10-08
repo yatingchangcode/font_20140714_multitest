@@ -16,27 +16,18 @@ class WritesIdiomsController < WebsocketRails::BaseController
   end
 
   def down_location
-    manager_connection = WebsocketRails.users[0]
-    record_connection = WebsocketRails.users["record"]
     data = {:user_id => message[:user_id],block: transfer_column_row_to_block(message[:block]), :x => message[:x], :y => message[:y], :stamp => message[:stamp]}
-    manager_connection.send_message :down_location, data
-    record_connection.send_message :down_location, data
+    broadcast_message :down_location, data
   end
 
   def move_location
-    manager_connection = WebsocketRails.users[0]
-    record_connection = WebsocketRails.users["record"]
     data = {:user_id => message[:user_id],block: transfer_column_row_to_block(message[:block]), :x => message[:x], :y => message[:y], :stamp => message[:stamp]}
-    manager_connection.send_message :move_location, data
-    record_connection.send_message :move_location, data
+    broadcast_message :move_location, data
   end
 
   def up_location
-    manager_connection = WebsocketRails.users[0]
-    record_connection = WebsocketRails.users["record"]
     data = {}
-    manager_connection.send_message :up_location, data
-    record_connection.send_message :up_location, data
+    broadcast_message :up_location, data
   end
 
   def clear
@@ -45,19 +36,13 @@ class WritesIdiomsController < WebsocketRails::BaseController
   end
   
   def submit
-    manager_connection = WebsocketRails.users[0]
-    record_connection = WebsocketRails.users["record"]
     data = {:user_id => message[:user_id],block: transfer_column_row_to_block(message[:block]), :stamp => message[:stamp]}
-    manager_connection.send_message :submit, data
-    record_connection.send_message :submit, data
+    broadcast_message :submit, data
   end
 
   def move_block
-    manager_connection = WebsocketRails.users[0]
-    record_connection = WebsocketRails.users["record"]
     data = {:user_id => message[:user_id],block: transfer_column_row_to_block(message[:block]), :stamp => message[:stamp]}
-    manager_connection.send_message :move_block, data
-    record_connection.send_message :move_block, data
+    broadcast_message :move_block, data
   end
 
   def end_round
