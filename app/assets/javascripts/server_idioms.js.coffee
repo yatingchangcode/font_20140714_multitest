@@ -21,16 +21,16 @@ class @ChatApp
     @dispatcher.bind 'get_write_count', @getWriteCount
 
   receiveDown: (message) =>
-    CM('origin_'+message.block).point({ x: message.x, y: message.y })
+    CM('origin_'+message.block.row+'_'+message.block.column).point({ x: message.x, y: message.y })
 
   receiveMove: (message) =>
-    CM('origin_'+message.block).line({ x: message.x, y: message.y })
+    CM('origin_'+message.block.row+'_'+message.block.column).line({ x: message.x, y: message.y })
 
   receiveUp: (message) =>
     return
 
   receiveClear: (message) => 
-    CM('origin_'+message.block).clear();
+    CM('origin_'+message.block.row+'_'+message.block.column).clear();
 
   receiveMoveBlock: (message) =>
     receiveMoveBlockHandler message

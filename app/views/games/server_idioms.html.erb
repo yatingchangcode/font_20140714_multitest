@@ -5,14 +5,19 @@
         <h5>不倒數計時</h5>
         <% end %>
       </div>
-      <div class="row" style="background-image: url('/assets/idioms_totalBlocks_2960x2000.png');background-size: 1200px 800px;padding-top:30px;padding-left:15px" >
-        <% (1..96).to_a.each do |x| %>
+      <div style="background-image: url('/assets/idioms_totalBlocks_2960x2000.png');background-size: 1170px 820px;padding-top:30px;">
+        <table style="margin-left:30px;border-collapse:separate;border-spacing:1px 0px;">
 
-        <div class="col-md-1" style="font-size:0px;line-height:0;width: 8.25%;">
-          <canvas id="origin_<%= x %>" style="z-index:1;"></canvas>
-        </div>
-
-        <% end %>
+          <% (1..8).to_a.each do |x| %>
+          <tr>
+            <% (1..12).to_a.each do |y| %>
+            <td>
+              <canvas id="origin_<%= x %>_<%= y %>" style="z-index:1;"></canvas>
+            </td>
+            <% end %>
+          </tr>
+          <% end %>
+        </table>
       </div>
       <div class="row">
         <% @visitors.each do |x| %>
@@ -35,7 +40,6 @@
           <input type="checkbox" id="allGamer"/>全選
           <button id="yes_button" style="font-size:15px;">答對</button>
           <button id="no_button" style="font-size:15px;">答錯</button>
-          <button id="out_button" style="font-size:15px;">淘汰</button>
           <button id="start_button" style="font-size:15px;">Start</button>
           <button id="stop_button" style="font-size:15px;">Stop</button>
         </div>
@@ -52,7 +56,7 @@
         var array = [];
         $('[name="gamer"]').each(function(){
           if (this.checked) {
-            $('#origin_'+this.value).css("border", "");
+
             array.push(this.value);
             this.checked = false;
           }
@@ -65,7 +69,8 @@
 
       var receiveMoveBlockHandler = function(o){
         var ballColourArray = ["white","blue","green","yellow","black"];
-        $('#origin_'+o.block).css("border", "2px solid "+ ballColourArray[o.user_id%ballColourArray.length] );
+        console.log(o.block);
+        $('#origin_'+o.block.row+'_'+o.block.column).css("border", "1px solid "+ ballColourArray[o.user_id%ballColourArray.length] );
       };
 
       var receiveEndRoundHandler = function(o){
@@ -83,9 +88,12 @@
           lineColor: '#333333',
           targetZoomScale: 0.035
         });
-        <% (1..96).each do |x| %>
-        CM.reg('origin_<%= x %>');
+        <% (1..8).to_a.each do |x| %>
+        <% (1..12).to_a.each do |y| %>
+        CM.reg('origin_<%= x %>_<%= y %>');
         <% end %>
+        <% end %>
+
 
         window.chatApp = new ChatApp(500,500,'0');
         window.chatApp.bindEvents();
@@ -134,19 +142,6 @@
           //alert("answer wrong:"+array);
         });
 
-        $('#out_button').click(function(){
-          $('[name="gamer"]').each(function(){
-            if (this.checked) {
-              CM.unreg('origin_'+this.value);
-              this.disabled = true;
-            }
-          });
-          var array = afterAction(this);
-          for (var x in array){
-            $('#visitor_'+array[x]).attr('style','opacity:0.2');
-          }
-          //alert("outer:"+array);
-        });
 
         $('#start_button').click(function(){
           if(window.alarm) return;

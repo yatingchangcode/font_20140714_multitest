@@ -16,12 +16,12 @@ class WritesIdiomsController < WebsocketRails::BaseController
   end
 
   def down_location
-    data = {:user_id => message[:user_id],block: transfer_column_row_to_block(message[:block]), :x => message[:x], :y => message[:y], :stamp => message[:stamp]}
+    data = {:user_id => message[:user_id],block: message[:block], :x => message[:x], :y => message[:y], :stamp => message[:stamp]}
     broadcast_message :down_location, data
   end
 
   def move_location
-    data = {:user_id => message[:user_id],block: transfer_column_row_to_block(message[:block]), :x => message[:x], :y => message[:y], :stamp => message[:stamp]}
+    data = {:user_id => message[:user_id],block: message[:block], :x => message[:x], :y => message[:y], :stamp => message[:stamp]}
     broadcast_message :move_location, data
   end
 
@@ -32,16 +32,16 @@ class WritesIdiomsController < WebsocketRails::BaseController
 
   def clear
     p message[:user_id]
-    broadcast_message :clear, {:user_id => message[:user_id],block: transfer_column_row_to_block(message[:block]), :stamp => message[:stamp]}
+    broadcast_message :clear, {:user_id => message[:user_id],block: message[:block], :stamp => message[:stamp]}
   end
   
   def submit
-    data = {:user_id => message[:user_id],block: transfer_column_row_to_block(message[:block]), :stamp => message[:stamp]}
+    data = {:user_id => message[:user_id],block: message[:block], :stamp => message[:stamp]}
     broadcast_message :submit, data
   end
 
   def move_block
-    data = {:user_id => message[:user_id],block: transfer_column_row_to_block(message[:block]), :stamp => message[:stamp]}
+    data = {:user_id => message[:user_id],block: message[:block], :stamp => message[:stamp]}
     broadcast_message :move_block, data
   end
 
