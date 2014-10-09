@@ -5,20 +5,19 @@
         <h5>不倒數計時</h5>
         <% end %>
       </div>
-      <div style="background-image: url('/assets/idioms_totalBlocks_2960x2000.png');background-size: 1170px 820px;padding-top:30px;">
-        <table style="margin-left:30px;border-collapse:separate;border-spacing:1px 0px;">
-
+      <div id="user_blue"></div>
+      <div id="user_black"></div>
+        <table style="border-collapse:separate;border-spacing:1px 0px;">
           <% (1..8).to_a.each do |x| %>
           <tr>
             <% (1..12).to_a.each do |y| %>
             <td>
-              <canvas id="origin_<%= x %>_<%= y %>" style="z-index:1;"></canvas>
+              <canvas id="origin_<%= x %>_<%= y %>" style="z-index:1;border:1px solid red"></canvas>
             </td>
             <% end %>
           </tr>
           <% end %>
         </table>
-      </div>
       <div class="row">
         <% @visitors.each do |x| %>
         <div class="visitor col-md-3" id="visitor_<%= x.number %>">
@@ -68,9 +67,27 @@
       }
 
       var receiveMoveBlockHandler = function(o){
-        var ballColourArray = ["white","blue","green","yellow","black"];
-        console.log(o.block);
-        $('#origin_'+o.block.row+'_'+o.block.column).css("border", "1px solid "+ ballColourArray[o.user_id%ballColourArray.length] );
+        var element;
+        if (o.user_id % 2 == 0){
+          element = $('#user_blue').css({
+          border:"2px solid blue",
+          width:"95px",
+          height:"95px",
+          position:"absolute",
+          top:(o.block.row-1)*101+221 + "px", 
+          left:(o.block.column-1)*97+256 + "px"
+        });
+        }else{
+          element = $('#user_black').css({
+          border:"2px solid black",
+          width:"95px",
+          height:"95px",
+          position:"absolute",
+          top:(o.block.row-1)*101+221 + "px", 
+          left:(o.block.column-1)*97+256 + "px"
+        });
+        }
+
       };
 
       var receiveEndRoundHandler = function(o){
