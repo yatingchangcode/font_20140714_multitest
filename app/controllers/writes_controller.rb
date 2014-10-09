@@ -55,7 +55,9 @@ class WritesController < WebsocketRails::BaseController
     manager_connection = WebsocketRails.users[0]
     trigger_connection = WebsocketRails.users[trigger_id.to_i]
     record_connection = WebsocketRails.users["record"]
-    data = {:action => message[:action], :user_id => trigger_id.to_s, :stamp => message[:stamp]}
+    # Just for passing other properties 
+    data = message
+    #data = {:action => message[:action], :user_id => trigger_id.to_s, :stamp => message[:stamp]}
     manager_connection.send_message :action, data
     trigger_connection.send_message :action, data
     record_connection.send_message :action, data
