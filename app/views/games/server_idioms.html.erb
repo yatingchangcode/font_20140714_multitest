@@ -1,6 +1,6 @@
       <div class="jumbotron">
         <% if !@second.nil?  %>
-        <h5>倒數計時 <span id="second" style="color:red"><%= @second %></span> 秒 </h5>
+        <h5 style="position:fixed;">倒數計時 <span id="second" style="color:red"><%= @second %></span> 秒 </h5>
         <% else %>
         <h5>不倒數計時</h5>
         <% end %>
@@ -29,7 +29,7 @@
               <%= render_gamer_photo(x.image,"thumb",50,50) %>
               <p><%= x.name %></p>
             </div>
-
+            <div id="status_<%= x.number %>" class="col-md-2">stop</div>
           </div>
         </div>
         <% end %>
@@ -167,6 +167,7 @@
             if (this.checked) {
               window.chatApp.action(this.value,'start');
               $('#visitor_'+this.value).css("background-color", "");
+              $('#status_'+this.value).html('** DRAWING **');
             }
           });
           window.alarm = setInterval(function(){
@@ -181,7 +182,10 @@
                 }
               });
               var array = afterAction(this);
-              alert("stop:"+array);
+              for(var i = 0, len = array.length; i < len; i++){
+                $('#status_'+array[i]).html('stop');
+              }
+              //alert("stop:"+array);
             }
           },1000);
           //var array = afterAction(this);
