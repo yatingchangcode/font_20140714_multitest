@@ -1,0 +1,5 @@
+ffmage環境設定備忘：
+在osx環境下，ffmpeg要重裝
+brew uninstall x264
+brew uninstall ffmpeg
+brew install --use-gcc x264 ffmpeg

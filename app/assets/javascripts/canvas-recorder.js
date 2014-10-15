@@ -51,7 +51,8 @@
 		lineCap: 'round',
 		lineColor: '#000000',
 		recordFormat: '480p',
-		frameRate: 30
+		frameRate: 30,
+		cacheLastFrame: false
 		// backgroundImage
 	};
 	
@@ -89,7 +90,9 @@
 		
 		var computedRecords = [];
 		var frameCount = 0;
-		var lessNear;			
+		var lessNear;
+		var stampStep = startTime;
+		var base64Step;
 		while(it <= endTime){
 			for(var i = 0; i < data.length; i++){
 				var current = data[i];
@@ -150,6 +153,7 @@
 	RecorderEmptyInstance.prototype.start = function(){};
 	RecorderEmptyInstance.prototype.stop = function(){};
 	RecorderEmptyInstance.prototype.status = function(){return Status_.UNKNOWN;};
+	RecorderEmptyInstance.prototype.prop = function(){};
 	
 	/**
 	 * Initialize the Canvas Recorder Instance
@@ -159,11 +163,16 @@
 	function RecorderInstance(id){
 		this.el_ = createEl_(id);
 		this.id_ = this.el_.id;
+		this.prop();
 		
-		var h = this.height_ = parseInt(prop_.recordFormat);
-		var w = this.width_ = (prop_.width / prop_.height) * h;
+		var format = this.prop_.recordFormat || prop_.recordFormat;
+		var ph = this.prop_.height || prop_.height;
+		var pw = this.prop_.width || prop_.width;
+
+		var h = this.height_ = parseInt(format);
+		var w = this.width_ = (pw / ph) * h;
 		
-		var sourceMinWidth = Math.min(prop_.width, prop_.height);
+		var sourceMinWidth = Math.min(pw, ph);
 		var minWidth = Math.min(
 			this.el_.width = Math.round(w),
 			this.el_.height = Math.round(h)
@@ -172,7 +181,7 @@
 		this.scale_ = minWidth / sourceMinWidth;
 		
 		var con = this.context_ = this.el_.getContext('2d');
-		var back = prop_.backgroundImage;
+		var back = this.prop_.backgroundImage || prop_.backgroundImage;
 		if(back){
 			if(typeof back == 'string'){
 				this.backImg_ = new Image();
@@ -192,9 +201,11 @@
 			}
 		}
 		
-		this.context_.lineWidth = minWidth / (sourceMinWidth / prop_.lineWidth);
-		this.context_.lineCap = prop_.lineCap;
-		this.context_.strokeStyle = prop_.lineColor;
+		var plienw = this.prop_.lineWidth || prop_.lineWidth;
+
+		this.context_.lineWidth = minWidth / (sourceMinWidth / plienw);
+		this.context_.lineCap = this.prop_.lineCap || prop_.lineCap;
+		this.context_.strokeStyle = this.prop_.lineColor || prop_.lineColor;
 		
 		this.status_ = (this.status_ || 0) + Status_.IDLE;
 
@@ -207,23 +218,25 @@
 	 * @return {RecorderInstance}
 	 */
 	RecorderInstance.prototype.point = function(pt, callback){
-		var con = this.context_;
-		var x = this.scale_ * pt.x;
-		var y = this.scale_ * pt.y;
-		con.beginPath();
-		con.moveTo(x - 0.1, y - 0.1);
-		con.lineTo(x, y);
-		con.moveTo(x, y);
-		con.stroke();
-		if(this.status_){
-			this.history_.push(record_(pt.stamp, this.el_));
-		}
-		if(typeof callback == 'function'){
-			setTimeout((function(scope, point){
-				return function(){
-					callback.call(scope, point);
-				};
-			})(this, pt), 0);
+		if(this.status_ > Status_.COMPILING){
+			var con = this.context_;
+			var x = this.scale_ * pt.x;
+			var y = this.scale_ * pt.y;
+			con.beginPath();
+			con.moveTo(x - 0.1, y - 0.1);
+			con.lineTo(x, y);
+			con.moveTo(x, y);
+			con.stroke();
+			if(this.status_){
+				this.history_.push(record_(pt.stamp, this.el_));
+			}
+			if(typeof callback == 'function'){
+				setTimeout((function(scope, point){
+					return function(){
+						callback.call(scope, point);
+					};
+				})(this, pt), 0);
+			}	
 		}
 		return this;
 	};
@@ -235,21 +248,23 @@
 	 * @return {RecorderInstance}
 	 */
 	RecorderInstance.prototype.line = function(pt, callback){
-		var con = this.context_;
-		var x = this.scale_ * pt.x;
-		var y = this.scale_ * pt.y;
-		con.lineTo(x, y);
-		con.moveTo(x, y);
-		con.stroke();
-		if(this.status_){
-			this.history_.push(record_(pt.stamp, this.el_));
-		}
-		if(typeof callback == 'function'){
-			setTimeout((function(scope, point){
-				return function(){
-					callback.call(scope, point);
-				};
-			})(this, pt), 0);
+		if(this.status_ > Status_.COMPILING){
+			var con = this.context_;
+			var x = this.scale_ * pt.x;
+			var y = this.scale_ * pt.y;
+			con.lineTo(x, y);
+			con.moveTo(x, y);
+			con.stroke();
+			if(this.status_){
+				this.history_.push(record_(pt.stamp, this.el_));
+			}
+			if(typeof callback == 'function'){
+				setTimeout((function(scope, point){
+					return function(){
+						callback.call(scope, point);
+					};
+				})(this, pt), 0);
+			}
 		}
 		return this;
 	};
@@ -261,20 +276,22 @@
 	 * @return {RecorderInstance}
 	 */
 	RecorderInstance.prototype.clear = function(stamp, callback){
-		if(this.backImg_){
-			this.context_.drawImage(this.backImg_, 0, 0, this.width_, this.height_);
-		}else{
-			this.context_.clearRect(0, 0, this.width_, this.height_);
-		}
-		if(this.status_){
-			this.history_.push(record_(stamp, this.el_));
-		}
-		if(typeof callback == 'function'){
-			setTimeout((function(scope, s){
-				return function(){
-					callback.call(scope, s);
-				};
-			})(this, stamp), 0);
+		if(this.status_ > Status_.COMPILING){
+			if(this.backImg_){
+				this.context_.drawImage(this.backImg_, 0, 0, this.width_, this.height_);
+			}else{
+				this.context_.clearRect(0, 0, this.width_, this.height_);
+			}
+			if(this.status_){
+				this.history_.push(record_(stamp, this.el_));
+			}
+			if(typeof callback == 'function'){
+				setTimeout((function(scope, s){
+					return function(){
+						callback.call(scope, s);
+					};
+				})(this, stamp), 0);
+			}
 		}
 		return this;
 	};
@@ -298,19 +315,25 @@
 		this.history_ = [];
 		this.compiledHistory_ = [];
 
+		var pclf = this.prop_.cacheLastFrame;
+		var cacheLastFrame = 
+			(typeof pclf != 'undefined' && Object.prototype.toString.call(pclf) == '[object Boolean]')?
+			pclf : prop_.cacheLastFrame;
+
 		if(this.backImg_){
 			if(this.backImgLoad_){
-				this.context_.drawImage(this.backImg_, 0, 0, this.width_, this.height_);
+				if(!cacheLastFrame) this.context_.drawImage(this.backImg_, 0, 0, this.width_, this.height_);
 				this.history_.push(record_(stamp, this.el_));
 			}else{
-				this.backImg_.addEventListener('load', (function(scope, s, recordMethod){
+				this.backImg_.addEventListener('load', (function(scope, s, recordMethod, cache){
 					return function(){
-						scope.context_.drawImage(this, 0, 0, scope.width_, scope.height_);
+						if(!cache) scope.context_.drawImage(this, 0, 0, scope.width_, scope.height_);
 						scope.history_.push(recordMethod(s, scope.el_));
 					};
-				})(this, stamp, record_));
+				})(this, stamp, record_, cacheLastFrame));
 			}
 		}else{
+			if(!cacheLastFrame) this.context_.clearRect(0, 0, this.width_, this.height_);
 			this.history_.push(record_(stamp, this.el_));
 		}
 		if(typeof startCallback == 'function'){
@@ -334,8 +357,8 @@
 			self.history_.push(record_(stamp, self.el_));
 			self.status_ = Status_.COMPILING;
 			
-			var frameRate = prop_.frameRate || 25;
-			var compiled = [];
+			var frameRate = this.prop_.frameRate || prop_.frameRate || 25;
+			//var compiled = [];
 			var compilingTemp = self.history_.slice(0);
 			var item;
 			var timeseq = 0;
@@ -343,11 +366,11 @@
 				isLast = compilingTemp.length == 0;
 				setTimeout((function(scope, t, last){
 					return function(){	
-						//scope.compiledHistory_.push({stamp:t.stamp, base64:t.el.toDataURL()});
-						compiled.push({stamp:t.stamp, base64:t.el.toDataURL()});
+						scope.compiledHistory_.push({stamp:t.stamp, base64:t.el.toDataURL()});
+						//compiled.push({stamp:t.stamp, base64:t.el.toDataURL()});
 						if(last){
 							scope.status_ -= Status_.COMPILING;
-							resultsCallback.call(scope, arrangeFrame_(compiled, frameRate));
+							resultsCallback.call(scope, arrangeFrame_(scope.compiledHistory_.slice(0), frameRate));
 						}
 					};
 				})(self, item, isLast), timeseq += 3);
@@ -356,6 +379,22 @@
 		}else if(self.status_ == Status_.COMPILING_PREV_AND_RECORDING_NEW){
 			// deny or make a thread
 		}
+	};
+
+	/**
+	 * To Change the property of a record instance.
+	 * @param {CanvasRdrProp|null} property The CanvasRdrProp object.
+	 * @return {RecorderInstance|CanvasRdrProp}
+	 */
+	RecorderInstance.prototype.prop = function(property){
+		if(!this.prop_) this.prop_ = {};
+		if(property && Object.prototype.toString.call(property) == '[object Object]'){
+			for(var p in property){
+				this.prop_[p] = property[p];
+			}
+			return this;
+		}
+		return this.prop_;
 	};
 	
 	/**
@@ -422,9 +461,12 @@
 	 * @param {Object}
 	 */
 	CR.prop = function(property){
-		if(Object.prototype.toString.call(property) == '[object Object]'){
+		if(property && Object.prototype.toString.call(property) == '[object Object]'){
 			for(var p in property){
 				prop_[p] = property[p];
+			}
+			for(var ins in instanceMap_){
+				instanceMap_[ins].prop(property);
 			}
 			var back = prop_.backgroundImage;
 			if(back){

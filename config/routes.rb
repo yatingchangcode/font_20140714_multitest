@@ -10,8 +10,10 @@ Rails.application.routes.draw do
 
   resources :welcome do
     collection do
+      get 'index'
       get 'demo'
       get 'write'
+      get 'write_idioms'
       get 'read'
       eval(arrayMapReduce)
     end
@@ -22,7 +24,15 @@ Rails.application.routes.draw do
     member do
       get 'stage1'
       get 'stage2'
-      get 'stage3'
+      get 'stage_idioms'
+      get 'server1'
+      get 'server2'
+      get 'server_idioms'
+      get 'record'
+      get 'tvwall'
+    end
+    collection do
+      get 'get_game_data'
     end
   end
   # Example of regular route:

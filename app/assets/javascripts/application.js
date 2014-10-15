@@ -14,6 +14,7 @@
 //= require jquery_ujs
 //= require websocket_rails/main
 //= require canvas-manager
+//= require canvas-recorder
 //= require b64
 //= require blueimp-canvas-to-blob/js/canvas-to-blob
 //= require FileSaver/FileSaver

@@ -1,1 +1,1 @@
-Rails.application.config.assets.precompile += %w( chats.js )
+Rails.application.config.assets.precompile += %w( server.js client.js pinhole.js writes_idioms.js server_idioms.js )

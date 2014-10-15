@@ -13,20 +13,32 @@ WebsocketRails::EventMap.describe do
   # The above will handle an event triggered on the client like `product.new`.
 
 
-
-
-  subscribe :action, :to => WritesController, :with_method => :receiveAlert
-  # read trigger start or stop, write bind receiveAlert
-
   subscribe :open_file, :to => ChatsController, :with_method => :open_file
   subscribe :save_file, :to => ChatsController, :with_method => :save_file
   subscribe :close_file, :to => ChatsController, :with_method => :close_file
 
-  subscribe :down_location, :to => WritesController, :with_method => :down_location
-  subscribe :move_location, :to => WritesController, :with_method => :move_location
-  subscribe :up_location, :to => WritesController, :with_method => :up_location
-  subscribe :clear, :to => WritesController, :with_method => :clear
+  # namespace :stage1and2 do
+    subscribe :down_location, :to => WritesController, :with_method => :down_location
+    subscribe :move_location, :to => WritesController, :with_method => :move_location
+    subscribe :up_location, :to => WritesController, :with_method => :up_location
+    subscribe :clear, :to => WritesController, :with_method => :clear
+    subscribe :submit, :to => WritesController, :with_method => :submit
+    subscribe :action, :to => WritesController, :with_method => :action
+    subscribe :right, :to => WritesController, :with_method => :right
+    subscribe :wrong, :to => WritesController, :with_method => :wrong
+    # read trigger start or stop, write bind receiveAlert
+  # end
 
+  namespace :idioms do
+    subscribe :down_location, :to => WritesIdiomsController, :with_method => :down_location
+    subscribe :move_location, :to => WritesIdiomsController, :with_method => :move_location
+    subscribe :up_location, :to => WritesIdiomsController, :with_method => :up_location
+    subscribe :clear, :to => WritesIdiomsController, :with_method => :clear
+    subscribe :submit, :to => WritesIdiomsController, :with_method => :submit
+    subscribe :move_block, :to => WritesIdiomsController, :with_method => :move_block
+    subscribe :send_text, :to => WritesIdiomsController, :with_method => :send_text
+    subscribe :end_round, :to => WritesIdiomsController, :with_method => :end_round
+  end
 
 
   subscribe :client_connected, to: ChatsController, with_method: :client_connected

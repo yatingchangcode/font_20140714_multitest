@@ -8,7 +8,7 @@
   <div class="col-md-12">
     <h1>Game N</h1>
     <h2>參賽人員列表<%= link_to "新增人員",new_game_visitor_path(@game),class: "btn btn-lg btn-info"  %></h2>
-      <% if @visitors.present? %>
+    <% if @visitors.present? %>
     <table class="table table-bordered">
       <thead>
         <tr>
@@ -20,12 +20,12 @@
       </thead>
       <tbody>
 
-        <% @visitors.each_with_index do |v,index| %>
+        <% @visitors.each do |v| %>
         <tr>
-          <td><%= index %></td>
+          <td><%= v.number %></td>
           <td><%= render_visitor_photo(v.image,"thumb") %></td>
           <td><%= v.name %></td>
-          <td><input type="checkbox" name="joinGame" value="<%= index %>" /></td>
+          <td><input type="checkbox" name="joinGame" value="<%= v.number %>" /></td>
         </tr>
         <% end %>
 
@@ -33,7 +33,7 @@
           <td></td>
           <td></td>
           <td></td>
-          <td><input type="checkbox" name="allSelect" value="" />全選</td>
+          <td><input type="checkbox" id="allJoinGame" />全選</td>
         </tr>
       </tbody>
     </table>
@@ -41,8 +41,62 @@
     尚無參賽人員
     <% end %>
     <br>
-    <%= link_to "Stage1",stage1_game_path(@game),class: "btn btn-lg btn-success"  %>
-    <%= link_to "Stage2","/",class: "btn btn-lg btn-success"  %>
-    <%= link_to "Stage3","/",class: "btn btn-lg btn-success"  %>
+    <%= link_to "Stage1","#",id: "stage1",class: "btn btn-lg btn-success"  %>
+    <%= link_to "Stage2","#",id: "stage2",class: "btn btn-lg btn-success"  %>
+    <%= link_to "Stage3","#",id: "stage3",class: "btn btn-lg btn-success"  %>
   </div>
 </div>
+
+<% content_for :javascripts do %>
+<script type="text/javascript">
+$(document).ready(function(){
+
+  document.getElementById('allJoinGame').onchange = function(event){
+    var checkboxes = document.getElementsByName('joinGame');
+
+    for (var i = 0; i < checkboxes.length; i++){
+      checkboxes[i].checked = this.checked;
+    }
+  };
+
+  document.getElementById('stage1').onclick = function(e){
+    e.preventDefault();
+    var checkboxes = document.getElementsByName('joinGame');
+
+    var join_visitors_number = [];
+    for (var i = 0; i < checkboxes.length; i++){
+      if(checkboxes[i].checked){
+        join_visitors_number.push(checkboxes[i].value);
+      }
+    }
+    location.href = '/games/<%= @game.id %>/stage1?join_visitors_number=' + join_visitors_number;
+  }
+
+  document.getElementById('stage2').onclick = function(e){
+    e.preventDefault();
+    var checkboxes = document.getElementsByName('joinGame');
+
+    var join_visitors_number = [];
+    for (var i = 0; i < checkboxes.length; i++){
+      if(checkboxes[i].checked){
+        join_visitors_number.push(checkboxes[i].value);
+      }
+    }
+    location.href = '/games/<%= @game.id %>/stage2?join_visitors_number=' + join_visitors_number;
+  }
+
+  document.getElementById('stage3').onclick = function(e){
+    e.preventDefault();
+    var checkboxes = document.getElementsByName('joinGame');
+
+    var join_visitors_number = [];
+    for (var i = 0; i < checkboxes.length; i++){
+      if(checkboxes[i].checked){
+        join_visitors_number.push(checkboxes[i].value);
+      }
+    }
+    location.href = '/games/<%= @game.id %>/stage_idioms?join_visitors_number=' + join_visitors_number;
+  }
+});
+</script>
+<% end %>

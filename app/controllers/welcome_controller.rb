@@ -4,6 +4,10 @@ class WelcomeController < ApplicationController
     @user_id = params[:user_id]
   end
 
+  def write_idioms
+    @user_id = params[:user_id]
+  end
+
   def read
     @count = 20
 

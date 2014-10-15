@@ -28,8 +28,6 @@ group :development do
   gem "better_errors", "~> 0.9.0"
   gem "magic_encoding"
   gem "annotate"
-  gem "pry-nav"
-  gem "pry-remote"
 
   gem "letter_opener"
   gem 'meta_request'
@@ -75,4 +73,4 @@ gem 'spring',        group: :development
 
 # Use debugger
 # gem 'debugger', group: [:development, :test]
-ruby "2.1.1"
+ruby "2.1.2"

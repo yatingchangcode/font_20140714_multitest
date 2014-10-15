@@ -14,24 +14,35 @@ class ChatsController < WebsocketRails::BaseController
     connection.send_message :get_user_count, data
   end
 
-
-
   def open_file
-    random_name = SecureRandom.hex(6)
-    file_path = Dir.mktmpdir("#{message[:user_id]}/#{random_name}")
-    controller_store[:user_id_file_path] << { :message[:user_id] => file_path}
+    p message[:user_id]+" open_file"
+
+    @game = Game.find(message[:game])
+    @visitor = @game.visitors.find_by(number: message[:user_id])
+
+    file_name = "#{@visitor.name}_stage#{message[:stage]}_#{Time.now.strftime("%Y%m%d_%H%M%S")}"
+   
+    record_path ||= File.expand_path(File.join("record"), Rails.public_path)
+    file_path = FileUtils.mkdir_p("#{record_path}/game#{message[:game]}_#{@game.created_at.strftime("%Y%m%d")}/#{file_name}")
+    
+    controller_store[:user_id_file_path][message[:user_id]] = file_path
+    p controller_store[:user_id_file_path]
   end
 
   def save_file 
-    file_path = controller_store[:user_id_file_path][message[:user_id]]
+    p message[:user_id]+" save_file"
+    file_path = controller_store[:user_id_file_path][message[:user_id]][0]
+    file_name = message[:timestamp]
+
     enc   = Base64.decode64(message[:base64])
-    f = File.open("#{file_path}/#{message[:timestamp]}.jpg", 'wb') {|f| f.write(enc)}
+    f = File.open("#{file_path}/#{file_name}.png", 'wb') {|f| f.write(enc)}
   end
 
   def close_file
-    #controller_store[:user_id_file] - :message[:user_id]
+    p message[:user_id]+" close_file"
+    file_path = controller_store[:user_id_file_path][message[:user_id]][0]
     begin
-      p Subprocess.check_call(['ls', '-al', 'tmp'])
+      p Subprocess.check_call(["ffmpeg", "-framerate", "50", "-i", "#{file_path}/%d.png", "#{file_path}.mp4", "-y"])
     rescue Subprocess::NonZeroExit => e
       puts e.message
       puts "Why aren't llamas one of your favorite animals?"
@@ -42,14 +53,14 @@ class ChatsController < WebsocketRails::BaseController
 
   def client_connected
     controller_store[:user_count] += 1
-    p "user_count #{controller_store[:user_count]} ,user connected #{Time.now}"
+    p "user_count #{controller_store[:user_count]} ,user #{params[:client_id]} connected #{Time.now}"
     WebsocketRails.users[params[:client_id]] = connection
   end
 
   def client_disconnected
     controller_store[:user_count] -= 1
-    p "user_count #{controller_store[:user_count]} ,user disconnected #{Time.now}"
-    known_connections = WebsocketRails.users[client_id]
+    p "user_count #{controller_store[:user_count]} ,user #{params[:client_id]} disconnected #{Time.now}"
+    known_connections = WebsocketRails.users[params[:client_id]]
     known_connections.connections.delete connection
   end
 end
