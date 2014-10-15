@@ -44,7 +44,6 @@ class GamesController < ApplicationController
     @game = Game.find(params[:id])
     @visitors = @game.visitors.where(number: params[:join_visitors_number].split(","))
     @range = 1..@visitors.size
-
     @second = params[:second]
     @@second = params[:second]
 

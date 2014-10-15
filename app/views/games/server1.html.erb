@@ -37,6 +37,7 @@
             <button id="out_button" style="font-size:15px;">淘汰</button>
             <button id="start_button" style="font-size:15px;">Start</button>
             <button id="stop_button" style="font-size:15px;">Stop</button>
+            <button id="clear_button" style="font-size:15px;">Clear All!</button>
           </div>
         </div>
       </div>
@@ -102,6 +103,18 @@
           });
           //alert("answer right:"+array);
         });
+
+        $('#clear_button').click(function(){
+            window.chatApp.clearAll();
+        });
+
+        /*
+        $('#clear_button').click(function() {
+            $('[name="gamer"]').each(function() {
+               // window.chatApp.clear(this.value);
+            }
+        });
+        */
 
         $('#no_button').click(function(){
           $('[name="gamer"]').each(function(){

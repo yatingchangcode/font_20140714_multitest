@@ -41,6 +41,12 @@ class WritesController < WebsocketRails::BaseController
     p message[:user_id]
     broadcast_message :clear, {:user_id => message[:user_id], :stamp => message[:stamp]}
   end
+
+  def clearAll
+      p "clearAll"
+      broadcast_message :clear, {}
+      p "clearAll2"
+  end
   
   def submit
     manager_connection = WebsocketRails.users[0]

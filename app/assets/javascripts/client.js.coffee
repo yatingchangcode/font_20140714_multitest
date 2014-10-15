@@ -14,7 +14,7 @@ class @ChatApp
     $('#submitBtn').click @submitMypad
 
   bindEvents: ->
-    #@dispatcher.bind 'clear', @receiveClear
+    @dispatcher.bind 'clear', @receiveClear
     @dispatcher.bind 'action', @receiveAction
 
   downMypad: (e) =>
@@ -60,4 +60,8 @@ class @ChatApp
     action = $(e.currentTarget).attr 'action'
     @dispatcher.trigger 'action' , user_id: uid, action: action
 
+  receiveClear: () =>
+    #alert("clearAll")
+    #@dispatcher.trigger 'clear' , user_id: @user_id
+    CM('origin_'+ @user_id).clear();
 

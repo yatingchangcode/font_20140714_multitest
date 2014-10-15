@@ -11,6 +11,7 @@ class @ChatApp
     #$('#yes_button').click @clearMypad
     $('#yes_button').click @right
     $('#no_button').click @wrong
+    $('#clear_button').click @clearAll
 
   bindEvents: ->
     @dispatcher.bind 'down_location', @receiveDown
@@ -37,6 +38,9 @@ class @ChatApp
 
   receiveSubmit: (message) =>
     receiveSubmitHandler message
+
+  clearAll: () ->
+   @dispatcher.trigger 'clearAll' 
 
   getUserCount: (data) ->
     $('#user_count').text(data.user_count);
