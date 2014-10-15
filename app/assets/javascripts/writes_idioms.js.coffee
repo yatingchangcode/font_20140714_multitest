@@ -54,7 +54,11 @@ class @ChatApp
     @dispatcher.trigger @stage_name+'.action' , user_id: @user_id, action: "device_stop", stamp: (new Date()).getTime()
     @dispatcher.trigger @stage_name+'.submit' , user_id: @user_id,block: @block
 
-  moveBlock: =>
+  sendText: (text) =>
+    @dispatcher.trigger @stage_name+'.send_text' , user_id: @user_id, block: @block, text: text
+
+  moveBlock: (block) =>
+    @block = block
     @dispatcher.trigger @stage_name+'.move_block' , user_id: @user_id,block: @block
 
   endRound: =>

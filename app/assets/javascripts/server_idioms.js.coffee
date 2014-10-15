@@ -15,6 +15,7 @@ class @ChatApp
     @dispatcher.bind 'move_location', @receiveMove
     @dispatcher.bind 'up_location', @receiveUp
     @dispatcher.bind 'move_block', @receiveMoveBlock
+    @dispatcher.bind 'send_text', @receiveSendText
     @dispatcher.bind 'end_round', @receiveEndRound
     @dispatcher.bind 'clear', @receiveClear
     @dispatcher.bind 'get_user_count', @getUserCount
@@ -34,6 +35,9 @@ class @ChatApp
 
   receiveMoveBlock: (message) =>
     receiveMoveBlockHandler message
+
+  receiveSendText: (message) => 
+    receiveSendTextHandler message    
 
   receiveEndRound: (message) =>
     receiveEndRoundHandler message

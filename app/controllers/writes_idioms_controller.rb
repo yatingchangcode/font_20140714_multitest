@@ -45,6 +45,11 @@ class WritesIdiomsController < WebsocketRails::BaseController
     broadcast_message :move_block, data
   end
 
+  def send_text
+    data = {:user_id => message[:user_id],block: message[:block], :stamp => message[:stamp], text: message[:text]}
+    broadcast_message :send_text, data
+  end
+
   def end_round
     controller_store[:user_id_write_block][message[:user_id]] = message[:blocks]
 
