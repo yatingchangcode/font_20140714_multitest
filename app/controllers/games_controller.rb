@@ -82,8 +82,8 @@ class GamesController < ApplicationController
     @range = 1..@visitors.size
 
     # for idioms stage, rule is 60 seconds
-    @second = "60"
-    @@second = "60"
+    @second = params[:second]
+    @@second = params[:second]
 
     @@game = params[:id]
     @@stage = "idioms"
@@ -96,6 +96,16 @@ class GamesController < ApplicationController
     @range = 1..@visitors.size
 
     @stage = @@stage
+    
+  end
+
+  def record_idioms
+    @game = Game.find(params[:id])
+    @visitors = @game.visitors.where(number: params[:join_visitors_number].split(","))
+    @range = 1..@visitors.size
+
+    @@game = params[:id]
+    @stage = "idioms"
     
   end
 

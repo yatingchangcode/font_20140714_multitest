@@ -1,5 +1,5 @@
       <div class="jumbotron">
-        <h2>一字千金 軌跡錄影程式</h2>
+        <h2>一字千金 成語軌跡錄影程式</h2>
       </div>
       <div class="row">
         <% @visitors.each do |x| %>
@@ -11,7 +11,7 @@
       </div>
         
       <% content_for :javascripts do %>
-      <%= javascript_include_tag 'pinhole' %>
+      <%= javascript_include_tag 'pinhole_idioms' %>
       <script>
 
       var preActionCount = 0;
@@ -25,23 +25,28 @@
           lineWidth: 15,
           lineColor: '#333333',
           frameRate: 50,
+          cacheLastFrame: true,
           backgroundImage: '/assets/block-524.png'
         });
 
-        <% @visitors.each do |visitor| %>
-        CR.reg('<%= visitor.number %>');
+        <% (1..8).to_a.each do |x| %>
+            <% (1..12).to_a.each do |y| %>
+              CR.reg('<%= x %>_<%= y %>');
+            <% end %>
         <% end %>
 
         //window.pinhole = new Pinhole('0');
         window.pinhole = new Pinhole('record');
 		    window.pinhole.bindEvents();
 
+        var currentLog = "";
+
         window.stopCallBack = function(uid) {
           var scope = window.pinhole;
           var element = $("#console_"+uid);
-          var pre = element.html();
+          //var pre = element.html();
           return function(data) {
-            element.html(pre + 'STOP<br/>');
+            element.html(currentLog += 'STOP<br/>');
 
             var tkey = uid + "_" + (new Date()).getTime().toString();
 
@@ -51,7 +56,7 @@
                   user_id: id,
                   trade_key: key,
                   game: <%= @game.id %>,
-                  stage: <%= @stage %>
+                  stage: '<%= @stage %>'
                 });
               };
             })(scope.dispatcher, uid, tkey), fileSaveActionCount++ * delayTime);
@@ -76,7 +81,7 @@
               return function(){
                 dispatcher.trigger("close_file", {
                   user_id: id,
-                  trade_key: key,
+                  trade_key: key
                 });
               };
             })(scope.dispatcher, uid, tkey), fileSaveActionCount++ * delayTime);
@@ -121,15 +126,16 @@
         window.startCallBack = function(){
           var id = this.id_;
           var element = $("#console_"+id);
-          var pre = element.html();
-          element.html(pre + 'START<br/>');
+          currentLog = "";
+          currentLog += 'START<br/>';
+          element.html(currentLog);
         }
 
         window.writeToLog = function(pt){
           var id = this.id_;
           var element = $("#console_"+id);
-          var pre = element.html();
-          element.html(pre + 'stamp:'+pt.stamp + ' x:' + pt.x + ' y:' + pt.y + '<br/>');
+          currentLog += 'stamp:'+pt.stamp + ' x:' + pt.x + ' y:' + pt.y + '<br/>';
+          element.html(currentLog);
         };
       
 
