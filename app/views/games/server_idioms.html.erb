@@ -202,15 +202,16 @@
           //alert("start:"+array);
         });
 
-        // $('#stop_button').click(function(){
-        //   $('[name="gamer"]').each(function(){
-        //     if (this.checked) {
-        //       window.chatApp.action(this.value,'stop');
-        //     }
-        //   });
-        //   var array = afterAction(this);
-        //   alert("stop:"+array);
-        // });
+        $('#stop_button').click(function(){
+          $('[name="gamer"]').each(function(){
+            if (this.checked) {
+              window.chatApp.action(this.value,'stop');
+              $('#status_'+this.value).html('stop');
+            }
+          });
+          var array = afterAction(this);
+          //alert("stop:"+array);
+        });
 
     });
       </script>
