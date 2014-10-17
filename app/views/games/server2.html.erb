@@ -8,12 +8,16 @@
           <div class="visitor col-md-3" id="visitor_<%= x.number %>">
             <div class="row">
               <div class="col-md-1">
-                <input type="checkbox" name="gamer" value="<%= x.number %>"/>
+              <input type="checkbox" name="gamer" value="<%= x.number %>"/>
               </div>
               <div class="col-md-3">
                 <%= render_gamer_photo(x.image,"thumb",50,50) %>
                 <p><%= x.name %></p>
                 <span id="second_<%= x.number %>" style="color:red"><%= @second %></span>
+                <div>
+                <button class="correct_button" style="font-size:20px;" value="<%= x.number %>">答對</button>
+                <button class="continue_button" style="font-size:20px;" value="<%= x.number %>">繼續寫</button>
+                </div>
               </div>
               <div class="col-md-6">
                 <canvas id="origin_<%= x.number %>" class="orgincanvas" style="z-index:1"></canvas>
@@ -25,14 +29,14 @@
           </div>
           <% end %>
         </div>
+        <br/>
         <div class="row">
           <div class="col-md-12">
             <input type="checkbox" id="allGamer"/>全選
-            <button id="yes_button" style="font-size:15px;">答對</button>
-            <button id="out_button" style="font-size:15px;">淘汰</button>
-            <button id="start_button" style="font-size:15px;">Start</button>
-            <button id="stop_button" style="font-size:15px;">Stop</button>
-            <button id="next_button" style="font-size:15px;">下一位</button>
+            <button id="out_button" style="font-size:20px;">淘汰</button>
+            <button id="start_button" style="font-size:20px;">Start</button>
+            <button id="stop_button" style="font-size:20px;">Stop</button>
+            <button id="next_button" style="font-size:20px;">下一位</button>
           </div>
         </div>
       </div>
@@ -41,7 +45,7 @@
       <%= javascript_include_tag 'server' %>
       <script>
 
-      var gamers = [];
+      var seconds = <%= @second %>;
 
       var receiveSubmitHandler = function(o){
         $('#visitor_'+o.user_id).css("background-color", "#e0e0e0");
@@ -81,6 +85,10 @@
           return array;
         }
 
+        $('.continue_button').click(function(){
+          window.chatApp.continue_write(this.value);
+        });
+
         $('#allGamer').click(function(){
           $('[name="gamer"]').each((function(toCheck){
             return function(){
@@ -100,6 +108,33 @@
           //alert("answer right:"+array);
         });
 
+        $('.correct_button').click(function(){
+          window.chatApp.right(this.value);
+        });
+
+        var gamers = {
+            gamersList : [],
+            last: null,
+            next : function() {
+                var newgamer = this.gamersList.shift();
+                this.gamersList.push(newgamer);
+                this.last = newgamer;
+                return newgamer;
+            },
+            prev: function() {
+                return this.last;
+            },
+            push : function(i) {
+              this.gamersList.push(i);
+            }, 
+            remove : function(i) {
+              var idx = this.gamersList.indexOf(i);
+              if (idx > -1) {
+                  this.gamersList.splice(idx, 1);
+              }
+            }
+        };
+
         var collectGamers = function() {
            <% @visitors.each do |visitor| %>
            gamers.push('<%= visitor.number %>');
@@ -107,11 +142,47 @@
         }
         collectGamers();
 
+        
+
+        $('#next_button').click(function(){
+
+              // stop last user
+              if (gamers.prev() != null) {
+                window.chatApp.action(gamers.prev(),'stop');
+                clearInterval(window.alarm);
+                window.alarm = null;
+              }
+              var newgamer = gamers.next();
+              // call old gamer to stop
+              // call new user to clear screen
+              window.chatApp.clear(newgamer);
+              window.chatApp.action(newgamer,'start');
+              console.log("current user" + newgamer);
+              startCounter(newgamer);
+            });
+
+
+        var startCounter = function (thisvalue) {
+               window.alarm = setInterval(function(){
+                if (parseInt($('#second_'+thisvalue).text()) != 0){
+                  console.log($('#second_'+thisvalue).text());
+                  $('#second_'+thisvalue).text(parseInt($('#second_'+thisvalue).text()) - 1);
+                }else{
+                  clearInterval(window.alarm);
+                  window.alarm = null;
+                  window.chatApp.action(thisvalue,'stop');
+                  receiveSubmitHandler({user_id:thisvalue});
+                }
+              },1000); 
+             };
+
+
         $('#out_button').click(function(){
           $('[name="gamer"]').each(function(){
             if (this.checked) {
               CM.unreg('origin_'+this.value);
               this.disabled = true;
+              gamers.remove(this.value);
             }
           });
           var array = afterAction(this);

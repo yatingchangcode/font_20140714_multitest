@@ -17,6 +17,7 @@ class @ChatApp
     @dispatcher.bind 'clear', @receiveClear
     @dispatcher.bind 'action', @receiveAction
     @dispatcher.bind 'reset', @receiveReset
+    @dispatcher.bind 'continue_write', @receiveContinue
 
   downMypad: (e) =>
     @isDrawing = true
@@ -65,6 +66,9 @@ class @ChatApp
     #alert("clearAll")
     #@dispatcher.trigger 'clear' , user_id: @user_id
     CM('origin_'+ @user_id).clear();
+
+  receiveContinue: () =>
+    alert("continue write")
 
   receiveReset: () =>
     CM('origin_'+ @user_id).clear();

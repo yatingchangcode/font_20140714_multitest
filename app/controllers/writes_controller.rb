@@ -50,6 +50,16 @@ class WritesController < WebsocketRails::BaseController
       broadcast_message :reset, {}
   end
   
+  def continue_write
+      trigger_id = message[:user_id]
+      manager_connection = WebsocketRails.users[0]
+      trigger_connection  = WebsocketRails.users[trigger_id.to_i]
+      data = message
+      manager_connection.send_message :continue_write, data
+      trigger_connection.send_message :continue_write, data
+      p data
+  end
+
   def submit
     manager_connection = WebsocketRails.users[0]
     record_connection = WebsocketRails.users["record"]
