@@ -51,4 +51,7 @@ class @ChatApp
   action: (uid,action) =>
     @dispatcher.trigger 'action' , user_id: uid, action: action
 
+  reset: () =>
+    @dispatcher.trigger 'reset'
+
 

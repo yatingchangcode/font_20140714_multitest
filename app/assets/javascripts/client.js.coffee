@@ -16,6 +16,7 @@ class @ChatApp
   bindEvents: ->
     @dispatcher.bind 'clear', @receiveClear
     @dispatcher.bind 'action', @receiveAction
+    @dispatcher.bind 'reset', @receiveReset
 
   downMypad: (e) =>
     @isDrawing = true
@@ -64,4 +65,12 @@ class @ChatApp
     #alert("clearAll")
     #@dispatcher.trigger 'clear' , user_id: @user_id
     CM('origin_'+ @user_id).clear();
+
+  receiveReset: () =>
+    CM('origin_'+ @user_id).clear();
+    url = "http://0.0.0.0:3000/games/get_game_data.json?id=" + @user_id;
+    $.getJSON url, (data) ->
+        window.seconds=data['second']
+        return
+    window.resetAlarm()
 

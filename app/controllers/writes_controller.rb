@@ -43,9 +43,11 @@ class WritesController < WebsocketRails::BaseController
   end
 
   def clearAll
-      p "clearAll"
       broadcast_message :clear, {}
-      p "clearAll2"
+  end
+
+  def reset
+      broadcast_message :reset, {}
   end
   
   def submit

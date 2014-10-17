@@ -54,6 +54,9 @@ class @ChatApp
   right: (uid) =>
     @dispatcher.trigger 'right' , user_id: uid
 
+  reset: () =>
+    @dispatcher.trigger 'reset'
+
   wrong: (uid) =>
     @dispatcher.trigger 'wrong' , user_id: uid
 
