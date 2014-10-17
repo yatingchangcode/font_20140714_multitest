@@ -29,6 +29,7 @@ Rails.application.routes.draw do
       get 'server2'
       get 'server_idioms'
       get 'record'
+      get 'record_idioms'
       get 'tvwall'
     end
     collection do
