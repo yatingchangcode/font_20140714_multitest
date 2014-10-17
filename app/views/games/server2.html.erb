@@ -7,17 +7,21 @@
           <% @visitors.each do |x| %>
           <div class="visitor col-md-3" id="visitor_<%= x.number %>">
             <div class="row">
+            <div class="container">
+                <button style="font-size:12px;" value="<%= x.number %>" type="button" class="correct_button btn btn-default navbar-btn">答對</button>
+                <button id="continue_<%= x.number %>" style="font-size:12px;" value="<%= x.number %>" type="button" class="btn btn-default navbar-btn">繼續寫</button>
+                <button id="out_button_<%= x.number %>" style="font-size:12px;" value="<%= x.number %>" type="button" class="btn btn-default navbar-btn">淘汰</button>
+                <button id="start_button_<%= x.number %>" style="font-size:12px;" value="<%= x.number %>" type="button" class="btn btn-default navbar-btn">Start</button>
+                <button id="stop_button_<%= x.number %>" style="font-size:12px;" value="<%= x.number %>" type="button" class="btn btn-default navbar-btn">Stop</button>
+                </div>
               <div class="col-md-1">
               <input type="checkbox" name="gamer" value="<%= x.number %>"/>
               </div>
               <div class="col-md-3">
                 <%= render_gamer_photo(x.image,"thumb",50,50) %>
                 <p><%= x.name %></p>
-                <span id="second_<%= x.number %>" style="color:red"><%= @second %></span>
-                <div>
-                <button class="correct_button" style="font-size:20px;" value="<%= x.number %>">答對</button>
-                <button class="continue_button" style="font-size:20px;" value="<%= x.number %>">繼續寫</button>
-                </div>
+                <span id="second_<%= x.number %>" style="color:red font-size:12px;" class="badge"><%= @second %>秒</span>
+                <span id="no_correct_<%= x.number %>" class="badge">答對33題</span>
               </div>
               <div class="col-md-6">
                 <canvas id="origin_<%= x.number %>" class="orgincanvas" style="z-index:1"></canvas>
@@ -35,7 +39,7 @@
             <input type="checkbox" id="allGamer"/>全選
             <button id="out_button" style="font-size:20px;">淘汰</button>
             <button id="start_button" style="font-size:20px;">Start</button>
-            <button id="stop_button" style="font-size:20px;">Stop</button>
+            <button id="stop_button" style="font-size:20px;">全部停止</button>
             <button id="next_button" style="font-size:20px;">下一位</button>
           </div>
         </div>
@@ -85,8 +89,9 @@
           return array;
         }
 
-        $('.continue_button').click(function(){
+        $('[id^=continue_]').click(function(){
           window.chatApp.continue_write(this.value);
+          $('#visitor_'+this.value).css("background-color", "");
         });
 
         $('#allGamer').click(function(){
@@ -166,8 +171,8 @@
                window.alarm = setInterval(function(){
                 if (parseInt($('#second_'+thisvalue).text()) != 0){
                   console.log($('#second_'+thisvalue).text());
-                  $('#second_'+thisvalue).text(parseInt($('#second_'+thisvalue).text()) - 1);
-                }else{
+                  $('#second_'+thisvalue).text(parseInt($('#second_'+thisvalue).text()) - 1 + "秒");
+                } else {
                   clearInterval(window.alarm);
                   window.alarm = null;
                   window.chatApp.action(thisvalue,'stop');
@@ -176,6 +181,13 @@
               },1000); 
              };
 
+        $("[id^=out_button_]").click(function(){
+            console.log(this.value);
+            CM.unreg('origin_'+this.value);
+            //this.disabled = true;
+            gamers.remove(this.value);
+            $('#visitor_'+this.value).attr('style','opacity:0.2');
+        });
 
         $('#out_button').click(function(){
           $('[name="gamer"]').each(function(){
@@ -190,6 +202,13 @@
             $('#visitor_'+array[x]).attr('style','opacity:0.2');
           }
           //alert("outer:"+array);
+        });
+
+        $('[id^=start_button_').click(function(){
+            window.chatApp.action(this.value,'start');
+            $('#visitor_'+this.value).css("background-color", "");
+            //console.log(this.value);
+            startCounter(this.value);
         });
 
         $('#start_button').click(function(){
@@ -208,7 +227,7 @@
                window.alarm = setInterval(function(){
                 if (parseInt($('#second_'+thisvalue).text()) != 0){
                   console.log($('#second_'+thisvalue).text());
-                  $('#second_'+thisvalue).text(parseInt($('#second_'+thisvalue).text()) - 1);
+                  $('#second_'+thisvalue).text(parseInt($('#second_'+thisvalue).text()) - 1 );
                 }else{
                   clearInterval(window.alarm);
                   window.alarm = null;
@@ -221,22 +240,11 @@
            }
          });
           var array = afterAction(this);
-                //alert("stop:"+array);
-
-          //var array = afterAction(this);
-          //alert("start:"+array);
+                
         });
 
       $('#stop_button').click(function(){
-            /*
-           $('[name="gamer"]').each(function(){
-             if (this.checked) {
-               window.chatApp.action(this.value,'stop');
-             }
-           });
-           var array = afterAction(this);
-           //alert("stop:"+array);
-           */
+           
            clearInterval(window.alarm);
            window.alarm = null;
            $('[name="gamer"]').each(function(){
@@ -247,6 +255,13 @@
           });
            var array = afterAction(this);
          });
+
+      $('[id^=stop_button_').click(function(){
+           clearInterval(window.alarm);
+           window.alarm = null;
+           window.chatApp.action(this.value,'stop');
+           //receiveSubmitHandler({user_id:this.value});
+      });
 
     });
       </script>

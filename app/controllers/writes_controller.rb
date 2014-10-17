@@ -57,7 +57,6 @@ class WritesController < WebsocketRails::BaseController
       data = message
       manager_connection.send_message :continue_write, data
       trigger_connection.send_message :continue_write, data
-      p data
   end
 
   def submit

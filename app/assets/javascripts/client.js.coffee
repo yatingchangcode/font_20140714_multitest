@@ -68,7 +68,8 @@ class @ChatApp
     CM('origin_'+ @user_id).clear();
 
   receiveContinue: () =>
-    alert("continue write")
+    alert("continue write");
+    console.log('hihi');
 
   receiveReset: () =>
     CM('origin_'+ @user_id).clear();
