@@ -42,22 +42,27 @@
           var pre = element.html();
           return function(data) {
             element.html(pre + 'STOP<br/>');
-            setTimeout((function(dispatcher, id){
+
+            var tkey = uid + "_" + (new Date()).getTime().toString();
+
+            setTimeout((function(dispatcher, id, key){
               return function(){
                 dispatcher.trigger("open_file", {
                   user_id: id,
+                  trade_key: key,
                   game: <%= @game.id %>,
                   stage: <%= @stage %>
                 });
               };
-            })(scope.dispatcher, uid), fileSaveActionCount++ * delayTime);
+            })(scope.dispatcher, uid, tkey), fileSaveActionCount++ * delayTime);
 
 
             for (var i = 0, len = data.length; i < len; i++){
               var frameInfo = {
                 user_id: uid, 
                 timestamp: data[i].stamp.toString(), 
-                base64: data[i].base64.split(',')[1]
+                base64: data[i].base64.split(',')[1],
+                trade_key: tkey
               };
               setTimeout((function(dispatcher, obj){
                 return function(){
@@ -67,13 +72,14 @@
 
             }
 
-            setTimeout((function(dispatcher, id){
+            setTimeout((function(dispatcher, id, key){
               return function(){
                 dispatcher.trigger("close_file", {
-                  user_id: id
+                  user_id: id,
+                  trade_key: key,
                 });
               };
-            })(scope.dispatcher, uid), fileSaveActionCount++ * delayTime);
+            })(scope.dispatcher, uid, tkey), fileSaveActionCount++ * delayTime);
 
             /*
             var i, len;
