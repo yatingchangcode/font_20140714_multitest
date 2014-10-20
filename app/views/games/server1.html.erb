@@ -10,11 +10,13 @@
       <div style="">
         <div class="row">
           <% @visitors.each do |x| %>
-          <div class="visitor col-md-3" id="visitor_<%= x.number %>">
+          <div class="visitor col-md-3" id="visitor_<%= x.number %>" style="border:3px solid #f8f8f8">
           <div class="row">
-            <div class="container">
-                <button style="font-size:12px;" value="<%= x.number %>" type="button" class="correct_button btn btn-default navbar-btn">答對</button>
+            <div class="container" style="margin:auto; width:72%">
+                <button id="correct_button_<%= x.number %>" style="font-size:12px;" value="<%= x.number %>" type="button" class="correct_button btn btn-default navbar-btn">答對</button>
                 <button id="out_button_<%= x.number %>" style="font-size:12px;" value="<%= x.number %>" type="button" class="btn btn-default navbar-btn">淘汰</button>
+                <button id="start_button_<%= x.number %>" style="font-size:12px;" value="<%= x.number %>" type="button" class="btn btn-default navbar-btn">開始</button>
+                <button id="stop_button_<%= x.number %>" style="font-size:12px;" value="<%= x.number %>" type="button" class="btn btn-default navbar-btn">停止</button>
             </div>
             <div class="col-md-1">
               <input type="checkbox" name="gamer" value="<%= x.number %>"/>
@@ -39,8 +41,8 @@
             <button id="yes_button" style="font-size:15px;">答對</button>
             <button id="out_button" style="font-size:15px;">淘汰</button>
             <button id="start_button" style="font-size:15px;">全部開始</button>
-            <button id="stop_button" style="font-size:15px;">停止已選</button>
-            <button id="clear_button" style="font-size:15px;">Clear All!</button>
+            <!-- <button id="stop_button" style="font-size:15px;">停止已選</button> -->
+            <button id="clear_button" style="font-size:15px;">全部清除</button>
           </div>
         </div>
       </div>
@@ -57,6 +59,15 @@
       window.alarm = null;
       window.open("tvwall_<%= params[:type] %>?join_visitors_number=<%= params[:join_visitors_number] %>&second=<%= @second %>","tvwallWindow","width=800, height=800");
       window.open("record?join_visitors_number=<%= params[:join_visitors_number] %>&second=<%= @second %>","recordWindow","width=800, height=800");
+
+      function markCurrent(c) {
+        $('#visitor_'+c).css("border-color", "#cc00cc");
+      }
+
+      function clearCurrent(c) {
+        $('#visitor_'+c).css("border-color", "#f8f8f8");
+      }
+      
 
       $(document).ready(function() {
         CM.prop({
@@ -90,14 +101,6 @@
           $('#allGamer').attr('checked',false);
 
           return array;
-        }
-
-        function markCurrent(c) {
-        $('#visitor_'+c).css("background-color", "#cc00cc");
-        }
-
-        function clearCurrent(c) {
-        $('#visitor_'+c).css("background-color", "");
         }
 
         $('#allGamer').click(function(){
@@ -202,10 +205,11 @@
         $('#start_button').click(function(){
           
           if(window.alarm) return;
-          $(gamers.all()).each(function(u){
+          gamers.all().forEach(function(u){
             console.log(u);
             window.chatApp.action(u, 'start');
             $('#visitor_'+this.value).css("background-color", "");
+            markCurrent(u);
           });
           
           if ($('#second').text() != ''){
@@ -244,7 +248,7 @@
               },1000); 
             };
 
-        $('[id^=start_button_').click(function(){
+        $('[id^=start_button_]').click(function(){
             window.chatApp.action(this.value,'start');
             $('#visitor_'+this.value).css("background-color", "");
             //console.log(this.value);
@@ -273,16 +277,18 @@
               var array = afterAction(this);
          });
 
-         $('[id^=stop_button_').click(function(){
+         $('[id^=stop_button_]').click(function(){
            clearInterval(window.alarm);
            window.alarm = null;
            window.chatApp.action(this.value,'stop');
            clearCurrent(this.value);
            //receiveSubmitHandler({user_id:this.value});
-      });
-         $('.correct_button').click(function(){
+         });
+
+         $('[id^=correct_button_]').click(function(){
+          console.log(this.value);
           window.chatApp.right(this.value);
-        });
+         });
 
 
       });

@@ -81,7 +81,7 @@
 	var doResponse_ = function(){
 		var timeCount = 0;
 		var timeStep = 2;
-		var wait = 20;
+		var wait = 12;
 		for(var x in instanceMap_){
 			setTimeout((function(ins){
 				return function(){
@@ -103,11 +103,32 @@
 
 						var sourceMinWidth = Math.min(prop_.width, prop_.height);
 						ins.context_.lineWidth = squareSize / (sourceMinWidth / prop_.lineWidth);
-
+						ins.context_.lineCap = prop_.lineCap;
+						ins.context_.strokeStyle = prop_.lineColor;
+						
 						if(ins.backImgLoad_){
 							ins.context_.drawImage(ins.backImg_, 0, 0, squareSize, squareSize);
 							// rewrite cached drawing
 							// ....
+						}
+						for(var i = 0, len = ins.track_.length; i < len; i++){
+							var single = ins.track_[i];
+							var pslen = single.length;
+							var con = ins.context_;
+							var x = single[0][0] * ins.rootScale_;
+							var y = single[0][1] * ins.rootScale_;
+							con.beginPath();
+							con.moveTo(x - 0.1, y - 0.1);
+							con.lineTo(x, y);
+							con.moveTo(x, y);
+							con.stroke();
+							for(var ps = 1; ps < pslen; ps++){
+								x = single[ps][0] * ins.rootScale_;
+								y = single[ps][1] * ins.rootScale_;
+								con.lineTo(x, y);
+								con.moveTo(x, y);
+								con.stroke();
+							}
 						}
 					}
 				};
@@ -149,6 +170,7 @@
 	function CanvasInstance(id){
 		this.el_ = getEl_(id);
 		this.id_ = getId_(this.el_);
+		this.track_ = [];
 		
 		this.rootScale_ = Math.pow(prop_.targetZoomScale, 1/2);
 		var w = this.width_ = prop_.width * this.rootScale_ ;
@@ -196,6 +218,7 @@
 		var con = this.context_;
 		var x = this.rootScale_ * pt.x;
 		var y = this.rootScale_ * pt.y;
+		this.track_.push([[pt.x, pt.y]]);
 		con.beginPath();
 		con.moveTo(x - 0.1, y - 0.1);
 		con.lineTo(x, y);
@@ -221,6 +244,7 @@
 		var con = this.context_;
 		var x = this.rootScale_ * pt.x;
 		var y = this.rootScale_ * pt.y;
+		this.track_[this.track_.length-1].push([pt.x, pt.y]);
 		con.lineTo(x, y);
 		con.moveTo(x, y);
 		con.stroke();
@@ -245,6 +269,7 @@
 		}else{
 			this.context_.clearRect(0, 0, this.width_, this.height_);
 		}
+		this.track_ = [];
 		if(typeof callback == 'function'){
 			setTimeout((function(scope){
 				return function(){
