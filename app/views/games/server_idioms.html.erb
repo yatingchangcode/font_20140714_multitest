@@ -29,9 +29,11 @@
               <%= render_gamer_photo(x.image,"thumb",50,50) %>
               <p><%= x.name %></p>
             </div>
-            <div id="status_<%= x.number %>" class="col-md-2">stop</div>
+            <div id="status_<%= x.number %>">stop</div>
+            <div>剩餘:</div>
+            <div id="second_<%= x.number %>" style="color:red font-size:12px;" class="badge"><%= @second %>秒</div>
           </div>
-        </div>
+          </div>
         <% end %>
       </div>
       <div class="row">
@@ -49,7 +51,8 @@
       <script>
 
       window.timeRemaining = parseInt(<%= @second %>);
-      window.alarm = null;
+      //window.alarm = null;
+      var alarm = {};
 
       var afterAction = function(property){
         var array = [];

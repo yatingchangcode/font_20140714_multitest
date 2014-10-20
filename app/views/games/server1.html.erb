@@ -12,6 +12,10 @@
           <% @visitors.each do |x| %>
           <div class="visitor col-md-3" id="visitor_<%= x.number %>">
           <div class="row">
+            <div class="container">
+                <button style="font-size:12px;" value="<%= x.number %>" type="button" class="correct_button btn btn-default navbar-btn">答對</button>
+                <button id="out_button_<%= x.number %>" style="font-size:12px;" value="<%= x.number %>" type="button" class="btn btn-default navbar-btn">淘汰</button>
+            </div>
             <div class="col-md-1">
               <input type="checkbox" name="gamer" value="<%= x.number %>"/>
             </div>
@@ -34,8 +38,8 @@
             <input type="checkbox" id="allGamer"/>全選
             <button id="yes_button" style="font-size:15px;">答對</button>
             <button id="out_button" style="font-size:15px;">淘汰</button>
-            <button id="start_button" style="font-size:15px;">Start</button>
-            <button id="stop_button" style="font-size:15px;">Stop</button>
+            <button id="start_button" style="font-size:15px;">全部開始</button>
+            <button id="stop_button" style="font-size:15px;">停止已選</button>
             <button id="clear_button" style="font-size:15px;">Clear All!</button>
           </div>
         </div>
@@ -43,6 +47,7 @@
 
       <% content_for :javascripts do %>
       <%= javascript_include_tag 'server' %>
+      <%= javascript_include_tag 'processing.min' %>
       <script>
 
       var receiveSubmitHandler = function(o){
@@ -87,6 +92,14 @@
           return array;
         }
 
+        function markCurrent(c) {
+        $('#visitor_'+c).css("background-color", "#cc00cc");
+        }
+
+        function clearCurrent(c) {
+        $('#visitor_'+c).css("background-color", "");
+        }
+
         $('#allGamer').click(function(){
           $('[name="gamer"]').each((function(toCheck){
             return function(){
@@ -114,6 +127,7 @@
 
         });
 
+
         /*
         $('#clear_button').click(function() {
             $('[name="gamer"]').each(function() {
@@ -121,12 +135,52 @@
             }
         });
         */
+          var gamers = {
+            gamersList : [],
+            last: null,
+            next : function() {
+                var newgamer = this.gamersList.shift();
+                this.gamersList.push(newgamer);
+                this.last = newgamer;
+                return newgamer;
+            },
+            prev: function() {
+                return this.last;
+            },
+            push : function(i) {
+              this.gamersList.push(i);
+            }, 
+            remove : function(i) {
+              var idx = this.gamersList.indexOf(i);
+              if (idx > -1) {
+                  this.gamersList.splice(idx, 1);
+              }
+            },
 
+            all: function() {
+              return this.gamersList.slice(0);
+            },
+
+            setActive: function(i) {
+              this.last = i;
+              var idx = this.gamersList.indexOf(i);
+              var head = this.gamersList.splice(0, idx);
+              this.gamersList = this.gamersList.concat(head);
+            }
+        };
+
+        var collectGamers = function() {
+           <% @visitors.each do |visitor| %>
+           gamers.push('<%= visitor.number %>');
+           <% end %>
+        }
+        collectGamers();
 
         $('#out_button').click(function(){
           $('[name="gamer"]').each(function(){
             if (this.checked) {
               CM.unreg('origin_'+this.value);
+              gamers.remove(this.value);
               this.disabled = true;
             }
           });
@@ -137,14 +191,23 @@
           //alert("outer:"+array);
         });
 
+        $("[id^=out_button_]").click(function(){
+            CM.unreg('origin_'+this.value);
+            //this.disabled = true;
+            gamers.remove(this.value);
+            this.disabled = true;
+            $('#visitor_'+this.value).attr('style','opacity:0.2');
+        });
+
         $('#start_button').click(function(){
+          
           if(window.alarm) return;
-          $('[name="gamer"]').each(function(){
-            if (this.checked) {
-              window.chatApp.action(this.value,'start');
-              $('#visitor_'+this.value).css("background-color", "");
-            }
+          $(gamers.all()).each(function(u){
+            console.log(u);
+            window.chatApp.action(u, 'start');
+            $('#visitor_'+this.value).css("background-color", "");
           });
+          
           if ($('#second').text() != ''){
             window.alarm = setInterval(function(){
               if (parseInt($('#second').text()) != 0){
@@ -152,11 +215,10 @@
               }else{
                 clearInterval(window.alarm);
                 window.alarm = null;
-                $('[name="gamer"]').each(function(){
-                  if (this.checked) {
-                    window.chatApp.action(this.value,'stop');
-                    receiveSubmitHandler({user_id:this.value});
-                  }
+                $(gamers.all()).each(function(u){
+                  console.log(u);
+                  window.chatApp.action(u, 'stop');
+                  receiveSubmitHandler({user_id:u});
                 });
                 var array = afterAction(this);
                 //alert("stop:"+array);
@@ -165,6 +227,29 @@
           }
           //var array = afterAction(this);
           //alert("start:"+array);
+        });
+
+        var startCounter = function(thisvalue) {
+               if(window.alarm) return;
+               window.alarm = setInterval(function(){
+                if (parseInt($('#second').text()) != 0){
+                  console.log($('#second').text());
+                  $('#second').text(parseInt($('#second').text()) - 1);
+                } else {
+                  clearInterval(window.alarm);
+                  window.alarm = null;
+                  window.chatApp.action(thisvalue,'stop');
+                  $('#second').text(window.timeRemaining);
+             }
+              },1000); 
+            };
+
+        $('[id^=start_button_').click(function(){
+            window.chatApp.action(this.value,'start');
+            $('#visitor_'+this.value).css("background-color", "");
+            //console.log(this.value);
+            markCurrent(this.value);
+            startCounter(this.value);
         });
 
          $('#stop_button').click(function(){
@@ -187,6 +272,18 @@
               });
               var array = afterAction(this);
          });
+
+         $('[id^=stop_button_').click(function(){
+           clearInterval(window.alarm);
+           window.alarm = null;
+           window.chatApp.action(this.value,'stop');
+           clearCurrent(this.value);
+           //receiveSubmitHandler({user_id:this.value});
+      });
+         $('.correct_button').click(function(){
+          window.chatApp.right(this.value);
+        });
+
 
       });
       </script>

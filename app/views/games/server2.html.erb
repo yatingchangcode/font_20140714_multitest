@@ -5,10 +5,10 @@
       <div style="">
         <div class="row">
           <% @visitors.each do |x| %>
-          <div class="visitor col-md-3" id="visitor_<%= x.number %>">
+          <div class="visitor col-md-3" id="visitor_<%= x.number %>" style="border:3px solid #f8f8f8">
             <div class="row">
-            <div class="container">
-                <button style="font-size:12px;" value="<%= x.number %>" type="button" class="correct_button btn btn-default navbar-btn">答對</button>
+                <div class="container">
+                <button id="correct_button_<%= x.number %>" style="font-size:12px;" value="<%= x.number %>" type="button" class="correct_button btn btn-default navbar-btn">答對</button>
                 <button id="continue_<%= x.number %>" style="font-size:12px;" value="<%= x.number %>" type="button" class="btn btn-default navbar-btn">繼續寫</button>
                 <button id="out_button_<%= x.number %>" style="font-size:12px;" value="<%= x.number %>" type="button" class="btn btn-default navbar-btn">淘汰</button>
                 <button id="start_button_<%= x.number %>" style="font-size:12px;" value="<%= x.number %>" type="button" class="btn btn-default navbar-btn">Start</button>
@@ -20,8 +20,8 @@
               <div class="col-md-3">
                 <%= render_gamer_photo(x.image,"thumb",50,50) %>
                 <p><%= x.name %></p>
-                <span id="second_<%= x.number %>" style="color:red font-size:12px;" class="badge"><%= @second %>秒</span>
-                <span id="no_correct_<%= x.number %>" class="badge">答對33題</span>
+                <span>剩餘:</span><span id="second_<%= x.number %>" style="color:red font-size:12px;" class="badge"><%= @second %>秒</span>
+                <span>答對:</span><span id="no_correct_<%= x.number %>" class="badge">0題</span>
               </div>
               <div class="col-md-6">
                 <canvas id="origin_<%= x.number %>" class="orgincanvas" style="z-index:1"></canvas>
@@ -51,17 +51,18 @@
 
       var seconds = <%= @second %>;
       var alarm = {};
+      var no_correct = {};
 
       var receiveSubmitHandler = function(o){
         $('#visitor_'+o.user_id).css("background-color", "#e0e0e0");
       };
 
       function markCurrent(c) {
-        $('#visitor_'+c).css("background-color", "#cc00cc");
+        $('#visitor_'+c).css("border-color", "#cc00cc");
       }
 
       function clearCurrent(c) {
-        $('#visitor_'+c).css("background-color", "");
+        $('#visitor_'+c).css("border-color", "#f8f8f8");
       }
       
       window.open("tvwall?join_visitors_number=<%= params[:join_visitors_number] %>&second=<%= @second %>","tvwallWindow","width=800, height=800");
@@ -122,8 +123,16 @@
           //alert("answer right:"+array);
         });
 
-        $('.correct_button').click(function(){
+        $('[id^=correct_button_]').click(function(){
           window.chatApp.right(this.value);
+          console.log(this.value);
+          if (!no_correct[this.value]) {
+            no_correct[this.value] = 1;
+          } else {
+            no_correct[this.value] += 1;
+          }
+          $("#no_correct_" + this.value).text(no_correct[this.value]+"題");
+          console.log(no_correct);
         });
 
         var gamers = {
@@ -155,8 +164,9 @@
             setActive: function(i) {
               this.last = i;
               var idx = this.gamersList.indexOf(i);
-              var head = this.gamersList.splice(0, idx);
+              var head = this.gamersList.splice(0, idx+1);
               this.gamersList = this.gamersList.concat(head);
+              console.log(this.gamersList);
             }
         };
 
