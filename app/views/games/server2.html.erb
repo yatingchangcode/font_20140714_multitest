@@ -7,13 +7,21 @@
           <% @visitors.each do |x| %>
           <div class="visitor col-md-3" id="visitor_<%= x.number %>">
             <div class="row">
+            <div class="container">
+                <button style="font-size:12px;" value="<%= x.number %>" type="button" class="correct_button btn btn-default navbar-btn">答對</button>
+                <button id="continue_<%= x.number %>" style="font-size:12px;" value="<%= x.number %>" type="button" class="btn btn-default navbar-btn">繼續寫</button>
+                <button id="out_button_<%= x.number %>" style="font-size:12px;" value="<%= x.number %>" type="button" class="btn btn-default navbar-btn">淘汰</button>
+                <button id="start_button_<%= x.number %>" style="font-size:12px;" value="<%= x.number %>" type="button" class="btn btn-default navbar-btn">Start</button>
+                <button id="stop_button_<%= x.number %>" style="font-size:12px;" value="<%= x.number %>" type="button" class="btn btn-default navbar-btn">Stop</button>
+                </div>
               <div class="col-md-1">
-                <input type="checkbox" name="gamer" value="<%= x.number %>"/>
+              <input type="checkbox" name="gamer" value="<%= x.number %>"/>
               </div>
               <div class="col-md-3">
                 <%= render_gamer_photo(x.image,"thumb",50,50) %>
                 <p><%= x.name %></p>
-                <span id="second_<%= x.number %>" style="color:red"><%= @second %></span>
+                <span id="second_<%= x.number %>" style="color:red font-size:12px;" class="badge"><%= @second %>秒</span>
+                <span id="no_correct_<%= x.number %>" class="badge">答對33題</span>
               </div>
               <div class="col-md-6">
                 <canvas id="origin_<%= x.number %>" class="orgincanvas" style="z-index:1"></canvas>
@@ -25,14 +33,14 @@
           </div>
           <% end %>
         </div>
+        <br/>
         <div class="row">
           <div class="col-md-12">
             <input type="checkbox" id="allGamer"/>全選
-            <button id="yes_button" style="font-size:15px;">答對</button>
-            <button id="no_button" style="font-size:15px;">答錯</button>
-            <button id="out_button" style="font-size:15px;">淘汰</button>
-            <button id="start_button" style="font-size:15px;">Start</button>
-            <button id="stop_button" style="font-size:15px;">Stop</button>
+            <button id="out_button" style="font-size:20px;">淘汰</button>
+            <!-- <button id="start_button" style="font-size:20px;">Start</button> -->
+            <button id="stop_all_button" style="font-size:20px;">全部停止</button>
+            <button id="next_button" style="font-size:20px;">下一位</button>
           </div>
         </div>
       </div>
@@ -41,10 +49,21 @@
       <%= javascript_include_tag 'server' %>
       <script>
 
+      var seconds = <%= @second %>;
+      var alarm = {};
+
       var receiveSubmitHandler = function(o){
         $('#visitor_'+o.user_id).css("background-color", "#e0e0e0");
       };
-      window.alarm = null;
+
+      function markCurrent(c) {
+        $('#visitor_'+c).css("background-color", "#cc00cc");
+      }
+
+      function clearCurrent(c) {
+        $('#visitor_'+c).css("background-color", "");
+      }
+      
       window.open("tvwall?join_visitors_number=<%= params[:join_visitors_number] %>&second=<%= @second %>","tvwallWindow","width=800, height=800");
       window.open("record?join_visitors_number=<%= params[:join_visitors_number] %>&second=<%= @second %>","recordWindow","width=800, height=800");
 
@@ -63,6 +82,7 @@
 
         window.chatApp = new ChatApp(500,500,'0');
         window.chatApp.bindEvents();
+        window.chatApp.reset();
 
         var afterAction = function(property){
           var array = [];
@@ -77,6 +97,11 @@
 
           return array;
         }
+
+        $('[id^=continue_]').click(function(){
+          window.chatApp.continue_write(this.value);
+          $('#visitor_'+this.value).css("background-color", "");
+        });
 
         $('#allGamer').click(function(){
           $('[name="gamer"]').each((function(toCheck){
@@ -97,13 +122,92 @@
           //alert("answer right:"+array);
         });
 
-        $('#no_button').click(function(){
-          $('[name="gamer"]').each(function(){
-            if (this.checked) {
-              window.chatApp.wrong(this.value);
+        $('.correct_button').click(function(){
+          window.chatApp.right(this.value);
+        });
+
+        var gamers = {
+            gamersList : [],
+            last: null,
+            next : function() {
+                var newgamer = this.gamersList.shift();
+                this.gamersList.push(newgamer);
+                this.last = newgamer;
+                return newgamer;
+            },
+            prev: function() {
+                return this.last;
+            },
+            push : function(i) {
+              this.gamersList.push(i);
+            }, 
+            remove : function(i) {
+              var idx = this.gamersList.indexOf(i);
+              if (idx > -1) {
+                  this.gamersList.splice(idx, 1);
+              }
+            },
+
+            all: function() {
+              return this.gamersList.slice(0);
+            },
+
+            setActive: function(i) {
+              this.last = i;
+              var idx = this.gamersList.indexOf(i);
+              var head = this.gamersList.splice(0, idx);
+              this.gamersList = this.gamersList.concat(head);
             }
-          });
-          //alert("answer wrong:"+array);
+        };
+
+        var collectGamers = function() {
+           <% @visitors.each do |visitor| %>
+           gamers.push('<%= visitor.number %>');
+           <% end %>
+        }
+        collectGamers();
+
+        
+
+        $('#next_button').click(function(){
+
+              // stop last user
+              if (gamers.prev() != null) {
+                window.chatApp.action(gamers.prev(),'stop');
+                clearInterval(window.alarm[gamers.prev()]);
+                window.alarm[gamers.prev()] = null;
+                clearCurrent(gamers.prev());
+              }
+              var newgamer = gamers.next();
+              // call old gamer to stop
+              // call new user to clear screen
+              window.chatApp.clear(newgamer);
+              window.chatApp.action(newgamer,'start');
+              markCurrent(newgamer);
+              startCounter(newgamer);
+        });
+
+
+        var startCounter = function (thisvalue) {
+               window.alarm[thisvalue] = setInterval(function(){
+                if (parseInt($('#second_'+thisvalue).text()) != 0){
+                  console.log($('#second_'+thisvalue).text());
+                  $('#second_'+thisvalue).text(parseInt($('#second_'+thisvalue).text()) - 1 + "秒");
+                } else {
+                  clearInterval(window.alarm[thisvalue]);
+                  window.alarm[thisvalue] = null;
+                  window.chatApp.action(thisvalue,'stop');
+                  receiveSubmitHandler({user_id:thisvalue});
+                }
+              },1000); 
+             };
+
+        $("[id^=out_button_]").click(function(){
+            console.log(this.value);
+            CM.unreg('origin_'+this.value);
+            //this.disabled = true;
+            gamers.remove(this.value);
+            $('#visitor_'+this.value).attr('style','opacity:0.2');
         });
 
         $('#out_button').click(function(){
@@ -111,6 +215,7 @@
             if (this.checked) {
               CM.unreg('origin_'+this.value);
               this.disabled = true;
+              gamers.remove(this.value);
             }
           });
           var array = afterAction(this);
@@ -118,6 +223,18 @@
             $('#visitor_'+array[x]).attr('style','opacity:0.2');
           }
           //alert("outer:"+array);
+        });
+
+        $('[id^=start_button_').click(function(){
+            if (!window.alarm) {
+              window.alarm ={};
+            }
+            window.chatApp.action(this.value,'start');
+            $('#visitor_'+this.value).css("background-color", "");
+            //console.log(this.value);
+            gamers.setActive(this.value);
+            markCurrent(this.value);
+            startCounter(this.value);
         });
 
         $('#start_button').click(function(){
@@ -136,7 +253,7 @@
                window.alarm = setInterval(function(){
                 if (parseInt($('#second_'+thisvalue).text()) != 0){
                   console.log($('#second_'+thisvalue).text());
-                  $('#second_'+thisvalue).text(parseInt($('#second_'+thisvalue).text()) - 1);
+                  $('#second_'+thisvalue).text(parseInt($('#second_'+thisvalue).text()) - 1 );
                 }else{
                   clearInterval(window.alarm);
                   window.alarm = null;
@@ -149,24 +266,28 @@
            }
          });
           var array = afterAction(this);
-                //alert("stop:"+array);
-
-          //var array = afterAction(this);
-          //alert("start:"+array);
+                
         });
 
-      $('#stop_button').click(function(){
-            /*
-           $('[name="gamer"]').each(function(){
-             if (this.checked) {
-               window.chatApp.action(this.value,'stop');
-             }
-           });
+      $('#stop_all_button').click(function(){
+           if (!window.alarm) return;
+           console.log(gamers.all());
+           gamers.all().forEach( function(i) {
+              console.log(i);
+              clearInterval(window.alarm[i]);
+              window.alarm[i] = null;
+              window.chatApp.action(i,'stop');
+              //receiveSubmitHandler({user_id:i});
+              clearCurrent(i);
+          });
            var array = afterAction(this);
-           //alert("stop:"+array);
-           */
-           clearInterval(window.alarm);
-           window.alarm = null;
+
+      });
+
+      $('#stop_button').click(function(){
+           
+           clearInterval(window.alarm[this.value]);
+           window.alarm[this.value] = null;
            $('[name="gamer"]').each(function(){
             if (this.checked) {
               window.chatApp.action(this.value,'stop');
@@ -175,6 +296,14 @@
           });
            var array = afterAction(this);
          });
+
+      $('[id^=stop_button_').click(function(){
+           clearInterval(window.alarm[this.value]);
+           window.alarm[this.value] = null;
+           window.chatApp.action(this.value,'stop');
+           clearCurrent(this.value);
+           //receiveSubmitHandler({user_id:this.value});
+      });
 
     });
       </script>

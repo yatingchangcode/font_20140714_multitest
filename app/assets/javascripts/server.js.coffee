@@ -42,6 +42,9 @@ class @ChatApp
   clearAll: () ->
    @dispatcher.trigger 'clearAll' 
 
+  clear: (uid) ->
+   @dispatcher.trigger 'clear', user_id: uid 
+
   getUserCount: (data) ->
     $('#user_count').text(data.user_count);
 
@@ -53,6 +56,12 @@ class @ChatApp
 
   right: (uid) =>
     @dispatcher.trigger 'right' , user_id: uid
+
+  continue_write: (uid) ->
+    @dispatcher.trigger 'continue_write', user_id: uid
+
+  reset: () =>
+    @dispatcher.trigger 'reset'
 
   wrong: (uid) =>
     @dispatcher.trigger 'wrong' , user_id: uid

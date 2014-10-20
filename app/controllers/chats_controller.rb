@@ -25,13 +25,13 @@ class ChatsController < WebsocketRails::BaseController
     record_path ||= File.expand_path(File.join("record"), Rails.public_path)
     file_path = FileUtils.mkdir_p("#{record_path}/game#{message[:game]}_#{@game.created_at.strftime("%Y%m%d")}/#{file_name}")
     
-    controller_store[:user_id_file_path][message[:user_id]] = file_path
+    controller_store[:user_id_file_path][message[:trade_key]] = file_path
     p controller_store[:user_id_file_path]
   end
 
   def save_file 
     p message[:user_id]+" save_file"
-    file_path = controller_store[:user_id_file_path][message[:user_id]][0]
+    file_path = controller_store[:user_id_file_path][message[:trade_key]][0]
     file_name = message[:timestamp]
 
     enc   = Base64.decode64(message[:base64])
@@ -40,7 +40,7 @@ class ChatsController < WebsocketRails::BaseController
 
   def close_file
     p message[:user_id]+" close_file"
-    file_path = controller_store[:user_id_file_path][message[:user_id]][0]
+    file_path = controller_store[:user_id_file_path][message[:trade_key]][0]
     begin
       p Subprocess.check_call(["ffmpeg", "-framerate", "50", "-i", "#{file_path}/%d.png", "#{file_path}.mp4", "-y"])
     rescue Subprocess::NonZeroExit => e

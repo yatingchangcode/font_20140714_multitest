@@ -6,6 +6,7 @@
           <button id="clearBtn" style="font-size:15px;">Clear</button>
           <button id="prevBtn" style="font-size:15px;">Prev</button>
           <button id="submitBtn" style="font-size:15px;">Submit</button>
+          <p id="seconds" style="float:right;"></p>
         </div>
         <canvas id="origin_<%= @user_id %>" class="orgincanvas"></canvas>
       </div>
@@ -14,6 +15,8 @@
       <% content_for :javascripts do %>
       <%= javascript_include_tag 'client' %>
       <script>
+      var seconds;
+      
       $(document).ready(function() {
         CM.prop({
           width: 500,
@@ -30,8 +33,11 @@
         window.chatApp.triggerEvents();
         window.chatApp.bindEvents();
 
-
       });
+
+      var resetAlarm = function() {
+          $('#seconds').html(window.seconds);
+      }
 
       var receiveActionHandler = function(data){
         var name = data.action;
