@@ -210,8 +210,21 @@
               startCounter(newgamer);
         });
 
+        function isEmpty(obj) {
+          for (var prop in obj) {
+            if (obj.hasOwnProperty(prop))
+              return false;
+          }
+          return true;
+        }
 
         var startCounter = function (thisvalue) {
+               if (window.alarm === null) { 
+                window.alarm = {};
+              }
+               if (!isEmpty(window.alarm[thisvalue]))  return;
+
+
                window.alarm[thisvalue] = setInterval(function(){
                 if (parseInt($('#second_'+thisvalue).text()) != 0){
                   console.log($('#second_'+thisvalue).text());
