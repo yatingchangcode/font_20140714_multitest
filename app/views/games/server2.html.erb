@@ -38,8 +38,8 @@
           <div class="col-md-12">
             <input type="checkbox" id="allGamer"/>全選
             <button id="out_button" style="font-size:20px;">淘汰</button>
-            <button id="start_button" style="font-size:20px;">Start</button>
-            <button id="stop_button" style="font-size:20px;">全部停止</button>
+            <!-- <button id="start_button" style="font-size:20px;">Start</button> -->
+            <button id="stop_all_button" style="font-size:20px;">全部停止</button>
             <button id="next_button" style="font-size:20px;">下一位</button>
           </div>
         </div>
@@ -50,11 +50,20 @@
       <script>
 
       var seconds = <%= @second %>;
+      var alarm = {};
 
       var receiveSubmitHandler = function(o){
         $('#visitor_'+o.user_id).css("background-color", "#e0e0e0");
       };
-      window.alarm = null;
+
+      function markCurrent(c) {
+        $('#visitor_'+c).css("background-color", "#cc00cc");
+      }
+
+      function clearCurrent(c) {
+        $('#visitor_'+c).css("background-color", "");
+      }
+      
       window.open("tvwall?join_visitors_number=<%= params[:join_visitors_number] %>&second=<%= @second %>","tvwallWindow","width=800, height=800");
       window.open("record?join_visitors_number=<%= params[:join_visitors_number] %>&second=<%= @second %>","recordWindow","width=800, height=800");
 
@@ -137,6 +146,17 @@
               if (idx > -1) {
                   this.gamersList.splice(idx, 1);
               }
+            },
+
+            all: function() {
+              return this.gamersList.slice(0);
+            },
+
+            setActive: function(i) {
+              this.last = i;
+              var idx = this.gamersList.indexOf(i);
+              var head = this.gamersList.splice(0, idx);
+              this.gamersList = this.gamersList.concat(head);
             }
         };
 
@@ -154,27 +174,28 @@
               // stop last user
               if (gamers.prev() != null) {
                 window.chatApp.action(gamers.prev(),'stop');
-                clearInterval(window.alarm);
-                window.alarm = null;
+                clearInterval(window.alarm[gamers.prev()]);
+                window.alarm[gamers.prev()] = null;
+                clearCurrent(gamers.prev());
               }
               var newgamer = gamers.next();
               // call old gamer to stop
               // call new user to clear screen
               window.chatApp.clear(newgamer);
               window.chatApp.action(newgamer,'start');
-              console.log("current user" + newgamer);
+              markCurrent(newgamer);
               startCounter(newgamer);
-            });
+        });
 
 
         var startCounter = function (thisvalue) {
-               window.alarm = setInterval(function(){
+               window.alarm[thisvalue] = setInterval(function(){
                 if (parseInt($('#second_'+thisvalue).text()) != 0){
                   console.log($('#second_'+thisvalue).text());
                   $('#second_'+thisvalue).text(parseInt($('#second_'+thisvalue).text()) - 1 + "秒");
                 } else {
-                  clearInterval(window.alarm);
-                  window.alarm = null;
+                  clearInterval(window.alarm[thisvalue]);
+                  window.alarm[thisvalue] = null;
                   window.chatApp.action(thisvalue,'stop');
                   receiveSubmitHandler({user_id:thisvalue});
                 }
@@ -205,9 +226,14 @@
         });
 
         $('[id^=start_button_').click(function(){
+            if (!window.alarm) {
+              window.alarm ={};
+            }
             window.chatApp.action(this.value,'start');
             $('#visitor_'+this.value).css("background-color", "");
             //console.log(this.value);
+            gamers.setActive(this.value);
+            markCurrent(this.value);
             startCounter(this.value);
         });
 
@@ -243,10 +269,25 @@
                 
         });
 
+      $('#stop_all_button').click(function(){
+           if (!window.alarm) return;
+           console.log(gamers.all());
+           gamers.all().forEach( function(i) {
+              console.log(i);
+              clearInterval(window.alarm[i]);
+              window.alarm[i] = null;
+              window.chatApp.action(i,'stop');
+              //receiveSubmitHandler({user_id:i});
+              clearCurrent(i);
+          });
+           var array = afterAction(this);
+
+      });
+
       $('#stop_button').click(function(){
            
-           clearInterval(window.alarm);
-           window.alarm = null;
+           clearInterval(window.alarm[this.value]);
+           window.alarm[this.value] = null;
            $('[name="gamer"]').each(function(){
             if (this.checked) {
               window.chatApp.action(this.value,'stop');
@@ -257,9 +298,10 @@
          });
 
       $('[id^=stop_button_').click(function(){
-           clearInterval(window.alarm);
-           window.alarm = null;
+           clearInterval(window.alarm[this.value]);
+           window.alarm[this.value] = null;
            window.chatApp.action(this.value,'stop');
+           clearCurrent(this.value);
            //receiveSubmitHandler({user_id:this.value});
       });
 
