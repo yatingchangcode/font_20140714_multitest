@@ -1,6 +1,6 @@
 /**
  * @fileoverview Utilities for handling canvases in html page.
- * @author miecowbai@google.com (Kino Lien)
+ * @author miecowbai@gmail.com (Kino Lien)
  */
  
 (function(scope){
@@ -22,6 +22,8 @@
 	 * @private {number}
 	 */
 	var idCount_ = 0;
+
+	var isHooked_ = false;
 	
 	/**
 	 * The CanvasManager properties definitions.
@@ -41,6 +43,7 @@
 		lineCap: 'round',
 		lineColor: '#00ccff',
 		targetZoomScale: 1,
+		responsiveByParent: false
 		// backgroundImage
 	};
 	
@@ -72,6 +75,57 @@
 			return id;
 		}else{
 			console.error('CM can not handle the null, undefined, empty id string or non-canvas elements.');
+		}
+	};
+
+	var doResponse_ = function(){
+		var timeCount = 0;
+		var timeStep = 2;
+		var wait = 20;
+		for(var x in instanceMap_){
+			setTimeout((function(ins){
+				return function(){
+					var p;
+					if(ins && p = ins.el_.parentElement){
+						var styles = getComputedStyle(p);
+						var aw = p.clientWidth - (parseInt(styles['paddingLeft']) + parseInt(styles['paddingRight']));
+						var ah = p.clientHeight - (parseInt(styles['paddingTop']) + parseInt(styles['paddingBottom']));
+						
+						var squareSize = Math.min(aw, ah);
+						
+						if(ins.backImgLoad_){
+							ins.context_.drawImage(ins.backImg_, 0, 0, squareSize, squareSize);
+							// rewrite cached drawing
+							// ....
+						}
+
+						ins.width_ = squareSize;
+						ins.height_ = squareSize;
+						ins.el_.width = Math.round(squareSize);
+						ins.el_.height = Math.round(squareSize);
+						ins.rootScale_ = ins.width_ / prop_.width;
+
+						var sourceMinWidth = Math.min(prop_.width, prop_.height);
+						ins.context_.lineWidth = squareSize / (sourceMinWidth / prop_.lineWidth);
+						// p.clientWidth - paddings = actual width
+						// p.clientHeight - paddings = actual height
+					}
+				};
+			})(instanceMap_[x]), timeCount++ * timeStep + wait);
+		}
+	};
+
+	var hook_ = function(){
+		if(!isHooked_){
+			scope.addEventListener('resize', doResponse_);
+			isHooked_ = true;
+		}
+	};
+
+	var unhook_ = function(){
+		if(isHooked_){
+			scope.removeEventListener('resize', doResponse_);
+			isHooked_ = false;
 		}
 	};
 	
@@ -270,6 +324,13 @@
 			for(var p in property){
 				prop_[p] = property[p];
 			}
+
+			if(prop_.responsiveByParent === true){
+				hook_();
+			}else{
+				unhook_();
+			}
+
 			var back = prop_.backgroundImage;
 			if(back){
 				if(typeof back == 'string'){
@@ -287,8 +348,11 @@
 		return prop_;
 	};
 	
+	if(prop_.responsiveByParent === true) hook_();
+
 	// return to input scope
 	scope.CM = CM;
+
 })(window);
 
 
