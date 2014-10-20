@@ -65,7 +65,7 @@ class GamesController < ApplicationController
     #@user_unregs = [1,4]
   end
 
-  def tvwall
+  def tvwall_A1
     @game = Game.find(params[:id])
     @visitors = @game.visitors.where(number: params[:join_visitors_number].split(","))
     @range = 1..@visitors.size

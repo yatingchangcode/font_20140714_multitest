@@ -1,0 +1,92 @@
+<% content_for :stylesheets do %>
+<style type="text/css">
+
+body,.container{
+  background-color: #000000;
+  width: 100%;
+}
+
+h4 {
+  color: #ffffff
+}
+
+.border_radius{
+  border: 2px solid #D6D6D6;
+  -webkit-border-radius: 100px;
+  -moz-border-radius: 100px;
+  border-radius: 100px;
+}
+
+.block{
+  opacity: 0.9;
+  
+  //border: 1px solid white;
+  
+}
+
+.every_writer_box_down{
+  float:left;
+  padding-top:15%;
+  width:25%;
+}
+
+
+.canvas_box{
+
+  z-index:1;
+  display:block;
+  margin:0 auto;
+}
+
+</style>
+<% end %>
+<div style="margin:0 10%">
+  <div class="visitor block every_writer_box_down">
+    <div style="width:90%;margin:0 auto 20px auto;">
+      <img alt="100x100&amp;text=no pic" class="medium" length="100" src="http://placehold.it/100x100&amp;text=No Pic" width="50"  />
+      <h4 style="display:inline;">aaa</h4>
+      <img style="float:right;" alt="100x100&amp;text=no pic" class="medium" length="100" src="http://placehold.it/100x100&amp;text=No Pic" width="50"  />
+    </div>
+    <canvas id="origin_1" class="orgincanvas canvas_box" ></canvas>
+  </div>
+
+  <div class="visitor block every_writer_box_down" style="float:right">
+    <div style="width:90%;margin:0 auto 20px auto;">
+      <img alt="100x100&amp;text=no pic" class="medium" length="100" src="http://placehold.it/100x100&amp;text=No Pic" width="50"  />
+      <h4 style="display:inline;">aaa</h4>
+      <img style="float:right;" alt="100x100&amp;text=no pic" class="medium" length="100" src="http://placehold.it/100x100&amp;text=No Pic" width="50"  />
+    </div>
+    <canvas id="origin_2" class="orgincanvas canvas_box" ></canvas>
+  </div>
+
+</div>
+
+<% content_for :javascripts do %>
+<%= javascript_include_tag 'server' %>
+<script>
+
+var receiveSubmitHandler = function(o){
+  $('#visitor_'+o.user_id).css("background-color", "#f0f0f0");
+};
+window.timeRemaining = parseInt(<%= @second %>);
+window.alarm = null;
+
+$(document).ready(function() {
+  CM.prop({
+    width: 500,
+    height: 500,
+    lineWidth: 15,
+    lineColor: '#333333',
+    targetZoomScale: 0.40,
+    backgroundImage: '/assets/block-524.png'
+  });
+  CM.reg('origin_1');
+  CM.reg('origin_2');
+
+  window.chatApp = new ChatApp(500,500,'0');
+  window.chatApp.bindEvents();
+
+
+});
+</script>
+<% end %>

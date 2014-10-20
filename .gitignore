@@ -16,3 +16,6 @@
 /tmp
 /public/uploads
 /public/record
+
+*/.DS_Store
+.DS_Store

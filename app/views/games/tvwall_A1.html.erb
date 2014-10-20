@@ -1,0 +1,94 @@
+<% content_for :stylesheets do %>
+<style type="text/css">
+
+body,.container{
+  background-color: #000000;
+  width: 100%;
+}
+
+h3,h4 {
+  color: #ffffff
+}
+
+.border_radius{
+  border: 2px solid #D6D6D6;
+  -webkit-border-radius: 100px;
+  -moz-border-radius: 100px;
+  border-radius: 100px;
+}
+
+.block{
+  opacity: 0.9;
+  
+  //border: 1px solid white;
+  
+}
+
+.every_writer_box_down{
+  float:left;
+  padding-top:5%;
+  width:20%;
+}
+
+
+.canvas_box{
+
+  z-index:1;
+  display:block;
+  margin:0 auto;
+}
+
+</style>
+<% end %>
+<div style="margin:0 10%">
+  <% visitors_size = @visitors.size %>
+  <% (1..visitors_size/2).each do |x| %>
+  <div class="visitor block every_writer_box_down">
+    <% (1..2).each do |y| %>
+    <% visitor = @visitors.find_by(number: (x-1)*2 + y) %>
+    <div style="width:70%;margin:50px auto 20px auto;" id="visitor_<%= visitor.number %>">
+      <%= render_gamer_photo(visitor.image,"medium",60,60,"") %>
+      <h3 style="display:inline;"><%= visitor.name %></h3>
+    </div>
+    <canvas id="origin_<%= visitor.number %>" class="orgincanvas canvas_box" ></canvas>
+    <img id="yes_<%= visitor.number %>" src="/assets/O-mark.png" height="150" style="display:none;z-index:10;position:absolute;right:-20px;bottom:8px;" ></img>
+    <img id="no_<%= visitor.number %>" src="/assets/X-Mark.png" height="150" style="display:none;z-index:10;position:absolute;right:-20px;bottom:8px;" ></img>
+    <% end %>
+
+  </div>
+  <% end %>
+
+</div>
+
+<% content_for :javascripts do %>
+<%= javascript_include_tag 'server' %>
+<script>
+
+var receiveSubmitHandler = function(o){
+  $('#visitor_'+o.user_id).css("background-color", "#f0f0f0");
+};
+window.timeRemaining = parseInt(<%= @second %>);
+window.alarm = null;
+
+$(document).ready(function() {
+  CM.prop({
+    width: 500,
+    height: 500,
+    lineWidth: 15,
+    lineColor: '#333333',
+    targetZoomScale: 0.15,
+    responsiveByParent: true,
+    backgroundImage: '/assets/block-524.png'
+  });
+  <% @visitors.each do |visitor| %>
+  CM.reg('origin_<%= visitor.number %>');
+  <% end %>
+
+
+  window.chatApp = new ChatApp(500,500,'0');
+  window.chatApp.bindEvents();
+
+
+});
+</script>
+<% end %>
