@@ -115,7 +115,7 @@ $(document).ready(function(){
 
     var join_visitors_number = getVisitorsNumberArray(e);
 
-    location.href = '/games/<%= @game.id %>/stage_idioms?join_visitors_number=' + join_visitors_number;
+    location.href = '/games/<%= @game.id %>/stage_idioms?type=B3&join_visitors_number=' + join_visitors_number;
   }
 });
 </script>
