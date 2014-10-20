@@ -72,8 +72,51 @@ class GamesController < ApplicationController
 
     @second = params[:second]
     @@second = params[:second]
+  end
 
-    #@user_unregs = [1,4]
+  def tvwall_A2
+    @game = Game.find(params[:id])
+    @visitors = @game.visitors.where(number: params[:join_visitors_number].split(","))
+    @range = 1..@visitors.size
+
+    @second = params[:second]
+    @@second = params[:second]
+  end
+
+  def tvwall_A3
+    @game = Game.find(params[:id])
+    @visitors = @game.visitors.where(number: params[:join_visitors_number].split(","))
+    @range = 1..@visitors.size
+
+    @second = params[:second]
+    @@second = params[:second]
+  end
+
+  def tvwall_B1
+    @game = Game.find(params[:id])
+    @visitors = @game.visitors.where(number: params[:join_visitors_number].split(","))
+    @range = 1..@visitors.size
+
+    @second = params[:second]
+    @@second = params[:second]
+  end
+
+  def tvwall_B2
+    @game = Game.find(params[:id])
+    @visitors = @game.visitors.where(number: params[:join_visitors_number].split(","))
+    @range = 1..@visitors.size
+
+    @second = params[:second]
+    @@second = params[:second]
+  end
+
+  def tvwall_B3
+    @game = Game.find(params[:id])
+    @visitors = @game.visitors.where(number: params[:join_visitors_number].split(","))
+    @range = 1..@visitors.size
+
+    @second = params[:second]
+    @@second = params[:second]
   end
 
   def server_idioms

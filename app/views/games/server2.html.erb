@@ -65,7 +65,7 @@
         $('#visitor_'+c).css("border-color", "#f8f8f8");
       }
       
-      window.open("tvwall?join_visitors_number=<%= params[:join_visitors_number] %>&second=<%= @second %>","tvwallWindow","width=800, height=800");
+      window.open("tvwall_<%= params[:type] %>?join_visitors_number=<%= params[:join_visitors_number] %>&second=<%= @second %>","tvwallWindow","width=800, height=800");
       window.open("record?join_visitors_number=<%= params[:join_visitors_number] %>&second=<%= @second %>","recordWindow","width=800, height=800");
 
       $(document).ready(function() {

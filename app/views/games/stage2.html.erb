@@ -21,7 +21,7 @@ $(document).ready(function(){
   document.getElementById('confirm').onclick = function(e){
     e.preventDefault();
     var second = document.getElementById('second');
-    location.href = '/games/<%= @game.id %>/server2?join_visitors_number=<%= @join_visitors_number %>&second='+second.value;
+    location.href = '/games/<%= @game.id %>/server2?type=<%= params[:type] %>&join_visitors_number=<%= @join_visitors_number %>&second='+second.value;
   }
 });
 </script>

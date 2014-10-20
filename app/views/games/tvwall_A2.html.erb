@@ -6,7 +6,7 @@ body,.container{
   width: 100%;
 }
 
-h3,h4 {
+h4 {
   color: #ffffff
 }
 
@@ -26,7 +26,7 @@ h3,h4 {
 
 .every_writer_box_down{
   float:left;
-  padding-top:5%;
+  padding-top:15%;
   width:20%;
 }
 
@@ -41,23 +41,16 @@ h3,h4 {
 </style>
 <% end %>
 <div style="margin:0 10%">
-  <% visitors_size = @visitors.size %>
-  <% (1..visitors_size/2).each do |x| %>
-  <div class="visitor block every_writer_box_down" style="padding:20px">
-    <% (1..2).each do |y| %>
-    <% visitor = @visitors.find_by(number: (x-1)*2 + y) %>
-    <div style="width:70%;margin:50px auto 20px auto;" id="visitor_<%= visitor.number %>">
-      <%= render_gamer_photo(visitor.image,"medium",60,60,"") %>
-      <h3 style="display:inline;"><%= visitor.name %></h3>
+  <% @visitors.each do |x| %>
+  <div class="visitor block every_writer_box_down">
+    <div style="width:80%;margin:0 auto 20px auto;">
+      <%= render_gamer_photo(x.image,"thumb",50,50) %>
+      <h4 style="display:inline;"><%= x.name %></h4>
+      <%#= render_gamer_photo(x.image,"thumb",50,50) %>
     </div>
-    <canvas id="origin_<%= visitor.number %>" class="orgincanvas canvas_box" ></canvas>
-    <img id="yes_<%= visitor.number %>" src="/assets/O-mark.png" height="150" style="display:none;z-index:10;position:absolute;right:-20px;bottom:8px;" ></img>
-    <img id="no_<%= visitor.number %>" src="/assets/X-Mark.png" height="150" style="display:none;z-index:10;position:absolute;right:-20px;bottom:8px;" ></img>
-    <% end %>
-
+    <canvas id="origin_<%= x.number %>" class="orgincanvas canvas_box" ></canvas>
   </div>
   <% end %>
-
 </div>
 
 <% content_for :javascripts do %>
@@ -76,14 +69,12 @@ $(document).ready(function() {
     height: 500,
     lineWidth: 15,
     lineColor: '#ffffff',
-    targetZoomScale: 0.15,
-    responsiveByParent: true,
+    targetZoomScale: 0.2,
     backgroundImage: '/assets/block.png'
   });
   <% @visitors.each do |visitor| %>
   CM.reg('origin_<%= visitor.number %>');
   <% end %>
-
 
   window.chatApp = new ChatApp(500,500,'0');
   window.chatApp.bindEvents();

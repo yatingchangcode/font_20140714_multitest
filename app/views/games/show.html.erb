@@ -41,9 +41,12 @@
     尚無參賽人員
     <% end %>
     <br>
-    <%= link_to "明星藝言堂","#",id: "stage1",class: "btn btn-lg btn-success"  %>
-    <%= link_to "計時接力賽","#",id: "stage2",class: "btn btn-lg btn-success"  %>
-    <%= link_to "成語連連看","#",id: "stage3",class: "btn btn-lg btn-success"  %>
+    <%= link_to "明星藝言堂 (10人)","#",id: "stage1",class: "btn btn-lg btn-success"  %>
+    <%= link_to "計時接力賽 (5人)","#",id: "stage2",class: "btn btn-lg btn-success"  %>
+    <%= link_to "一字千金 (2人)","#",id: "stage3",class: "btn btn-lg btn-success"  %>
+    <%= link_to "捉對廝殺 (8人，每次2人)","#",id: "stage4",class: "btn btn-lg btn-info"  %>
+    <%= link_to "掌握先機 (4人)","#",id: "stage5",class: "btn btn-lg btn-info"  %>
+    <%= link_to "成語連連看 (2人)","#",id: "stage6",class: "btn btn-lg btn-info"  %>
   </div>
 </div>
 
@@ -59,7 +62,7 @@ $(document).ready(function(){
     }
   };
 
-  document.getElementById('stage1').onclick = function(e){
+  var getVisitorsNumberArray = function(e){
     e.preventDefault();
     var checkboxes = document.getElementsByName('joinGame');
 
@@ -69,32 +72,49 @@ $(document).ready(function(){
         join_visitors_number.push(checkboxes[i].value);
       }
     }
-    location.href = '/games/<%= @game.id %>/stage1?join_visitors_number=' + join_visitors_number;
+
+    return join_visitors_number;
+  } 
+
+  document.getElementById('stage1').onclick = function(e){
+
+    var join_visitors_number = getVisitorsNumberArray(e);
+    
+    location.href = '/games/<%= @game.id %>/stage1?type=A1&join_visitors_number=' + join_visitors_number;
   }
 
   document.getElementById('stage2').onclick = function(e){
-    e.preventDefault();
-    var checkboxes = document.getElementsByName('joinGame');
 
-    var join_visitors_number = [];
-    for (var i = 0; i < checkboxes.length; i++){
-      if(checkboxes[i].checked){
-        join_visitors_number.push(checkboxes[i].value);
-      }
-    }
-    location.href = '/games/<%= @game.id %>/stage2?join_visitors_number=' + join_visitors_number;
+    var join_visitors_number = getVisitorsNumberArray(e);
+
+    location.href = '/games/<%= @game.id %>/stage2?type=A2&join_visitors_number=' + join_visitors_number;
   }
 
   document.getElementById('stage3').onclick = function(e){
-    e.preventDefault();
-    var checkboxes = document.getElementsByName('joinGame');
 
-    var join_visitors_number = [];
-    for (var i = 0; i < checkboxes.length; i++){
-      if(checkboxes[i].checked){
-        join_visitors_number.push(checkboxes[i].value);
-      }
-    }
+    var join_visitors_number = getVisitorsNumberArray(e);
+
+    location.href = '/games/<%= @game.id %>/stage1?type=A3&join_visitors_number=' + join_visitors_number;
+  }
+
+  document.getElementById('stage4').onclick = function(e){
+
+    var join_visitors_number = getVisitorsNumberArray(e);
+
+    location.href = '/games/<%= @game.id %>/stage1?type=B1&join_visitors_number=' + join_visitors_number;
+  }
+
+  document.getElementById('stage5').onclick = function(e){
+
+    var join_visitors_number = getVisitorsNumberArray(e);
+
+    location.href = '/games/<%= @game.id %>/stage1?type=B2&join_visitors_number=' + join_visitors_number;
+  }
+
+  document.getElementById('stage6').onclick = function(e){
+
+    var join_visitors_number = getVisitorsNumberArray(e);
+
     location.href = '/games/<%= @game.id %>/stage_idioms?join_visitors_number=' + join_visitors_number;
   }
 });
