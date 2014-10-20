@@ -8,6 +8,9 @@ Rails.application.routes.draw do
   arrayMap = (1..6).map { |x| %Q(get 'index#{x}'\n)}
   arrayMapReduce = arrayMap.reduce { |x,y| x+y }
 
+  arrayMap = (1..6).map { |x| %Q(get 'tvwall#{x}'\n)}
+  arrayMapReduce2 = arrayMap.reduce { |x,y| x+y }
+
   resources :welcome do
     collection do
       get 'index'
@@ -16,6 +19,7 @@ Rails.application.routes.draw do
       get 'write_idioms'
       get 'read'
       eval(arrayMapReduce)
+      eval(arrayMapReduce2)
     end
   end 
 

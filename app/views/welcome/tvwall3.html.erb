@@ -1,0 +1,254 @@
+<% content_for :stylesheets do %>
+<style type="text/css">
+
+body,.container{
+  background-color: #000000;
+  width: 100%;
+}
+
+h4 {
+  color: #ffffff
+}
+
+.border_radius{
+  border: 2px solid #D6D6D6;
+  -webkit-border-radius: 100px;
+  -moz-border-radius: 100px;
+  border-radius: 100px;
+}
+
+.block{
+  opacity: 0.9;
+  
+  border: 1px solid white;
+  
+}
+
+.every_writer_box{
+  float:left;
+  padding-top:20%;
+  width:12%;
+}
+
+
+.canvas_box{
+
+  z-index:1;
+  display:block;
+  margin:0 auto;
+}
+
+</style>
+<% end %>
+<div id="user_blue"></div>
+<div id="user_black"></div>
+<div>
+  <div class="every_writer_box">
+    <h4 class="text-center">哦哦哦</h4>
+    <img alt="100x100&amp;text=no pic" class="medium" length="50" src="http://placehold.it/100x100&amp;text=No Pic" width="50" style="display:block;margin:0 auto" />
+    <br>
+    <img alt="100x100&amp;text=no pic" class="medium" length="50" src="http://placehold.it/100x100&amp;text=No Pic" width="50" style="display:block;margin:0 auto" />
+  </div>
+  <% alpha = "ABCDEFGH" %>
+  <table id="canvasTable" style="border-collapse:separate;border-spacing:1px 0px;width:76%;float:left;">
+    <tr>
+      <td></td>
+      <% (1..12).to_a.each do |x| %>
+      <td>
+        <h4><%= x %></h4>
+      </td>
+      <% end %>
+    </tr>
+    <% (0..7).to_a.each do |x| %>
+    <tr>
+      <td>
+        <h4><%= alpha[x] %></h4>
+      </td>
+      <% (1..12).to_a.each do |y| %>
+      <td>
+        <canvas id="origin_<%= x+1 %>_<%= y %>" style="z-index:1;border:1px solid red"></canvas>
+      </td>
+      <% end %>
+    </tr>
+    <% end %>
+  </table>
+
+  <div class="every_writer_box">
+    <h4 class="text-center">哦哦哦</h4>
+    <img alt="100x100&amp;text=no pic" class="medium" length="50" src="http://placehold.it/100x100&amp;text=No Pic" width="50" style="display:block;margin:0 auto" />
+    <br>
+    <img alt="100x100&amp;text=no pic" class="medium" length="50" src="http://placehold.it/100x100&amp;text=No Pic" width="50" style="display:block;margin:0 auto" />
+  </div>
+</div>
+
+
+<% content_for :javascripts do %>
+<%= javascript_include_tag 'server_idioms' %>
+<script>
+
+window.timeRemaining = parseInt(<%= @second %>);
+window.alarm = null;
+
+var afterAction = function(property){
+  var array = [];
+  $('[name="gamer"]').each(function(){
+    if (this.checked) {
+
+      array.push(this.value);
+      this.checked = false;
+    }
+  });
+  $('#second').text(window.timeRemaining);
+  $('#allGamer').attr('checked',false);
+
+  return array;
+}
+
+var receiveMoveBlockHandler = function(o){
+  var element;
+  var offset = $('#canvasTable').offset();
+  if (o.user_id % 2 == 0){
+    element = $('#user_blue').css({
+      border:"2px solid blue",
+      width:"95px",
+      height:"95px",
+      position:"absolute",
+      top:(o.block.row-1)*101+offset.top + "px", 
+      left:(o.block.column-1)*97+offset.left + "px"
+    });
+  }else{
+    element = $('#user_black').css({
+      border:"2px solid black",
+      width:"95px",
+      height:"95px",
+      position:"absolute",
+      top:(o.block.row-1)*101+offset.top + "px", 
+      left:(o.block.column-1)*97+offset.left + "px"
+    });
+  }
+
+};
+
+var receiveSendTextHandler = function(o){
+  var testCan = document.getElementById('origin_'+ o.block.row +'_' + o.block.column);
+  var w = $(testCan).width();
+  var context = testCan.getContext("2d");
+  context.fillStyle = "purple";
+  context.font = "bold " + (w * 13 / 15) + "px 標楷體";
+  context.fillText(o.text, w / 15, w * 12 / 15);
+};
+
+var receiveEndRoundHandler = function(o){
+  clearInterval(window.alarm);
+  window.alarm = null;
+  window.chatApp.action(o.user_id,'stop');
+  afterAction(this);
+};
+
+$(document).ready(function() {
+  CM.prop({
+    width: 500,
+    height: 500,
+    lineWidth: 15,
+    lineColor: '#333333',
+    targetZoomScale: 0.035
+  });
+  <% (1..8).to_a.each do |x| %>
+  <% (1..12).to_a.each do |y| %>
+  CM.reg('origin_<%= x %>_<%= y %>');
+  <% end %>
+  <% end %>
+
+
+  window.chatApp = new ChatApp(500,500,'0');
+  window.chatApp.bindEvents();
+
+
+
+  $('#allGamer').click(function(){
+    $('[name="gamer"]').each((function(toCheck){
+      return function(){
+        if (this.disabled == false){
+          this.checked = toCheck;
+        }
+      };
+    })(this.checked === true));
+  });
+
+  $('#yes_button').click(function(){
+    var array = afterAction(this);
+    for (var x in array){
+      var yesImg = $('#yes_' + array[x]);
+      yesImg.show();
+
+      setTimeout(( function(item){
+        var f = function(){
+          item.hide();
+        };
+        return f
+      })(yesImg), 3000);
+    }
+          //alert("answer right:"+array);
+        });
+
+  $('#no_button').click(function(){
+    var array = afterAction(this);
+    for (var x in array){
+      var noImg = $('#no_' + array[x]);
+      noImg.show();
+
+      setTimeout((function(item){
+        var f = function(){
+          item.hide();
+        };
+        return f
+      })(noImg), 3000);
+    }
+          //alert("answer wrong:"+array);
+        });
+
+
+  $('#start_button').click(function(){
+    if(window.alarm) return;
+    $('[name="gamer"]').each(function(){
+      if (this.checked) {
+        window.chatApp.action(this.value,'start');
+        $('#visitor_'+this.value).css("background-color", "");
+        $('#status_'+this.value).html('** DRAWING **');
+      }
+    });
+    window.alarm = setInterval(function(){
+      if (parseInt($('#second').text()) != 0){
+        $('#second').text(parseInt($('#second').text()) - 1);
+      }else{
+        clearInterval(window.alarm);
+        window.alarm = null;
+        $('[name="gamer"]').each(function(){
+          if (this.checked) {
+            window.chatApp.action(this.value,'stop');
+          }
+        });
+        var array = afterAction(this);
+        for(var i = 0, len = array.length; i < len; i++){
+          $('#status_'+array[i]).html('stop');
+        }
+              //alert("stop:"+array);
+            }
+          },1000);
+          //var array = afterAction(this);
+          //alert("start:"+array);
+        });
+
+        // $('#stop_button').click(function(){
+        //   $('[name="gamer"]').each(function(){
+        //     if (this.checked) {
+        //       window.chatApp.action(this.value,'stop');
+        //     }
+        //   });
+        //   var array = afterAction(this);
+        //   alert("stop:"+array);
+        // });
+
+});
+</script>
+<% end %>
