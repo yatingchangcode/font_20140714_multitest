@@ -1,7 +1,7 @@
 
 /**
  * @fileoverview Utilities for canvases recording in html page.
- * @author miecowbai@google.com (Kino Lien)
+ * @author miecowbai@gmail.com (Kino Lien)
  */
 (function(scope){
 	/**
@@ -41,6 +41,7 @@
 	 * @property {String} lineCap Sets the style of the end caps for a line. values: butt|round|square.
 	 * @property {String} lineColor The line stroke color.
 	 * @property {String} recordFormat The frame format. values: 480p
+	 * @property {bool} cacheLastFrame True to cache the last action on the context.
 	 * @property {Number} frameRate The frame rate, FPS(Frames Per Second).
 	 * @property {String|HTMLImageElement} backgroundImage The image url or html element.
 	 */
@@ -52,7 +53,7 @@
 		lineColor: '#000000',
 		recordFormat: '480p',
 		frameRate: 30,
-		cacheLastFrame: false
+		cacheLastFrame: true
 		// backgroundImage
 	};
 	
@@ -152,7 +153,6 @@
 	RecorderEmptyInstance.prototype.clear = function(){return this;};
 	RecorderEmptyInstance.prototype.start = function(){};
 	RecorderEmptyInstance.prototype.stop = function(){};
-	RecorderEmptyInstance.prototype.status = function(){return Status_.UNKNOWN;};
 	RecorderEmptyInstance.prototype.prop = function(){};
 	
 	/**
@@ -218,7 +218,7 @@
 	 * @return {RecorderInstance}
 	 */
 	RecorderInstance.prototype.point = function(pt, callback){
-		if(this.status_ > Status_.COMPILING){
+		if(this.status_ == Status_.IDLE || this.status_ > Status_.COMPILING){
 			var con = this.context_;
 			var x = this.scale_ * pt.x;
 			var y = this.scale_ * pt.y;
@@ -248,7 +248,7 @@
 	 * @return {RecorderInstance}
 	 */
 	RecorderInstance.prototype.line = function(pt, callback){
-		if(this.status_ > Status_.COMPILING){
+		if(this.status_ == Status_.IDLE || this.status_ > Status_.COMPILING){
 			var con = this.context_;
 			var x = this.scale_ * pt.x;
 			var y = this.scale_ * pt.y;
@@ -276,7 +276,7 @@
 	 * @return {RecorderInstance}
 	 */
 	RecorderInstance.prototype.clear = function(stamp, callback){
-		if(this.status_ > Status_.COMPILING){
+		if(this.status_ == Status_.IDLE || this.status_ > Status_.COMPILING){
 			if(this.backImg_){
 				this.context_.drawImage(this.backImg_, 0, 0, this.width_, this.height_);
 			}else{
