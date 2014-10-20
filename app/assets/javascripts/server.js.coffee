@@ -60,8 +60,8 @@ class @ChatApp
   continue_write: (uid) ->
     @dispatcher.trigger 'continue_write', user_id: uid
 
-  reset: () =>
-    @dispatcher.trigger 'reset'
+  reset: (s) =>
+    @dispatcher.trigger 'reset', second: s
 
   wrong: (uid) =>
     @dispatcher.trigger 'wrong' , user_id: uid

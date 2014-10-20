@@ -37,6 +37,7 @@
         <div class="row">
           <div class="col-md-12">
             <input type="checkbox" id="allGamer"/>全選
+            <button id="reset_time_button" style="font-size:20px;">重設時間</button>
             <button id="out_button" style="font-size:20px;">淘汰</button>
             <!-- <button id="start_button" style="font-size:20px;">Start</button> -->
             <button id="stop_all_button" style="font-size:20px;">全部停止</button>
@@ -50,8 +51,8 @@
       <script>
 
       var seconds = <%= @second %>;
-      var alarm = {};
-      var no_correct = {};
+      var alarm = null;
+      var no_correct = null;
 
       var receiveSubmitHandler = function(o){
         $('#visitor_'+o.user_id).css("background-color", "#e0e0e0");
@@ -124,6 +125,7 @@
         });
 
         $('[id^=correct_button_]').click(function(){
+          if (!no_correct) no_correct = {};
           window.chatApp.right(this.value);
           console.log(this.value);
           if (!no_correct[this.value]) {
@@ -177,7 +179,18 @@
         }
         collectGamers();
 
-        
+        $('#reset_time_button').click(function(){
+          //if(window.alarm) return;
+          window.chatApp.reset(window.seconds);
+          console.log(window.seconds);
+          if (window.alarm != null) {
+            for (key in window.alarm){
+              clearInterval(window.alarm[key]);
+              window.alarm[key] = null;
+              $('#second_' + key).text(seconds + "秒");
+            }
+          }
+        });
 
         $('#next_button').click(function(){
 
@@ -235,10 +248,8 @@
           //alert("outer:"+array);
         });
 
-        $('[id^=start_button_').click(function(){
-            if (!window.alarm) {
-              window.alarm ={};
-            }
+        $('[id^=start_button_]').click(function(){
+            if (!window.alarm) window.alarm = {};
             window.chatApp.action(this.value,'start');
             $('#visitor_'+this.value).css("background-color", "");
             //console.log(this.value);
@@ -307,8 +318,9 @@
            var array = afterAction(this);
          });
 
-      $('[id^=stop_button_').click(function(){
+      $('[id^=stop_button_]').click(function(){
            clearInterval(window.alarm[this.value]);
+           console.log(this.value);
            window.alarm[this.value] = null;
            window.chatApp.action(this.value,'stop');
            clearCurrent(this.value);
