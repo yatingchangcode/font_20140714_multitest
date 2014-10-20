@@ -34,7 +34,12 @@ Rails.application.routes.draw do
       get 'server_idioms'
       get 'record'
       get 'record_idioms'
-      get 'tvwall'
+      get 'tvwall_A1'
+      get 'tvwall_A2'
+      get 'tvwall_A3'
+      get 'tvwall_B1'
+      get 'tvwall_B2'
+      get 'tvwall_B3'
     end
     collection do
       get 'get_game_data'
