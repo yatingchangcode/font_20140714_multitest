@@ -86,7 +86,7 @@
 			setTimeout((function(ins){
 				return function(){
 					var p;
-					if(ins && p = ins.el_.parentElement){
+					if(ins && (p = ins.el_.parentElement)){
 						var styles = getComputedStyle(p);
 						var aw = p.clientWidth - (parseInt(styles['paddingLeft']) + parseInt(styles['paddingRight']));
 						var ah = p.clientHeight - (parseInt(styles['paddingTop']) + parseInt(styles['paddingBottom']));
