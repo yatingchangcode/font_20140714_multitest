@@ -90,15 +90,11 @@
 						var styles = getComputedStyle(p);
 						var aw = p.clientWidth - (parseInt(styles['paddingLeft']) + parseInt(styles['paddingRight']));
 						var ah = p.clientHeight - (parseInt(styles['paddingTop']) + parseInt(styles['paddingBottom']));
-						
+						// p.clientWidth - paddings = actual width
+						// p.clientHeight - paddings = actual height
+
 						var squareSize = Math.min(aw, ah);
 						
-						if(ins.backImgLoad_){
-							ins.context_.drawImage(ins.backImg_, 0, 0, squareSize, squareSize);
-							// rewrite cached drawing
-							// ....
-						}
-
 						ins.width_ = squareSize;
 						ins.height_ = squareSize;
 						ins.el_.width = Math.round(squareSize);
@@ -107,8 +103,12 @@
 
 						var sourceMinWidth = Math.min(prop_.width, prop_.height);
 						ins.context_.lineWidth = squareSize / (sourceMinWidth / prop_.lineWidth);
-						// p.clientWidth - paddings = actual width
-						// p.clientHeight - paddings = actual height
+
+						if(ins.backImgLoad_){
+							ins.context_.drawImage(ins.backImg_, 0, 0, squareSize, squareSize);
+							// rewrite cached drawing
+							// ....
+						}
 					}
 				};
 			})(instanceMap_[x]), timeCount++ * timeStep + wait);
