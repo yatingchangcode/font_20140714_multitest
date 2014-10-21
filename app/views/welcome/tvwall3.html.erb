@@ -178,7 +178,7 @@ $(document).ready(function() {
   $('#yes_button').click(function(){
     var array = afterAction(this);
     for (var x in array){
-      var yesImg = $('#yes_' + array[x]);
+      var yesImg = $('#yes_img_' + array[x]);
       yesImg.show();
 
       setTimeout(( function(item){
@@ -194,7 +194,7 @@ $(document).ready(function() {
   $('#no_button').click(function(){
     var array = afterAction(this);
     for (var x in array){
-      var noImg = $('#no_' + array[x]);
+      var noImg = $('#no_img_' + array[x]);
       noImg.show();
 
       setTimeout((function(item){

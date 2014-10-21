@@ -185,7 +185,7 @@ $(document).ready(function() {
   $('#yes_button').click(function(){
     var array = afterAction(this);
     for (var x in array){
-      var yesImg = $('#yes_' + array[x]);
+      var yesImg = $('#yes_img_' + array[x]);
       yesImg.show();
 
       setTimeout(( function(item){

@@ -10,7 +10,7 @@
       <div style="">
         <div id="gamers_div" class="row">
           <% @visitors.each do |x| %>
-          <div class="visitor col-md-3" id="visitor_<%= x.number %>" style="border:3px solid #f8f8f8">
+          <div class="visitor col-md-3" id="visitor_<%= x.number %>" style="border:2px solid #f8f8f8">
           <div class="row">
             <div class="container" style="margin:auto; width:72%">
                 <button id="correct_button_<%= x.number %>" style="font-size:12px;" value="<%= x.number %>" type="button" class="correct_button btn btn-default navbar-btn">答對</button>
