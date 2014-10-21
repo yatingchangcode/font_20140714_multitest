@@ -39,22 +39,41 @@ h3,h4 {
   margin:0 auto;
 }
 
+.correct{
+  display:none;
+  z-index:10;
+  position:absolute;
+  left:120px;
+  top:120px;
+}
+
 </style>
 <% end %>
 <div style="margin:0 7%; height:100%; padding-bottom:22%;">
   <% visitors_size = @visitors.size %>
   <% (1..visitors_size/2).each do |x| %>
   <div class="visitor block every_writer_box_down" style="padding:1.5% 2% 1% 2%;">
-    <% (1..2).each do |y| %>
-    <% visitor = @visitors.find_by(number: (x-1)*2 + y) %>
+    <% visitor = @visitors.find_by(number: (x-1)*2 + 1) %>
     <div style="width:85%;margin:2% auto;" id="visitor_<%= visitor.number %>">
       <%= render_gamer_photo(visitor.image,"medium",40,40,"") %>
       <h4 style="display:inline;"><%= visitor.name %></h4>
     </div>
-    <canvas id="origin_<%= visitor.number %>" class="orgincanvas canvas_box" ></canvas>
-    <img id="yes_img_<%= visitor.number %>" src="/assets/O-mark.png" height="95" style="display:none;z-index:10;position:absolute;left:220px;top:200px;" ></img>
-    <img id="no_<%= visitor.number %>" src="/assets/X-Mark.png" height="150" style="display:none;z-index:10;position:absolute;right:-20px;bottom:8px;" ></img>
-    <% end %>
+    <div style="position:relative;">
+      <canvas id="origin_<%= visitor.number %>" class="orgincanvas canvas_box" ></canvas>
+      <img id="yes_<%= visitor.number %>" src="/assets/O-mark.png" height="95" class="correct" ></img>
+    </div>
+
+
+    <% visitor = @visitors.find_by(number: (x-1)*2 + 2) %>
+    <div style="width:85%;margin:2% auto;" id="visitor_<%= visitor.number %>">
+      <%= render_gamer_photo(visitor.image,"medium",40,40,"") %>
+      <h4 style="display:inline;"><%= visitor.name %></h4>
+    </div>
+
+    <div style="position:relative;">
+      <canvas id="origin_<%= visitor.number %>" class="orgincanvas canvas_box" ></canvas>
+      <img id="yes_img_<%= visitor.number %>" src="/assets/O-mark.png" height="95" class="correct" ></img>
+    </div>
 
   </div>
   <% end %>

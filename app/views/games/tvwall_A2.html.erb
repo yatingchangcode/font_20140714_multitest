@@ -38,6 +38,14 @@ h4 {
   margin:0 auto;
 }
 
+.correct{
+  display:none;
+  z-index:10;
+  position:absolute;
+  left:120px;
+  top:120px;
+}
+
 </style>
 <% end %>
 <div style="margin:0 10%">
@@ -48,7 +56,10 @@ h4 {
       <h4 style="display:inline;"><%= x.name %></h4>
       <%#= render_gamer_photo(x.image,"thumb",50,50) %>
     </div>
-    <canvas id="origin_<%= x.number %>" class="orgincanvas canvas_box" style="" ></canvas>
+    <div style="position:relative;">
+      <canvas id="origin_<%= x.number %>" class="orgincanvas canvas_box" ></canvas>
+      <img id="yes_<%= x.number %>" src="/assets/O-mark.png" height="95" class="correct" ></img>
+    </div>
   </div>
   <% end %>
 </div>
