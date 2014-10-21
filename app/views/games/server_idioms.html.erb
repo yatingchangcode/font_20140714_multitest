@@ -53,7 +53,7 @@
       window.timeRemaining = parseInt(<%= @second %>);
       //window.alarm = null;
       var alarm = {};
-       window.open("tvwall_<%= params[:type] %>?join_visitors_number=<%= params[:join_visitors_number] %>&second=<%= @second %>","tvwallWindow","width=800, height=800");
+       window.open("tvwall_<%= params[:stage] %>?join_visitors_number=<%= params[:join_visitors_number] %>&second=<%= @second %>","tvwallWindow","width=800, height=800");
       window.open("record_idioms?join_visitors_number=<%= params[:join_visitors_number] %>","recordWindow","width=800, height=800");
 
       var afterAction = function(property){

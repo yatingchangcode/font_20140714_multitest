@@ -47,13 +47,8 @@ h3,h4 {
   <div class="visitor block every_writer_box_down" style="padding:1.5% 2% 1% 2%;">
     <% (1..2).each do |y| %>
     <% visitor = @visitors.find_by(number: (x-1)*2 + y) %>
-<<<<<<< HEAD
-    <div style="width:70%;margin:50px auto 20px auto;" id="visitor_<%= visitor.number %>">
-      <%= render_gamer_photo(visitor.image,"medium",60,60,"") %>
-=======
     <div style="width:85%;margin:2% auto;" id="visitor_<%= visitor.number %>">
       <%= render_gamer_photo(visitor.image,"medium",40,40,"") %>
->>>>>>> 941611cfb2a990e3d8ede077f31b42b5b0ea1270
       <h4 style="display:inline;"><%= visitor.name %></h4>
     </div>
     <canvas id="origin_<%= visitor.number %>" class="orgincanvas canvas_box" ></canvas>

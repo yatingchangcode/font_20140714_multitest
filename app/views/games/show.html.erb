@@ -80,42 +80,42 @@ $(document).ready(function(){
 
     var join_visitors_number = getVisitorsNumberArray(e);
     
-    location.href = '/games/<%= @game.id %>/stage1?type=A1&join_visitors_number=' + join_visitors_number;
+    location.href = '/games/<%= @game.id %>/stage1?stage=A1&join_visitors_number=' + join_visitors_number;
   }
 
   document.getElementById('stage2').onclick = function(e){
 
     var join_visitors_number = getVisitorsNumberArray(e);
 
-    location.href = '/games/<%= @game.id %>/stage2?type=A2&join_visitors_number=' + join_visitors_number;
+    location.href = '/games/<%= @game.id %>/stage2?stage=A2&join_visitors_number=' + join_visitors_number;
   }
 
   document.getElementById('stage3').onclick = function(e){
 
     var join_visitors_number = getVisitorsNumberArray(e);
 
-    location.href = '/games/<%= @game.id %>/stage1?type=A3&join_visitors_number=' + join_visitors_number;
+    location.href = '/games/<%= @game.id %>/stage1?stage=A3&join_visitors_number=' + join_visitors_number;
   }
 
   document.getElementById('stage4').onclick = function(e){
 
     var join_visitors_number = getVisitorsNumberArray(e);
 
-    location.href = '/games/<%= @game.id %>/stage1?type=B1&join_visitors_number=' + join_visitors_number;
+    location.href = '/games/<%= @game.id %>/stage1?stage=B1&join_visitors_number=' + join_visitors_number;
   }
 
   document.getElementById('stage5').onclick = function(e){
 
     var join_visitors_number = getVisitorsNumberArray(e);
 
-    location.href = '/games/<%= @game.id %>/stage1?type=B2&join_visitors_number=' + join_visitors_number;
+    location.href = '/games/<%= @game.id %>/stage1?stage=B2&join_visitors_number=' + join_visitors_number;
   }
 
   document.getElementById('stage6').onclick = function(e){
 
     var join_visitors_number = getVisitorsNumberArray(e);
 
-    location.href = '/games/<%= @game.id %>/stage_idioms?type=B3&join_visitors_number=' + join_visitors_number;
+    location.href = '/games/<%= @game.id %>/stage_idioms?stage=B3&join_visitors_number=' + join_visitors_number;
   }
 });
 </script>

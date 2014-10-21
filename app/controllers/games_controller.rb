@@ -48,7 +48,7 @@ class GamesController < ApplicationController
     @@second = params[:second]
 
     @@game = params[:id]
-    @@stage = "1"
+    @@stage = params[:stage]
     #@user_unregs = [1,4]
   end
 
@@ -61,7 +61,7 @@ class GamesController < ApplicationController
     @@second = params[:second]
 
     @@game = params[:id]
-    @@stage = "2"
+    @@stage = params[:stage]
     #@user_unregs = [1,4]
   end
 
@@ -129,7 +129,7 @@ class GamesController < ApplicationController
     @@second = params[:second]
 
     @@game = params[:id]
-    @@stage = "idioms"
+    @@stage = params[:stage]
 
   end
 
