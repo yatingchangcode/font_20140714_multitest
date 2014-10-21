@@ -18,10 +18,12 @@
                 <button id="start_button_<%= x.number %>" style="font-size:12px;" value="<%= x.number %>" type="button" class="btn btn-default navbar-btn">開始</button>
                 <button id="stop_button_<%= x.number %>" style="font-size:12px;" value="<%= x.number %>" type="button" class="btn btn-default navbar-btn">停止</button>
             </div>
+            <!--
             <div class="col-md-1">
               <input type="checkbox" name="gamer" value="<%= x.number %>"/>
 
             </div>
+            -->
             <div class="col-md-3">
               <%= render_gamer_photo(x.image,"thumb",50,50) %>
               <p><%= x.name %></p>
@@ -39,10 +41,12 @@
         </div>
         <div class="row">
           <div class="col-md-12">
+            <!--
             <input type="checkbox" id="allGamer"/>全選
             <button id="yes_button" style="font-size:15px;">答對</button>
-            <button id="show_correct_button" style="font-size:15px;">顯示正確使用者</button>
             <button id="out_button" style="font-size:15px;">淘汰</button>
+            -->
+            <button id="show_correct_button" style="font-size:15px;">顯示正確使用者</button>
             <button id="start_button" style="font-size:15px;">全部開始</button>
             <!-- <button id="stop_button" style="font-size:15px;">停止已選</button> -->
             <button id="clear_button" style="font-size:15px;">全部清除</button>
@@ -319,6 +323,10 @@
          });
 
          $('#show_correct_button').click(function(){
+            correct_users.sort(function(a,b) {
+              return parseInt(a) - parseInt(b);
+            });
+            console.log(correct_users);
             for (var i in correct_users) { 
               setTimeout( (function(a){
                 return function() {
