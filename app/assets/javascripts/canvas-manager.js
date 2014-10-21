@@ -23,6 +23,10 @@
 	 */
 	var idCount_ = 0;
 
+	/**
+	 * The responsive event hooked or not.
+	 * @private {Bool}
+	 */
 	var isHooked_ = false;
 	
 	/**
@@ -78,6 +82,10 @@
 		}
 	};
 
+	/**
+	 * Do responsive by parent element and redrawing canvases.
+	 * @private
+	 */
 	var doResponse_ = function(){
 		var timeCount = 0;
 		var timeStep = 2;
@@ -88,8 +96,8 @@
 					var p;
 					if(ins && (p = ins.el_.parentElement)){
 						var styles = getComputedStyle(p);
-						var aw = p.clientWidth - (parseInt(styles['paddingLeft']) + parseInt(styles['paddingRight']));
-						var ah = p.clientHeight - (parseInt(styles['paddingTop']) + parseInt(styles['paddingBottom']));
+						var aw = p.clientWidth - (parseFloat(styles['paddingLeft']) + parseFloat(styles['paddingRight']));
+						var ah = p.clientHeight - (parseFloat(styles['paddingTop']) + parseFloat(styles['paddingBottom']));
 						// p.clientWidth - paddings = actual width
 						// p.clientHeight - paddings = actual height
 
@@ -105,12 +113,11 @@
 						ins.context_.lineWidth = squareSize / (sourceMinWidth / prop_.lineWidth);
 						ins.context_.lineCap = prop_.lineCap;
 						ins.context_.strokeStyle = prop_.lineColor;
-						
+
 						if(ins.backImgLoad_){
 							ins.context_.drawImage(ins.backImg_, 0, 0, squareSize, squareSize);
-							// rewrite cached drawing
-							// ....
 						}
+						// rewrite cached drawing
 						for(var i = 0, len = ins.track_.length; i < len; i++){
 							var single = ins.track_[i];
 							var pslen = single.length;
@@ -136,20 +143,19 @@
 		}
 	};
 
-	var hook_ = function(){
-		if(!isHooked_){
-			scope.addEventListener('resize', doResponse_);
-			isHooked_ = true;
-		}
+	/**
+	 * Hook the resposive resizing event.
+	 * @private
+	 * @param {Bool} hook True to hook the responsive event, otherwise false.
+	 */
+	var hookResponse_ = function(hook){
+		hook = hook === true;
+		if(hook == !isHooked_){
+			scope[(hook? 'add' : 'remove') + 'EventListener']('resize', doResponse_);
+			isHooked_ = hook;
+		}		
 	};
 
-	var unhook_ = function(){
-		if(isHooked_){
-			scope.removeEventListener('resize', doResponse_);
-			isHooked_ = false;
-		}
-	};
-	
 	/**
 	 * Initialize the Canvas Empty Instance
 	 * @private
@@ -349,13 +355,7 @@
 			for(var p in property){
 				prop_[p] = property[p];
 			}
-
-			if(prop_.responsiveByParent === true){
-				hook_();
-			}else{
-				unhook_();
-			}
-
+			hookResponse_(prop_.responsiveByParent);
 			var back = prop_.backgroundImage;
 			if(back){
 				if(typeof back == 'string'){
@@ -373,47 +373,8 @@
 		return prop_;
 	};
 	
-	if(prop_.responsiveByParent === true) hook_();
-
+	hookResponse_(prop_.responsiveByParent);
 	// return to input scope
 	scope.CM = CM;
 
 })(window);
-
-
-// ***** After window ready *****
-// register canvas
-// CM.reg('multiple');
-// unregister canvas
-//CM.unreg('multiple');
-// CM('multiple').point({ x: x, y: y });
-// CM('multiple').line({ x: x, y: y });
-// CM('multiple').clear();
-
-/*
-	
-	CanvasInstance.prototype.stopRecord = function(stamp, resultsCallback){
-		this.recording_ = false;
-		stamp = stamp || (new Date()).getTime();
-		this.recordEndTime_ = stamp;
-		if(this.recordCanvas_){
-			this.drawHistory_.push(record_(stamp, this.recordCanvas_));
-			this.recordCanvas_ = null;
-		}
-		//saveAs(dataURLtoBlob(this.drawHistory_[this.drawHistory_.length-1].el.toDataURL()),'ssss.png');
-		//saveAs(dataURLtoBlob(this.drawHistory_[0].el.toDataURL()),'ssss.png');
-		var item;
-		var timeseq = 0;
-		while(item = this.drawHistory_.shift()){
-			isLast = this.drawHistory_.length == 0;
-			setTimeout((function(scope, t, last){
-				return function(){	
-					//saveAs(dataURLtoBlob(t.el.toDataURL()),'ssss_' + t.stamp + '_.png');
-					scope.compiledHistory_.push({stamp:t.stamp, base64:t.el.toDataURL()});
-					if(last) resultsCallback(scope.compiledHistory_);
-				};
-			})(this, item, isLast), timeseq += 2);
-		}
-	};
-*/
-

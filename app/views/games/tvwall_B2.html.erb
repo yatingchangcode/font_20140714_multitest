@@ -27,7 +27,7 @@ h4 {
 .every_writer_box_down{
   float:left;
   padding-top:15%;
-  width:20%;
+  width:25%;
 }
 
 
@@ -43,7 +43,7 @@ h4 {
 <div style="margin:0 10%">
   <% @visitors.each do |x| %>
   <div class="visitor block every_writer_box_down">
-    <div style="width:80%;margin:0 auto 20px auto;">
+    <div style="width:90%;margin:0 auto 20px auto;">
       <%= render_gamer_photo(x.image,"thumb",50,50) %>
       <h4 style="display:inline;"><%= x.name %></h4>
       <%#= render_gamer_photo(x.image,"thumb",50,50) %>
@@ -51,6 +51,7 @@ h4 {
     <canvas id="origin_<%= x.number %>" class="orgincanvas canvas_box" ></canvas>
   </div>
   <% end %>
+
 </div>
 
 <% content_for :javascripts do %>
@@ -69,7 +70,7 @@ $(document).ready(function() {
     height: 500,
     lineWidth: 15,
     lineColor: '#ffffff',
-    targetZoomScale: 0.2,
+    targetZoomScale: 0.40,
     responsiveByParent: true,
     backgroundImage: '/assets/block.png'
   });
