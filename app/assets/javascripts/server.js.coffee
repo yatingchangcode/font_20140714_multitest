@@ -69,13 +69,7 @@ class @ChatApp
   receiveRight: (message) => 
     yesImg = $("#yes_" + message.user_id)
     yesImg.show()
-    setTimeout ((item) ->
-      f = ->
-        item.hide()
-        return
-
-      f
-    )(yesImg), 3000
+    
 
   receiveWrong: (message) => 
     yesImg = $("#no_" + message.user_id)
