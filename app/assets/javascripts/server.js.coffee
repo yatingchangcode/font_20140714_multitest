@@ -35,8 +35,8 @@ class @ChatApp
     return
 
   receiveClear: (message) => 
-    CM('origin_'+message.user_id).clear();
-
+    #CM('origin_'+message.user_id).clear();
+    
   receiveSubmit: (message) =>
     receiveSubmitHandler message
 
@@ -67,19 +67,19 @@ class @ChatApp
   wrong: (uid) =>
     @dispatcher.trigger 'wrong' , user_id: uid
 
-  setRightCount: (message) ->
-    @dispatcher.trigger 'setRightCount', message
+  setRightCount: (uid, count) ->
+    @dispatcher.trigger 'setRightCount', user_id: uid, count: count
 
   receiveRightCount: (message) ->
     console.log message
 
   receiveRight: (message) => 
-    yesImg = $("#yes_" + message.user_id)
+    yesImg = $("#yes_img_" + message.user_id)
     yesImg.show()
     
 
   receiveWrong: (message) => 
-    yesImg = $("#no_" + message.user_id)
+    yesImg = $("#no_img_" + message.user_id)
     yesImg.show()
     setTimeout ((item) ->
       f = ->

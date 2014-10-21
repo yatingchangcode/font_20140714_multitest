@@ -2,7 +2,7 @@
         <h2>一字千金 操作後台</h2>
 <!--         <h4>目前上線人數<span id="user_count">0</span>人</h4>
  -->        <% if !@second.nil?  %>
-          <h4>倒數計時 <span id="second" style="color:red"><%= @second %></span> 秒 </h4>
+          <h3>倒數計時 <span id="second" style="color:red"><%= @second %></span> 秒 </h3>
         <% else %>
           <h4>不倒數計時</h4>
         <% end %>
@@ -26,10 +26,11 @@
               <%= render_gamer_photo(x.image,"thumb",50,50) %>
               <p><%= x.name %></p>
               <span>答對:</span><span id="no_correct_<%= x.number %>" class="badge">0題</span>
+              <span>正確:</span><span id="answer_correct_<%= x.number %>">?</span>
             </div>
             <div class="col-md-6">
               <canvas id="origin_<%= x.number %>" class="orgincanvas" style="z-index:1"></canvas>
-              <img id="yes_<%= x.number %>" src="/assets/O-mark.png" height="150" style="display:none;z-index:10;position:absolute;right:-20px;bottom:8px;" ></img>
+              <img id="yes_img_<%= x.number %>" src="/assets/O-mark.png" height="150" style="display:none;z-index:10;position:absolute;right:-20px;bottom:8px;" ></img>
               <img id="no_<%= x.number %>" src="/assets/X-Mark.png" height="150" style="display:none;z-index:10;position:absolute;right:-20px;bottom:8px;" ></img>
             </div>
           </div>
@@ -40,10 +41,12 @@
           <div class="col-md-12">
             <input type="checkbox" id="allGamer"/>全選
             <button id="yes_button" style="font-size:15px;">答對</button>
+            <button id="show_correct_button" style="font-size:15px;">顯示正確使用者</button>
             <button id="out_button" style="font-size:15px;">淘汰</button>
             <button id="start_button" style="font-size:15px;">全部開始</button>
             <!-- <button id="stop_button" style="font-size:15px;">停止已選</button> -->
             <button id="clear_button" style="font-size:15px;">全部清除</button>
+            <button id="clear_correct_button" style="font-size:15px;">清空記錄</button>
           </div>
         </div>
       </div>
@@ -54,6 +57,7 @@
       <script>
 
       var no_correct = null;
+      var correct_users = null;
 
       var receiveSubmitHandler = function(o){
         $('#visitor_'+o.user_id).css("background-color", "#e6e6f0");
@@ -69,7 +73,7 @@
       window.open("record?join_visitors_number=<%= params[:join_visitors_number] %>&second=<%= @second %>","recordWindow","width=800, height=800");
 
       function markCurrent(c) {
-        $('#visitor_'+c).css("border-color", "#ccf5cc");
+        $('#visitor_'+c).css("border-color", "#4d4ddb");
       }
 
       function clearCurrent(c) {
@@ -135,8 +139,11 @@
           $('[id^=origin_]').each(function(){
             CM(this).clear();
           });
-
+          $('[id^=yes_img_]').hide();
+          $('[id^=answer_correct_]').text("?").css("color","");
         });
+
+
 
 
         /*
@@ -214,7 +221,6 @@
           
           if(window.alarm) return;
           gamers.all().forEach(function(u){
-            console.log(u);
             startHandler(u);
             window.chatApp.action(u, 'start');
             $('#visitor_'+this.value).css("background-color", "");
@@ -229,7 +235,6 @@
                 clearInterval(window.alarm);
                 window.alarm = null;
                 gamers.all().forEach(function(u){
-                  console.log(u);
                   clearCurrent(u);
                   window.chatApp.action(u, 'stop');
                   receiveSubmitHandler({user_id:u});
@@ -297,16 +302,39 @@
 
          $('[id^=correct_button_]').click(function(){
           if (!no_correct) no_correct = {};
-          window.chatApp.right(this.value);
-          console.log(this.value);
+          if (!correct_users) correct_users = [];
+          //window.chatApp.right(this.value);
+          $('#answer_correct_'+this.value).text("是").css("color","#00cc00");
+          if (correct_users.indexOf(this.value) != -1) return;
+
+          correct_users.push(this.value);
+          console.log(correct_users);
           if (!no_correct[this.value]) {
             no_correct[this.value] = 1;
           } else {
             no_correct[this.value] += 1;
           }
           $("#no_correct_" + this.value).text(no_correct[this.value]+"題");
-          console.log(no_correct);
-          window.chatApp.setRightCount(no_correct);
+          window.chatApp.setRightCount(this.value, no_correct[this.value]);
+         });
+
+         $('#show_correct_button').click(function(){
+            for (var i in correct_users) { 
+              setTimeout( (function(a){
+                return function() {
+                  $("#yes_img_"+a).show();
+                }
+              })(correct_users[i]), 400 * i);
+            }
+            correct_users = null;
+         });
+
+         $('#clear_correct_button').click(function(){
+          if (!no_correct) return;
+          gamers.all().forEach(function(e) {
+            no_correct[e] = 0;
+            $("#no_correct_" + e).text(no_correct[e]+"題");
+          });
          });
 
 
