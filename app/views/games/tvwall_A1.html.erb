@@ -48,7 +48,7 @@ h3,h4 {
     <% visitor = @visitors.find_by(number: (x-1)*2 + y) %>
     <div style="width:70%;margin:50px auto 20px auto;" id="visitor_<%= visitor.number %>">
       <%= render_gamer_photo(visitor.image,"medium",60,60,"") %>
-      <h3 style="display:inline;"><%= visitor.name %></h3>
+      <h4 style="display:inline;"><%= visitor.name %></h4>
     </div>
     <canvas id="origin_<%= visitor.number %>" class="orgincanvas canvas_box" ></canvas>
     <img id="yes_<%= visitor.number %>" src="/assets/O-mark.png" height="150" style="display:none;z-index:10;position:absolute;right:-20px;bottom:8px;" ></img>
