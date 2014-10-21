@@ -5,7 +5,7 @@
       <div style="">
         <div class="row">
           <% @visitors.each do |x| %>
-          <div class="visitor col-md-3" id="visitor_<%= x.number %>" style="border:3px solid #f8f8f8">
+          <div class="visitor col-md-3" id="visitor_<%= x.number %>" style="border:2px solid #f8f8f8">
             <div class="row">
                 <div class="container">
                 <button id="correct_button_<%= x.number %>" style="font-size:12px;" value="<%= x.number %>" type="button" class="correct_button btn btn-default navbar-btn">答對</button>
@@ -18,7 +18,7 @@
               <input type="checkbox" name="gamer" value="<%= x.number %>"/>
               </div>
               <div class="col-md-3">
-                <%= render_gamer_photo(x.image,"thumb",50,50) %>
+                <div id="photo_<%= x.number %>"><%= render_gamer_photo(x.image,"thumb",50,50) %></div>
                 <p><%= x.name %></p>
                 <span>剩餘:</span><span id="second_<%= x.number %>" style="color:red font-size:12px;" class="badge"><%= @second %>秒</span>
                 <span>答對:</span><span id="no_correct_<%= x.number %>" class="badge">0題</span>
@@ -127,7 +127,6 @@
         $('[id^=correct_button_]').click(function(){
           if (!no_correct) no_correct = {};
           window.chatApp.right(this.value);
-          console.log(this.value);
           if (!no_correct[this.value]) {
             no_correct[this.value] = 1;
           } else {
@@ -243,7 +242,7 @@
             CM.unreg('origin_'+this.value);
             //this.disabled = true;
             gamers.remove(this.value);
-            $('#visitor_'+this.value).attr('style','opacity:0.2');
+            $('#visitor_'+this.value).attr('style','opacity:0.2;border:2px solid #f8f8f8');
         });
 
         $('#out_button').click(function(){
@@ -256,7 +255,7 @@
           });
           var array = afterAction(this);
           for (var x in array){
-            $('#visitor_'+array[x]).attr('style','opacity:0.2');
+            $('#visitor_'+array[x]).attr('style','opacity:0.2;border:2px solid');
           }
           //alert("outer:"+array);
         });

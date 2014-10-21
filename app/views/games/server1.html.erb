@@ -8,7 +8,7 @@
         <% end %>
       </div>
       <div style="">
-        <div class="row">
+        <div id="gamers_div" class="row">
           <% @visitors.each do |x| %>
           <div class="visitor col-md-3" id="visitor_<%= x.number %>" style="border:3px solid #f8f8f8">
           <div class="row">
@@ -20,16 +20,17 @@
             </div>
             <div class="col-md-1">
               <input type="checkbox" name="gamer" value="<%= x.number %>"/>
+
             </div>
             <div class="col-md-3">
               <%= render_gamer_photo(x.image,"thumb",50,50) %>
               <p><%= x.name %></p>
+              <span>答對:</span><span id="no_correct_<%= x.number %>" class="badge">0題</span>
             </div>
             <div class="col-md-6">
               <canvas id="origin_<%= x.number %>" class="orgincanvas" style="z-index:1"></canvas>
               <img id="yes_<%= x.number %>" src="/assets/O-mark.png" height="150" style="display:none;z-index:10;position:absolute;right:-20px;bottom:8px;" ></img>
               <img id="no_<%= x.number %>" src="/assets/X-Mark.png" height="150" style="display:none;z-index:10;position:absolute;right:-20px;bottom:8px;" ></img>
-
             </div>
           </div>
           </div>
@@ -52,22 +53,29 @@
       <%= javascript_include_tag 'processing.min' %>
       <script>
 
+      var no_correct = null;
+
       var receiveSubmitHandler = function(o){
-        $('#visitor_'+o.user_id).css("background-color", "#e0e0e0");
+        $('#visitor_'+o.user_id).css("background-color", "#e6e6f0");
       };
+
+      function startHandler(i) {
+        $('#visitor_'+i).css("background-color", "#f8f8f8");
+      }
+
       window.timeRemaining = parseInt(<%= @second %>);
       window.alarm = null;
       window.open("tvwall_<%= params[:type] %>?join_visitors_number=<%= params[:join_visitors_number] %>&second=<%= @second %>","tvwallWindow","width=800, height=800");
       window.open("record?join_visitors_number=<%= params[:join_visitors_number] %>&second=<%= @second %>","recordWindow","width=800, height=800");
 
       function markCurrent(c) {
-        $('#visitor_'+c).css("border-color", "#cc00cc");
+        $('#visitor_'+c).css("border-color", "#ccf5cc");
       }
 
       function clearCurrent(c) {
         $('#visitor_'+c).css("border-color", "#f8f8f8");
       }
-      
+
 
       $(document).ready(function() {
         CM.prop({
@@ -199,7 +207,7 @@
             //this.disabled = true;
             gamers.remove(this.value);
             this.disabled = true;
-            $('#visitor_'+this.value).attr('style','opacity:0.2');
+            $('#visitor_'+this.value).attr('style','opacity:0.2;border:2px solid #f8f8f8');
         });
 
         $('#start_button').click(function(){
@@ -207,6 +215,7 @@
           if(window.alarm) return;
           gamers.all().forEach(function(u){
             console.log(u);
+            startHandler(u);
             window.chatApp.action(u, 'start');
             $('#visitor_'+this.value).css("background-color", "");
             markCurrent(u);
@@ -219,8 +228,9 @@
               }else{
                 clearInterval(window.alarm);
                 window.alarm = null;
-                $(gamers.all()).each(function(u){
+                gamers.all().forEach(function(u){
                   console.log(u);
+                  clearCurrent(u);
                   window.chatApp.action(u, 'stop');
                   receiveSubmitHandler({user_id:u});
                 });
@@ -286,8 +296,17 @@
          });
 
          $('[id^=correct_button_]').click(function(){
-          console.log(this.value);
+          if (!no_correct) no_correct = {};
           window.chatApp.right(this.value);
+          console.log(this.value);
+          if (!no_correct[this.value]) {
+            no_correct[this.value] = 1;
+          } else {
+            no_correct[this.value] += 1;
+          }
+          $("#no_correct_" + this.value).text(no_correct[this.value]+"題");
+          console.log(no_correct);
+          window.chatApp.setRightCount(no_correct);
          });
 
 

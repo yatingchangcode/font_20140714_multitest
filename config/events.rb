@@ -29,6 +29,7 @@ WebsocketRails::EventMap.describe do
     subscribe :clearAll, :to => WritesController, :with_method => :clearAll
     subscribe :reset,    :to => WritesController, :with_method => :reset  
     subscribe :continue_write, :to => WritesController, :with_method => :continue_write
+    subscribe :setRightCount, :to => WritesController, :with_method => :setRightCount
     # read trigger start or stop, write bind receiveAlert
   # end
 

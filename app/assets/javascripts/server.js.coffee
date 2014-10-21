@@ -23,6 +23,7 @@ class @ChatApp
     @dispatcher.bind 'get_write_count', @getWriteCount
     @dispatcher.bind 'right', @receiveRight
     @dispatcher.bind 'wrong', @receiveWrong
+    @dispatcher.bind 'setRightCount', @receiveRightCount
 
   receiveDown: (message) =>
     CM('origin_'+message.user_id).point({ x: message.x, y: message.y })
@@ -66,16 +67,16 @@ class @ChatApp
   wrong: (uid) =>
     @dispatcher.trigger 'wrong' , user_id: uid
 
+  setRightCount: (message) ->
+    @dispatcher.trigger 'setRightCount', message
+
+  receiveRightCount: (message) ->
+    console.log message
+
   receiveRight: (message) => 
     yesImg = $("#yes_" + message.user_id)
     yesImg.show()
-    setTimeout ((item) ->
-      f = ->
-        item.hide()
-        return
-
-      f
-    )(yesImg), 3000
+    
 
   receiveWrong: (message) => 
     yesImg = $("#no_" + message.user_id)
