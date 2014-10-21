@@ -92,53 +92,7 @@
 		var wait = 12;
 		for(var x in instanceMap_){
 			setTimeout((function(ins){
-				return function(){
-					var p;
-					if(ins && (p = ins.el_.parentElement)){
-						var styles = getComputedStyle(p);
-						var aw = p.clientWidth - (parseFloat(styles['paddingLeft']) + parseFloat(styles['paddingRight']));
-						var ah = p.clientHeight - (parseFloat(styles['paddingTop']) + parseFloat(styles['paddingBottom']));
-						// p.clientWidth - paddings = actual width
-						// p.clientHeight - paddings = actual height
-
-						var squareSize = Math.min(aw, ah);
-						
-						ins.width_ = squareSize;
-						ins.height_ = squareSize;
-						ins.el_.width = Math.round(squareSize);
-						ins.el_.height = Math.round(squareSize);
-						ins.rootScale_ = ins.width_ / prop_.width;
-
-						var sourceMinWidth = Math.min(prop_.width, prop_.height);
-						ins.context_.lineWidth = squareSize / (sourceMinWidth / prop_.lineWidth);
-						ins.context_.lineCap = prop_.lineCap;
-						ins.context_.strokeStyle = prop_.lineColor;
-
-						if(ins.backImgLoad_){
-							ins.context_.drawImage(ins.backImg_, 0, 0, squareSize, squareSize);
-						}
-						// rewrite cached drawing
-						for(var i = 0, len = ins.track_.length; i < len; i++){
-							var single = ins.track_[i];
-							var pslen = single.length;
-							var con = ins.context_;
-							var x = single[0][0] * ins.rootScale_;
-							var y = single[0][1] * ins.rootScale_;
-							con.beginPath();
-							con.moveTo(x - 0.1, y - 0.1);
-							con.lineTo(x, y);
-							con.moveTo(x, y);
-							con.stroke();
-							for(var ps = 1; ps < pslen; ps++){
-								x = single[ps][0] * ins.rootScale_;
-								y = single[ps][1] * ins.rootScale_;
-								con.lineTo(x, y);
-								con.moveTo(x, y);
-								con.stroke();
-							}
-						}
-					}
-				};
+				return function(){ ins.responsive(); };
 			})(instanceMap_[x]), timeCount++ * timeStep + wait);
 		}
 	};
@@ -164,6 +118,7 @@
 	CanvasEmptyInstance.prototype.point = function(){return this;};
 	CanvasEmptyInstance.prototype.line = function(){return this;};
 	CanvasEmptyInstance.prototype.clear = function(){return this;};
+	CanvasEmptyInstance.prototype.responsive = function(){return this;};
 	//CanvasEmptyInstance.prototype.prop = function(){return this;};
 	
 	
@@ -197,6 +152,7 @@
 					return function(){
 						context.drawImage(this, 0, 0, w, h);
 						scope.backImgLoad_ = true;
+						scope.responsive();
 					}
 				})(this, con);
 				this.backImg_.src = back;
@@ -204,6 +160,7 @@
 				this.backImg_ = back;
 				con.drawImage(back, 0, 0, w, h);
 				this.backImgLoad_ = true;
+				this.responsive();
 			}else{
 				console.error('CM can not handle the invalid image url/element.');
 			}
@@ -286,6 +243,64 @@
 		return this;
 	};
 	
+	CanvasInstance.prototype.responsive = function(element ,callback){
+		var ins = this;
+		var p = element || ins.el_.parentElement;
+		if(prop_.responsiveByParent === true && ins && p){
+			var styles = getComputedStyle(p);
+			var aw = p.clientWidth - (parseFloat(styles['paddingLeft']) + parseFloat(styles['paddingRight']));
+			var ah = p.clientHeight - (parseFloat(styles['paddingTop']) + parseFloat(styles['paddingBottom']));
+			// p.clientWidth - paddings = actual width
+			// p.clientHeight - paddings = actual height
+
+			var squareSize = Math.min(aw, ah);
+			
+			ins.width_ = squareSize;
+			ins.height_ = squareSize;
+			ins.el_.width = Math.round(squareSize);
+			ins.el_.height = Math.round(squareSize);
+			ins.rootScale_ = ins.width_ / prop_.width;
+
+			var sourceMinWidth = Math.min(prop_.width, prop_.height);
+			ins.context_.lineWidth = squareSize / (sourceMinWidth / prop_.lineWidth);
+			ins.context_.lineCap = prop_.lineCap;
+			ins.context_.strokeStyle = prop_.lineColor;
+
+			if(ins.backImgLoad_){
+				ins.context_.drawImage(ins.backImg_, 0, 0, squareSize, squareSize);
+			}
+			// rewrite cached drawing
+			var con = ins.context_;
+			for(var i = 0, len = ins.track_.length; i < len; i++){
+				var single = ins.track_[i];
+				var pslen = single.length;
+				var x = single[0][0] * ins.rootScale_;
+				var y = single[0][1] * ins.rootScale_;
+				con.beginPath();
+				con.moveTo(x - 0.1, y - 0.1);
+				con.lineTo(x, y);
+				con.moveTo(x, y);
+				con.stroke();
+				for(var ps = 1; ps < pslen; ps++){
+					x = single[ps][0] * ins.rootScale_;
+					y = single[ps][1] * ins.rootScale_;
+					con.lineTo(x, y);
+					con.moveTo(x, y);
+					con.stroke();
+				}
+			}
+			if(typeof callback == 'function'){
+				setTimeout((function(scope){
+					return function(){
+						callback.call(scope);
+					};
+				})(ins), 0);
+			}
+		}
+		return ins;
+	};
+
+
 	/**
 	 * Get
 	 * @param {CanvasMgrProp} property A canvas manager property object.
