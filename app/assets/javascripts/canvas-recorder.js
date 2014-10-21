@@ -138,9 +138,9 @@
 	var Status_ = {
 		UNKNOWN: -1,
 		IDLE: 0,
-		COMPILING: 1,
+		//COMPILING: 1,
 		RECORDING: 2,
-		COMPILING_PREV_AND_RECORDING_NEW: 3
+		//COMPILING_PREV_AND_RECORDING_NEW: 3
 	};
 	
 	/**
@@ -207,8 +207,9 @@
 		this.context_.lineCap = this.prop_.lineCap || prop_.lineCap;
 		this.context_.strokeStyle = this.prop_.lineColor || prop_.lineColor;
 		
-		this.status_ = (this.status_ || 0) + Status_.IDLE;
-
+		this.status_ = Status_.IDLE;
+		this.history_ = [];
+		this.compiledHistory_ = {};
 	}
 	
 	/**
@@ -218,7 +219,7 @@
 	 * @return {RecorderInstance}
 	 */
 	RecorderInstance.prototype.point = function(pt, callback){
-		if(this.status_ == Status_.IDLE || this.status_ > Status_.COMPILING){
+		if(this.status_ == Status_.IDLE || this.status_ == Status_.RECORDING){
 			var con = this.context_;
 			var x = this.scale_ * pt.x;
 			var y = this.scale_ * pt.y;
@@ -248,7 +249,7 @@
 	 * @return {RecorderInstance}
 	 */
 	RecorderInstance.prototype.line = function(pt, callback){
-		if(this.status_ == Status_.IDLE || this.status_ > Status_.COMPILING){
+		if(this.status_ == Status_.IDLE || this.status_ == Status_.RECORDING){
 			var con = this.context_;
 			var x = this.scale_ * pt.x;
 			var y = this.scale_ * pt.y;
@@ -276,7 +277,7 @@
 	 * @return {RecorderInstance}
 	 */
 	RecorderInstance.prototype.clear = function(stamp, callback){
-		if(this.status_ == Status_.IDLE || this.status_ > Status_.COMPILING){
+		if(this.status_ == Status_.IDLE || this.status_ == Status_.RECORDING){
 			if(this.backImg_){
 				this.context_.drawImage(this.backImg_, 0, 0, this.width_, this.height_);
 			}else{
@@ -305,15 +306,12 @@
 	RecorderInstance.prototype.start = function(stamp, startCallback){
 		// Handle the restart record in the case of non-completed compiling of previous recording.
 		// ...
-		if(this.status_ > Status_.COMPILING){
+		if(this.status_ == Status_.RECORDING){
 			console.error('CR at [' + this.id_ + '] is recording');
 			return;
 		}
 		
-		this.status_ += Status_.RECORDING;
-		
-		this.history_ = [];
-		this.compiledHistory_ = [];
+		this.status_ = Status_.RECORDING;
 
 		var pclf = this.prop_.cacheLastFrame;
 		var cacheLastFrame = 
@@ -355,29 +353,29 @@
 		var self = this;
 		if(self.status_ == Status_.RECORDING){
 			self.history_.push(record_(stamp, self.el_));
-			self.status_ = Status_.COMPILING;
 			
 			var frameRate = this.prop_.frameRate || prop_.frameRate || 25;
-			//var compiled = [];
 			var compilingTemp = self.history_.slice(0);
+			self.history_ = [];
+			self.status_ = Status_.IDLE;
 			var item;
 			var timeseq = 0;
+			var stampKey = compilingTemp[0].stamp + "-" + compilingTemp[compilingTemp.length-1].stamp;
+			self.compiledHistory_[stampKey] = [];
 			while(item = compilingTemp.shift()){
 				isLast = compilingTemp.length == 0;
-				setTimeout((function(scope, t, last){
+				setTimeout((function(scope, t, last, key){
 					return function(){	
-						scope.compiledHistory_.push({stamp:t.stamp, base64:t.el.toDataURL()});
+						scope.compiledHistory_[key].push({stamp:t.stamp, base64:t.el.toDataURL()});
 						//compiled.push({stamp:t.stamp, base64:t.el.toDataURL()});
 						if(last){
-							scope.status_ -= Status_.COMPILING;
-							resultsCallback.call(scope, arrangeFrame_(scope.compiledHistory_.slice(0), frameRate));
+							resultsCallback.call(scope, arrangeFrame_(scope.compiledHistory_[key].slice(0), frameRate));
+							scope.compiledHistory_[key] = null;
 						}
 					};
-				})(self, item, isLast), timeseq += 3);
+				})(self, item, isLast, stampKey), timeseq += 3);
 			}
 			
-		}else if(self.status_ == Status_.COMPILING_PREV_AND_RECORDING_NEW){
-			// deny or make a thread
 		}
 	};
 
