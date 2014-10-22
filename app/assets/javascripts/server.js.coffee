@@ -26,6 +26,7 @@ class @ChatApp
     @dispatcher.bind 'showCorrectUsers', @receiveCorrectUsers
     @dispatcher.bind 'action', @receiveAction
     @dispatcher.bind 'userOut', @receiveUserOut
+    @dispatcher.bind 'reset',   @receiveReset
 
   receiveDown: (message) =>
     CM('origin_'+message.user_id).point({ x: message.x, y: message.y })
@@ -77,6 +78,9 @@ class @ChatApp
 
   reset: (s) =>
     @dispatcher.trigger 'reset', second: s
+
+  receiveReset: (message) =>
+    second = message.second
 
   setCorrectCount: (uid, count) ->
     @dispatcher.trigger 'setCorrectCount', user_id: uid, count: count
