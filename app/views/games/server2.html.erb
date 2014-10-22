@@ -19,7 +19,7 @@
               -->
             <div class="row">
               <div class="col-md-3">
-                <div id="photo_<%= x.number %>"><%= render_gamer_photo(x.image,"thumb",50,50) %></div>
+                <div id="photo_<%= x.number %>"><%= render_gamer_photo(x,"thumb",50,50) %></div>
                 <p><%= x.name %></p>
                 <span>剩餘:</span><span id="second_<%= x.number %>" style="color:red font-size:12px;" class="badge"><%= @second %>秒</span>
                 <span>答對:</span><span id="no_correct_<%= x.number %>" class="badge">0題</span>
@@ -52,6 +52,7 @@
 
       <% content_for :javascripts do %>
       <%= javascript_include_tag 'server' %>
+      <%= javascript_include_tag 'server2-tvwall' %>
       <script>
 
       var seconds = <%= @second %>;
@@ -157,41 +158,6 @@
           $("#no_correct_" + this.value).text(no_correct[this.value]+"題");
           console.log(no_correct);
         });
-
-        var gamers = {
-            gamersList : [],
-            last: null,
-            next : function() {
-                var newgamer = this.gamersList.shift();
-                this.gamersList.push(newgamer);
-                this.last = newgamer;
-                return newgamer;
-            },
-            prev: function() {
-                return this.last;
-            },
-            push : function(i) {
-              this.gamersList.push(i);
-            }, 
-            remove : function(i) {
-              var idx = this.gamersList.indexOf(i);
-              if (idx > -1) {
-                  this.gamersList.splice(idx, 1);
-              }
-            },
-
-            all: function() {
-              return this.gamersList.slice(0);
-            },
-
-            setActive: function(i) {
-              this.last = i;
-              var idx = this.gamersList.indexOf(i);
-              var head = this.gamersList.splice(0, idx+1);
-              this.gamersList = this.gamersList.concat(head);
-              console.log(this.gamersList);
-            }
-        };
 
         (function collectGamers() {
            <% @visitors.each do |visitor| %>

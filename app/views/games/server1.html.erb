@@ -25,7 +25,7 @@
             </div>
             -->
             <div class="col-md-3">
-              <%= render_gamer_photo(x.image,"thumb",50,50) %>
+              <%= render_gamer_photo(x,"thumb",50,50) %>
               <p><%= x.name %></p>
               <span>答對:</span><span id="no_correct_<%= x.number %>" class="badge">0題</span>
               <!-- <span>正確:</span><span id="answer_correct_<%= x.number %>">?</span> -->
@@ -64,7 +64,7 @@
 
       <% content_for :javascripts do %>
       <%= javascript_include_tag 'server' %>
-      <%= javascript_include_tag 'server-tvwall' %>
+      <%= javascript_include_tag 'server1-tvwall' %>
       <script>
 
       var no_correct = null;

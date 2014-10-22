@@ -40,9 +40,9 @@ h4 {
   <% @visitors.each do |x| %>
   <div class="visitor every_writer_box_down" style="padding:10% 0.5%;">
     <div style="width:80%;margin:2% auto;">
-      <%= render_gamer_photo(x.image,"thumb",40,40) %>
+      <%= render_gamer_photo(x,"thumb",40,40,"user_picture_no_block") %>
       <h4 style="display:inline;"><%= x.name %></h4>
-      <%#= render_gamer_photo(x.image,"thumb",50,50) %>
+      <%#= render_gamer_photo(x,"thumb",50,50) %>
     </div>
     <div style="position:relative;">
       <canvas id="origin_<%= x.number %>" class="orgincanvas canvas_box" ></canvas>
@@ -54,11 +54,36 @@ h4 {
 
 <% content_for :javascripts do %>
 <%= javascript_include_tag 'server' %>
+<%= javascript_include_tag 'server2-tvwall' %>
 <script>
 
 var receiveSubmitHandler = function(o){
   $('#origin_'+o.user_id).addClass("canvas_box_block");
 };
+
+      function markCurrent(c) {
+        $('#user_photo_'+c).addClass("user_picture_block");
+      }
+
+      function clearCurrent(c) {
+        $('#user_photo_'+c).removeClass();
+      }
+
+var receiveStartHandler = function(o){
+
+  if (gamers.prev() != null) {
+                //clearInterval(window.alarm[gamers.prev()]);
+                //window.alarm[gamers.prev()] = null;
+                clearCurrent(gamers.prev());
+              }
+              var newgamer = gamers.next();
+              // call old gamer to stop
+              // call new user to clear screen
+              markCurrent(newgamer);
+              //startCounter(newgamer);
+
+  
+}
 window.timeRemaining = parseInt(<%= @second %>);
 window.alarm = null;
 
@@ -78,6 +103,12 @@ $(document).ready(function() {
 
   window.chatApp = new ChatApp(500,500,'0');
   window.chatApp.bindEvents();
+
+          (function collectGamers() {
+           <% @visitors.each do |visitor| %>
+           gamers.push('<%= visitor.number %>');
+           <% end %>
+        })();
 
 
 });

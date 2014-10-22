@@ -43,10 +43,10 @@ class @ChatApp
 
   receiveAction: (message) =>
     name = message.action
-    #if name is "start"
-      # do something here
-    #else if name is "stop"
-      # do something here
+    if name is "start"
+      receiveStartHandler message
+    else if name is "stop"
+      receiveStopHandler message
 
   clearAll: () ->
    @dispatcher.trigger 'clearAll' 

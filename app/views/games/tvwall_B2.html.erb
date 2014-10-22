@@ -37,9 +37,9 @@ h4 {
   <% @visitors.each do |x| %>
   <div class="visitor every_writer_box_down">
     <div style="width:90%;margin:0 auto 20px auto;">
-      <%= render_gamer_photo(x.image,"thumb",50,50) %>
+      <%= render_gamer_photo(x,"thumb",50,50) %>
       <h4 style="display:inline;"><%= x.name %></h4>
-      <%#= render_gamer_photo(x.image,"thumb",50,50) %>
+      <%#= render_gamer_photo(x,"thumb",50,50) %>
     </div>
     <div style="position:relative;">
       <canvas id="origin_<%= x.number %>" class="orgincanvas canvas_box" ></canvas>
