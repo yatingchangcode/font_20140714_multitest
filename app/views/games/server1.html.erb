@@ -64,7 +64,7 @@
 
       <% content_for :javascripts do %>
       <%= javascript_include_tag 'server' %>
-      <%= javascript_include_tag 'processing.min' %>
+      <%= javascript_include_tag 'server-tvwall' %>
       <script>
 
       var no_correct = null;
@@ -91,22 +91,7 @@
         $('#visitor_'+c).css("border-color", "#f8f8f8");
       }
 
-      function showCorrectUsers(users) {
-            users.sort(function(a,b) {
-              return parseInt(a) - parseInt(b);
-            });
-            
-            for (var i in users) { 
-              setTimeout( (function(a){
-                return function() {
-                  $("#yes_img_"+a).show();
-                }
-              })(users[i]), 400 * i);
-            }
-            users = null;
-      }
-
-      function showCorrectUsersHandler() {}
+      var receiveCorrectUsersHandler = function(){}
 
 
 
@@ -368,6 +353,7 @@
 
          $('#show_correct_button').click(function(){
             showCorrectUsers(correct_users);
+            window.chatApp.showCorrectUsers(correct_users);
          });
 
          
