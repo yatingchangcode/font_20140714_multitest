@@ -91,6 +91,24 @@
         $('#visitor_'+c).css("border-color", "#f8f8f8");
       }
 
+      function showCorrectUsers(users) {
+            users.sort(function(a,b) {
+              return parseInt(a) - parseInt(b);
+            });
+            
+            for (var i in users) { 
+              setTimeout( (function(a){
+                return function() {
+                  $("#yes_img_"+a).show();
+                }
+              })(users[i]), 400 * i);
+            }
+            users = null;
+      }
+
+      function showCorrectUsersHandler() {}
+
+
 
       $(document).ready(function() {
         CM.prop({
@@ -136,14 +154,6 @@
           })(this.checked === true));
         });
 
-        $('#yes_button').click(function(){
-          $('[name="gamer"]').each(function(){
-            if (this.checked) {
-              window.chatApp.right(this.value);
-            }
-          });
-          //alert("answer right:"+array);
-        });
 
         $('#clear_button').click(function(){
             window.chatApp.clearAll();
@@ -231,7 +241,11 @@
         $("[id^=out_button_]").click(function(){
             CM.unreg('origin_'+this.value);
             //this.disabled = true;
-            $(this).attr("disabled", true);
+            $("#correct_button_"+this.value).attr("disabled", true);
+            $("#out_button_"+this.value).attr("disabled", true);
+            $("#start_button_"+this.value).attr("disabled", true);
+            $("#stop_button_"+this.value).attr("disabled", true);
+
             gamers.remove(this.value);
             this.disabled = true;
             $('#visitor_'+this.value).attr('style','opacity:0.2;border:2px solid #f8f8f8');
@@ -338,8 +352,6 @@
          $('[id^=correct_button_]').click(function(){
           if (!no_correct) no_correct = {};
           if (!correct_users) correct_users = [];
-          //window.chatApp.right(this.value);
-          //$('#answer_correct_'+this.value).text("是").css("color","#00cc00");
           $(this).addClass("btn-success");
           if (correct_users.indexOf(this.value) != -1) return;
 
@@ -351,24 +363,14 @@
             no_correct[this.value] += 1;
           }
           $("#no_correct_" + this.value).text(no_correct[this.value]+"題");
-          window.chatApp.setRightCount(this.value, no_correct[this.value]);
+          window.chatApp.setCorrectCount(this.value, no_correct[this.value]);
          });
 
          $('#show_correct_button').click(function(){
-            correct_users.sort(function(a,b) {
-              return parseInt(a) - parseInt(b);
-            });
-            console.log(correct_users);
-            for (var i in correct_users) { 
-              setTimeout( (function(a){
-                return function() {
-                  $("#yes_img_"+a).show();
-                }
-              })(correct_users[i]), 400 * i);
-            }
-            correct_users = null;
+            showCorrectUsers(correct_users);
          });
 
+         
          $('#clear_correct_button').click(function(){
           if (!no_correct) return;
           gamers.all().forEach(function(e) {

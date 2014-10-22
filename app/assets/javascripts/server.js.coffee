@@ -43,9 +43,9 @@ class @ChatApp
 
   receiveAction: (message) =>
     name = message.action
-    if name is "start"
+    #if name is "start"
       # do something here
-    else if name is "stop"
+    #else if name is "stop"
       # do something here
 
   clearAll: () ->
@@ -75,8 +75,14 @@ class @ChatApp
   wrong: (uid) =>
     @dispatcher.trigger 'wrong' , user_id: uid
 
-  setRightCount: (uid, count) ->
-    @dispatcher.trigger 'setRightCount', user_id: uid, count: count
+  setCorrectCount: (uid, count) ->
+    @dispatcher.trigger 'setCorrectCount', user_id: uid, count: count
+
+  showCorrectUsers: (users) ->
+    @dispatcher.trigger 'showCorrectUsers', users
+
+  receiveCorrectUsers: (users) ->
+    showCorectUsersHandler users
 
   receiveRightCount: (message) ->
     console.log message
