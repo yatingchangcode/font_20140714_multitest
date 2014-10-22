@@ -3,7 +3,7 @@
 <!--         <h4>目前上線人數<span id="user_count">0</span>人</h4>
  -->      </div>
       <div style="">
-        <div class="row">
+        <div class="row-fluid">
           <% @visitors.each do |x| %>
           <div class="visitor col-md-3" id="visitor_<%= x.number %>" style="background-color:#ebf0fa;border:4px solid #f8f8f8">
             <div class="row-fluid">
@@ -40,7 +40,7 @@
         <br/>
         <div class="row">
           <div class="col-md-12">
-            <input type="checkbox" id="allGamer"/>全選
+            <!-- <input type="checkbox" id="allGamer"/>全選 -->
             <button id="reset_time_button" style="font-size:20px;">重設時間</button>
             <button id="out_button" style="font-size:20px;">淘汰</button>
             <!-- <button id="start_button" style="font-size:20px;">Start</button> -->
@@ -146,15 +146,6 @@
           })(this.checked === true));
         });
 
-        $('#yes_button').click(function(){
-          $('[name="gamer"]').each(function(){
-            if (this.checked) {
-              window.chatApp.right(this.value);
-            }
-          });
-          //alert("answer right:"+array);
-        });
-
         $('[id^=correct_button_]').click(function(){
           if (!no_correct) no_correct = {};
           window.chatApp.right(this.value);
@@ -202,12 +193,11 @@
             }
         };
 
-        var collectGamers = function() {
+        (function collectGamers() {
            <% @visitors.each do |visitor| %>
            gamers.push('<%= visitor.number %>');
            <% end %>
-        }
-        collectGamers();
+        })();
 
         $('#reset_time_button').click(function(){
           //if(window.alarm) return;
@@ -279,37 +269,6 @@
             startCounter(this.value);
         });
 
-        $('#start_button').click(function(){
-          if(window.alarm) return;
-          $('[name="gamer"]').each(function(){
-            if (this.checked) {
-              window.chatApp.action(this.value,'start');
-              $('#visitor_'+this.value).css("background-color", "");
-            }
-          });
-
-          $('[name="gamer"]').each(function(){
-            if (this.checked) {
-
-              (function (thisvalue) {
-               window.alarm = setInterval(function(){
-                if (parseInt($('#second_'+thisvalue).text()) != 0){
-                  console.log($('#second_'+thisvalue).text());
-                  $('#second_'+thisvalue).text(parseInt($('#second_'+thisvalue).text()) - 1 );
-                }else{
-                  clearInterval(window.alarm);
-                  window.alarm = null;
-                  window.chatApp.action(thisvalue,'stop');
-                  receiveSubmitHandler({user_id:thisvalue});
-                }
-              },1000); 
-             })(this.value);
-
-           }
-         });
-          var array = afterAction(this);
-                
-        });
 
       $('#stop_all_button').click(function(){
            if (!window.alarm) return;

@@ -22,8 +22,7 @@ class @ChatApp
     @dispatcher.bind 'get_user_count', @getUserCount
     @dispatcher.bind 'get_write_count', @getWriteCount
     @dispatcher.bind 'right', @receiveRight
-    @dispatcher.bind 'wrong', @receiveWrong
-    @dispatcher.bind 'setRightCount', @receiveRightCount
+    @dispatcher.bind 'setCorrectCount', @receiveCorrectCount
     @dispatcher.bind 'action', @receiveAction
 
   receiveDown: (message) =>
@@ -72,9 +71,6 @@ class @ChatApp
   reset: (s) =>
     @dispatcher.trigger 'reset', second: s
 
-  wrong: (uid) =>
-    @dispatcher.trigger 'wrong' , user_id: uid
-
   setCorrectCount: (uid, count) ->
     @dispatcher.trigger 'setCorrectCount', user_id: uid, count: count
 
@@ -84,23 +80,12 @@ class @ChatApp
   receiveCorrectUsers: (users) ->
     showCorectUsersHandler users
 
-  receiveRightCount: (message) ->
+  receiveCorrectCount: (message) ->
     console.log message
 
   receiveRight: (message) => 
     yesImg = $("#yes_img_" + message.user_id)
     yesImg.show()
     
-
-  receiveWrong: (message) => 
-    yesImg = $("#no_img_" + message.user_id)
-    yesImg.show()
-    setTimeout ((item) ->
-      f = ->
-        item.hide()
-        return
-
-      f
-    )(yesImg), 3000
 
 
