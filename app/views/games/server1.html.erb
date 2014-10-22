@@ -229,6 +229,7 @@
         $("[id^=out_button_]").click(function(){
             CM.unreg('origin_'+this.value);
             //this.disabled = true;
+            $(this).attr("disabled", true);
             gamers.remove(this.value);
             this.disabled = true;
             $('#visitor_'+this.value).attr('style','opacity:0.2;border:2px solid #f8f8f8');
@@ -246,14 +247,14 @@
           
           if ($('#second').text() != ''){
             window.alarm = setInterval(function(){
-              var s = parseInt($('#second').text());
+              var s = parseFloat($('#second').text()).toFixed(1);
                 if (s > 0){
                   //console.log(s);
-                  var percent = 100 * (s-1) / window.timeRemaining;
+                  var percent = 100 * (s-0.1) / window.timeRemaining;
                   $('#progress_bar').css("width", percent+"%").attr('aria-valuenow', percent)
-                  .text((s-1)+"s");
-                  console.log("width: "+s+"%;");
-                  $('#second').text(s - 1);
+                  .text((s-0.1).toFixed(1)+"s");
+                  console.log(s);
+                  $('#second').text((s - 0.1).toFixed(1));
                 } else {
                   clearInterval(window.alarm);
                   window.alarm = null;
@@ -266,7 +267,7 @@
                 var array = afterAction(this);
                 //alert("stop:"+array);
               }
-            },1000);
+            },100);
           }
           //var array = afterAction(this);
           //alert("start:"+array);
@@ -275,14 +276,13 @@
         var startCounter = function(thisvalue) {
                if(window.alarm) return;
                window.alarm = setInterval(function(){
-                var s = parseInt($('#second').text());
+                var s = parseFloat($('#second').text()).toFixed(1);
                 if (s > 0){
                   //console.log(s);
-                  var percent = 100 * (s-1) / window.timeRemaining;
+                  var percent = 100 * (s-0.1) / window.timeRemaining;
                   $('#progress_bar').css("width", percent+"%").attr('aria-valuenow', percent)
-                  .text((s-1)+"s");
-                  console.log("width: "+s+"%;");
-                  $('#second').text(s - 1);
+                  .text((s-0.1).toFixed(1)+"s");
+                  $('#second').text((s - 0.1).toFixed(1));
                 } else {
                   clearInterval(window.alarm);
                   window.alarm = null;
@@ -291,7 +291,7 @@
                   $('#second').text(window.timeRemaining);
                   receiveSubmitHandler({user_id:thisvalue});
              }
-              },1000); 
+              },100); 
             };
 
         $('[id^=start_button_]').click(function(){
