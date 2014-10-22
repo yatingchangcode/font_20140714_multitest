@@ -1,3 +1,14 @@
 // Place all the styles related to the games controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
+
+.canvas_box{
+  border:2px solid;
+  z-index:1;
+  display:block;
+  margin:0 auto;
+}
+
+.canvas_box_block{  
+  border: 2px solid green;
+}

@@ -17,12 +17,6 @@ h4 {
   border-radius: 100px;
 }
 
-.block{
-  opacity: 0.9;
-  
-  //border: 1px solid white;
-  
-}
 
 .every_writer_box_down{
   float:left;
@@ -31,12 +25,6 @@ h4 {
 }
 
 
-.canvas_box{
-
-  z-index:1;
-  display:block;
-  margin:0 auto;
-}
 
 .correct{
   display:none;
@@ -50,7 +38,7 @@ h4 {
 <% end %>
 <div style="margin:0 10%">
   <% @visitors.each do |x| %>
-  <div class="visitor block every_writer_box_down" style="padding:10% 0.5%;">
+  <div class="visitor every_writer_box_down" style="padding:10% 0.5%;">
     <div style="width:80%;margin:2% auto;">
       <%= render_gamer_photo(x.image,"thumb",40,40) %>
       <h4 style="display:inline;"><%= x.name %></h4>
@@ -69,7 +57,7 @@ h4 {
 <script>
 
 var receiveSubmitHandler = function(o){
-  $('#visitor_'+o.user_id).css("background-color", "#f0f0f0");
+  $('#origin_'+o.user_id).addClass("canvas_box_block");
 };
 window.timeRemaining = parseInt(<%= @second %>);
 window.alarm = null;
