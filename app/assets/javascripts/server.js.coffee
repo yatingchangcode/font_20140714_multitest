@@ -23,6 +23,7 @@ class @ChatApp
     @dispatcher.bind 'get_write_count', @getWriteCount
     @dispatcher.bind 'right', @receiveRight
     @dispatcher.bind 'setCorrectCount', @receiveCorrectCount
+    @dispatcher.bind 'showCorrectUsers', @receiveCorrectUsers
     @dispatcher.bind 'action', @receiveAction
 
   receiveDown: (message) =>
@@ -78,7 +79,7 @@ class @ChatApp
     @dispatcher.trigger 'showCorrectUsers', users
 
   receiveCorrectUsers: (users) ->
-    showCorectUsersHandler users
+    receiveCorrectUsersHandler users
 
   receiveCorrectCount: (message) ->
     console.log message
