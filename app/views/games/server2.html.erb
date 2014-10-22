@@ -53,27 +53,46 @@
       </div>
 
       <% content_for :javascripts do %>
-      <%= javascript_include_tag 'server' %>
       <%= javascript_include_tag 'server2-tvwall' %>
+      <%= javascript_include_tag 'server' %>
+      
       <script>
 
       var seconds = <%= @second %>;
       var alarm = null;
       var no_correct = null;
 
+
+      //Gamer send submit
       var receiveSubmitHandler = function(o){
         $('#visitor_'+o.user_id).css("background-color", "#e0e0e0");
       };
 
+
+
+
+      //Show O
+      function showO(c){
+        $("#yes_img_" + c).show();
+      }
+
+      //Remove O
+      function removeO(c) {
+        $('#yes_img_'+c).hide();
+      }
+
+      //Gamer start to write 
       function startSetStyle(c) {
         $('#visitor_'+c).css("border-color", "#4d4ddb");
         $('#visitor_'+c).css("background-color", "#ebf0fa");
       }
 
+      //Gamer stop to write 
       function stopSetStyle(c) {
         $('#visitor_'+c).css("border-color", "#f8f8f8");
       }
 
+      //Gamer out
       function outSetStyle(val) {
             $("#correct_button_"+val).attr("disabled", true);
             $("#out_button_"+val).attr("disabled", true);
@@ -85,40 +104,13 @@
             $('#visitor_'+val).attr('style','opacity:0.2;border:4px solid #f8f8f8');
       }
 
+      //Set timer
       function resetSetStyle(s) {
           $('#second_' + key).text(s + "秒");
         }
       
-      function removeO(c) {
-        $('#yes_img_'+c).hide();
-      }
 
-      function isEmpty(obj) {
-          for (var prop in obj) {
-            if (obj.hasOwnProperty(prop))
-              return false;
-          }
-          return true;
-        }
 
-      function startCounter(thisvalue) {
-               if (window.alarm === null) { 
-                window.alarm = {};
-              }
-               if (!isEmpty(window.alarm[thisvalue]))  return;
-
-               window.alarm[thisvalue] = setInterval(function(){
-                if (parseInt($('#second_'+thisvalue).text()) != 0){
-                  console.log($('#second_'+thisvalue).text());
-                  $('#second_'+thisvalue).text(parseInt($('#second_'+thisvalue).text()) - 1 + "秒");
-                } else {
-                  clearInterval(window.alarm[thisvalue]);
-                  window.alarm[thisvalue] = null;
-                  window.chatApp.action(thisvalue,'stop');
-                  receiveSubmitHandler({user_id:thisvalue});
-                }
-              },1000); 
-        }
 
       window.open("tvwall_<%= params[:stage] %>?join_visitors_number=<%= params[:join_visitors_number] %>&second=<%= @second %>","tvwallWindow","width=800, height=800");
       window.open("record?join_visitors_number=<%= params[:join_visitors_number] %>&second=<%= @second %>","recordWindow","width=800, height=800");
@@ -139,6 +131,12 @@
         window.chatApp = new ChatApp(500,500,'0');
         window.chatApp.bindEvents();
         window.chatApp.reset();
+
+        (function collectGamers() {
+          <% @visitors.each do |visitor| %>
+          gamers.push('<%= visitor.number %>');
+          <% end %>
+        })();
 
         var afterAction = function(property){
           var array = [];
@@ -172,6 +170,7 @@
         $('[id^=correct_button_]').click(function(){
           if (!no_correct) no_correct = {};
           window.chatApp.right(this.value);
+          showO(this.value);
           if (!no_correct[this.value]) {
             no_correct[this.value] = 1;
           } else {
@@ -183,19 +182,12 @@
         });
 
         $('[id^=remove_O_button_]').click(function(){
-          removeO(this.value);
+          window.chatApp.removeRight(this.value);
         });
 
         $('[id^=remove_writing_button_]').click(function(){
           window.chatApp.clear(this.value);
-          CM('origin_'+this.value).clear();
         });
-
-        (function collectGamers() {
-           <% @visitors.each do |visitor| %>
-           gamers.push('<%= visitor.number %>');
-           <% end %>
-        })();
 
         $('#reset_time_button').click(function(){
           //if(window.alarm) return;
@@ -228,21 +220,12 @@
         });
 
         $("[id^=out_button_]").click(function(){
-            console.log(this.value);
-            CM.unreg('origin_'+this.value);
-            //this.disabled = true;
-            gamers.remove(this.value);
-            outSetStyle(this.value);
+            window.chatApp.userOut(this.value);
         });
 
 
         $('[id^=start_button_]').click(function(){
-            if (!window.alarm) window.alarm = {};
             window.chatApp.action(this.value,'start');
-            //console.log(this.value);
-            gamers.setActive(this.value);
-            startSetStyle(this.value);
-            startCounter(this.value);
         });
 
 
@@ -262,11 +245,8 @@
       });
 
       $('[id^=stop_button_]').click(function(){
-           clearInterval(window.alarm[this.value]);
-           console.log(this.value);
-           window.alarm[this.value] = null;
+
            window.chatApp.action(this.value,'stop');
-           stopSetStyle(this.value);
            //receiveSubmitHandler({user_id:this.value});
       });
 

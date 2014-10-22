@@ -25,7 +25,7 @@ WebsocketRails::EventMap.describe do
     subscribe :submit,   :to => WritesController, :with_method => :submit
     subscribe :action,   :to => WritesController, :with_method => :action
     subscribe :right,    :to => WritesController, :with_method => :right
-    subscribe :wrong,    :to => WritesController, :with_method => :wrong
+    subscribe :removeRight,    :to => WritesController, :with_method => :removeRight
     subscribe :clearAll, :to => WritesController, :with_method => :clearAll
     subscribe :reset,    :to => WritesController, :with_method => :reset  
     subscribe :continue_write, :to => WritesController, :with_method => :continue_write

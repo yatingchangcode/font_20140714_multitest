@@ -53,37 +53,45 @@ h4 {
 </div>
 
 <% content_for :javascripts do %>
-<%= javascript_include_tag 'server' %>
 <%= javascript_include_tag 'server2-tvwall' %>
+<%= javascript_include_tag 'server' %>
+
 <script>
 
+//使用者送出確認
 var receiveSubmitHandler = function(o){
   $('#origin_'+o.user_id).addClass("canvas_box_block");
 };
 
-      function markCurrent(c) {
-        $('#user_photo_'+c).addClass("user_picture_block");
-      }
+//後台取消確認(尚未實作)
+var receiveCancelSubmitHandler = function(o){
+  $('#origin_'+o.user_id).removeClass("canvas_box_block");
+};
 
-      function clearCurrent(c) {
-        $('#user_photo_'+c).removeClass();
-      }
-
-var receiveStartHandler = function(o){
-
-  if (gamers.prev() != null) {
-                //clearInterval(window.alarm[gamers.prev()]);
-                //window.alarm[gamers.prev()] = null;
-                clearCurrent(gamers.prev());
-              }
-              var newgamer = gamers.next();
-              // call old gamer to stop
-              // call new user to clear screen
-              markCurrent(newgamer);
-              //startCounter(newgamer);
-
-  
+//後台送出答對
+function showO(c){
+  $("#yes_img_" + c).show();
 }
+
+function removeO(c){
+  $("#yes_img_" + c).hide();
+}
+
+function startSetStyle(c) {
+  $('#user_photo_'+c).addClass("user_picture_block");
+}
+
+function stopSetStyle(c) {
+  $('#user_photo_'+c).removeClass("user_picture_block");
+}
+
+//Gamer out
+function outSetStyle(val) {
+  $('#origin_'+val).hide();
+}
+
+
+
 window.timeRemaining = parseInt(<%= @second %>);
 window.alarm = null;
 
@@ -104,11 +112,11 @@ $(document).ready(function() {
   window.chatApp = new ChatApp(500,500,'0');
   window.chatApp.bindEvents();
 
-          (function collectGamers() {
-           <% @visitors.each do |visitor| %>
-           gamers.push('<%= visitor.number %>');
-           <% end %>
-        })();
+  (function collectGamers() {
+   <% @visitors.each do |visitor| %>
+   gamers.push('<%= visitor.number %>');
+   <% end %>
+ })();
 
 
 });
