@@ -25,6 +25,7 @@ class @ChatApp
     @dispatcher.bind 'setCorrectCount', @receiveCorrectCount
     @dispatcher.bind 'showCorrectUsers', @receiveCorrectUsers
     @dispatcher.bind 'action', @receiveAction
+    @dispatcher.bind 'userOut', @receiveUserOut
 
   receiveDown: (message) =>
     CM('origin_'+message.user_id).point({ x: message.x, y: message.y })
@@ -48,10 +49,15 @@ class @ChatApp
     else if name is "stop"
       receiveStopHandler message
 
+  userOut: (uid) ->
+    @dispatcher.trigger 'userOut', user_id: uid
+
   clearAll: () ->
    @dispatcher.trigger 'clearAll' 
 
   clear: (uid) ->
+    #如果要清空個別使用者時,送出user_id
+    #清空全部的時候會送出空的object: {}
    @dispatcher.trigger 'clear', user_id: uid 
 
   getUserCount: (data) ->
@@ -87,6 +93,8 @@ class @ChatApp
   receiveRight: (message) => 
     yesImg = $("#yes_img_" + message.user_id)
     yesImg.show()
-    
+  
+  receiveUserOut: (message) =>
+    uid = message.user_id
 
 

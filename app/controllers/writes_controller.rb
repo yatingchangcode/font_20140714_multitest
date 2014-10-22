@@ -92,6 +92,12 @@ class WritesController < WebsocketRails::BaseController
     manager_connection.send_message :showCorrectUsers, data
   end
 
+  def userOut
+    manager_connection = WebsocketRails.users[0]
+    data = message
+    manager_connection.send_message :userOut, data
+  end
+
   def right
     manager_connection = WebsocketRails.users[0]
     data = {:user_id => message[:user_id]}

@@ -31,6 +31,7 @@ WebsocketRails::EventMap.describe do
     subscribe :continue_write, :to => WritesController, :with_method => :continue_write
     subscribe :setCorrectCount, :to => WritesController, :with_method => :setCorrectCount
     subscribe :showCorrectUsers, :to => WritesController, :with_method => :showCorrectUsers
+    subscribe :userOut,  :to => WritesController, :with_method => :userOut
     # read trigger start or stop, write bind receiveAlert
   # end
 

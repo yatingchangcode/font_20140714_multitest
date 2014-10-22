@@ -32,6 +32,8 @@
             </div>
             <div class="row-fluid">
               <button id="out_button_<%= x.number %>" style="font-size:12px;" value="<%= x.number %>" type="button" class="btn btn-default navbar-btn">淘汰</button>
+              <button id="remove_O_button_<%= x.number %>" style="font-size:12px;" value="<%= x.number %>" type="button" class="correct_button btn btn-default navbar-btn">清除Ｏ</button>
+              <button id="remove_writing_button_<%= x.number %>" style="font-size:12px;" value="<%= x.number %>" type="button" class="correct_button btn btn-default navbar-btn">清除筆跡</button>
             </div>
 
           </div>
@@ -71,6 +73,10 @@
         $('#visitor_'+c).css("border-color", "#f8f8f8");
       }
       
+      function removeO(c) {
+        $('#yes_img_'+c).hide();
+      }
+
       function isEmpty(obj) {
           for (var prop in obj) {
             if (obj.hasOwnProperty(prop))
@@ -155,8 +161,18 @@
           } else {
             no_correct[this.value] += 1;
           }
+          window.chatApp.setCorrectCount(this.value, no_correct[this.value]);
           $("#no_correct_" + this.value).text(no_correct[this.value]+"題");
           console.log(no_correct);
+        });
+
+        $('[id^=remove_O_button_]').click(function(){
+          removeO(this.value);
+        });
+
+        $('[id^=remove_writing_button_]').click(function(){
+          window.chatApp.clear(this.value);
+          CM('origin_'+this.value).clear();
         });
 
         (function collectGamers() {
