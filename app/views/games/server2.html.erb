@@ -64,8 +64,9 @@
         $('#visitor_'+o.user_id).css("background-color", "#e0e0e0");
       };
 
-      function markCurrent(c) {
-        $('#visitor_'+c).css("border-color", "#cc00cc");
+      function startSetStyle(c) {
+        $('#visitor_'+c).css("border-color", "#4d4ddb");
+        $('#visitor_'+c).css("background-color", "#ebf0fa");
       }
 
       function clearCurrent(c) {
@@ -139,7 +140,7 @@
 
         $('[id^=continue_]').click(function(){
           window.chatApp.continue_write(this.value);
-          $('#visitor_'+this.value).css("background-color", "");
+          //$('#visitor_'+this.value).css("background-color", "");
         });
 
         $('#allGamer').click(function(){
@@ -242,46 +243,36 @@
               // call new user to clear screen
               window.chatApp.clear(newgamer);
               window.chatApp.action(newgamer,'start');
-              markCurrent(newgamer);
+              startSetStyle(newgamer);
               startCounter(newgamer);
         });
 
-        
-        $("[id^=out_button_]").click(function(){
-            console.log(this.value);
-            CM.unreg('origin_'+this.value);
-            //this.disabled = true;
+        function outSetStyle(val) {
             $("#correct_button_"+this.value).attr("disabled", true);
             $("#out_button_"+this.value).attr("disabled", true);
             $("#start_button_"+this.value).attr("disabled", true);
             $("#stop_button_"+this.value).attr("disabled", true);
             $("#continue_"+this.value).attr("disabled", true);
-            gamers.remove(this.value);
+            $("#remove_O_button_"+this.value).attr("disabled", true);
+            $("#remove_writing_button_"+this.value).attr("disabled", true);
             $('#visitor_'+this.value).attr('style','opacity:0.2;border:4px solid #f8f8f8');
+        }
+
+        $("[id^=out_button_]").click(function(){
+            console.log(this.value);
+            CM.unreg('origin_'+this.value);
+            //this.disabled = true;
+            gamers.remove(this.value);
+            outSetStyle(this.value);
         });
 
-        $('#out_button').click(function(){
-          $('[name="gamer"]').each(function(){
-            if (this.checked) {
-              CM.unreg('origin_'+this.value);
-              this.disabled = true;
-              gamers.remove(this.value);
-            }
-          });
-          var array = afterAction(this);
-          for (var x in array){
-            $('#visitor_'+array[x]).attr('style','opacity:0.2;border:4px solid');
-          }
-          //alert("outer:"+array);
-        });
 
         $('[id^=start_button_]').click(function(){
             if (!window.alarm) window.alarm = {};
             window.chatApp.action(this.value,'start');
-            $('#visitor_'+this.value).css("background-color", "");
             //console.log(this.value);
             gamers.setActive(this.value);
-            markCurrent(this.value);
+            startSetStyle(this.value);
             startCounter(this.value);
         });
 
