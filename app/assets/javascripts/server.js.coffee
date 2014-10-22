@@ -24,6 +24,7 @@ class @ChatApp
     @dispatcher.bind 'right', @receiveRight
     @dispatcher.bind 'wrong', @receiveWrong
     @dispatcher.bind 'setRightCount', @receiveRightCount
+    @dispatcher.bind 'action', @receiveAction
 
   receiveDown: (message) =>
     CM('origin_'+message.user_id).point({ x: message.x, y: message.y })
@@ -39,6 +40,13 @@ class @ChatApp
     
   receiveSubmit: (message) =>
     receiveSubmitHandler message
+
+  receiveAction: (message) =>
+    name = message.action
+    if name is "start"
+      # do something here
+    else if name is "stop"
+      # do something here
 
   clearAll: () ->
    @dispatcher.trigger 'clearAll' 

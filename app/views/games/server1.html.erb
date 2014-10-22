@@ -153,6 +153,8 @@
           $('[id^=yes_img_]').hide();
           //$('[id^=answer_correct_]').text("?").css("color","");
           $('[id^=correct_button_]').removeClass("btn-success");
+          $('#progress_bar').css("width", "100%").attr("aria-valuenow","100%")
+                            .text(window.timeRemaining+"s");
           gamers.all().forEach(function(e){
             $('#visitor_'+e).css("background-color", "");
             clearCurrent(e);
@@ -244,7 +246,7 @@
             $('#visitor_'+this.value).css("background-color", "");
             markCurrent(u);
           });
-          
+
           if ($('#second').text() != ''){
             window.alarm = setInterval(function(){
               var s = parseFloat($('#second').text()).toFixed(1);
@@ -262,9 +264,9 @@
                   window.chatApp.action(e,'stop');
                   clearCurrent(e);
                   receiveSubmitHandler({user_id:e});
-                });
+                  });
                   $('#second').text(window.timeRemaining);
-                var array = afterAction(this);
+                  var array = afterAction(this);
                 //alert("stop:"+array);
               }
             },100);
@@ -275,6 +277,8 @@
 
         var startCounter = function(thisvalue) {
                if(window.alarm) return;
+               $('#progress_bar').css("width", "100%").attr("aria-valuenow","100%")
+                            .text(window.timeRemaining+"s");
                window.alarm = setInterval(function(){
                 var s = parseFloat($('#second').text()).toFixed(1);
                 if (s > 0){
