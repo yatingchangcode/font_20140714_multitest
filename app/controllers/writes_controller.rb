@@ -104,10 +104,10 @@ class WritesController < WebsocketRails::BaseController
     manager_connection.send_message :right, data
   end
 
-  def removeRight
+  def removeO
     manager_connection = WebsocketRails.users[0]
     data = {:user_id => message[:user_id]}
-    manager_connection.send_message :removeRight, data
+    manager_connection.send_message :removeO, data
   end
 
 

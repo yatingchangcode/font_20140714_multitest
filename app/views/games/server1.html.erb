@@ -1,3 +1,13 @@
+<% content_for :stylesheets do %>
+<style type="text/css">
+
+.progress-bar {
+  transition: width .1s;
+  
+}
+
+</style>
+<% end %>
       <div class="jumbotron">
         <h2>一字千金 操作後台</h2>
 <!--         <h4>目前上線人數<span id="user_count">0</span>人</h4>
@@ -74,16 +84,54 @@
         $('#visitor_'+o.user_id).css("background-color", "#e6e6f0");
       };
 
+      function showO(c){
+        $("#yes_img_" + c).show();
+      }
+
+      //Remove O
+      function removeO(c) {
+        console.log('removeO');
+        $('#yes_img_'+c).hide();
+      }
+
+      function correctCountSetStyle(o) {
+        console.log(o);
+          $("#correct_button_"+o.user_id).addClass("btn-success");
+          $("#no_correct_" + o.user_id).text(no_correct[o.user_id]+"題");
+         }
+
       function startHandler(i) {
         $('#visitor_'+i).css("background-color", "#f8f8f8");
       }
 
       function startSetStyle(c) {
         $('#visitor_'+c).css("border-color", "#4d4ddb");
+        $('#visitor_'+this.value).css("background-color", "");
       }
 
       function stopSetStyle(c) {
         $('#visitor_'+c).css("border-color", "#f8f8f8");
+      }
+
+      function clearAllSetStyle() {
+          $('[id^=yes_img_]').hide();
+          //$('[id^=answer_correct_]').text("?").css("color","");
+          $('#progress_bar').css("width", "100%").attr("aria-valuenow","100%")
+                            .text(window.timeRemaining+"s");
+          gamers.all().forEach(function(e){
+            CM('origin_'+e).clear();
+            $('#visitor_'+e).css("background-color", "");
+            $("#correct_button_"+e).removeClass("btn-success");
+            stopSetStyle(e);
+          });
+        }
+
+      function outSetStyle(user_id) {
+          $("#correct_button_"+user_id).attr("disabled", true);
+          $("#out_button_"+user_id).attr("disabled", true);
+          $("#start_button_"+user_id).attr("disabled", true);
+          $("#stop_button_"+user_id).attr("disabled", true);
+          $('#visitor_'+user_id).attr('style','opacity:0.2;border:2px solid #f8f8f8');
       }
 
       var receiveCorrectUsersHandler = function(){}
@@ -108,10 +156,17 @@
         <% @visitors.each do |visitor| %>
         CM.reg('origin_<%= visitor.number %>');
         <% end %>
-
+      
         window.chatApp = new ChatApp(500,500,'0');
         window.chatApp.bindEvents();
         window.chatApp.reset();
+
+
+        (function collectGamers() {
+           <% @visitors.each do |visitor| %>
+           gamers.push('<%= visitor.number %>');
+           <% end %>
+        }) ();
 
         var afterAction = function(property){
           var array = [];
@@ -123,118 +178,20 @@
             }
           });
 
-
           $('#second').text(window.timeRemaining);
           $('#allGamer').attr('checked',false);
 
           return array;
         }
 
-        $('#allGamer').click(function(){
-          $('[name="gamer"]').each((function(toCheck){
-            return function(){
-              if (this.disabled == false){
-                this.checked = toCheck;
-              }
-            };
-          })(this.checked === true));
-        });
-
 
         $('#clear_button').click(function(){
-            window.chatApp.clearAll();
-          $('[id^=origin_]').each(function(){
-            CM(this).clear();
-          });
-          $('[id^=yes_img_]').hide();
-          //$('[id^=answer_correct_]').text("?").css("color","");
-          $('[id^=correct_button_]').removeClass("btn-success");
-          $('#progress_bar').css("width", "100%").attr("aria-valuenow","100%")
-                            .text(window.timeRemaining+"s");
-          gamers.all().forEach(function(e){
-            $('#visitor_'+e).css("background-color", "");
-            stopSetStyle(e);
-          });
+          window.chatApp.clearAll();
           correct_users = null;
         });
 
-
-
-
-        /*
-        $('#clear_button').click(function() {
-            $('[name="gamer"]').each(function() {
-               // window.chatApp.clear(this.value);
-            }
-        });
-        */
-          var gamers = {
-            gamersList : [],
-            last: null,
-            next : function() {
-                var newgamer = this.gamersList.shift();
-                this.gamersList.push(newgamer);
-                this.last = newgamer;
-                return newgamer;
-            },
-            prev: function() {
-                return this.last;
-            },
-            push : function(i) {
-              this.gamersList.push(i);
-            }, 
-            remove : function(i) {
-              var idx = this.gamersList.indexOf(i);
-              if (idx > -1) {
-                  this.gamersList.splice(idx, 1);
-              }
-            },
-
-            all: function() {
-              return this.gamersList.slice(0);
-            },
-
-            setActive: function(i) {
-              this.last = i;
-              var idx = this.gamersList.indexOf(i);
-              var head = this.gamersList.splice(0, idx);
-              this.gamersList = this.gamersList.concat(head);
-            }
-        };
-
-        var collectGamers = function() {
-           <% @visitors.each do |visitor| %>
-           gamers.push('<%= visitor.number %>');
-           <% end %>
-        }
-        collectGamers();
-
-        $('#out_button').click(function(){
-          $('[name="gamer"]').each(function(){
-            if (this.checked) {
-              CM.unreg('origin_'+this.value);
-              gamers.remove(this.value);
-              this.disabled = true;
-            }
-          });
-          var array = afterAction(this);
-          for (var x in array){
-            $('#visitor_'+array[x]).attr('style','opacity:0.2');
-          }
-          //alert("outer:"+array);
-        });
-
         $("[id^=out_button_]").click(function(){
-            CM.unreg('origin_'+this.value);
-            //this.disabled = true;
-            $("#correct_button_"+this.value).attr("disabled", true);
-            $("#out_button_"+this.value).attr("disabled", true);
-            $("#start_button_"+this.value).attr("disabled", true);
-            $("#stop_button_"+this.value).attr("disabled", true);
-
-            gamers.remove(this.value);
-            this.disabled = true;
-            $('#visitor_'+this.value).attr('style','opacity:0.2;border:2px solid #f8f8f8');
+            window.chatApp.userOut(this.value);
         });
 
         $('#start_button').click(function(){
@@ -243,7 +200,6 @@
           gamers.all().forEach(function(u){
             startHandler(u);
             window.chatApp.action(u, 'start');
-            $('#visitor_'+this.value).css("background-color", "");
             startSetStyle(u);
           });
 
@@ -261,9 +217,9 @@
                   clearInterval(window.alarm);
                   window.alarm = null;
                   gamers.all().forEach(function(e){
-                  window.chatApp.action(e,'stop');
-                  stopSetStyle(e);
-                  receiveSubmitHandler({user_id:e});
+                    window.chatApp.action(e,'stop');
+                    stopSetStyle(e);
+                    receiveSubmitHandler({user_id:e});
                   });
                   $('#second').text(window.timeRemaining);
                   var array = afterAction(this);
@@ -274,29 +230,8 @@
           //var array = afterAction(this);
           //alert("start:"+array);
         });
-
-        var startCounter = function(thisvalue) {
-               if(window.alarm) return;
-               $('#progress_bar').css("width", "100%").attr("aria-valuenow","100%")
-                            .text(window.timeRemaining+"s");
-               window.alarm = setInterval(function(){
-                var s = parseFloat($('#second').text()).toFixed(1);
-                if (s > 0){
-                  //console.log(s);
-                  var percent = 100 * (s-0.1) / window.timeRemaining;
-                  $('#progress_bar').css("width", percent+"%").attr('aria-valuenow', percent)
-                  .text((s-0.1).toFixed(1)+"s");
-                  $('#second').text((s - 0.1).toFixed(1));
-                } else {
-                  clearInterval(window.alarm);
-                  window.alarm = null;
-                  window.chatApp.action(thisvalue,'stop');
-                  stopSetStyle(thisvalue);
-                  $('#second').text(window.timeRemaining);
-                  receiveSubmitHandler({user_id:thisvalue});
-             }
-              },100); 
-            };
+  
+        
 
         $('[id^=start_button_]').click(function(){
             window.chatApp.action(this.value,'start');
@@ -305,19 +240,6 @@
             startSetStyle(this.value);
             startCounter(this.value);
         });
-
-         $('#stop_button').click(function(){
-           
-           clearInterval(window.alarm);
-              window.alarm = null;
-              $('[name="gamer"]').each(function(){
-                if (this.checked) {
-                  window.chatApp.action(this.value,'stop');
-                  receiveSubmitHandler({user_id:this.value});
-                }
-              });
-              var array = afterAction(this);
-         });
 
          $('[id^=stop_button_]').click(function(){
            clearInterval(window.alarm);
@@ -328,19 +250,18 @@
          });
 
          $('[id^=correct_button_]').click(function(){
+          window.chatApp.right(this.value);
           if (!no_correct) no_correct = {};
           if (!correct_users) correct_users = [];
-          $(this).addClass("btn-success");
           if (correct_users.indexOf(this.value) != -1) return;
 
           correct_users.push(this.value);
-          console.log(correct_users);
+          
           if (!no_correct[this.value]) {
             no_correct[this.value] = 1;
           } else {
             no_correct[this.value] += 1;
           }
-          $("#no_correct_" + this.value).text(no_correct[this.value]+"題");
           window.chatApp.setCorrectCount(this.value, no_correct[this.value]);
          });
 

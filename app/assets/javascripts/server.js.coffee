@@ -30,8 +30,8 @@ class @ChatApp
   right: (uid) =>
     @dispatcher.trigger 'right' , user_id: uid
 
-  removeRight: (uid) =>
-    @dispatcher.trigger 'removeRight' , user_id: uid
+  removeO: (uid) =>
+    @dispatcher.trigger 'removeO' , user_id: uid
 
   continue_write: (uid) ->
     @dispatcher.trigger 'continue_write', user_id: uid
@@ -51,8 +51,8 @@ class @ChatApp
     @dispatcher.bind 'up_location', @receiveUp
     @dispatcher.bind 'submit', @receiveSubmit
     @dispatcher.bind 'clear', @receiveClear
-    @dispatcher.bind 'right', @receiveRight
-    @dispatcher.bind 'removeRight', @receiveRemoveRight
+    @dispatcher.bind 'right', @receiveO
+    @dispatcher.bind 'removeO', @receiveRemoveO
     @dispatcher.bind 'setCorrectCount', @receiveCorrectCount
     @dispatcher.bind 'showCorrectUsers', @receiveCorrectUsers
     @dispatcher.bind 'action', @receiveAction
@@ -74,11 +74,11 @@ class @ChatApp
   receiveClear: (message) => 
     receiveClearHandler message
 
-  receiveRight: (message) => 
-    receiveRightHandler message
+  receiveO: (message) => 
+    receiveOHandler message
 
-  receiveRemoveRight: (message) =>
-    receiveRemoveRightHandler message
+  receiveRemoveO: (message) =>
+    receiveRemoveOHandler message
 
   receiveCorrectCount: (message) ->
     receiveCorrectCountHandler message

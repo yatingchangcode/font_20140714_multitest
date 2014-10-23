@@ -44,7 +44,7 @@
           <div class="col-md-12">
             <!-- <input type="checkbox" id="allGamer"/>全選 -->
             <button id="reset_time_button" style="font-size:20px;">重設時間</button>
-            <button id="out_button" style="font-size:20px;">淘汰</button>
+            <!-- <button id="out_button" style="font-size:20px;">淘汰</button> -->
             <!-- <button id="start_button" style="font-size:20px;">Start</button> -->
             <button id="stop_all_button" style="font-size:20px;">全部停止</button>
             <button id="next_button" style="font-size:20px;">下一位</button>
@@ -71,6 +71,7 @@
 
       //Remove O
       function removeO(c) {
+        console.log('removeO');
         $('#yes_img_'+c).hide();
       }
 
@@ -181,7 +182,7 @@
         });
 
         $('[id^=remove_O_button_]').click(function(){
-          window.chatApp.removeRight(this.value);
+          window.chatApp.removeO(this.value);
         });
 
         $('[id^=remove_writing_button_]').click(function(){

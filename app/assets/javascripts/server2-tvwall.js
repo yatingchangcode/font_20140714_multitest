@@ -34,6 +34,7 @@
         };
 
         var receiveStartHandler = function(o){
+          start_button(o.user_id);
         }     
 
         var start_button = function(value){
@@ -82,11 +83,11 @@
           return true;
         }
 
-        var receiveRightHandler = function(o){
+        var receiveOHandler = function(o){
           showO(o.user_id);
         }
 
-        var receiveRemoveRightHandler = function(o){
+        var receiveRemoveOHandler = function(o){
           removeO(o.user_id);
         }
 
