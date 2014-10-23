@@ -33,10 +33,11 @@ h4 {
 <% end %>
 <div id="user_one"></div>
 <div id="user_two"></div>
+<span id="second" style="color:red font-size:12px;" class="badge"><%= @second %>秒</span>
 <div>
   <div class="every_writer_box">
     <h4 class="text-center"><%= @visitors[0].name %></h4>
-    <%= render_gamer_photo(@visitors[0].image,"thumb",50,50,"img_box") %>
+    <%= render_gamer_photo(@visitors[0],"thumb",50,50,"img_box") %>
     <br>
     <%#= render_gamer_photo(x,"thumb",50,50) %>
   </div>
@@ -66,7 +67,7 @@ h4 {
 
   <div class="every_writer_box">
     <h4 class="text-center"><%= @visitors[1].name %></h4>
-    <%= render_gamer_photo(@visitors[1].image,"thumb",50,50,"img_box") %>
+    <%= render_gamer_photo(@visitors[1],"thumb",50,50,"img_box") %>
     <br>
 
   </div>
