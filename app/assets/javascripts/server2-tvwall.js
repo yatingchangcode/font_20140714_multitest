@@ -60,15 +60,16 @@
           }
 
           window.alarm[thisvalue] = setInterval(function(){
-            if (parseInt($('#second_'+thisvalue).text()) != 0){
-              $('#second_'+thisvalue).text(parseInt($('#second_'+thisvalue).text()) - 1 + "秒");
+            var s = parseFloat($('#second_'+thisvalue).text()).toFixed(1);
+            if (s > 0){
+              $('#second_'+thisvalue).text((s-0.1).toFixed(1) + "秒");
             } else {
               clearInterval(window.alarm[thisvalue]);
               window.alarm[thisvalue] = null;
               window.chatApp.action(thisvalue,'stop');
               receiveSubmitHandler({user_id:thisvalue});
             }
-          },1000); 
+          },100); 
         }
 
         function isEmpty(obj) {

@@ -95,12 +95,11 @@
 
       function correctCountSetStyle(o) {
         console.log(o);
-          $("#correct_button_"+o.user_id).addClass("btn-success");
-          $("#no_correct_" + o.user_id).text(no_correct[o.user_id]+"題");
-         }
+        $("#correct_button_"+o.user_id).addClass("btn-success");
+        $("#no_correct_" + o.user_id).text(no_correct[o.user_id]+"題");
+      }
 
       function startSetStyle(c) {
-        console.log(c);
         $('#visitor_'+c).css("border-color", "#4d4ddb");
         $('#visitor_'+c).css("background-color", "#ebf0fa");
       }
@@ -130,11 +129,11 @@
           $('#visitor_'+user_id).attr('style','opacity:0.2;border:3px solid #f8f8f8');
       }
 
-      var receiveCorrectUsersHandler = function(){}
-
       function resetProgressBarAndTime() {
         $('#progress_bar').css("width", "100%").attr("aria-valuenow","100%")
                             .text(window.timeRemaining+"s");
+        console.log(window.timeRemaining);
+        $('#second').text(window.timeRemaining);
       }
 
       function setProgressBarAndTime(s) {
@@ -144,24 +143,24 @@
         $('#second').text((s - 0.1).toFixed(1));
       }
 
-       var startCounter = function() {
-               if(window.alarm) return;
-               window.alarm = setInterval(function(){
-                var s = parseFloat($('#second').text()).toFixed(1);
-                if (s === 0) resetProgressBarAndTime();
-                if (s > 0){
-                  setProgressBarAndTime(s);
-                } else {
-                  clearInterval(window.alarm);
-                  window.alarm = null;
-                  gamers.all().forEach(function(e){
-                    window.chatApp.action(e,'stop');
-                    receiveSubmitHandler({user_id:e});
-                  });
-                  $('#second').text(window.timeRemaining);
-                }
-              },100); 
-            }
+      function startCounter() {
+        if(window.alarm) return;
+        var s = parseFloat($('#second').text()).toFixed(1);
+        if (s === (0.0).toFixed(1)) resetProgressBarAndTime();
+        window.alarm = setInterval(function(){
+          var s = parseFloat($('#second').text()).toFixed(1);
+          if (s > 0){
+            setProgressBarAndTime(s);
+          } else {
+            clearInterval(window.alarm);
+            window.alarm = null;
+            gamers.all().forEach(function(e){
+              window.chatApp.action(e,'stop');
+              receiveSubmitHandler({user_id:e});
+            });
+          }
+        }, 100); 
+      }
     
 
 
@@ -243,7 +242,7 @@
          });
 
          $('[id^=correct_button_]').click(function(){
-          window.chatApp.right(this.value);
+          //window.chatApp.right(this.value);
           if (!no_correct) no_correct = {};
           if (!correct_users) correct_users = [];
           if (correct_users.indexOf(this.value) != -1) return;
@@ -265,6 +264,10 @@
             $("#no_correct_" + e).text(no_correct[e]+"題");
           });
          });
+
+        $('#show_correct_button').click(function(){
+          showCorrectUsers(correct_users);
+        })
 
 
 
