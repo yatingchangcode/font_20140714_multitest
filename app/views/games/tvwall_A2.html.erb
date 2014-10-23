@@ -42,6 +42,8 @@ h4 {
     <div style="width:80%;margin:2% auto;">
       <%= render_gamer_photo(x,"thumb",40,40,"user_picture_no_block") %>
       <h4 style="display:inline;"><%= x.name %></h4>
+      <span id="second_<%= x.number %>" style="color:red font-size:12px;" class="badge"><%= @second %>秒</span>
+      <span id="no_correct_<%= x.number %>" class="badge">0題</span>
       <%#= render_gamer_photo(x,"thumb",50,50) %>
     </div>
     <div style="position:relative;">
@@ -90,12 +92,20 @@ function outSetStyle(val) {
   $('#origin_'+val).hide();
 }
 
+function resetSetStyle(s) {
+  $('#second_' + key).text(s + "秒");
+}
 
-
-window.timeRemaining = parseInt(<%= @second %>);
-window.alarm = null;
+function correctCountSetStyle(o){
+  $("#no_correct_" + o.user_id).text(o.count+"題");
+}
 
 $(document).ready(function() {
+
+  var seconds = <%= @second %>;
+  window.alarm = null;
+  var no_correct = null;
+
   CM.prop({
     width: 500,
     height: 500,

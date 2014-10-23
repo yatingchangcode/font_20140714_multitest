@@ -58,17 +58,10 @@
       
       <script>
 
-      var seconds = <%= @second %>;
-      var alarm = null;
-      var no_correct = null;
-
-
       //Gamer send submit
       var receiveSubmitHandler = function(o){
         $('#visitor_'+o.user_id).css("background-color", "#e0e0e0");
       };
-
-
 
 
       //Show O
@@ -106,16 +99,24 @@
 
       //Set timer
       function resetSetStyle(s) {
-          $('#second_' + key).text(s + "秒");
-        }
+        $('#second_' + key).text(s + "秒");
+      }
+
+      function correctCountSetStyle(o){
+        $("#no_correct_" + o.user_id).text(o.count+"題");
+      }
       
-
-
 
       window.open("tvwall_<%= params[:stage] %>?join_visitors_number=<%= params[:join_visitors_number] %>&second=<%= @second %>","tvwallWindow","width=800, height=800");
       window.open("record?join_visitors_number=<%= params[:join_visitors_number] %>&second=<%= @second %>","recordWindow","width=800, height=800");
 
+
       $(document).ready(function() {
+
+        var seconds = <%= @second %>;
+        window.alarm = null;
+        var no_correct = null;
+
         CM.prop({
           width: 500,
           height: 500,
@@ -130,7 +131,7 @@
 
         window.chatApp = new ChatApp(500,500,'0');
         window.chatApp.bindEvents();
-        window.chatApp.reset();
+        window.chatApp.reset(seconds);
 
         (function collectGamers() {
           <% @visitors.each do |visitor| %>
@@ -168,17 +169,15 @@
         });
 
         $('[id^=correct_button_]').click(function(){
-          if (!no_correct) no_correct = {};
+          
           window.chatApp.right(this.value);
-          showO(this.value);
+          if (!no_correct) no_correct = {};
           if (!no_correct[this.value]) {
             no_correct[this.value] = 1;
           } else {
             no_correct[this.value] += 1;
           }
           window.chatApp.setCorrectCount(this.value, no_correct[this.value]);
-          $("#no_correct_" + this.value).text(no_correct[this.value]+"題");
-          console.log(no_correct);
         });
 
         $('[id^=remove_O_button_]').click(function(){
@@ -191,32 +190,24 @@
 
         $('#reset_time_button').click(function(){
           //if(window.alarm) return;
-          window.chatApp.reset(window.seconds);
-          console.log(window.seconds);
-          if (window.alarm != null) {
-            for (key in window.alarm){
-              clearInterval(window.alarm[key]);
-              window.alarm[key] = null;
-              resetSetStyle(seconds);
-            }
-          }
+          window.chatApp.reset(seconds);
+
         });
 
         $('#next_button').click(function(){
-              // stop last user
-              if (gamers.prev() != null) {
-                window.chatApp.action(gamers.prev(),'stop');
-                clearInterval(window.alarm[gamers.prev()]);
-                window.alarm[gamers.prev()] = null;
-                stopSetStyle(gamers.prev());
-              }
-              var newgamer = gamers.next();
-              // call old gamer to stop
-              // call new user to clear screen
-              window.chatApp.clear(newgamer);
-              window.chatApp.action(newgamer,'start');
-              startSetStyle(newgamer);
-              startCounter(newgamer);
+          // stop last user
+          if (gamers.prev() != null) {
+            window.chatApp.action(gamers.prev(),'stop');
+
+          }
+          var newgamer = gamers.next();
+          // call old gamer to stop
+          // call new user to clear screen
+          window.chatApp.clear(newgamer);
+          window.chatApp.action(newgamer,'start');
+          //there is not setActive?
+          // startSetStyle(newgamer);
+          // startCounter(newgamer);
         });
 
         $("[id^=out_button_]").click(function(){
@@ -229,7 +220,7 @@
         });
 
 
-      $('#stop_all_button').click(function(){
+        $('#stop_all_button').click(function(){
            if (!window.alarm) return;
            console.log(gamers.all());
            gamers.all().forEach( function(i) {
@@ -242,14 +233,14 @@
           });
            var array = afterAction(this);
 
-      });
+        });
 
-      $('[id^=stop_button_]').click(function(){
+        $('[id^=stop_button_]').click(function(){
 
            window.chatApp.action(this.value,'stop');
            //receiveSubmitHandler({user_id:this.value});
-      });
+        });
 
-    });
+      });
       </script>
       <% end %>

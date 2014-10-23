@@ -81,7 +81,7 @@ class @ChatApp
     receiveRemoveRightHandler message
 
   receiveCorrectCount: (message) ->
-    console.log message
+    receiveCorrectCountHandler message
 
   receiveCorrectUsers: (users) ->
     receiveCorrectUsersHandler users
@@ -97,6 +97,6 @@ class @ChatApp
     receiveUserOutHandler message
 
   receiveReset: (message) =>
-    second = message.second
+    receiveResetHandler message
 
 

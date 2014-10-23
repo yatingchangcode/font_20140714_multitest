@@ -34,7 +34,6 @@
         };
 
         var receiveStartHandler = function(o){
-          start_button(o.user_id);
         }     
 
         var start_button = function(value){
@@ -52,7 +51,6 @@
 
         var stop_button = function(value){
           clearInterval(window.alarm[value]);
-          console.log(value);
           window.alarm[value] = null;
           stopSetStyle(value);
         }
@@ -105,5 +103,15 @@
         }
 
         var receiveResetHandler = function(o){
-          //not finish
+          if (o.second != null) {
+            for (key in window.alarm){
+              clearInterval(window.alarm[key]);
+              window.alarm[key] = null;
+              resetSetStyle(o.second);
+            }
+          }
+        }
+
+        var receiveCorrectCountHandler = function(o){
+          correctCountSetStyle(o);
         }
