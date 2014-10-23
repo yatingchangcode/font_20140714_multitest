@@ -38,12 +38,7 @@
         }     
 
         var start_button = function(value){
-          if (!window.alarm) window.alarm = {};
-
-          //console.log(this.value);
-          gamers.setActive(value);
           startSetStyle(value);
-          startCounter(value);
         }
 
         function receiveStopHandler(c){
@@ -56,29 +51,6 @@
           stopSetStyle(value);
         }
 
-
-        var startCounter = function(thisvalue) {
-               if(window.alarm) return;
-               $('#progress_bar').css("width", "100%").attr("aria-valuenow","100%")
-                            .text(window.timeRemaining+"s");
-               window.alarm = setInterval(function(){
-                var s = parseFloat($('#second').text()).toFixed(1);
-                if (s > 0){
-                  //console.log(s);
-                  var percent = 100 * (s-0.1) / window.timeRemaining;
-                  $('#progress_bar').css("width", percent+"%").attr('aria-valuenow', percent)
-                  .text((s-0.1).toFixed(1)+"s");
-                  $('#second').text((s - 0.1).toFixed(1));
-                } else {
-                  clearInterval(window.alarm);
-                  window.alarm = null;
-                  window.chatApp.action(thisvalue,'stop');
-                  stopSetStyle(thisvalue);
-                  $('#second').text(window.timeRemaining);
-                  receiveSubmitHandler({user_id:thisvalue});
-             }
-              },100); 
-            };
 
         function isEmpty(obj) {
           for (var prop in obj) {

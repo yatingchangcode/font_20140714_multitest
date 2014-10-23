@@ -29,7 +29,6 @@
             var idx = this.gamersList.indexOf(i);
             var head = this.gamersList.splice(0, idx+1);
             this.gamersList = this.gamersList.concat(head);
-            console.log(this.gamersList);
           }
         };
 
@@ -38,9 +37,6 @@
         }     
 
         var start_button = function(value){
-          if (!window.alarm) window.alarm = {};
-
-          //console.log(this.value);
           gamers.setActive(value);
           startSetStyle(value);
           startCounter(value);
@@ -57,14 +53,14 @@
         }
 
         function startCounter(thisvalue) {
+          console.log(window.alarm);
+          if(window.alarm && window.alarm[thisvalue]) return; 
           if (window.alarm === null) { 
             window.alarm = {};
           }
-          if (!isEmpty(window.alarm[thisvalue]))  return;
 
           window.alarm[thisvalue] = setInterval(function(){
             if (parseInt($('#second_'+thisvalue).text()) != 0){
-              console.log($('#second_'+thisvalue).text());
               $('#second_'+thisvalue).text(parseInt($('#second_'+thisvalue).text()) - 1 + "秒");
             } else {
               clearInterval(window.alarm[thisvalue]);
@@ -92,7 +88,6 @@
         }
 
         var receiveUserOutHandler = function(o){
-          console.log(o.user_id);
             CM.unreg('origin_'+o.user_id);
             //this.disabled = true;
             gamers.remove(o.user_id);
