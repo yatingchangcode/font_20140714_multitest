@@ -77,23 +77,19 @@
     offset.top += 40;
     offset.left += 25;
     if (o.user_id % 2 == 0){
-      element = $('#user_one').css({
-        border:"2px solid gray",
-        width:"96px",
-        height:"96px",
-        position:"absolute",
-        top:(o.block.row-1)*101+offset.top + "px", 
-        left:(o.block.column-1)*97+offset.left + "px"
-      });
+      $('#user_one').addClass("user_one");
+          $('#user_one').css({
+  top:(o.block.row-1)*101+offset.top + "px",
+  left:(o.block.column-1)*97+offset.left + "px"
+    });
+
     }else{
-      element = $('#user_two').css({
-        border:"2px solid yellow",
-        width:"96px",
-        height:"96px",
-        position:"absolute",
-        top:(o.block.row-1)*101+offset.top + "px", 
-        left:(o.block.column-1)*97+offset.left + "px"
-      });
+      $('#user_two').addClass("user_two");
+          $('#user_two').css({
+  top:(o.block.row-1)*101+offset.top + "px",
+  left:(o.block.column-1)*97+offset.left + "px"
+    });
+
     }
 
   };
