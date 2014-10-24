@@ -113,7 +113,7 @@
                   console.log(a);
                   $("#yes_img_"+a).show();
                 }
-              })(users[i]), 400 * i);
+              })(users[i]), 800 * i);
             }
             users = null;
       }
