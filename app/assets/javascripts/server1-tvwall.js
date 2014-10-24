@@ -98,6 +98,10 @@
           correctCountSetStyle(o);
         }
 
+      function receiveCorrectUsersHandler(o) {
+        showCorrectUsers(o);
+      }
+
       function showCorrectUsers(users) {
             users.sort(function(a,b) {
               return parseInt(a) - parseInt(b);

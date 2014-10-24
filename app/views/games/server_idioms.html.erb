@@ -22,9 +22,11 @@
         <% @visitors.each do |x| %>
         <div class="visitor col-md-3" id="visitor_<%= x.number %>">
           <div class="row">
+            <!--
             <div class="col-md-1">
               <input type="checkbox" name="gamer" value="<%= x.number %>"/>
             </div>
+            -->
             <div class="col-md-3">
               <%= render_gamer_photo(x,"thumb",50,50) %>
               <p><%= x.name %></p>
@@ -38,16 +40,18 @@
       </div>
       <div class="row">
         <div class="col-md-12">
-          <input type="checkbox" id="allGamer"/>全選
+          <!-- <input type="checkbox" id="allGamer"/>全選 -->
           <button id="yes_button" style="font-size:15px;">答對</button>
           <button id="no_button" style="font-size:15px;">答錯</button>
           <button id="start_button" style="font-size:15px;">Start</button>
           <button id="stop_button" style="font-size:15px;">Stop</button>
+          <button id="next_button" style="font-size:20px;">下一位</button>
         </div>
       </div>
       
       <% content_for :javascripts do %>
       <%= javascript_include_tag 'server_idioms' %>
+      <%= javascript_include_tag 'server_idioms_helpers' %>
       <script>
 
       window.timeRemaining = parseInt(<%= @second %>);
@@ -111,6 +115,12 @@
         window.chatApp.action(o.user_id,'stop');
         afterAction(this);
       };
+
+      function startSetStyle(c) {
+        $('#visitor_'+c).css("border-color", "#4d4ddb");
+        $('#visitor_'+c).css("background-color", "#ebf0fa");
+      }
+
 
       $(document).ready(function() {
         CM.prop({
@@ -216,6 +226,21 @@
           });
           var array = afterAction(this);
           //alert("stop:"+array);
+        });
+
+        $('#next_button').click(function(){
+          // stop last user
+          if (gamers.prev() != null) {
+            window.chatApp.action(gamers.prev(),'stop');
+          }
+          var newgamer = gamers.next();
+          // call old gamer to stop
+          // call new user to clear screen
+          window.chatApp.clear(newgamer);
+          window.chatApp.action(newgamer,'start');
+          //there is not setActive?
+          // startSetStyle(newgamer);
+          // startCounter(newgamer);
         });
 
     });

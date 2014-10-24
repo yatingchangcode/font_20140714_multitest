@@ -80,6 +80,36 @@ var receiveCorrectUsersHandler = function(users){
   showCorrectUsers(users);
 }
 
+//後台送出答對
+function showO(c){
+  $("#yes_img_" + c).show();
+}
+
+function removeO(c){
+  $("#yes_img_" + c).hide();
+}
+
+function startSetStyle(c) {
+  $('#user_photo_'+c).addClass("user_picture_block");
+}
+
+function stopSetStyle(c) {
+  $('#user_photo_'+c).removeClass("user_picture_block");
+}
+
+//Gamer out
+function outSetStyle(val) {
+  $('#origin_'+val).hide();
+}
+
+function resetSetStyle(s) {
+  $('#second_' + key).text(s + "秒");
+}
+
+function correctCountSetStyle(o){
+  $("#no_correct_" + o.user_id).text(o.count+"題");
+}
+
 window.timeRemaining = parseInt(<%= @second %>);
 window.alarm = null;
 

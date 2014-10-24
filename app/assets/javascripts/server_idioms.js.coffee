@@ -51,6 +51,11 @@ class @ChatApp
   action: (uid,action) =>
     @dispatcher.trigger 'action' , user_id: uid, action: action
 
+  clear: (uid) ->
+    #如果要清空個別使用者時,送出user_id
+    #清空全部的時候會送出空的object: {}
+    @dispatcher.trigger 'clear', user_id: uid 
+    
   reset: () =>
     @dispatcher.trigger 'reset'
 
