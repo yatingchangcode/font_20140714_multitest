@@ -66,6 +66,12 @@ class WritesController < WebsocketRails::BaseController
     manager_connection.send_message :submit, data
     record_connection.send_message :submit, data
   end
+
+  def cancelSubmit
+    manager_connection = WebsocketRails.users[0]
+    data = message
+    manager_connection.send_message :cancelSubmit, data
+  end
   
   def action
     trigger_id = message[:user_id]

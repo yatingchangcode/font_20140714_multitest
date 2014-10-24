@@ -19,6 +19,9 @@ class @ChatApp
   clearAll: () ->
    @dispatcher.trigger 'clearAll' 
 
+  cancelSubmit: (uid) ->
+    @dispatcher.trigger 'cancelSubmit', user_id: uid
+
   clear: (uid) ->
     #如果要清空個別使用者時,送出user_id
     #清空全部的時候會送出空的object: {}
@@ -50,6 +53,7 @@ class @ChatApp
     @dispatcher.bind 'move_location', @receiveMove
     @dispatcher.bind 'up_location', @receiveUp
     @dispatcher.bind 'submit', @receiveSubmit
+    @dispatcher.bind 'cancelSubmit', @receiveCancelSubmit
     @dispatcher.bind 'clear', @receiveClear
     @dispatcher.bind 'right', @receiveO
     @dispatcher.bind 'removeO', @receiveRemoveO
@@ -70,6 +74,9 @@ class @ChatApp
 
   receiveSubmit: (message) =>
     receiveSubmitHandler message
+
+  receiveCancelSubmit: (message) =>
+    receiveCancelSubmitHandler message
 
   receiveClear: (message) => 
     receiveClearHandler message

@@ -23,6 +23,7 @@ WebsocketRails::EventMap.describe do
     subscribe :up_location, :to => WritesController, :with_method => :up_location
     subscribe :clear,    :to => WritesController, :with_method => :clear
     subscribe :submit,   :to => WritesController, :with_method => :submit
+    subscribe :cancelSubmit,   :to => WritesController, :with_method => :cancelSubmit
     subscribe :action,   :to => WritesController, :with_method => :action
     subscribe :right,    :to => WritesController, :with_method => :right
     subscribe :removeO,    :to => WritesController, :with_method => :removeO

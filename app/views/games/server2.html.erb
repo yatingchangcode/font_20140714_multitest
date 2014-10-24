@@ -157,6 +157,7 @@
 
         $('[id^=continue_]').click(function(){
           window.chatApp.continue_write(this.value);
+          window.chatApp.cancelSubmit(this.value);
           //$('#visitor_'+this.value).css("background-color", "");
         });
 
@@ -200,11 +201,12 @@
           // stop last user
           if (gamers.prev() != null) {
             window.chatApp.action(gamers.prev(),'stop');
-
+            window.chatApp.cancelSubmit(gamers.prev());
           }
           var newgamer = gamers.next();
           // call old gamer to stop
           // call new user to clear screen
+          window.chatApp.removeO(newgamer);
           window.chatApp.clear(newgamer);
           window.chatApp.action(newgamer,'start');
           //there is not setActive?
@@ -230,6 +232,7 @@
               clearInterval(window.alarm[i]);
               window.alarm[i] = null;
               window.chatApp.action(i,'stop');
+              window.chatApp.cancelSubmit(i);
               //receiveSubmitHandler({user_id:i});
               stopSetStyle(i);
           });
@@ -240,6 +243,7 @@
         $('[id^=stop_button_]').click(function(){
 
            window.chatApp.action(this.value,'stop');
+           window.chatApp.cancelSubmit(this.value);
            //receiveSubmitHandler({user_id:this.value});
         });
 
