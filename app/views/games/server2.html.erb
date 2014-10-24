@@ -4,8 +4,9 @@
  -->      </div>
       <div style="">
         <div class="row-fluid">
-          <% @visitors.each do |x| %>
+          <% @visitors.each_with_index do |x,index| %>
           <div class="visitor col-md-3" id="visitor_<%= x.number %>" style="background-color:#ebf0fa;border:4px solid #f8f8f8">
+            <%= index+1 %>
             <div class="row-fluid">
                 <button id="correct_button_<%= x.number %>" style="font-size:12px;" value="<%= x.number %>" type="button" class="correct_button btn btn-default navbar-btn">答對</button>
                 <button id="continue_<%= x.number %>" style="font-size:12px;" value="<%= x.number %>" type="button" class="btn btn-default navbar-btn">繼續寫</button>
