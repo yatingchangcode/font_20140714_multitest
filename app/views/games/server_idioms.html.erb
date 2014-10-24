@@ -1,125 +1,106 @@
-      <div class="jumbotron">
-        <% if !@second.nil?  %>
-        <h5 style="position:fixed;">倒數計時 <span id="second" style="color:red"><%= @second %></span> 秒 </h5>
-        <% else %>
-        <h5>不倒數計時</h5>
-        <% end %>
-      </div>
-      <div id="user_blue"></div>
-      <div id="user_black"></div>
-        <table id="canvasTable" style="border-collapse:separate;border-spacing:1px 0px;">
-          <% (1..8).to_a.each do |x| %>
-          <tr>
-            <% (1..12).to_a.each do |y| %>
-            <td>
-              <canvas id="origin_<%= x %>_<%= y %>" style="z-index:1;border:1px solid red"></canvas>
-            </td>
-            <% end %>
-          </tr>
-          <% end %>
-        </table>
-      <div class="row">
-        <% @visitors.each do |x| %>
-        <div class="visitor col-md-3" id="visitor_<%= x.number %>">
-          <div class="row">
-            <!--
-            <div class="col-md-1">
-              <input type="checkbox" name="gamer" value="<%= x.number %>"/>
-            </div>
-            -->
-            <div class="col-md-3">
-              <%= render_gamer_photo(x,"thumb",50,50) %>
-              <p><%= x.name %></p>
-            </div>
-            <div id="status_<%= x.number %>">stop</div>
-            <div>剩餘:</div>
-            <div id="second_<%= x.number %>" style="color:red font-size:12px;" class="badge"><%= @second %>秒</div>
-          </div>
-          </div>
-        <% end %>
-      </div>
-      <div class="row">
-        <div class="col-md-12">
-          <!-- <input type="checkbox" id="allGamer"/>全選 -->
-          <button id="yes_button" style="font-size:15px;">答對</button>
-          <button id="no_button" style="font-size:15px;">答錯</button>
-          <button id="start_button" style="font-size:15px;">Start</button>
-          <button id="stop_button" style="font-size:15px;">Stop</button>
-          <button id="next_button" style="font-size:20px;">下一位</button>
-        </div>
-      </div>
-      
-      <% content_for :javascripts do %>
-      <%= javascript_include_tag 'server_idioms' %>
-      <%= javascript_include_tag 'server_idioms_helpers' %>
-      <script>
+<% content_for :stylesheets do %>
+<style type="text/css">
 
-      window.timeRemaining = parseInt(<%= @second %>);
-      window.alarm = null;
-      //var alarm = {};
-       window.open("tvwall_<%= params[:stage] %>?join_visitors_number=<%= params[:join_visitors_number] %>&second=<%= @second %>","tvwallWindow","width=800, height=800");
-      window.open("record_idioms?join_visitors_number=<%= params[:join_visitors_number] %>","recordWindow","width=800, height=800");
+body,.container{
+  background-color: #000000;
+  width: 100%;
+}
 
-      var afterAction = function(property){
-        var array = [];
-        $('[name="gamer"]').each(function(){
-          if (this.checked) {
+h4 {
+  color: #ffffff
+}
 
-            array.push(this.value);
-            this.checked = false;
-          }
-        });
-        $('#second').text(window.timeRemaining);
-        $('#allGamer').attr('checked',false);
+.border_radius{
+  border: 2px solid #D6D6D6;
+  -webkit-border-radius: 100px;
+  -moz-border-radius: 100px;
+  border-radius: 100px;
+}
 
-        return array;
-      }
 
-      var receiveMoveBlockHandler = function(o){
-        var element;
-        var offset = $('#canvasTable').offset();
-        if (o.user_id % 2 == 0){
-          element = $('#user_blue').css({
-          border:"2px solid blue",
-          width:"95px",
-          height:"95px",
-          position:"absolute",
-          top:(o.block.row-1)*101+offset.top + "px", 
-          left:(o.block.column-1)*97+offset.left + "px"
-        });
-        }else{
-          element = $('#user_black').css({
-          border:"2px solid black",
-          width:"95px",
-          height:"95px",
-          position:"absolute",
-          top:(o.block.row-1)*101+offset.top + "px", 
-          left:(o.block.column-1)*97+offset.left + "px"
-        });
-        }
+.every_writer_box{
+  float:left;
+  padding-top:22%;
+  width:5%;
+}
 
-      };
+.img_box{
+  display:block;
+  margin:0 auto;
+}
 
-      var receiveSendTextHandler = function(o){
-        var testCan = document.getElementById('origin_'+ o.block.row +'_' + o.block.column);
-        var w = $(testCan).width();
-        var context = testCan.getContext("2d");
-        context.fillStyle = "purple";
-        context.font = "bold " + (w * 13 / 15) + "px 標楷體";
-        context.fillText(o.text, w / 15, w * 12 / 15);
-      };
+</style>
+<% end %>
+<div id="user_one"></div>
+<div id="user_two"></div>
+<span id="second" style="color:red font-size:12px;" class="badge"><%= @second %>秒</span>
+<div>
+  <div class="every_writer_box">
+    <h4 class="text-center"><%= @visitors[0].name %></h4>
+    <%= render_gamer_photo(@visitors[0],"thumb",50,50,"img_box") %>
+    <br>
+    <button id="start_button_<%= @visitors[0].number %>" style="font-size:12px;" value="<%= @visitors[0].number %>" type="button" class="btn btn-default navbar-btn">Start</button>
+    <button id="stop_button_<%= @visitors[0].number %>" style="font-size:12px;" value="<%= @visitors[0].number %>" type="button" class="btn btn-default navbar-btn">Stop</button>
+  </div>
+  <% alpha = "ABCDEFGHIJKL" %>
+  <table id="canvasTable" style="border-collapse:separate;border-spacing:1px 0px;width:65%;float:left;table-layout:auto;">
+    <tr>
+      <td></td>
+      <% (0..11).to_a.each do |x| %>
+      <td>
+        <h4><%= alpha[x] %></h4>
+      </td>
+      <% end %>
+    </tr>
+    <% (1..8).to_a.each do |x| %>
+    <tr>
+      <td>
+        <h4><%= x %></h4>
+      </td>
+      <% (1..12).to_a.each do |y| %>
+      <td>
+        <button name="clear" value="<%= x %>,<%= y %>" type="button" class="btn btn-xs btn-default" style="position:absolute">Clear</button>
+        <canvas id="origin_<%= x %>_<%= y %>" style="z-index:1;border:1px solid red"></canvas>
+      </td>
+      <% end %>
+    </tr>
+    <% end %>
+  </table>
 
-      var receiveEndRoundHandler = function(o){
-        clearInterval(window.alarm);
-        window.alarm = null;
-        window.chatApp.action(o.user_id,'stop');
-        afterAction(this);
-      };
+  <div class="every_writer_box">
+    <h4 class="text-center"><%= @visitors[1].name %></h4>
+    <%= render_gamer_photo(@visitors[1],"thumb",50,50,"img_box") %>
+    <br>
+    <button id="start_button_<%= @visitors[1].number %>" style="font-size:12px;" value="<%= @visitors[1].number %>" type="button" class="btn btn-default navbar-btn">Start</button>
+    <button id="stop_button_<%= @visitors[1].number %>" style="font-size:12px;" value="<%= @visitors[1].number %>" type="button" class="btn btn-default navbar-btn">Stop</button>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-12">
+
+
+    <button id="next_button" style="font-size:20px;">下一位</button>
+  </div>
+</div>
+
+<% content_for :javascripts do %>
+<%= javascript_include_tag 'server_idioms' %>
+<%= javascript_include_tag 'server_idioms_helpers' %>
+<script>
 
       function startSetStyle(c) {
-        $('#visitor_'+c).css("border-color", "#4d4ddb");
-        $('#visitor_'+c).css("background-color", "#ebf0fa");
+        $('#user_photo_'+c).addClass("user_picture_block");
       }
+
+      function stopSetStyle(c) {
+        $('#user_photo_'+c).removeClass("user_picture_block");
+      }
+
+      //var alarm = {};
+      window.open("tvwall_<%= params[:stage] %>?join_visitors_number=<%= params[:join_visitors_number] %>&second=<%= @second %>","tvwallWindow","width=800, height=800");
+      window.open("record_idioms?join_visitors_number=<%= params[:join_visitors_number] %>","recordWindow","width=800, height=800");
+
+      window.alarm = null;
 
 
       $(document).ready(function() {
@@ -127,7 +108,7 @@
           width: 500,
           height: 500,
           lineWidth: 15,
-          lineColor: '#333333',
+          lineColor: '#ffffff',
           targetZoomScale: 0.035
         });
         <% (1..8).to_a.each do |x| %>
@@ -141,92 +122,22 @@
         window.chatApp.bindEvents();
         window.chatApp.reset();
 
+        (function collectGamers() {
+          <% @visitors.each do |visitor| %>
+          gamers.push('<%= visitor.number %>');
+          <% end %>
+        })();
 
 
-        $('#allGamer').click(function(){
-          $('[name="gamer"]').each((function(toCheck){
-            return function(){
-              if (this.disabled == false){
-                this.checked = toCheck;
-              }
-            };
-          })(this.checked === true));
+        $('[id^=start_button_]').click(function(){
+          window.chatApp.action(this.value,'start');
         });
 
-        $('#yes_button').click(function(){
-          var array = afterAction(this);
-          for (var x in array){
-            var yesImg = $('#yes_' + array[x]);
-            yesImg.show();
+        $('[id^=stop_button_]').click(function(){
 
-            setTimeout(( function(item){
-              var f = function(){
-                item.hide();
-              };
-              return f
-            })(yesImg), 3000);
-          }
-          //alert("answer right:"+array);
-        });
-
-        $('#no_button').click(function(){
-          var array = afterAction(this);
-          for (var x in array){
-            var noImg = $('#no_' + array[x]);
-            noImg.show();
-
-            setTimeout((function(item){
-              var f = function(){
-                item.hide();
-              };
-              return f
-            })(noImg), 3000);
-          }
-          //alert("answer wrong:"+array);
-        });
-
-
-        $('#start_button').click(function(){
-          if(window.alarm) return;
-          $('[name="gamer"]').each(function(){
-            if (this.checked) {
-              window.chatApp.action(this.value,'start');
-              $('#visitor_'+this.value).css("background-color", "");
-              $('#status_'+this.value).html('** DRAWING **');
-            }
-          });
-          window.alarm = setInterval(function(){
-            if (parseInt($('#second').text()) != 0){
-              $('#second').text(parseInt($('#second').text()) - 1);
-            }else{
-              clearInterval(window.alarm);
-              window.alarm = null;
-              $('[name="gamer"]').each(function(){
-                if (this.checked) {
-                  window.chatApp.action(this.value,'stop');
-                }
-              });
-              var array = afterAction(this);
-              for(var i = 0, len = array.length; i < len; i++){
-                $('#status_'+array[i]).html('stop');
-              }
-              //alert("stop:"+array);
-            }
-          },1000);
-          //var array = afterAction(this);
-          //alert("start:"+array);
-        });
-
-        $('#stop_button').click(function(){
-          $('[name="gamer"]').each(function(){
-            if (this.checked) {
-              window.chatApp.action(this.value,'stop');
-              $('#status_'+this.value).html('stop');
-            }
-          });
-          var array = afterAction(this);
-          //alert("stop:"+array);
-        });
+         window.chatApp.action(this.value,'stop');
+           //receiveSubmitHandler({user_id:this.value});
+         });
 
         $('#next_button').click(function(){
           // stop last user
@@ -243,6 +154,14 @@
           // startCounter(newgamer);
         });
 
-    });
-      </script>
-      <% end %>
+        $('[name^=clear]').click(function(){
+        
+          var xy = this.value.split(',');
+          var block = { row: xy[0], column:xy[1] };
+      
+          window.chatApp.clear(0,block); 
+        });
+
+      });
+</script>
+<% end %>

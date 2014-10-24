@@ -4,6 +4,7 @@
 class @ChatApp
 
   constructor: (@left ,@top, @user_id,@currentChannel = undefined) ->
+    @stage_name = "idioms"
     @dispatcher = new WebSocketRails(window.location.host + "/websocket?client_id=" + @user_id)
     @originOffset = {left: @left, top: @top}
 
@@ -20,6 +21,7 @@ class @ChatApp
     @dispatcher.bind 'clear', @receiveClear
     @dispatcher.bind 'get_user_count', @getUserCount
     @dispatcher.bind 'get_write_count', @getWriteCount
+    @dispatcher.bind 'action', @receiveAction
 
   receiveDown: (message) =>
     CM('origin_'+message.block.row+'_'+message.block.column).point({ x: message.x, y: message.y })
@@ -49,14 +51,21 @@ class @ChatApp
     $('#write_count').text(data.write_count);
 
   action: (uid,action) =>
-    @dispatcher.trigger 'action' , user_id: uid, action: action
+    @dispatcher.trigger @stage_name+'.action' , user_id: uid, action: action
 
-  clear: (uid) ->
+  receiveAction: (message) =>
+    name = message.action
+    if name is @stage_name+".start"
+      receiveStartHandler message
+    else if name is @stage_name+".stop"
+      receiveStopHandler message
+
+  clear: (uid,block) ->
     #如果要清空個別使用者時,送出user_id
     #清空全部的時候會送出空的object: {}
-    @dispatcher.trigger 'clear', user_id: uid 
+    @dispatcher.trigger @stage_name+'.clear', user_id: uid , block: block
     
   reset: () =>
-    @dispatcher.trigger 'reset'
+    @dispatcher.trigger @stage_name+'.reset'
 
 
