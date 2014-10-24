@@ -22,11 +22,13 @@
           <div class="visitor col-md-3" id="visitor_<%= x.number %>" style="background-color:#ebf0fa; border:3px solid #f8f8f8">
           <div class="row">
             <%= index+1 %>
-            <div class="container" style="margin:auto; width:72%">
+            <div class="row-fluid" style="margin:auto; width:72%">
                 <button id="correct_button_<%= x.number %>" style="font-size:12px;" value="<%= x.number %>" type="button" class="correct_button btn btn-default navbar-btn">答對</button>
-                <button id="out_button_<%= x.number %>" style="font-size:12px;" value="<%= x.number %>" type="button" class="btn btn-default navbar-btn">淘汰</button>
+            
+                <%if @stage == "B2" %>    
                 <button id="start_button_<%= x.number %>" style="font-size:12px;" value="<%= x.number %>" type="button" class="btn btn-default navbar-btn">開始</button>
                 <button id="stop_button_<%= x.number %>" style="font-size:12px;" value="<%= x.number %>" type="button" class="btn btn-default navbar-btn">停止</button>
+                <% end -%>
             </div>
             <!--
             <div class="col-md-1">
@@ -34,16 +36,29 @@
 
             </div>
             -->
+            <div class="row">
             <div class="col-md-3">
-              <%= render_gamer_photo(x,"thumb",50,50) %>
-              <p><%= x.name %></p>
-              <span>答對:</span><span id="no_correct_<%= x.number %>" class="badge">0題</span>
-              <!-- <span>正確:</span><span id="answer_correct_<%= x.number %>">?</span> -->
+                <%= render_gamer_photo(x,"thumb",50,50) %>
+                <p><%= x.name %></p>
+                
+                <% if @stage != 'A1' %>
+                <span>答對:</span><span id="no_correct_<%= x.number %>" class="badge">0題</span>
+                <% end -%>
+                <!-- <span>正確:</span><span id="answer_correct_<%= x.number %>">?</span> -->
+              </div>
+              <div class="col-md-6">
+                <canvas id="origin_<%= x.number %>" class="orgincanvas" style="z-index:1"></canvas>
+                <img id="yes_img_<%= x.number %>" src="/assets/O-mark.png" height="150" style="display:none;z-index:10;position:absolute;right:-20px;bottom:8px;" ></img>
+                <img id="no_<%= x.number %>" src="/assets/X-Mark.png" height="150" style="display:none;z-index:10;position:absolute;right:-20px;bottom:8px;" ></img>
+              </div>
             </div>
-            <div class="col-md-6">
-              <canvas id="origin_<%= x.number %>" class="orgincanvas" style="z-index:1"></canvas>
-              <img id="yes_img_<%= x.number %>" src="/assets/O-mark.png" height="150" style="display:none;z-index:10;position:absolute;right:-20px;bottom:8px;" ></img>
-              <img id="no_<%= x.number %>" src="/assets/X-Mark.png" height="150" style="display:none;z-index:10;position:absolute;right:-20px;bottom:8px;" ></img>
+            <div class="row-fluid" style="margin:auto; width:72%">
+              <button id="out_button_<%= x.number %>" style="font-size:12px;" value="<%= x.number %>" type="button" class="btn btn-default navbar-btn">淘汰</button>
+
+              <% if @stage != 'A1' %>
+              <button id="remove_O_button_<%= x.number %>" style="font-size:12px;" value="<%= x.number %>" type="button" class="correct_button btn btn-default navbar-btn">清除Ｏ</button>
+              <button id="remove_writing_button_<%= x.number %>" style="font-size:12px;" value="<%= x.number %>" type="button" class="correct_button btn btn-default navbar-btn">清除筆跡</button>
+              <% end -%>
             </div>
           </div>
           </div>
@@ -57,9 +72,19 @@
             <button id="out_button" style="font-size:15px;">淘汰</button>
             -->
             <button id="show_correct_button" style="font-size:15px;">顯示正確使用者</button>
+            
+            <% if @stage != 'B2' %>
             <button id="start_button" style="font-size:15px;">全部開始</button>
+            <% end -%>
+
+            <% if ['A3', 'B1'].include? @stage %>
+            <button id="stop_all_button" style="font-size:15px;">全部停止</button>
+            <% end -%>
             <!-- <button id="stop_button" style="font-size:15px;">停止已選</button> -->
+            <% if @stage != 'B2' %>
             <button id="clear_button" style="font-size:15px;">全部清除</button>
+            <% end -%>
+            
             <button id="clear_correct_button" style="font-size:15px;">清空答題記錄</button>
           </div>
           <div class="col-md-4">
@@ -82,6 +107,17 @@
 
       var receiveSubmitHandler = function(o){
         $('#visitor_'+o.user_id).css("background-color", "#e6e6f0");
+        
+        <% if (@stage == 'A3') %>
+        gamers.all().forEach(function(e){
+          window.chatApp.action(e, 'stop');
+        });
+        <% end -%>
+      };
+
+      //後台取消確認(尚未實作)
+      var receiveCancelSubmitHandler = function(o){
+        $('#origin_'+o.user_id).removeClass("canvas_box_block");
       };
 
       function showO(c){
@@ -96,7 +132,9 @@
 
       function correctCountSetStyle(o) {
         console.log(o);
+        <% if @stage != "B2" %>
         $("#correct_button_"+o.user_id).addClass("btn-success");
+        <% end -%>
         $("#no_correct_" + o.user_id).text(no_correct[o.user_id]+"題");
       }
 
@@ -128,6 +166,10 @@
           $("#start_button_"+user_id).attr("disabled", true);
           $("#stop_button_"+user_id).attr("disabled", true);
           $('#visitor_'+user_id).attr('style','opacity:0.2;border:3px solid #f8f8f8');
+      }
+
+      function clearSetStyle(o){
+       CM('origin_'+o.user_id).clear();
       }
 
       function resetProgressBarAndTime() {
@@ -244,19 +286,31 @@
 
          $('[id^=correct_button_]').click(function(){
           //window.chatApp.right(this.value);
-          if (!no_correct) no_correct = {};
-          if (!correct_users) correct_users = [];
-          if (correct_users.indexOf(this.value) != -1) return;
+          <% if (@stage == "B2") %>
+            window.chatApp.right(this.value);
+          <% else %>
+            if (!correct_users) correct_users = [];
+            if (correct_users.indexOf(this.value) != -1) return;
 
-          correct_users.push(this.value);
+            correct_users.push(this.value);
+          <% end -%> 
           
-          if (!no_correct[this.value]) {
-            no_correct[this.value] = 1;
-          } else {
-            no_correct[this.value] += 1;
-          }
-          window.chatApp.setCorrectCount(this.value, no_correct[this.value]);
+            if (!no_correct) no_correct = {};
+            if (!no_correct[this.value]) {
+              no_correct[this.value] = 1;
+            } else {
+              no_correct[this.value] += 1;
+            }
+            window.chatApp.setCorrectCount(this.value, no_correct[this.value]);
          });
+
+        $('[id^=remove_O_button_]').click(function(){
+          window.chatApp.removeO(this.value);
+        });
+
+        $('[id^=remove_writing_button_]').click(function(){
+          window.chatApp.clear(this.value);
+        });
 
         $('#clear_correct_button').click(function(){
           if (!no_correct) return;
@@ -270,6 +324,20 @@
           window.chatApp.showCorrectUsers(correct_users);
           //showCorrectUsers(correct_users);
         })
+
+        $('#stop_all_button').click(function(){
+           if (!window.alarm) return;
+           gamers.all().forEach( function(i) {
+              clearInterval(window.alarm[i]);
+              window.alarm[i] = null;
+              window.chatApp.action(i,'stop');
+              //window.chatApp.cancelSubmit(i);
+              //receiveSubmitHandler({user_id:i});
+              stopSetStyle(i);
+          });
+           var array = afterAction(this);
+
+        });
 
 
 

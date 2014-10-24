@@ -58,11 +58,65 @@ h4 {
 
 <% content_for :javascripts do %>
 <%= javascript_include_tag 'server' %>
+<%= javascript_include_tag 'server1-tvwall' %>
 <script>
 
 var receiveSubmitHandler = function(o){
   $('#origin_'+o.user_id).addClass("canvas_box_block");
 };
+
+function clearSetStyle(o){
+  CM('origin_'+o.user_id).clear();
+}
+
+var receiveCancelSubmitHandler = function(o){
+  $('#origin_'+o.user_id).removeClass("canvas_box_block");
+};
+
+var receiveCorrectUsersHandler = function(users){
+  showCorrectUsers(users);
+}
+
+//後台送出答對
+function showO(c){
+  $("#yes_img_" + c).show();
+}
+
+function removeO(c){
+  $("#yes_img_" + c).hide();
+}
+
+function startSetStyle(c) {
+  $('#user_photo_'+c).addClass("user_picture_block");
+}
+
+function stopSetStyle(c) {
+  $('#user_photo_'+c).removeClass("user_picture_block");
+}
+
+//Gamer out
+function outSetStyle(val) {
+  $('#origin_'+val).css("opacity", 0);
+}
+
+function resetSetStyle(s) {
+  $('#second_' + key).text(s + "秒");
+}
+
+function correctCountSetStyle(o){
+  $("#no_correct_" + o.user_id).text(o.count+"題");
+}
+
+
+function clearAllSetStyle() {
+  $('[id^=yes_img_]').hide();
+  //$('[id^=answer_correct_]').text("?").css("color","");
+  gamers.all().forEach(function(e){
+    CM('origin_'+e).clear();
+    $('#origin_'+e).removeClass("canvas_box_block");
+    stopSetStyle(e);
+  });
+}
 window.timeRemaining = parseInt(<%= @second %>);
 window.alarm = null;
 
@@ -83,6 +137,11 @@ $(document).ready(function() {
   window.chatApp = new ChatApp(500,500,'0');
   window.chatApp.bindEvents();
 
+  (function collectGamers() {
+           <% @visitors.each do |visitor| %>
+           gamers.push('<%= visitor.number %>');
+           <% end %>
+  }) ();
 
 });
 </script>

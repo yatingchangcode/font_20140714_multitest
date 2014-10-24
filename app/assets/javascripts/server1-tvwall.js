@@ -80,7 +80,7 @@
           if (isEmpty(o)) {
             clearAllSetStyle();
           } else {
-            CM('origin_'+o.user_id).clear();
+            clearSetStyle(o);
           }
         }
 

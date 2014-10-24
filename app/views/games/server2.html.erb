@@ -64,6 +64,11 @@
         $('#visitor_'+o.user_id).css("background-color", "#e0e0e0");
       };
 
+      //後台取消確認(尚未實作)
+      var receiveCancelSubmitHandler = function(o){
+        $('#origin_'+o.user_id).removeClass("canvas_box_block");
+      };
+
 
       //Show O
       function showO(c){

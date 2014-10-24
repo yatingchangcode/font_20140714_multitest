@@ -49,6 +49,7 @@ class GamesController < ApplicationController
 
     @@game = params[:id]
     @@stage = params[:stage]
+    @stage = params[:stage]
     #@user_unregs = [1,4]
   end
 

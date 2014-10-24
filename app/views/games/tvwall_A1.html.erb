@@ -69,8 +69,8 @@ h3,h4 {
 </div>
 
 <% content_for :javascripts do %>
-<%= javascript_include_tag 'server' %>
 <%= javascript_include_tag 'server1-tvwall' %>
+<%= javascript_include_tag 'server' %>
 <script>
 
 //使用者送出確認
@@ -111,6 +111,10 @@ function outSetStyle(val) {
 
 function resetSetStyle(s) {
   $('#second_' + key).text(s + "秒");
+}
+
+function clearSetStyle(o){
+  CM('origin_'+o.user_id).clear();
 }
 
 function correctCountSetStyle(o){
