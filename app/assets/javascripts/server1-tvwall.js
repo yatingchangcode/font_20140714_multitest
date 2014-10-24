@@ -69,7 +69,7 @@
         }
 
         var receiveUserOutHandler = function(o){
-          console.log(o.user_id);
+            console.log(o.user_id);
             CM.unreg('origin_'+o.user_id);
             //this.disabled = true;
             gamers.remove(o.user_id);

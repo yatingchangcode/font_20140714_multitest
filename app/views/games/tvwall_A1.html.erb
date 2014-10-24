@@ -34,6 +34,7 @@ h3,h4 {
 
 </style>
 <% end %>
+
 <span id="second" style="color:red" class="badge"><%= @second %></span>
 
 <div style="margin:0 7%; height:100%; padding-bottom:22%;">
@@ -72,8 +73,14 @@ h3,h4 {
 <%= javascript_include_tag 'server1-tvwall' %>
 <script>
 
+//使用者送出確認
 var receiveSubmitHandler = function(o){
   $('#origin_'+o.user_id).addClass("canvas_box_block");
+};
+
+//後台取消確認(尚未實作)
+var receiveCancelSubmitHandler = function(o){
+  $('#origin_'+o.user_id).removeClass("canvas_box_block");
 };
 
 var receiveCorrectUsersHandler = function(users){
@@ -99,7 +106,7 @@ function stopSetStyle(c) {
 
 //Gamer out
 function outSetStyle(val) {
-  $('#origin_'+val).hide();
+  $('#origin_'+val).css("opacity", 0);
 }
 
 function resetSetStyle(s) {
@@ -108,6 +115,17 @@ function resetSetStyle(s) {
 
 function correctCountSetStyle(o){
   $("#no_correct_" + o.user_id).text(o.count+"題");
+}
+
+
+function clearAllSetStyle() {
+  $('[id^=yes_img_]').hide();
+  //$('[id^=answer_correct_]').text("?").css("color","");
+  gamers.all().forEach(function(e){
+    CM('origin_'+e).clear();
+    $('#origin_'+e).removeClass("canvas_box_block");
+    stopSetStyle(e);
+  });
 }
 
 window.timeRemaining = parseInt(<%= @second %>);
@@ -130,6 +148,12 @@ $(document).ready(function() {
 
   window.chatApp = new ChatApp(500,500,'0');
   window.chatApp.bindEvents();
+
+  (function collectGamers() {
+           <% @visitors.each do |visitor| %>
+           gamers.push('<%= visitor.number %>');
+           <% end %>
+  }) ();
 
 
 });
