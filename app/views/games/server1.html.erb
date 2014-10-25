@@ -71,9 +71,9 @@
             <button id="yes_button" style="font-size:15px;">答對</button>
             <button id="out_button" style="font-size:15px;">淘汰</button>
             -->
-            <button id="show_correct_button" style="font-size:15px;">顯示正確使用者</button>
-            
+           
             <% if @stage != 'B2' %>
+            <button id="show_correct_button" style="font-size:15px;">顯示正確使用者</button>
             <button id="start_button" style="font-size:15px;">全部開始</button>
             <% end -%>
 
@@ -84,7 +84,7 @@
             <% if @stage != 'B2' %>
             <button id="clear_button" style="font-size:15px;">全部清除</button>
             <% end -%>
-            
+            <button id="next_question_button" style="font-size:15px;">下一題</button>
             <button id="clear_correct_button" style="font-size:15px;">清空答題記錄</button>
           </div>
           <div class="col-md-4">
@@ -328,8 +328,8 @@
         $('#stop_all_button').click(function(){
            if (!window.alarm) return;
            gamers.all().forEach( function(i) {
-              clearInterval(window.alarm[i]);
-              window.alarm[i] = null;
+              clearInterval(window.alarm);
+              window.alarm = null;
               window.chatApp.action(i,'stop');
               //window.chatApp.cancelSubmit(i);
               //receiveSubmitHandler({user_id:i});
@@ -339,6 +339,23 @@
 
         });
 
+        $('#next_question_button').click(function(){
+            
+            clearInterval(window.alarm);
+            window.alarm = null;
+
+            window.chatApp.clearAll();
+
+            gamers.all().forEach( function(i) {
+              window.chatApp.action(i,'stop');
+              //window.chatApp.cancelSubmit(i);
+              //receiveSubmitHandler({user_id:i});
+              stopSetStyle(i);
+
+              //window.chatApp.action(i,'start');
+            });
+            startCounter();
+        });
 
 
       });
