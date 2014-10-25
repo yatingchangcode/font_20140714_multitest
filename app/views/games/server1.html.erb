@@ -238,22 +238,6 @@
            <% end %>
         }) ();
 
-        var afterAction = function(property){
-          var array = [];
-          $('[name="gamer"]').each(function(){
-            if (this.checked) {
-              $('#visitor_'+this.value).css("background-color", "");
-              array.push(this.value);
-              this.checked = false;
-            }
-          });
-
-          $('#second').text(window.timeRemaining);
-          $('#allGamer').attr('checked',false);
-
-          return array;
-        }
-
 
         $('#clear_button').click(function(){
           window.chatApp.clearAll();
