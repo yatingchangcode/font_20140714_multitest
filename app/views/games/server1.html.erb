@@ -325,20 +325,17 @@
 
         $('#next_question_button').click(function(){
             
-            clearInterval(window.alarm);
-            window.alarm = null;
-
             window.chatApp.clearAll();
-
             gamers.all().forEach( function(i) {
               window.chatApp.action(i,'stop');
+            });
               //window.chatApp.cancelSubmit(i);
               //receiveSubmitHandler({user_id:i});
-              stopSetStyle(i);
-
-              //window.chatApp.action(i,'start');
+            gamers.all().forEach(function(i){
+              window.chatApp.action(i,'start');
+            
             });
-            startCounter();
+            setTimeout(startCounter,100);
         });
 
 
