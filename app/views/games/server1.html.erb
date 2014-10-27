@@ -242,6 +242,9 @@
         $('#clear_button').click(function(){
           window.chatApp.clearAll();
           correct_users = null;
+          clearInterval(window.alarm);
+          window.alarm = null;
+          resetProgressBarAndTime()
         });
 
         $("[id^=out_button_]").click(function(){
@@ -324,11 +327,12 @@
         });
 
         $('#next_question_button').click(function(){
-            
+            correct_users = null;
             window.chatApp.clearAll();
             gamers.all().forEach( function(i) {
               window.chatApp.action(i,'stop');
             });
+            resetProgressBarAndTime()
               //window.chatApp.cancelSubmit(i);
               //receiveSubmitHandler({user_id:i});
             gamers.all().forEach(function(i){
