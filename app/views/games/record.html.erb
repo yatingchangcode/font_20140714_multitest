@@ -51,7 +51,7 @@
                   user_id: id,
                   trade_key: key,
                   game: <%= @game.id %>,
-                  stage: <%= @stage %>
+                  stage: '<%= @stage %>'
                 });
               };
             })(scope.dispatcher, uid, tkey), fileSaveActionCount++ * delayTime);

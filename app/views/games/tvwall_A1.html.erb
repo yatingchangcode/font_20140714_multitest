@@ -35,7 +35,9 @@ h3,h4 {
 </style>
 <% end %>
 
-<span id="second" style="color:red" class="badge"><%= @second %></span>
+<div style="margin:1% 30% 0 30%;min-height:18px;height:2.5%;">
+  <canvas id="sketchSecond" data-processing-sources="/assets/timebar.pde"></canvas>
+</div>
 
 <div style="margin:0 7%; height:100%; padding-bottom:22%;">
   <% visitors_size = @visitors.size %>
@@ -73,6 +75,8 @@ h3,h4 {
 <%= javascript_include_tag 'server' %>
 <script>
 
+var sketchSecondIns;
+
 //使用者送出確認
 var receiveSubmitHandler = function(o){
   $('#origin_'+o.user_id).addClass("canvas_box_block");
@@ -98,6 +102,7 @@ function removeO(c){
 
 function startSetStyle(c) {
   $('#user_photo_'+c).addClass("user_picture_block");
+  sketchSecondIns.doStart();
 }
 
 function stopSetStyle(c) {
@@ -111,6 +116,8 @@ function outSetStyle(val) {
 
 function resetSetStyle(s) {
   $('#second_' + key).text(s + "秒");
+  sketchSecondIns.resetBar();
+  sketchSecondIns.setSecond(parseInt(s));
 }
 
 function clearSetStyle(o){
@@ -130,6 +137,7 @@ function clearAllSetStyle() {
     $('#origin_'+e).removeClass("canvas_box_block");
     stopSetStyle(e);
   });
+  sketchSecondIns.resetBar();
 }
 
 window.timeRemaining = parseInt(<%= @second %>);
@@ -159,6 +167,14 @@ $(document).ready(function() {
            <% end %>
   }) ();
 
+  setTimeout(function(){
+    if(!sketchSecondIns){
+      sketchSecondIns = Processing.getInstanceById('sketchSecond');  
+    }
+    var p = $(document.getElementById('sketchSecond').parentElement);
+    sketchSecondIns.setSize(p.width(), p.height());
+    sketchSecondIns.setSecond(<%= @second %>);
+  },300);
 
 });
 </script>
