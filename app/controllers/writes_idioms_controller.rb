@@ -46,7 +46,7 @@ class WritesIdiomsController < WebsocketRails::BaseController
   end
 
   def send_text
-    data = {:user_id => message[:user_id],block: message[:block], :stamp => message[:stamp], text: message[:text]}
+    data = {block: message[:block], :stamp => message[:stamp], text: message[:text]}
     broadcast_message :send_text, data
   end
 

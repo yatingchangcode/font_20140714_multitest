@@ -12,8 +12,6 @@
           <button id="moveBlock" style="font-size:15px;">指定格子</button>
           <button id="endRound" style="font-size:15px;">結束回合</button>
 
-          <input id="showText" type="text" value="" style="width:50px;" />
-          <button id="showTextButton">出題</button>
         </div>
         <canvas id="origin_<%= @user_id %>" class="orgincanvas"></canvas>
       </div>
@@ -49,23 +47,6 @@
           window.chatApp.endRound();
         });
 
-        $('#showTextButton').click(function(){
-          if(!window.chatApp){
-            window.chatApp = new ChatApp(ocan.offsetLeft,ocan.offsetTop,'<%= @user_id %>',{row: $('#row').val(), column:$('#column').val()});
-            window.chatApp.triggerEvents();
-            window.chatApp.bindEvents();
-          }
-          var testCan = ocan;
-          var w = $(testCan).width();
-          var context = testCan.getContext("2d");
-          context.fillStyle = "purple";
-          context.font = "bold " + (w * 13 / 15) + "px 標楷體";
-          context.fillText($('#showText').val(), w / 15, w * 12 / 15);
-
-          window.chatApp.sendText($('#showText').val());
-
-
-        });
       });
 
       var receiveActionHandler = function(data){

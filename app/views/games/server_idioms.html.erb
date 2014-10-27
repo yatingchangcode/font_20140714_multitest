@@ -94,6 +94,10 @@ h4 {
 
 
     <button id="next_button" style="font-size:20px;">下一位</button>
+    <input id="row" type="number" value="1" />
+    <input id="column" type="number" value="1" />
+    <input id="showText" type="text" value="" style="width:50px;" />
+    <button id="showTextButton">出題</button>
   </div>
 </div>
 
@@ -102,13 +106,13 @@ h4 {
 <%= javascript_include_tag 'server_idioms_helpers' %>
 <script>
 
-      function startSetStyle(c) {
-        $('#user_photo_'+c).addClass("user_picture_block");
-      }
+function startSetStyle(c) {
+  $('#user_photo_'+c).addClass("user_picture_block");
+}
 
-      function stopSetStyle(c) {
-        $('#user_photo_'+c).removeClass("user_picture_block");
-      }
+function stopSetStyle(c) {
+  $('#user_photo_'+c).removeClass("user_picture_block");
+}
 
       //var alarm = {};
       window.open("tvwall_<%= params[:stage] %>?join_visitors_number=<%= params[:join_visitors_number] %>&second=<%= @second %>","tvwallWindow","width=800, height=800");
@@ -169,11 +173,17 @@ h4 {
         });
 
         $('[name^=clear]').click(function(){
-        
+
           var xy = this.value.split(',');
           var block = { row: xy[0], column:xy[1] };
-      
+
           window.chatApp.clear(0,block); 
+        });
+
+        $('#showTextButton').click(function(){
+
+          window.chatApp.sendText($('#showText').val(),{row: $('#row').val(), column:$('#column').val()});
+
         });
 
       });

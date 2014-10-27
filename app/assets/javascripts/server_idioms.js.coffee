@@ -68,4 +68,8 @@ class @ChatApp
   reset: () =>
     @dispatcher.trigger @stage_name+'.reset'
 
+  sendText: (text,block) =>
+    @dispatcher.trigger @stage_name+'.send_text' ,  block: block, text: text
+
+
 
