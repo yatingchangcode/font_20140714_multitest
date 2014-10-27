@@ -55,9 +55,9 @@ class @ChatApp
 
   receiveAction: (message) =>
     name = message.action
-    if name is @stage_name+".start"
+    if name is "start"
       receiveStartHandler message
-    else if name is @stage_name+".stop"
+    else if name is "stop"
       receiveStopHandler message
 
   clear: (uid,block) ->
