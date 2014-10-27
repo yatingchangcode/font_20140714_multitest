@@ -5,8 +5,6 @@ float fps = 20;
 float x = 0.0;
 float time = 10;
 float margin = 0.2;
-float canvasWidth;
-float canvasHeight;
 float outerWidth;
 float outerHeight;
 float innerWidth;
@@ -38,10 +36,11 @@ void draw(){
 
   fill(120);
   rect(0, 0, outerWidth, outerHeight, outerHeight / 2);
-  if(x > innerWidth - changeEnd){
+  if(x > changeEnd){
     green = 0;
   }else if(x >= changeBegin){
     green = 255 - (x - changeBegin) * scale;
+    //green = (x - changeBegin) * scale;
   }else{
     green = 255;
   }
@@ -86,9 +85,9 @@ void setSize(float width, float height){
   innerHeight = outerHeight - marginPixel * 2;
   size(outerWidth, outerHeight);
   step = innerWidth / (fps * time);
-  changeBegin = innerWidth / 2;
-  changeEnd = innerWidth / 4;
-  scale = 255 / (changeBegin - changeEnd);
+  changeBegin = innerWidth * 2 / 3;
+  changeEnd = innerWidth - innerWidth / 15;
+  scale = 255 / (changeEnd - changeBegin);
   drawBar();
 }
 
