@@ -82,7 +82,7 @@
 	 * @return {Array.<CompiledSnapshot>} 
 	 */
 	var arrangeFrame_ = function(data, frameRate){
-		
+		/*
 		var ms = 1 / frameRate * 1000;
 		var startTime = data[0].stamp;
 		var endTime = data[data.length-1].stamp;
@@ -112,6 +112,8 @@
 			it += ms;
 		}
 		return computedRecords;
+		*/
+		return data;
 	};
 	
 	/**
@@ -483,6 +485,13 @@
 		return prop_;
 	};
 	
+	CR.clearAll = function(){
+		for(var ins in instanceMap_){
+			instanceMap_[ins].clear();
+		}
+		return CR;
+	};
+
 	/**
 	 * Enum for Recorder Status to CR class enum.
 	 * @enum {Number}
