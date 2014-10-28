@@ -26,6 +26,7 @@ class ChatsController < WebsocketRails::BaseController
     file_path = FileUtils.mkdir_p("#{record_path}/game#{message[:game]}_#{@game.created_at.strftime("%Y%m%d")}/#{file_name}")
     
     controller_store[:user_id_file_path][message[:trade_key]] = file_path
+    #p controller_store[:user_id_file_path]
   end
 
   def save_file 
@@ -55,6 +56,7 @@ class ChatsController < WebsocketRails::BaseController
     # file_path = controller_store[:user_id_file_path][message[:trade_key]][0]
     begin
       p Subprocess.check_call(["ffmpeg", "-framerate", framerate.to_s, "-i", "#{file_path}/%d.png", "#{file_path}.mp4", "-y"])
+      controller_store[:user_id_file_path][message[:trade_key]] = nil
     rescue Subprocess::NonZeroExit => e
       puts e.message
       puts "Why aren't llamas one of your favorite animals?"
@@ -100,9 +102,7 @@ class ChatsController < WebsocketRails::BaseController
       computed.push( [frameCount.to_s, lessNear[1]] ) 
       it += ms
     end
-
     return computed
-
   end
 
 end

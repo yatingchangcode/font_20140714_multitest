@@ -149,7 +149,7 @@ class GamesController < ApplicationController
     @range = 1..@visitors.size
 
     @@game = params[:id]
-    @stage = "idioms"
+    @stage = "B3"
     
   end
 
