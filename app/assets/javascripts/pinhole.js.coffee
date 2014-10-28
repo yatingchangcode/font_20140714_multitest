@@ -31,7 +31,10 @@ class @Pinhole
     return
 
   receiveClear: (message) => 
-    CR(message.user_id).clear(message.stamp)
+    if message and message.user_id
+      CR(message.user_id).clear(message.stamp)
+    else
+      CR.clearAll();
     return
 
   receiveDisconnect: (message) =>
