@@ -40,7 +40,10 @@ class @ChatApp
     @dispatcher.trigger 'continue_write', user_id: uid
 
   reset: (s) =>
-    @dispatcher.trigger 'reset', second: s
+    if(s)
+      @dispatcher.trigger 'reset', second: s
+    else
+      @dispatcher.trigger 'reset', {}
 
   setCorrectCount: (uid, count) ->
     @dispatcher.trigger 'setCorrectCount', user_id: uid, count: count
