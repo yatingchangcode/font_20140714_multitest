@@ -15,12 +15,11 @@ class @ChatApp
     @dispatcher.bind 'down_location', @receiveDown
     @dispatcher.bind 'move_location', @receiveMove
     @dispatcher.bind 'up_location', @receiveUp
+    @dispatcher.bind 'submit', @receiveSubmit
     @dispatcher.bind 'move_block', @receiveMoveBlock
     @dispatcher.bind 'send_text', @receiveSendText
     @dispatcher.bind 'end_round', @receiveEndRound
     @dispatcher.bind 'clear', @receiveClear
-    @dispatcher.bind 'get_user_count', @getUserCount
-    @dispatcher.bind 'get_write_count', @getWriteCount
     @dispatcher.bind 'action', @receiveAction
 
   receiveDown: (message) =>
@@ -31,6 +30,9 @@ class @ChatApp
 
   receiveUp: (message) =>
     return
+
+  receiveSubmit: (message) =>
+    receiveSubmitHandler message
 
   receiveClear: (message) => 
     CM('origin_'+message.block.row+'_'+message.block.column).clear();
@@ -55,9 +57,9 @@ class @ChatApp
 
   receiveAction: (message) =>
     name = message.action
-    if name is @stage_name+".start"
+    if name is "start"
       receiveStartHandler message
-    else if name is @stage_name+".stop"
+    else if name is "stop"
       receiveStopHandler message
 
   clear: (uid,block) ->
@@ -67,5 +69,9 @@ class @ChatApp
     
   reset: () =>
     @dispatcher.trigger @stage_name+'.reset'
+
+  sendText: (text,block) =>
+    @dispatcher.trigger @stage_name+'.send_text' ,  block: block, text: text
+
 
 

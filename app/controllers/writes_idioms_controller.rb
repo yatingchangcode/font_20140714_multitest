@@ -8,13 +8,6 @@ class WritesIdiomsController < WebsocketRails::BaseController
   end
 
 
-
-  def get_write_count
-    # perform application setup here
-    data = {:write_count => controller_store[:write_count]}
-    broadcast_message :get_write_count, data
-  end
-
   def down_location
     data = {:user_id => message[:user_id],block: message[:block], :x => message[:x], :y => message[:y], :stamp => message[:stamp]}
     broadcast_message :down_location, data
@@ -46,7 +39,7 @@ class WritesIdiomsController < WebsocketRails::BaseController
   end
 
   def send_text
-    data = {:user_id => message[:user_id],block: message[:block], :stamp => message[:stamp], text: message[:text]}
+    data = {block: message[:block], :stamp => message[:stamp], text: message[:text]}
     broadcast_message :send_text, data
   end
 
