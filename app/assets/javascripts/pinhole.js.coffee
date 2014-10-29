@@ -14,42 +14,39 @@ class @Pinhole
     @dispatcher.bind 'up_location', @receiveUp
     @dispatcher.bind 'clear', @receiveClear
     @dispatcher.bind 'action', @receiveAction
-    @dispatcher.bind 'connection_closed', @receiveDisconnect
-    @dispatcher.bind 'get_user_count', @getUserCount
-    @dispatcher.bind 'get_write_count', @getWriteCount
+    @dispatcher.bind 'reset', @receiveReset
     return
 
   receiveDown: (message) =>
-    CR(message.user_id).point({ stamp: message.stamp, x: message.x, y: message.y }, writeToLog)
+    if(receiveDownHandler)
+      receiveDownHandler message
     return
 
   receiveMove: (message) =>
-    CR(message.user_id).line({ stamp: message.stamp, x: message.x, y: message.y }, writeToLog)
+    if(receiveMoveHandler)
+      receiveMoveHandler message
     return
 
   receiveUp: (message) =>
+    if(receiveUpHandler)
+      receiveUpHandler message
     return
 
   receiveClear: (message) => 
-    if message and message.user_id
-      CR(message.user_id).clear(message.stamp)
-    else
-      CR.clearAll();
-    return
-
-  receiveDisconnect: (message) =>
-    return
-
-  getUserCount: (data) ->
-    return
-
-  getWriteCount: (data) ->
+    if(receiveClearHandler)
+      receiveClearHandler message
     return
 
   receiveAction: (message) ->
-    currentUser = message.user_id
     if message.action is "device_start"
-      CR(currentUser).start message.stamp, startCallBack
+      if(receiveDeviceStartHandler)
+        receiveDeviceStartHandler message
     else if message.action is "device_stop"
-      CR(currentUser).stop message.stamp, stopCallBack(currentUser)
+      if(receiveDeviceStopHandler)
+        receiveDeviceStopHandler message
+    return
+
+  receiveReset: (message) ->
+    if(receiveResetHandler)
+      receiveResetHandler message
     return

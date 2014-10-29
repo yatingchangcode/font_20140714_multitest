@@ -18,6 +18,50 @@
       var fileSaveActionCount = 0;
       var delayTime = 60;
 
+      var receiveDownHandler = function(o){
+        CR(o.user_id).point({ stamp: o.stamp, x: o.x, y: o.y }, writeToLog);
+      };
+
+      var receiveMoveHandler = function(o){
+        CR(o.user_id).line({ stamp: o.stamp, x: o.x, y: o.y }, writeToLog);
+      };
+
+      var receiveUpHandler = function(o){};
+
+      var receiveClearHandler = function(o){
+        if(o && o.user_id){
+          CR(o.user_id).clear(o.stamp);
+        }else{
+          CR.clearAll();  
+        }
+      };
+
+      var receiveDeviceStartHandler = function(o){
+        CR(o.user_id).start(o.stamp, startCallBack);
+      };
+
+      var receiveDeviceStopHandler = function(o){
+        CR(o.user_id).stop(o.stamp, stopCallBack(o.user_id));
+      };
+
+      var receiveResetHandler = function(o){
+        if(o && o.stage){
+          //if(o.stage != "<%= @stage %>"){
+            $.getJSON('/games/get_game_data.json?id=record',
+              function(data){            
+                //var res = JSON.parse(data);
+                //alert(data);
+                if(data.recordUrl){
+                  window.location.replace(data.recordUrl);
+                }
+              }
+            ).fail(function(e){
+              console.log('error');
+            });
+          //}
+        }
+      };
+
       $(document).ready(function() {
         CR.prop({
           width: 500,
