@@ -3,6 +3,7 @@ class GamesController < ApplicationController
   @@game = 0
   @@second = 0
   @@stage = ""
+  @@record_url = ""
 
   def index
     @games = Game.all
@@ -50,7 +51,11 @@ class GamesController < ApplicationController
     @@game = params[:id]
     @@stage = params[:stage]
     @stage = params[:stage]
+    @@record_url = "http://0.0.0.0:3000/games/#{params[:id]}/record?join_visitors_number=#{params[:join_visitors_number]}"
     #@user_unregs = [1,4]
+    if Rails.application.config.is_record_open == false
+      `open #{@@record_url}`
+    end
   end
 
   def server2
@@ -64,6 +69,10 @@ class GamesController < ApplicationController
     @@game = params[:id]
     @@stage = params[:stage]
     #@user_unregs = [1,4]
+    @@record_url = "http://0.0.0.0:3000/games/#{params[:id]}/record?join_visitors_number=#{params[:join_visitors_number]}"
+    if Rails.application.config.is_record_open == false
+      `open #{@@record_url}`
+    end
   end
 
   def tvwall_A1
@@ -131,7 +140,10 @@ class GamesController < ApplicationController
 
     @@game = params[:id]
     @@stage = params[:stage]
-
+    @@record_url = "http://0.0.0.0:3000/games/#{params[:id]}/record_idioms?join_visitors_number=#{params[:join_visitors_number]}"
+    if Rails.application.config.is_record_open == false
+      `open #{@@record_url}`
+    end
   end
 
   def record
@@ -159,7 +171,7 @@ class GamesController < ApplicationController
       @visitor = @game.visitors.where(number: params[:id]).first
 
       respond_to do |format|
-        format.json { render :json => { visitor: @visitor,second: @@second,game: @@game, stage: @@stage} }
+        format.json { render :json => { visitor: @visitor,second: @@second,game: @@game, stage: @@stage, recordUrl: @@record_url} }
       end
     else
       respond_to do |format|
