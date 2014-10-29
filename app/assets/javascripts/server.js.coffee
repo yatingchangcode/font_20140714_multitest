@@ -41,7 +41,7 @@ class @ChatApp
 
   reset: (s) =>
     if(s)
-      @dispatcher.trigger 'reset', second: s
+      @dispatcher.trigger 'reset', second: s.second, stage: s.stage
     else
       @dispatcher.trigger 'reset', {}
 
