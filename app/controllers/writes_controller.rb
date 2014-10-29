@@ -47,7 +47,7 @@ class WritesController < WebsocketRails::BaseController
   end
 
   def reset
-      broadcast_message :reset, {:second => message[:second]}
+      broadcast_message :reset, {:second => message[:second], :stage => message[:stage]}
   end
   
   def continue_write
