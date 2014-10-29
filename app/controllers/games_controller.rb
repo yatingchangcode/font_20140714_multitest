@@ -54,7 +54,7 @@ class GamesController < ApplicationController
     @@record_url = "http://0.0.0.0:3000/games/#{params[:id]}/record?join_visitors_number=#{params[:join_visitors_number]}"
     #@user_unregs = [1,4]
     if Rails.application.config.is_record_open == false
-      `open #{@@record_url}`
+      `xdg-open #{@@record_url} || open #{@@record_url}`
     end
   end
 
@@ -71,7 +71,7 @@ class GamesController < ApplicationController
     #@user_unregs = [1,4]
     @@record_url = "http://0.0.0.0:3000/games/#{params[:id]}/record?join_visitors_number=#{params[:join_visitors_number]}"
     if Rails.application.config.is_record_open == false
-      `open #{@@record_url}`
+      `xdg-open #{@@record_url} || open #{@@record_url}`
     end
   end
 
@@ -142,7 +142,7 @@ class GamesController < ApplicationController
     @@stage = params[:stage]
     @@record_url = "http://0.0.0.0:3000/games/#{params[:id]}/record_idioms?join_visitors_number=#{params[:join_visitors_number]}"
     if Rails.application.config.is_record_open == false
-      `open #{@@record_url}`
+      `xdg-open #{@@record_url} || open #{@@record_url}`
     end
   end
 
