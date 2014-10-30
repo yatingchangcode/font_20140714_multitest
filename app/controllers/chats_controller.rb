@@ -69,7 +69,7 @@ class ChatsController < WebsocketRails::BaseController
     controller_store[:user_count] += 1
     if params[:client_id] == 'record'
       p "is_recode_open"
-      Rails.application.config.is_record_open = true
+      Setting.messaging['is_record_open'] = true
     end
     p "user_count #{controller_store[:user_count]} ,user #{params[:client_id]} connected #{Time.now}"
     WebsocketRails.users[params[:client_id]] = connection
@@ -79,7 +79,7 @@ class ChatsController < WebsocketRails::BaseController
     controller_store[:user_count] -= 1
     if params[:client_id] == 'record'
       p "is_recode_close"
-      Rails.application.config.is_record_open = false
+      Setting.messaging['is_record_open'] = false
     end
     p "user_count #{controller_store[:user_count]} ,user #{params[:client_id]} disconnected #{Time.now}"
     known_connections = WebsocketRails.users[params[:client_id]]

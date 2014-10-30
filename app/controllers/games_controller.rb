@@ -1,10 +1,5 @@
 class GamesController < ApplicationController
 
-  @@game = 0
-  @@second = 0
-  @@stage = ""
-  @@record_url = ""
-
   def index
     @games = Game.all
     @game = Game.new
@@ -46,15 +41,15 @@ class GamesController < ApplicationController
     @visitors = @game.visitors.where(number: params[:join_visitors_number].split(","))
     @range = 1..@visitors.size
     @second = params[:second]
-    @@second = params[:second]
 
-    @@game = params[:id]
-    @@stage = params[:stage]
+    Setting.messaging['second'] = params[:second]
+    Setting.messaging['game'] = params[:id]
+    Setting.messaging['stage'] = params[:stage]
     @stage = params[:stage]
-    @@record_url = "http://0.0.0.0:3000/games/#{params[:id]}/record?join_visitors_number=#{params[:join_visitors_number]}"
+    Setting.messaging['record_url'] = "http://0.0.0.0:3000/games/#{params[:id]}/record?join_visitors_number=#{params[:join_visitors_number]}"
     #@user_unregs = [1,4]
-    if Rails.application.config.is_record_open == false
-      `xdg-open #{@@record_url} || open #{@@record_url}`
+    if Setting.messaging['is_record_open'] == false
+      `xdg-open #{Setting.messaging['record_url']} || open #{Setting.messaging['record_url']}`
     end
   end
 
@@ -64,14 +59,14 @@ class GamesController < ApplicationController
     @range = 1..@visitors.size
 
     @second = params[:second]
-    @@second = params[:second]
+    Setting.messaging['second'] = params[:second]
 
-    @@game = params[:id]
-    @@stage = params[:stage]
+    Setting.messaging['game'] = params[:id]
+    Setting.messaging['stage'] = params[:stage]
     #@user_unregs = [1,4]
-    @@record_url = "http://0.0.0.0:3000/games/#{params[:id]}/record?join_visitors_number=#{params[:join_visitors_number]}"
-    if Rails.application.config.is_record_open == false
-      `xdg-open #{@@record_url} || open #{@@record_url}`
+    Setting.messaging['record_url'] = "http://0.0.0.0:3000/games/#{params[:id]}/record?join_visitors_number=#{params[:join_visitors_number]}"
+    if Setting.messaging['is_record_open'] == false
+      `xdg-open #{Setting.messaging['record_url']} || open #{Setting.messaging['record_url']}`
     end
   end
 
@@ -81,7 +76,6 @@ class GamesController < ApplicationController
     @range = 1..@visitors.size
 
     @second = params[:second]
-    @@second = params[:second]
   end
 
   def tvwall_A2
@@ -90,7 +84,6 @@ class GamesController < ApplicationController
     @range = 1..@visitors.size
 
     @second = params[:second]
-    @@second = params[:second]
   end
 
   def tvwall_A3
@@ -99,7 +92,6 @@ class GamesController < ApplicationController
     @range = 1..@visitors.size
 
     @second = params[:second]
-    @@second = params[:second]
   end
 
   def tvwall_B1
@@ -108,7 +100,6 @@ class GamesController < ApplicationController
     @range = 1..@visitors.size
 
     @second = params[:second]
-    @@second = params[:second]
   end
 
   def tvwall_B2
@@ -117,7 +108,6 @@ class GamesController < ApplicationController
     @range = 1..@visitors.size
 
     @second = params[:second]
-    @@second = params[:second]
   end
 
   def tvwall_B3
@@ -126,7 +116,6 @@ class GamesController < ApplicationController
     @range = 1..@visitors.size
 
     @second = params[:second]
-    @@second = params[:second]
   end
 
   def server_idioms
@@ -136,13 +125,13 @@ class GamesController < ApplicationController
 
     # for idioms stage, rule is 60 seconds
     @second = params[:second]
-    @@second = params[:second]
+    Setting.messaging['second'] = params[:second]
 
-    @@game = params[:id]
-    @@stage = params[:stage]
-    @@record_url = "http://0.0.0.0:3000/games/#{params[:id]}/record_idioms?join_visitors_number=#{params[:join_visitors_number]}"
-    if Rails.application.config.is_record_open == false
-      `xdg-open #{@@record_url} || open #{@@record_url}`
+    Setting.messaging['game'] = params[:id]
+    Setting.messaging['stage'] = params[:stage]
+    Setting.messaging['record_url'] = "http://0.0.0.0:3000/games/#{params[:id]}/record_idioms?join_visitors_number=#{params[:join_visitors_number]}"
+    if Setting.messaging['is_record_open'] == false
+      `xdg-open #{Setting.messaging['record_url']} || open #{Setting.messaging['record_url']}`
     end
   end
 
@@ -151,7 +140,7 @@ class GamesController < ApplicationController
     @visitors = @game.visitors.where(number: params[:join_visitors_number].split(","))
     @range = 1..@visitors.size
 
-    @stage = @@stage
+    @stage = Setting.messaging['stage']
     
   end
 
@@ -160,18 +149,17 @@ class GamesController < ApplicationController
     @visitors = @game.visitors.where(number: params[:join_visitors_number].split(","))
     @range = 1..@visitors.size
 
-    @@game = params[:id]
     @stage = "B3"
     
   end
 
   def get_game_data
-    if @@game.present?
-      @game = Game.find(@@game)
+    if Setting.messaging['game'].present?
+      @game = Game.find(Setting.messaging['game'])
       @visitor = @game.visitors.where(number: params[:id]).first
 
       respond_to do |format|
-        format.json { render :json => { visitor: @visitor,second: @@second,game: @@game, stage: @@stage, recordUrl: @@record_url} }
+        format.json { render :json => { visitor: @visitor,second: Setting.messaging['second'],game: Setting.messaging['game'], stage: Setting.messaging['stage'], recordUrl: Setting.messaging['record_url']} }
       end
     else
       respond_to do |format|

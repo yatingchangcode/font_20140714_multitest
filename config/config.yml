@@ -7,6 +7,7 @@ defaults: &defaults
   filepicker_api_key: "AIfvVxeeARtO8oib3x8hVz"
   filepicker_secret_key: "TRX2HQBY5ZE7DFHQHAIMCAHLQ4"
   default_logo_url: "/logo.png"
+  messaging: {}
 
 development:
   <<: *defaults
