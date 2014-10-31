@@ -1,73 +1,120 @@
 <% content_for :stylesheets do %>
+<%= stylesheet_link_tag 'reset','tvwall_A1' %>
 <style type="text/css">
+p{font-size:18px; line-height:28px; padding-top:7px}
 
 body,.container{
   background-color: #000000;
   width: 100%;
   height:100%;
 }
-
-h3,h4 {
-  color: #ffffff
-}
-
-.border_radius{
-  border: 2px solid #D6D6D6;
-  -webkit-border-radius: 100px;
-  -moz-border-radius: 100px;
-  border-radius: 100px;
-}
-
-.every_writer_box_down{
-  float:left;
-  padding-top:5%;
-  width:20%;
-}
-
-.correct{
-  display:none;
-  z-index:10;
-  position:absolute;
-  left:120px;
-  top:120px;
-}
-
 </style>
 <% end %>
 
-<div style="margin:1% 30% 0 30%;min-height:18px;height:2.5%;">
-  <canvas id="sketchSecond" data-processing-sources="/assets/timebar.pde"></canvas>
-</div>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td colspan="3" height="5%">&nbsp;</td>
+  </tr>
+  <tr>
+    <td width="35%">&nbsp;</td>
+    <td><div class="HP_bar" style="height:11px;"><canvas id="sketchSecond" data-processing-sources="/assets/timebar.pde"></canvas></div></div></td>
+    <td width="35%">&nbsp;</td>
+  </tr>
+  
+</table>
 
-<div style="margin:0 7%; height:100%; padding-bottom:22%;">
-  <% visitors_size = @visitors.size %>
-  <% (1..visitors_size/2).each do |x| %>
-  <div class="visitor every_writer_box_down" style="padding:1.5% 2% 1% 2%;">
-    <% visitor = @visitors.find_by(number: (x-1)*2 + 1) %>
-    <div style="width:85%;margin:2% auto;" id="visitor_<%= visitor.number %>">
-      <%= render_gamer_photo(visitor,"medium",40,40,"") %>
-      <h4 style="display:inline;"><%= visitor.name %></h4>
-    </div>
-    <div style="position:relative;">
-      <canvas id="origin_<%= visitor.number %>" class="orgincanvas canvas_box" ></canvas>
-      <img id="yes_img_<%= visitor.number %>" src="/assets/O-mark.png" height="95" class="correct" ></img>
-    </div>
+<div class="Content"> 
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td colspan="11" height="5%">&nbsp;</td>
+      </tr>
+      
+      <tr>
+        <td width="10%"></td>
+        <% @visitors[0..4].each do |visitor| %>
+        <td>
+        <div class="box_a">
+            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+              <tr>
+                <td>
+                <div class="TopBpx">
+                    <div id="user_photo_<%= visitor.number %>" class="photo">
+                      <%= render_gamer_photo(visitor,"medium",'100%','100%',"") %>
+                    </div>
+                    <div class="nameBox">
+                      <p class="name">某某國小<br /><%= visitor.name %></p>
+                    </div>
+                    <br class="CLEAR" />
+                </div>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                <div id="grid_<%= visitor.number %>" class="Grid">
+                    <div id="glow_<%= visitor.number %>" class="inner_glow"><img src="/assets/tvwall/img_Grid_b_green.png" width="100%"/></div>
+                    <div id="yes_img_<%= visitor.number %>" class="correct"><img src="/assets/tvwall/red_ring.png" width="100%"/></div>
+                    <canvas id="origin_<%= visitor.number %>" width="100%" ></canvas>
+                </div>
+                </td>
+              </tr>
+            </table>
+      </div>
+        </td>
+        
+        <td width="3%"></td>
+        <% end %>
+
+        <td width="9%"></td>
+      </tr>
+      
+      <tr>
+        <td colspan="11" height="1%">&nbsp;</td>
+      </tr>
+    </table>
 
 
-    <% visitor = @visitors.find_by(number: (x-1)*2 + 2) %>
-    <div style="width:85%;margin:10% auto;" id="visitor_<%= visitor.number %>">
-      <%= render_gamer_photo(visitor,"medium",40,40,"") %>
-      <h4 style="display:inline;"><%= visitor.name %></h4>
-    </div>
-
-    <div style="position:relative;">
-      <canvas id="origin_<%= visitor.number %>" class="orgincanvas canvas_box" ></canvas>
-      <img id="yes_img_<%= visitor.number %>" src="/assets/O-mark.png" height="95" class="correct" ></img>
-    </div>
-
-  </div>
-  <% end %>
-
+    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td width="9%"></td>
+        
+        <% @visitors[5..9].each do |visitor| %>
+        <td width="3%"></td>
+        <td>
+        <div class="box_a">
+            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+              <tr>
+                <td>
+                <div class="TopBpx">
+                    <div id="user_photo_<%= visitor.number %>" class="photo">
+                      <%= render_gamer_photo(visitor,"medium",'100%','100%',"") %>
+                    </div>
+                    <div class="nameBox">
+                      <p class="name">某某國小<br /><%= visitor.name %></p>
+                    </div>
+                    <br class="CLEAR" />
+                </div>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                <div id="grid_<%= visitor.number %>" class="Grid">
+                    <div id="glow_<%= visitor.number %>" class="inner_glow"><img src="/assets/tvwall/img_Grid_b_green.png" width="100%"/></div>
+                    <div id="yes_img_<%= visitor.number %>" class="correct"><img src="/assets/tvwall/red_ring.png" width="100%"/></div>
+                    <canvas id="origin_<%= visitor.number %>" width="100%" ></canvas>
+                </div>
+                </td>
+              </tr>
+            </table>
+      </div>
+        </td>
+        
+        
+        <% end %>
+        
+        <td width="10%"></td>
+      </tr>
+    </table>
+        
 </div>
 
 <% content_for :javascripts do %>
@@ -79,12 +126,14 @@ var sketchSecondIns;
 
 //使用者送出確認
 var receiveSubmitHandler = function(o){
-  $('#origin_'+o.user_id).addClass("canvas_box_block");
+  $('#grid_'+o.user_id).addClass("bor_g");
+  $('#glow_'+o.user_id).show();
 };
 
 //後台取消確認(尚未實作)
 var receiveCancelSubmitHandler = function(o){
-  $('#origin_'+o.user_id).removeClass("canvas_box_block");
+  $('#grid_'+o.user_id).removeClass("bor_g");
+  $('#glow_'+o.user_id).hide();
 };
 
 var receiveCorrectUsersHandler = function(users){
@@ -101,12 +150,12 @@ function removeO(c){
 }
 
 function startSetStyle(c) {
-  $('#user_photo_'+c).addClass("user_picture_block");
+  $('#user_photo_'+c).addClass("green");
   sketchSecondIns.doStart();
 }
 
 function stopSetStyle(c) {
-  $('#user_photo_'+c).removeClass("user_picture_block");
+  $('#user_photo_'+c).removeClass("green");
 }
 
 //Gamer out
@@ -151,7 +200,7 @@ $(document).ready(function() {
     lineColor: '#ffffff',
     targetZoomScale: 0.15,
     responsiveByParent: true,
-    backgroundImage: '/assets/block.png'
+    backgroundImage: '/assets/tvwall/img_Grid_b.gif'
   });
   <% @visitors.each do |visitor| %>
   CM.reg('origin_<%= visitor.number %>');

@@ -1,0 +1,28 @@
+@charset "utf-8";
+/* CSS Document */
+/*===================共用=================*/
+h1, h2, h3, h4, h5, h6, p { color:#000000; letter-spacing:1px; font-family:Helvetica,"Heiti TC","微軟正黑體","Microsoft Sans Serif","Microsoft Sans Serif","Helvetica","Geneva","sans-serif";}
+a{ text-decoration:none; outline: none; /* for Firefox */  hlbr:expression(this.onFocus=this.blur()); /* for IE */}
+
+.Content{ width:100%;}
+.Content .box_a{ width:100%; position:relative;}
+.Content .box_a .TopBpx{ width:100%;}
+.Content .box_a .TopBpx .photo{ float:left; width:28%;}
+.Content .box_a .TopBpx .green{ box-shadow:0px 0px 30px #00ff00;}
+.Content .box_a .TopBpx .nameBox{ float:left; width:67%; height:100%; overflow:hidden; background:url(/assets/tvwall/name_line.png) right 18px no-repeat;}
+.Content .box_a .TopBpx .nameBox p.name{ color:#FFF; padding-left:10px;}
+
+.Content .box_a .Grid{ width:99%; position:relative; border:3px solid #c0c0c0;}
+.Content .box_a .Grid .write{ width:95%; position:absolute; left:2%; top:2%; z-index:40;}
+.Content .box_a .Grid .correct{ width:32%; position:absolute; right:1%; bottom:2%; z-index:50; display:none;}
+.Content .box_a .bor_g{ border:3px solid #98c4a7;}
+.Content .box_a .Grid .inner_glow{ width:100%; position:absolute; top:0px; left:0px; display:none;}
+
+.Content .box_a table tr td{ padding-bottom:10px;}
+
+.Content .box_a .out{ width:105%; position:absolute; bottom:0px; left:0px; z-index:60;}
+
+.HP_bar{ width:100%; border-radius:10px;overflow:hidden;}
+.HP_bar .hp{ width:100%;}
+.HP_bar .red{ background-color:#ff0c00;}
+.HP_bar .yello{ background-color:#fcff00;}
