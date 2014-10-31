@@ -4,6 +4,10 @@ class VisitorsController < ApplicationController
     @visitor = @game.visitors.new
   end
 
+  def edit
+    @visitor = @game.visitors.find(params[:id])
+  end
+
   def create
     @visitor = @game.visitors.build(visitor_params)
     @visitor.number = @game.visitors.size
@@ -15,9 +19,19 @@ class VisitorsController < ApplicationController
     end
   end
 
+  def update
+    @visitor = @game.visitors.find(params[:id])
+
+    if @visitor.update(visitor_params)
+      redirect_to game_path(@game)
+    else
+      render :edit
+    end
+  end
+
   private
   def visitor_params
-    params.require(:visitor).permit(:name,:image)
+    params.require(:visitor).permit(:name,:image,:title)
   end
 
   def find_game

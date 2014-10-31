@@ -13,9 +13,11 @@
       <thead>
         <tr>
           <th>代號</th>
+          <th>加入比賽</th> 
           <th>照片</th>
+          <th>代表單位(ex.某某國小)</th>
           <th>名字</th>
-          <th>加入比賽</th>  
+          <th></th>  
         </tr>
       </thead>
       <tbody>
@@ -23,17 +25,21 @@
         <% @visitors.each do |v| %>
         <tr>
           <td><%= v.number %></td>
-          <td><%= render_visitor_photo(v.image,"thumb") %></td>
-          <td><%= v.name %></td>
           <td><input type="checkbox" name="joinGame" value="<%= v.number %>" /></td>
+          <td><%= render_visitor_photo(v.image,"thumb") %></td>
+          <td><%= v.title %></td>
+          <td><%= v.name %></td>
+          <td><%= link_to "update",edit_game_visitor_path(@game,v),class:"btn btn-warning" %> </td>
         </tr>
         <% end %>
 
         <tr>
           <td></td>
-          <td></td>
-          <td></td>
           <td><input type="checkbox" id="allJoinGame" />全選</td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
         </tr>
       </tbody>
     </table>
