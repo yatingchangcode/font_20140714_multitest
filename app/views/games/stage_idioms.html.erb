@@ -6,9 +6,10 @@
 
 <div class="row">
   <div class="col-md-12">
-    <h1>Game <%= @game.id %> > Stage 2</h1>
+    <h1>Game <%= @game.id %> > Stage <%= @stage %></h1>
     <h2>規則</h2>
-    <h2>1.每回合限時 <input id="second" type="number" value="60" /> 秒</h2>
+    <h3>使用者各別選擇格子及書寫</h3>
+    <h3>每回合限時 <input id="second" type="number" value="60" /> 秒</h3>
     <%= link_to "確認","#",id: "confirm", class: "btn btn-lg btn-success"  %>
   </div>
 </div>

@@ -10,7 +10,7 @@
       <div class="jumbotron">
         <h2>一字千金 操作後台</h2>
 <!--         <h4>目前上線人數<span id="user_count">0</span>人</h4>
- -->        <% if !@second.nil?  %>
+ -->    <% if @stage == 'A1' %>
           <h3>倒數計時 <span id="second" style="color:red"><%= @second %></span> 秒 </h3>
         <% else %>
           <h4>不倒數計時</h4>
@@ -87,6 +87,7 @@
             <button id="next_question_button" style="font-size:15px;">下一題</button>
             <button id="clear_correct_button" style="font-size:15px;">清空答題記錄</button>
           </div>
+          <% if @stage == 'A1' %>
           <div class="col-md-4">
             <div class="progress"> 
               <div id="progress_bar" class="progress-bar" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%;">
@@ -94,11 +95,18 @@
               </div>
             </div>
           </div>
+          <% end %>
         </div>
       </div>
       
 
       <% content_for :javascripts do %>
+      <script>
+      // cache stage name for server1-tvwall.js
+      var stageName = '<%= @stage %>';
+      var hasCounter = stageName == 'A1';
+
+      </script>
       <%= javascript_include_tag 'server' %>
       <%= javascript_include_tag 'server1-tvwall' %>
       <script>
@@ -151,8 +159,12 @@
       function clearAllSetStyle() {
           $('[id^=yes_img_]').hide();
           //$('[id^=answer_correct_]').text("?").css("color","");
-          $('#progress_bar').css("width", "100%").attr("aria-valuenow","100%")
+          
+          <% if @stage == 'A1' %>
+            $('#progress_bar').css("width", "100%").attr("aria-valuenow","100%")
                             .text(window.timeRemaining+"s");
+          <% end %>
+
           gamers.all().forEach(function(e){
             CM('origin_'+e).clear();
             $('#visitor_'+e).css("background-color", "#ebf0fa");
@@ -173,12 +185,14 @@
        CM('origin_'+o.user_id).clear();
       }
 
+      <% if @stage == 'A1' %>
       function resetProgressBarAndTime() {
-        $('#progress_bar').css("width", "100%").attr("aria-valuenow","100%")
+          $('#progress_bar').css("width", "100%").attr("aria-valuenow","100%")
                             .text(window.timeRemaining+"s");
-        console.log(window.timeRemaining);
-        $('#second').text(window.timeRemaining);
+          console.log(window.timeRemaining);
+          $('#second').text(window.timeRemaining);  
       }
+      <% end %>
 
       function setProgressBarAndTime(s) {
         var percent = 100 * (s-0.1) / window.timeRemaining;
@@ -187,6 +201,20 @@
         $('#second').text((s - 0.1).toFixed(1));
       }
 
+      var resetAndStart = function() {
+          <% if @stage == 'A1' %>
+            resetProgressBarAndTime();
+              //window.chatApp.cancelSubmit(i);
+              //receiveSubmitHandler({user_id:i});
+          <% end %>
+            gamers.all().forEach(function(i){
+              window.chatApp.action(i,'start');
+            });
+            gamers.resetStarted();
+
+        };
+
+      <% if @stage == 'A1' %>
       function startCounter() {
         if(window.alarm) return;
         var s = parseFloat($('#second').text()).toFixed(1);
@@ -205,12 +233,13 @@
           }
         }, 100); 
       }
+      <% end %>
     
-
-
+      <% if @stage == 'A1' %>
       window.timeRemaining = parseInt(<%= @second %>);
       window.alarm = null;
-      window.open("tvwall_<%= params[:stage] %>?join_visitors_number=<%= params[:join_visitors_number] %>&second=<%= @second %>","tvwallWindow","width=800, height=800");
+      <% end %>
+      var tvwall = window.open("tvwall_<%= params[:stage] %>?join_visitors_number=<%= params[:join_visitors_number] %>&second=<%= @second %>","tvwallWindow","width=800, height=800");
       //window.open("record?join_visitors_number=<%= params[:join_visitors_number] %>&second=<%= @second %>","recordWindow","width=800, height=800");
       //window.open("record?join_visitors_number=<%= params[:join_visitors_number] %>&second=<%= @second %>","_blank","width=800, height=800");
 
@@ -242,9 +271,11 @@
         $('#clear_button').click(function(){
           window.chatApp.clearAll();
           correct_users = null;
+          <% if @stage == 'A1' %>
           clearInterval(window.alarm);
           window.alarm = null;
-          resetProgressBarAndTime()
+          resetProgressBarAndTime();
+          <% end %>
         });
 
         $("[id^=out_button_]").click(function(){
@@ -255,17 +286,23 @@
           gamers.all().forEach(function(e){
             window.chatApp.action(e, 'start');
           });
+          <% if @stage == 'A1' %>
           startCounter();
+          <% end %>
         });
   
         $('[id^=start_button_]').click(function(){
             window.chatApp.action(this.value,'start');
+            <% if @stage == 'A1' %>
             startCounter();
+            <% end %>
         });
 
          $('[id^=stop_button_]').click(function(){
+           <% if @stage == 'A1' %>
            clearInterval(window.alarm);
            window.alarm = null;
+           <% end %>
            window.chatApp.action(this.value,'stop');
            stopSetStyle(this.value);
            //receiveSubmitHandler({user_id:this.value});
@@ -313,10 +350,14 @@
         })
 
         $('#stop_all_button').click(function(){
+           <% if @stage == 'A1' %>
            if (!window.alarm) return;
+           <% end %>
            gamers.all().forEach( function(i) {
+              <% if @stage == 'A1' %>
               clearInterval(window.alarm);
               window.alarm = null;
+              <% end %>
               window.chatApp.action(i,'stop');
               //window.chatApp.cancelSubmit(i);
               //receiveSubmitHandler({user_id:i});
@@ -332,16 +373,7 @@
             gamers.all().forEach( function(i) {
               window.chatApp.action(i,'stop');
             });
-            resetProgressBarAndTime()
-              //window.chatApp.cancelSubmit(i);
-              //receiveSubmitHandler({user_id:i});
-            gamers.all().forEach(function(i){
-              window.chatApp.action(i,'start');
-            
-            });
-            setTimeout(startCounter,100);
         });
-
 
       });
       </script>

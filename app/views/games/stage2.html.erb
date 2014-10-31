@@ -6,10 +6,11 @@
 
 <div class="row">
   <div class="col-md-12">
-    <h1>Game <%= @game.id %> > Stage 2</h1>
+    <h1>Game <%= @game.id %> > Stage <%= @stage %></h1>
     <h2>規則</h2>
-    <h2>1.顯示秒數在使用者畫面上</h2>
-    <h2>2.限時 <input id="second" type="number"/> 秒</h2>
+    <h3>使用者畫面上顯示秒數</h3>
+    <h3>使用者個別書寫</h3>
+    <h3>限時 <input id="second" type="number"/> 秒</h3>
     <%= link_to "確認","#",id: "confirm", class: "btn btn-lg btn-success"  %>
   </div>
 </div>

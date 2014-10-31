@@ -60,11 +60,31 @@ h4 {
 
 <% content_for :javascripts do %>
 <%= javascript_include_tag 'server2-tvwall' %>
-<%= javascript_include_tag 'server' %>
+
 
 <script>
 
 var sketchSecondIns = {};
+
+// overrides
+var start_button = function(value){
+  gamers.setActive(value);
+  startSetStyle(value);
+  sketchSecondIns[value].doStart();
+}
+var stop_button = function(value){
+  stopSetStyle(value);
+  sketchSecondIns[value].doStop();
+}
+var receiveResetHandler = function(o){
+  if (o.second != null) {
+    gamers.all().forEach(function(e){
+      resetSetStyle(e, o.second);
+      sketchSecondIns[e].resetBar();
+      sketchSecondIns[e].setSecond(parseInt(o.second));
+    });
+  }
+}
 
 //使用者送出確認
 var receiveSubmitHandler = function(o){
@@ -87,12 +107,10 @@ function removeO(c){
 
 function startSetStyle(c) {
   $('#user_photo_'+c).addClass("user_picture_block");
-  sketchSecondIns[c].doStart();
 }
 
 function stopSetStyle(c) {
   $('#user_photo_'+c).removeClass("user_picture_block");
-  sketchSecondIns[c].doStop();
 }
 
 //Gamer out
@@ -101,10 +119,8 @@ function outSetStyle(val) {
   sketchSecondIns[val].clearBar();
 }
 
-function resetSetStyle(s) {
+function resetSetStyle(key, s) {
   $('#second_' + key).text(s + "秒");
-  sketchSecondIns[key].resetBar();
-  sketchSecondIns[key].setSecond(parseInt(s));
 }
 
 function correctCountSetStyle(o){
@@ -130,8 +146,8 @@ $(document).ready(function() {
   CM.reg('origin_<%= visitor.number %>');
   <% end %>
 
-  window.chatApp = new ChatApp(500,500,'0');
-  window.chatApp.bindEvents();
+  //window.chatApp = new ChatApp(500,500,'0');
+  //window.chatApp.bindEvents();
 
   (function collectGamers() {
    <% @visitors.each do |visitor| %>
@@ -149,7 +165,7 @@ $(document).ready(function() {
       sketchSecondIns[e].setSecond(<%= @second %>);
       //stopSetStyle(e);
     });
-  },300);
+  }, <%= @visitors.length %> * 60);
 
 });
 </script>

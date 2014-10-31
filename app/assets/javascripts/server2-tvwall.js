@@ -32,6 +32,14 @@
           }
         };
 
+        var receiveDownHandler = function(o){
+          CM('origin_'+o.user_id).point({ x: o.x, y: o.y });
+        };
+
+        var receiveMoveHandler = function(o){
+          CM('origin_'+o.user_id).line({ x: o.x, y: o.y });
+        };
+
         var receiveStartHandler = function(o){
           start_button(o.user_id);
         }     
@@ -42,9 +50,9 @@
           startCounter(value);
         }
 
-        function receiveStopHandler(c){
+        var receiveStopHandler = function(c){
           stop_button(c.user_id);
-        }
+        };
 
         var stop_button = function(value){
           clearInterval(window.alarm[value]);
@@ -52,7 +60,7 @@
           stopSetStyle(value);
         }
 
-        function startCounter(thisvalue) {
+        var startCounter = function(thisvalue) {
           console.log(window.alarm);
           if(window.alarm && window.alarm[thisvalue]) return; 
           if (window.alarm === null) { 
@@ -70,15 +78,15 @@
               receiveSubmitHandler({user_id:thisvalue});
             }
           },100); 
-        }
+        };
 
-        function isEmpty(obj) {
+        var isEmpty = function(obj) {
           for (var prop in obj) {
             if (obj.hasOwnProperty(prop))
               return false;
           }
           return true;
-        }
+        };
 
         var receiveOHandler = function(o){
           showO(o.user_id);
@@ -104,7 +112,7 @@
             for (key in window.alarm){
               clearInterval(window.alarm[key]);
               window.alarm[key] = null;
-              resetSetStyle(o.second);
+              resetSetStyle(key, o.second);
             }
           }
         }

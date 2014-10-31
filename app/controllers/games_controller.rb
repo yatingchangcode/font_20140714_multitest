@@ -21,17 +21,23 @@ class GamesController < ApplicationController
   def stage1
     @game = Game.find(params[:id])
 
+    @stage = params[:stage]
+
     @join_visitors_number = params[:join_visitors_number]
   end
 
   def stage2
     @game = Game.find(params[:id])
 
+    @stage = params[:stage]
+
     @join_visitors_number = params[:join_visitors_number]
   end
 
   def stage_idioms
     @game = Game.find(params[:id])
+
+    @stage = params[:stage]
 
     @join_visitors_number = params[:join_visitors_number]
   end
@@ -48,7 +54,7 @@ class GamesController < ApplicationController
     @stage = params[:stage]
     Setting.messaging['record_url'] = "http://0.0.0.0:3000/games/#{params[:id]}/record?join_visitors_number=#{params[:join_visitors_number]}"
     #@user_unregs = [1,4]
-    if Setting.messaging['is_record_open'] == false
+    if Setting.messaging['is_record_open'] != true
       `xdg-open #{Setting.messaging['record_url']} || open #{Setting.messaging['record_url']}`
     end
   end
@@ -65,7 +71,7 @@ class GamesController < ApplicationController
     Setting.messaging['stage'] = params[:stage]
     #@user_unregs = [1,4]
     Setting.messaging['record_url'] = "http://0.0.0.0:3000/games/#{params[:id]}/record?join_visitors_number=#{params[:join_visitors_number]}"
-    if Setting.messaging['is_record_open'] == false
+    if Setting.messaging['is_record_open'] != true
       `xdg-open #{Setting.messaging['record_url']} || open #{Setting.messaging['record_url']}`
     end
   end
@@ -130,7 +136,7 @@ class GamesController < ApplicationController
     Setting.messaging['game'] = params[:id]
     Setting.messaging['stage'] = params[:stage]
     Setting.messaging['record_url'] = "http://0.0.0.0:3000/games/#{params[:id]}/record_idioms?join_visitors_number=#{params[:join_visitors_number]}"
-    if Setting.messaging['is_record_open'] == false
+    if Setting.messaging['is_record_open'] != true
       `xdg-open #{Setting.messaging['record_url']} || open #{Setting.messaging['record_url']}`
     end
   end
@@ -149,7 +155,7 @@ class GamesController < ApplicationController
     @visitors = @game.visitors.where(number: params[:join_visitors_number].split(","))
     @range = 1..@visitors.size
 
-    @stage = "B3"
+    @stage = Setting.messaging['stage']
     
   end
 

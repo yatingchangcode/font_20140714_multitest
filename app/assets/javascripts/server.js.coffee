@@ -67,46 +67,87 @@ class @ChatApp
     @dispatcher.bind 'reset',   @receiveReset
 
   receiveDown: (message) =>
-    CM('origin_'+message.user_id).point({ x: message.x, y: message.y })
+    if(receiveDownHandler && tvwall.receiveDownHandler)
+      receiveDownHandler message
+      tvwall.receiveDownHandler message
+    return
 
   receiveMove: (message) =>
-    CM('origin_'+message.user_id).line({ x: message.x, y: message.y })
+    if(receiveMoveHandler && tvwall.receiveMoveHandler)
+      receiveMoveHandler message
+      tvwall.receiveMoveHandler message
+    return
 
   receiveUp: (message) =>
     return
 
   receiveSubmit: (message) =>
     receiveSubmitHandler message
+    if(receiveSubmitHandler && tvwall.receiveSubmitHandler)
+      receiveSubmitHandler message
+      tvwall.receiveSubmitHandler message
+    return
 
   receiveCancelSubmit: (message) =>
-    receiveCancelSubmitHandler message
+    if(receiveCancelSubmitHandler && tvwall.receiveCancelSubmitHandler)
+      receiveCancelSubmitHandler message
+      tvwall.receiveCancelSubmitHandler message
+    return
 
-  receiveClear: (message) => 
-    receiveClearHandler message
+  receiveClear: (message) =>
+    if(receiveClearHandler && tvwall.receiveClearHandler)
+      receiveClearHandler message
+      tvwall.receiveClearHandler message
+    return
 
   receiveO: (message) => 
-    receiveOHandler message
+    if(receiveOHandler && tvwall.receiveOHandler)
+      receiveOHandler message
+      tvwall.receiveOHandler message
+    return
 
   receiveRemoveO: (message) =>
-    receiveRemoveOHandler message
+    if(receiveRemoveOHandler && tvwall.receiveRemoveOHandler)
+      receiveRemoveOHandler message
+      tvwall.receiveRemoveOHandler message
+    return
 
   receiveCorrectCount: (message) ->
-    receiveCorrectCountHandler message
+    if(receiveCorrectCountHandler && tvwall.receiveCorrectCountHandler)
+      receiveCorrectCountHandler message
+      tvwall.receiveCorrectCountHandler message
+    return
 
   receiveCorrectUsers: (users) ->
-    receiveCorrectUsersHandler users
+    if(receiveCorrectUsersHandler && tvwall.receiveCorrectUsersHandler)
+      receiveCorrectUsersHandler users
+      tvwall.receiveCorrectUsersHandler users
+    return
   
   receiveAction: (message) =>
     name = message.action
     if name is "start"
-      receiveStartHandler message
+      if(receiveStartHandler && tvwall.receiveStartHandler)
+        receiveStartHandler message
+        tvwall.receiveStartHandler message
+      return
     else if name is "stop"
-      receiveStopHandler message
+      if(receiveStopHandler && tvwall.receiveStopHandler)
+        receiveStopHandler message
+        tvwall.receiveStopHandler message
+      return
 
   receiveUserOut: (message) =>
-    receiveUserOutHandler message
+    if(receiveUserOutHandler && tvwall.receiveUserOutHandler)
+      receiveUserOutHandler message
+      tvwall.receiveUserOutHandler message
+    return
 
   receiveReset: (message) =>
-    receiveResetHandler message
+    if(receiveResetHandler && tvwall.receiveResetHandler)
+      receiveResetHandler message
+      tvwall.receiveResetHandler message
+    return
+
 
 
