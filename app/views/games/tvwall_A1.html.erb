@@ -192,9 +192,14 @@ function clearAllSetStyle() {
 window.timeRemaining = parseInt(<%= @second %>);
 window.alarm = null;
 window.responsiveMethod = function(){
+  var minw = $(window).width();
   var jqEl = $('[id^=grid_]');
-  var w = jqEl.width();
+  // jqEl.each(function(){
+  //   minw = Math.min(minw,$(this).width());
+  // });
+  var w = minw*0.127;
   jqEl.height(w);
+  jqEl.width(w);
 };
 
 window.addEventListener('resize', window.responsiveMethod);
