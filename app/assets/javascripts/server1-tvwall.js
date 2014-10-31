@@ -1,6 +1,13 @@
       var gamers = {
           gamersList : [],
           last: null,
+          started: [],
+          resetStarted: function() { this.started = [] },
+          pushStarted: function(i, callback) { 
+            this.started.push(i);
+            if (this.started.length == this.gamersList.length) 
+              callback();
+          },
           next : function() {
             var newgamer = this.gamersList.shift();
             this.gamersList.push(newgamer);
@@ -54,10 +61,12 @@
         }
 
         var stop_button = function(value){
-          if(hasCounter){
+          console.log(hasCounter);
+          if (hasCounter){
             clearInterval(window.alarm);
             window.alarm = null;  
           }
+          //gamers.pushStarted(value, resetAndStart);
           stopSetStyle(value);
         }
 
