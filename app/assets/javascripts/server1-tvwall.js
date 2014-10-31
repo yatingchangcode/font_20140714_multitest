@@ -33,6 +33,14 @@
           }
         };
 
+        var receiveDownHandler = function(o){
+          CM('origin_'+o.user_id).point({ x: o.x, y: o.y });
+        };
+
+        var receiveMoveHandler = function(o){
+          CM('origin_'+o.user_id).line({ x: o.x, y: o.y });
+        };
+
         var receiveStartHandler = function(o){
           start_button(o.user_id);
         }     
@@ -41,18 +49,20 @@
           startSetStyle(value);
         }
 
-        function receiveStopHandler(c){
+        var receiveStopHandler = function(c){
           stop_button(c.user_id);
         }
 
         var stop_button = function(value){
-          clearInterval(window.alarm);
-          window.alarm = null;
+          if(hasCounter){
+            clearInterval(window.alarm);
+            window.alarm = null;  
+          }
           stopSetStyle(value);
         }
 
 
-        function isEmpty(obj) {
+        var isEmpty = function(obj) {
           for (var prop in obj) {
             if (obj.hasOwnProperty(prop))
               return false;
@@ -86,9 +96,11 @@
 
         var receiveResetHandler = function(o){
           if (o.second != null) {
-            for (key in window.alarm){
-              clearInterval(window.alarm[key]);
-              window.alarm[key] = null;
+            if(hasCounter){
+              // for (key in window.alarm){
+              //   clearInterval(window.alarm[key]);
+              //   window.alarm[key] = null;
+              // }  
               resetSetStyle(o.second);
             }
           }
@@ -98,11 +110,11 @@
           correctCountSetStyle(o);
         }
 
-      function receiveCorrectUsersHandler(o) {
+      var receiveCorrectUsersHandler = function(o) {
         showCorrectUsers(o);
       }
 
-      function showCorrectUsers(users) {
+      var showCorrectUsers = function(users) {
             users.sort(function(a,b) {
               return parseInt(a) - parseInt(b);
             });

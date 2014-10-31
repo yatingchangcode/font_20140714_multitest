@@ -23,44 +23,65 @@ class @ChatApp
     @dispatcher.bind 'action', @receiveAction
 
   receiveDown: (message) =>
-    CM('origin_'+message.block.row+'_'+message.block.column).point({ x: message.x, y: message.y })
+    if(receiveDownHandler && tvwall.receiveDownHandler)
+      receiveDownHandler message
+      tvwall.receiveDownHandler message
+    return
 
   receiveMove: (message) =>
-    CM('origin_'+message.block.row+'_'+message.block.column).line({ x: message.x, y: message.y })
+    if(receiveMoveHandler && tvwall.receiveMoveHandler)
+      receiveMoveHandler message
+      tvwall.receiveMoveHandler message
+    return
 
   receiveUp: (message) =>
     return
 
   receiveSubmit: (message) =>
-    receiveSubmitHandler message
+    if(receiveSubmitHandler && tvwall.receiveSubmitHandler)
+      receiveSubmitHandler message
+      tvwall.receiveSubmitHandler message
+    return
 
   receiveClear: (message) => 
-    CM('origin_'+message.block.row+'_'+message.block.column).clear();
+    if(receiveClearHandler && tvwall.receiveClearHandler)
+      receiveClearHandler message
+      tvwall.receiveClearHandler message
+    return
 
   receiveMoveBlock: (message) =>
-    receiveMoveBlockHandler message
+    if(receiveMoveBlockHandler && tvwall.receiveMoveBlockHandler)
+      receiveMoveBlockHandler message
+      tvwall.receiveMoveBlockHandler message
+    return
 
   receiveSendText: (message) => 
-    receiveSendTextHandler message    
+    if(receiveSendTextHandler && tvwall.receiveSendTextHandler)
+      receiveSendTextHandler message
+      tvwall.receiveSendTextHandler message 
+    return
 
   receiveEndRound: (message) =>
-    receiveEndRoundHandler message
-
-  getUserCount: (data) ->
-    $('#user_count').text(data.user_count);
-
-  getWriteCount: (data) ->
-    $('#write_count').text(data.write_count);
-
-  action: (uid,action) =>
-    @dispatcher.trigger @stage_name+'.action' , user_id: uid, action: action
+    if(receiveEndRoundHandler && tvwall.receiveEndRoundHandler)
+      receiveEndRoundHandler message
+      tvwall.receiveEndRoundHandler message
+    return
 
   receiveAction: (message) =>
     name = message.action
     if name is "start"
-      receiveStartHandler message
+      if(receiveStartHandler && tvwall.receiveStartHandler)
+        receiveStartHandler message
+        tvwall.receiveStartHandler message
+      return
     else if name is "stop"
-      receiveStopHandler message
+      if(receiveStopHandler && tvwall.receiveStopHandler)
+        receiveStopHandler message
+        tvwall.receiveStopHandler message
+      return
+
+  action: (uid,action) =>
+    @dispatcher.trigger @stage_name+'.action' , user_id: uid, action: action
 
   clear: (uid,block) ->
     #如果要清空個別使用者時,送出user_id

@@ -33,6 +33,18 @@
     }
   };
 
+  var receiveDownHandler = function(o){
+    CM('origin_'+o.block.row+'_'+o.block.column).point({ x: o.x, y: o.y });
+  };
+
+  var receiveMoveHandler = function(o){
+    CM('origin_'+o.block.row+'_'+o.block.column).line({ x: o.x, y: o.y });
+  };
+
+  var receiveClearHandler = function(o){
+    CM('origin_'+o.block.row+'_'+o.block.column).clear();
+  };
+
   var receiveStartHandler = function(o){
     start_button(o.user_id);
   }     
