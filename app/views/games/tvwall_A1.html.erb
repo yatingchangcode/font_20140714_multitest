@@ -191,6 +191,13 @@ function clearAllSetStyle() {
 
 window.timeRemaining = parseInt(<%= @second %>);
 window.alarm = null;
+window.responsiveMethod = function(){
+  var jqEl = $('[id^=grid_]');
+  var w = jqEl.width();
+  jqEl.height(w);
+};
+
+window.addEventListener('resize', window.responsiveMethod);
 
 $(document).ready(function() {
   CM.prop({
@@ -225,6 +232,7 @@ $(document).ready(function() {
     sketchSecondIns.setSecond(<%= @second %>);
   },300);
 
+  responsiveMethod();
 });
 </script>
 <% end %>
