@@ -61,8 +61,8 @@
         }
 
         var stop_button = function(value){
-          console.log(hasCounter);
-          if (hasCounter){
+          //console.log(hasCounter);
+          if (window.hasCounter){
             clearInterval(window.alarm);
             window.alarm = null;  
           }
@@ -105,7 +105,7 @@
 
         var receiveResetHandler = function(o){
           if (o.second != null) {
-            if(hasCounter){
+            if(window.hasCounter){
               // for (key in window.alarm){
               //   clearInterval(window.alarm[key]);
               //   window.alarm[key] = null;
