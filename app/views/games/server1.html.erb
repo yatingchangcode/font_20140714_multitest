@@ -201,18 +201,6 @@
         $('#second').text((s - 0.1).toFixed(1));
       }
 
-      var resetAndStart = function() {
-          <% if @stage == 'A1' %>
-            resetProgressBarAndTime();
-              //window.chatApp.cancelSubmit(i);
-              //receiveSubmitHandler({user_id:i});
-          <% end %>
-            gamers.all().forEach(function(i){
-              window.chatApp.action(i,'start');
-            });
-            gamers.resetStarted();
-
-        };
 
       <% if @stage == 'A1' %>
       function startCounter() {
@@ -373,6 +361,17 @@
             gamers.all().forEach( function(i) {
               window.chatApp.action(i,'stop');
             });
+            <% if @stage == 'A1' %>
+            resetProgressBarAndTime();
+              //window.chatApp.cancelSubmit(i);
+              //receiveSubmitHandler({user_id:i});
+            <% end %>
+            gamers.all().forEach(function(i){
+              window.chatApp.action(i,'start');
+            });
+
+            setTimeout(startCounter,100);
+
         });
 
       });
