@@ -1,5 +1,5 @@
 <% content_for :stylesheets do %>
-<%= stylesheet_link_tag 'reset','tvwall_A1' %>
+<%= stylesheet_link_tag 'reset','tvwall' %>
 <style type="text/css">
 p{font-size:18px; line-height:28px; padding-top:7px}
 
@@ -17,7 +17,7 @@ body,.container{
   </tr>
   <tr>
     <td width="35%">&nbsp;</td>
-    <td><div class="HP_bar" style="height:11px;"><canvas id="sketchSecond" data-processing-sources="/assets/timebar.pde"></canvas></div></div></td>
+    <td><div class="HP_bar" style="height:12px;"><canvas id="sketchSecond" data-processing-sources="/assets/timebar.pde"></canvas></div></div></td>
     <td width="35%">&nbsp;</td>
   </tr>
   
@@ -201,12 +201,9 @@ function clearAllSetStyle() {
 window.timeRemaining = parseInt(<%= @second %>);
 window.alarm = null;
 window.responsiveMethod = function(){
-  var minw = $(window).width();
   var jqEl = $('[id^=grid_]');
-  // jqEl.each(function(){
-  //   minw = Math.min(minw,$(this).width());
-  // });
-  var w = minw*0.127;
+
+  var w = $(window).width()*0.131;
   jqEl.height(w);
   jqEl.width(w);
 };
