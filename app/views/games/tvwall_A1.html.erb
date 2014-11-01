@@ -34,6 +34,10 @@ body,.container{
         <% @visitors[0..4].each do |visitor| %>
         <td>
         <div class="box_a">
+            <div id="out_<%= visitor.number %>" class="out">
+              <img src="/assets/tvwall/out.png" width="100%"/>
+            </div>
+            <div id="black_<%= visitor.number %>" class="black"></div>
             <table width="100%" border="0" cellspacing="0" cellpadding="0">
               <tr>
                 <td>
@@ -81,6 +85,10 @@ body,.container{
         <td width="3%"></td>
         <td>
         <div class="box_a">
+            <div id="out_<%= visitor.number %>" class="out">
+              <img src="/assets/tvwall/out.png" width="100%"/>
+            </div>
+            <div id="black_<%= visitor.number %>" class="black"></div>
             <table width="100%" border="0" cellspacing="0" cellpadding="0">
               <tr>
                 <td>
@@ -160,7 +168,8 @@ function stopSetStyle(c) {
 
 //Gamer out
 function outSetStyle(val) {
-  $('#origin_'+val).css("opacity", 0);
+  $('#out_'+val).show();
+  $('#black_'+val).show();
 }
 
 function resetSetStyle(s) {
