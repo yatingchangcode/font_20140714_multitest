@@ -32,7 +32,7 @@ body,.container{
               <td>
                 <div class="TopBpx">
                   <div class="photo">
-                    <%= render_gamer_photo(visitor,"thumb",'100%','100%',"") %>
+                    <%= render_gamer_photo(visitor,"medium",'100%','100%',"") %>
                   </div>
                   <div class="nameBox br_line02">
                     <p class="name"><%= visitor.title %><br /><%= visitor.name %></p>
@@ -112,7 +112,7 @@ var receiveSubmitHandler = function(o){
   $('#glow_'+o.user_id).show();
 };
 
-//後台取消確認(尚未實作)
+//後台取消確認
 var receiveCancelSubmitHandler = function(o){
   $('#grid_'+o.user_id).removeClass("bor_g");
   $('#glow_'+o.user_id).hide();

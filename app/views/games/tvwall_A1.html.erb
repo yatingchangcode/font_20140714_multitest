@@ -138,7 +138,7 @@ var receiveSubmitHandler = function(o){
   $('#glow_'+o.user_id).show();
 };
 
-//後台取消確認(尚未實作)
+//後台取消確認
 var receiveCancelSubmitHandler = function(o){
   $('#grid_'+o.user_id).removeClass("bor_g");
   $('#glow_'+o.user_id).hide();
@@ -192,7 +192,7 @@ function clearAllSetStyle() {
   //$('[id^=answer_correct_]').text("?").css("color","");
   gamers.all().forEach(function(e){
     CM('origin_'+e).clear();
-    $('#origin_'+e).removeClass("canvas_box_block");
+    receiveCancelSubmitHandler({user_id: e});
     stopSetStyle(e);
   });
   sketchSecondIns.resetBar();

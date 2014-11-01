@@ -1,60 +1,68 @@
 <% content_for :stylesheets do %>
+<%= stylesheet_link_tag 'reset','tvwall' %>
 <style type="text/css">
+p{font-size:22px; line-height:32px; padding-top:10px}
 
 body,.container{
   background-color: #000000;
   width: 100%;
-  height: 100%;
-}
-
-h4 {
-  color: #ffffff
-}
-
-.border_radius{
-  border: 2px solid #D6D6D6;
-  -webkit-border-radius: 100px;
-  -moz-border-radius: 100px;
-  border-radius: 100px;
-}
-
-
-.every_writer_box_down{
-  float:left;
-  padding-top:25%;
-  width:50%;
-}
-
-
-.correct{
-  display:none;
-  z-index:10;
-  position:absolute;
-  left:120px;
-  top:120px;
+  height:100%;
 }
 </style>
 <% end %>
-<div style="margin:0 auto; width:40%;height:100%;">
+<div class="Content"> 
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td colspan="5" height="20">&nbsp;</td>
+      </tr>
+      
+      <tr>
+        <td width="25%"></td>
+        <% @visitors.each do |visitor| %>
+        <td>
+          
+        <div class="box_a">
+            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+              <tr>
+                <td>
+                <div class="TopBpx s1">
+                    <div class="photo">
+                      <%= render_gamer_photo(visitor,"medium",'100%','100%','') %>
+                    </div>
+                    <div class="nameBox br_line03">
+                      <p class="name"><%= visitor.title %><br /><%= visitor.name %></p>
+                    </div>
+                    <div class="answer10" style="padding:15px 0 0 10px;"><img id="no_correct_<%= visitor.number %>" src="/assets/tvwall/answer10/answer10_1.png" width="100%" style="display:none"/></div>
+                    <br class="CLEAR" />
+                </div>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                <div id="grid_<%= visitor.number %>" class="Grid">
+                  <div id="glow_<%= visitor.number %>" class="inner_glow"><img src="/assets/tvwall/img_Grid_b_green.png" width="100%"/></div>
+                    <div id="yes_img_<%= visitor.number %>" class="correct"><img src="/assets/tvwall/red_ring.png" width="100%"/></div>
+                    <canvas id="origin_<%= visitor.number %>" width="100%" ></canvas>
+                </div>
+                </td>
+              </tr>
+            </table>
+      </div>
+        </td>
+        
+        <td width="1%"></td>
+        
+<% end %>
+        <td width="24%"></td>
+      </tr>
+      
 
-
-  <% @visitors.each_with_index do |x,index| %>
-  <div class="visitor every_writer_box_down" style="padding:15% 2% 5% 2%">
-    <div style="width:90%;margin:2% auto;">
-      <%= render_gamer_photo(x,"thumb",50,50) %>
-      <h4 style="display:inline;"><%= x.name %></h4>
-      <span id="no_correct_<%= x.number %>" class="badge">0題</span>
-      <%#= render_gamer_photo(x,"thumb",50,50) %>
-    </div>
-        <div style="position:relative;">
-      <canvas id="origin_<%= x.number %>" class="orgincanvas canvas_box" ></canvas>
-      <img id="yes_img_<%= x.number %>" src="/assets/O-mark.png" height="95" class="correct" ></img>
-    </div>
-  </div>
-  <% end %>
-
-
+      <tr>
+        <td colspan="11" height="1%">&nbsp;</td>
+      </tr>
+    </table>
 </div>
+
 
 <% content_for :javascripts do %>
 
@@ -62,21 +70,23 @@ h4 {
 
 <script>
 
+//使用者送出確認
 var receiveSubmitHandler = function(o){
-  $('#origin_'+o.user_id).addClass("canvas_box_block");
+  $('#grid_'+o.user_id).addClass("bor_g");
+  $('#glow_'+o.user_id).show();
 };
 
+//後台取消確認
 var receiveCancelSubmitHandler = function(o){
-        $('#origin_'+o.user_id).removeClass("canvas_box_block");
-      };
+  $('#grid_'+o.user_id).removeClass("bor_g");
+  $('#glow_'+o.user_id).hide();
+};
+
       
 function clearSetStyle(o){
   CM('origin_'+o.user_id).clear();
 }
 
-var receiveCancelSubmitHandler = function(o){
-  $('#origin_'+o.user_id).removeClass("canvas_box_block");
-};
 
 var receiveCorrectUsersHandler = function(users){
   showCorrectUsers(users);
@@ -92,16 +102,17 @@ function removeO(c){
 }
 
 function startSetStyle(c) {
-  $('#user_photo_'+c).addClass("user_picture_block");
+  $('#user_photo_'+c).addClass("green");
 }
 
 function stopSetStyle(c) {
-  $('#user_photo_'+c).removeClass("user_picture_block");
+  $('#user_photo_'+c).removeClass("green");
 }
 
 //Gamer out
 function outSetStyle(val) {
-  $('#origin_'+val).css("opacity", 0);
+  $('#out_'+val).show();
+  $('#black_'+val).show();
 }
 
 function resetSetStyle(s) {
@@ -109,7 +120,8 @@ function resetSetStyle(s) {
 }
 
 function correctCountSetStyle(o){
-  $("#no_correct_" + o.user_id).text(o.count+"題");
+  $("#no_correct_" + o.user_id).show();
+  $("#no_correct_" + o.user_id).attr('src',"/assets/tvwall/answer10/answer10_"+ o.count +".png");
 }
 
 
@@ -118,13 +130,21 @@ function clearAllSetStyle() {
   //$('[id^=answer_correct_]').text("?").css("color","");
   gamers.all().forEach(function(e){
     CM('origin_'+e).clear();
-    $('#origin_'+e).removeClass("canvas_box_block");
+    receiveCancelSubmitHandler({user_id: e});
     stopSetStyle(e);
   });
 }
 
 window.timeRemaining = parseInt(<%= @second %>);
 window.alarm = null;
+
+window.responsiveMethod = function(){
+  var jqEl = $('[id^=grid_]');
+
+  var w = $(window).width()*0.243;
+  jqEl.height(w);
+  jqEl.width(w);
+};
 
 $(document).ready(function() {
   CM.prop({
@@ -134,7 +154,7 @@ $(document).ready(function() {
     lineColor: '#ffffff',
     targetZoomScale: 0.40,
     responsiveByParent: true,
-    backgroundImage: '/assets/block.png'
+    backgroundImage: '/assets/tvwall/img_Grid_b.gif'
   });
   <% @visitors.each do |visitor| %>
   CM.reg('origin_<%= visitor.number %>');
@@ -148,6 +168,7 @@ $(document).ready(function() {
            <% end %>
   }) ();
 
+  responsiveMethod();
 });
 </script>
 <% end %>
