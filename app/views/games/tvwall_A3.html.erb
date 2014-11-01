@@ -121,7 +121,9 @@ function resetSetStyle(s) {
 
 function correctCountSetStyle(o){
   $("#no_correct_" + o.user_id).show();
-  $("#no_correct_" + o.user_id).attr('src',"/assets/tvwall/answer10/answer10_"+ o.count +".png");
+  if(o.count <= 10){
+    $("#no_correct_" + o.user_id).attr('src',"/assets/tvwall/answer10/answer10_"+ o.count +".png");  
+  }
 }
 
 
@@ -150,8 +152,8 @@ $(document).ready(function() {
   CM.prop({
     width: 500,
     height: 500,
-    lineWidth: 15,
-    lineColor: '#ffffff',
+    lineWidth: 13,
+    lineColor: '#ececec',
     targetZoomScale: 0.40,
     responsiveByParent: true,
     backgroundImage: '/assets/tvwall/img_Grid_b.gif'
