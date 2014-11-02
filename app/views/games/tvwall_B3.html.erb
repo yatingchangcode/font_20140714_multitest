@@ -1,97 +1,132 @@
 <% content_for :stylesheets do %>
+<%= stylesheet_link_tag 'reset','tvwall' %>
 <style type="text/css">
+p.name{ font-size:20px; padding-bottom:20px;}
+table.Chessboard p{ font-size:22px;}
 
 body,.container{
   background-color: #000000;
   width: 100%;
   height:100%;
 }
-
-h4 {
-  color: #ffffff
-}
-
-.border_radius{
-  border: 2px solid #D6D6D6;
-  -webkit-border-radius: 100px;
-  -moz-border-radius: 100px;
-  border-radius: 100px;
-}
-
-
-.every_writer_box{
-  float:left;
-  padding-top:22%;
-  width:5%;
-}
-
-.img_box{
-  display:block;
-  margin:0 auto;
-}
-
-.user_one{
-  border:2px solid green;
-  width:96px;
-  height:96px;
-  position:absolute;
-}
-
-.user_two{
-  border:2px solid yellow;
-  width:96px;
-  height:96px;
-  position:absolute;
-}
-
 </style>
 <% end %>
 
-<div style="margin:1% 30% 0 30%;min-height:18px;height:2.5%;">
-  <canvas id="sketchSecond" data-processing-sources="/assets/timebar.pde"></canvas>
-</div>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td colspan="3" height="5%">&nbsp;</td>
+  </tr>
+  <tr>
+    <td width="35%">&nbsp;</td>
+    <td><div class="HP_bar" style="height:12px;"> <canvas id="sketchSecond" data-processing-sources="/assets/timebar.pde"></canvas></div></td>
+    <td width="35%">&nbsp;</td>
+  </tr>
+  
+</table>
 
-<div id="user_one"></div>
-<div id="user_two"></div>
-<span id="second" style="color:red font-size:12px;display:none;" class="badge"><%= @second %>秒</span>
-<div>
-  <div class="every_writer_box">
-    <h4 class="text-center"><%= @visitors[0].name %></h4>
-    <%= render_gamer_photo(@visitors[0],"thumb",50,50,"img_box") %>
-    <br>
-    <%#= render_gamer_photo(x,"thumb",50,50) %>
-  </div>
-  <% alpha = "ABCDEFGHIJKL" %>
-  <table id="canvasTable" style="border-collapse:separate;border-spacing:1px 0px;width:65%;float:left;table-layout:auto;">
-    <tr>
-      <td></td>
-      <% (0..11).to_a.each do |x| %>
-      <td>
-        <h4><%= alpha[x] %></h4>
-      </td>
-      <% end %>
-    </tr>
+<div class="Content"> 
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td colspan="5">&nbsp;</td>
+      </tr>
+      
+      <tr>
+        <td width="9%"></td>
+        
+        <td valign="top" width="9%">
+        <div class="box_b">
+            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+              <tr height="145">
+                <td>&nbsp;</td>
+              </tr>
+              <tr>
+                <td><p class="name"><%= @visitors[0].name %></p></td>
+              </tr>
+              <tr>
+                <td>
+                <div id="user_photo_<%= @visitors[0].number %>" class="photo">
+                    <%= render_gamer_photo(@visitors[0],"medium",'100%','100%','') %>
+                </div>
+                </td>
+              </tr>
+              
+            </table>
+      </div>
+        </td>
+        
+        <td width="2%">&nbsp;</td>
+        
+        <td width="56%">
+          <table class="Chessboard" width="100%" border="0" cellspacing="0" cellpadding="0">
+              <tr>
+                <td>&nbsp;</td>
+                <td width="8%"><p>A</p></td>
+                <td width="8%"><p>B</p></td>
+                <td width="8%"><p>C</p></td>
+                <td width="8%"><p>D</p></td>
+                <td width="8%"><p>E</p></td>
+                <td width="8%"><p>F</p></td>
+                <td width="8%"><p>G</p></td>
+                <td width="8%"><p>H</p></td>
+                <td width="8%"><p>I</p></td>
+                <td width="8%"><p>J</p></td>
+                <td width="8%"><p>K</p></td>
+                <td width="8%"><p>L</p></td>
+              </tr>
+              
     <% (1..8).to_a.each do |x| %>
     <tr>
       <td>
-        <h4><%= x %></h4>
+        <p><%= x %></p>
       </td>
       <% (1..12).to_a.each do |y| %>
       <td>
-        <canvas id="origin_<%= x %>_<%= y %>" style="z-index:1;border:1px solid red"></canvas>
+        <div id="grid_<%= x %>_<%= y %>" class="Grid bor_g">
+          <div id="glow_<%= x %>_<%= y %>" class="inner_glow"><img src="/assets/tvwall/img_Grid_g_green.png" width="100%"/></div>
+        <canvas id="origin_<%= x %>_<%= y %>" width="100%" ></canvas>
+        </div>
       </td>
       <% end %>
     </tr>
     <% end %>
-  </table>
-
-  <div class="every_writer_box">
-    <h4 class="text-center"><%= @visitors[1].name %></h4>
-    <%= render_gamer_photo(@visitors[1],"thumb",50,50,"img_box") %>
-    <br>
-
-  </div>
+              
+            </table>
+        </td>
+        
+        <td width="2%">&nbsp;</td>
+        
+        <td valign="top" width="9%">
+        <div class="box_b">
+            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+              <tr height="145">
+                <td>&nbsp;</td>
+              </tr>
+              <tr>
+                <td><p class="name"><%= @visitors[1].name %></p></td>
+              </tr>
+              <tr>
+                <td>
+                <div class="TopBpx">
+                    <div id="user_photo_<%= @visitors[1].number %>" class="photo">
+                        <%= render_gamer_photo(@visitors[1],"medium",'100%','100%','') %>
+                    </div>
+                </div>
+                </td>
+              </tr>
+            </table>
+      </div>
+        </td>
+        
+        <td width="13%"></td>
+      </tr>
+     
+    </table>
 </div>
+
+
+
+<div id="user_two"></div>
+
 
 
 <% content_for :javascripts do %>
@@ -100,20 +135,44 @@ h4 {
 
 var sketchSecondIns;
 
+var blockChooseSetStyle = function(o){
+  $('#glow_'+o.block.row+'_'+o.block.column).show();
+};
+
+var blockSubmitSetStyle = function(o){
+  $('#glow_'+o.block.row+'_'+o.block.column).show();
+};
+
+//後台取消確認
+var blockCancelSubmitSetStyle = function(o){
+    for(var x=1;x<8;x++){
+      for(var y=1;y<12;y++){
+        $('#glow_'+x+'_'+y).hide();
+      }
+    }
+};
+
 function startSetStyle(c) {
-  $('#user_photo_'+c).addClass("user_picture_block");
+  $('#user_photo_'+c).addClass("green");
   sketchSecondIns.resetBar();
   sketchSecondIns.doStart();
 }
 
 function stopSetStyle(c) {
-  $('#user_photo_'+c).removeClass("user_picture_block");
+  $('#user_photo_'+c).removeClass("green");
   sketchSecondIns.doStop();
 }
 
 window.timeRemaining = parseInt(<%= @second %>);
 window.alarm = null;
 
+window.responsiveMethod = function(){
+  var jqEl = $('[id^=grid_]');
+
+  var w = $(window).width()*0.04;
+  jqEl.height(w);
+  jqEl.width(w);
+};
 
 $(document).ready(function() {
   CM.prop({
@@ -121,7 +180,8 @@ $(document).ready(function() {
     height: 500,
     lineWidth: 13,
     lineColor: '#ececec',
-    targetZoomScale: 0.035
+    targetZoomScale: 0.015,
+    backgroundImage: '/assets/tvwall/img_Grid_g.gif'
   });
   <% (1..8).to_a.each do |x| %>
   <% (1..12).to_a.each do |y| %>
@@ -148,6 +208,7 @@ $(document).ready(function() {
     sketchSecondIns.setSecond(<%= @second %>);
   },300);
 
+  responsiveMethod();
 });
 </script>
 <% end %>

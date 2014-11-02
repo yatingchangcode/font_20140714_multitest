@@ -84,14 +84,7 @@
   }
 
   var receiveMoveBlockHandler = function(o){
-    var offset = getOffset();
-    $('#user_two').addClass("user_two");
-    $('#user_two').css({
-      top:(o.block.row-1)*101+offset.top + "px",
-      left:(o.block.column-1)*97+offset.left + "px"
-    });
-
-
+    blockChooseSetStyle(o);
   };
 
   var receiveSendTextHandler = function(o){
@@ -106,33 +99,12 @@
   var receiveEndRoundHandler = function(o){
     clearInterval(window.alarm);
     window.alarm = null;
+    blockCancelSubmitSetStyle(o);
     window.chatApp.action(o.user_id,'stop');
-    $('#user_two').removeClass("user_two");
-    for(var x=1;x<8;x++){
-      for(var y=1;y<12;y++){
-        $('#origin_'+x+'_'+y).css({
-          zindex:1,
-          border:"1px solid red"
-        });
-      }
-    }
+
   };
 
   var receiveSubmitHandler = function(o){
-    var offset = getOffset();
-    $('#origin_'+o.block.row+'_'+o.block.column).css({
-      border:"1px solid green",
-      width:"96px",
-      height:"96px",
-      position:"absolute",
-      top:(o.block.row-1)*101+offset.top + "px",
-      left:(o.block.column-1)*96+offset.left + "px"
-    });
+    blockSubmitSetStyle(o);
   };
 
-  var getOffset = function(){
-    var offset = $('#canvasTable').offset();
-    offset.top += 40;
-    offset.left += 25;
-    return offset;
-  }
