@@ -25,104 +25,104 @@ body,.container{
 
 <div class="Content"> 
   <table width="100%" border="0" cellspacing="0" cellpadding="0">
-      <tr>
-        <td colspan="11" height="5%">&nbsp;</td>
-      </tr>
-      
-      <tr>
-        <td width="10%"></td>
-        <% @visitors[0..4].each do |visitor| %>
-        <td>
+    <tr>
+      <td colspan="11" height="5%">&nbsp;</td>
+    </tr>
+    
+    <tr>
+      <td width="10%"></td>
+      <% @visitors[0..4].each do |visitor| %>
+      <td>
         <div class="box_a">
-            <div id="out_<%= visitor.number %>" class="out">
-              <img src="/assets/tvwall/out.png" width="100%"/>
-            </div>
-            <div id="black_<%= visitor.number %>" class="black"></div>
-            <table width="100%" border="0" cellspacing="0" cellpadding="0">
-              <tr>
-                <td>
+          <div id="out_<%= visitor.number %>" class="out">
+            <img src="/assets/tvwall/out.png" width="100%"/>
+          </div>
+          <div id="black_<%= visitor.number %>" class="black"></div>
+          <table width="100%" border="0" cellspacing="0" cellpadding="0">
+            <tr>
+              <td>
                 <div class="TopBpx">
-                    <div id="user_photo_<%= visitor.number %>" class="photo">
-                      <%= render_gamer_photo(visitor,"medium",'100%','100%',"") %>
-                    </div>
-                    <div class="nameBox">
-                      <p class="name"><%= visitor.title %><br /><%= visitor.name %></p>
-                    </div>
-                    <br class="CLEAR" />
+                  <div id="user_photo_<%= visitor.number %>" class="photo">
+                    <%= render_gamer_photo(visitor,"medium",'100%','100%',"") %>
+                  </div>
+                  <div class="nameBox">
+                    <p class="name"><%= visitor.title %><br /><%= visitor.name %></p>
+                  </div>
+                  <br class="CLEAR" />
                 </div>
-                </td>
-              </tr>
-              <tr>
-                <td>
+              </td>
+            </tr>
+            <tr>
+              <td>
                 <div id="grid_<%= visitor.number %>" class="Grid">
-                    <div id="glow_<%= visitor.number %>" class="inner_glow"><img src="/assets/tvwall/img_Grid_b_green.png" width="100%"/></div>
-                    <div id="yes_img_<%= visitor.number %>" class="correct"><img src="/assets/tvwall/red_ring.png" width="100%"/></div>
-                    <canvas id="origin_<%= visitor.number %>" width="100%" ></canvas>
+                  <div id="glow_<%= visitor.number %>" class="inner_glow"><img src="/assets/tvwall/img_Grid_b_green.png" width="100%"/></div>
+                  <div id="yes_img_<%= visitor.number %>" class="correct"><img src="/assets/tvwall/red_ring.png" width="100%"/></div>
+                  <canvas id="origin_<%= visitor.number %>" width="100%" ></canvas>
                 </div>
-                </td>
-              </tr>
-            </table>
-      </div>
-        </td>
-        
-        <td width="3%"></td>
-        <% end %>
-
-        <td width="9%"></td>
-      </tr>
+              </td>
+            </tr>
+          </table>
+        </div>
+      </td>
       
-      <tr>
-        <td colspan="11" height="1%">&nbsp;</td>
-      </tr>
-    </table>
+      <td width="3%"></td>
+      <% end %>
+
+      <td width="9%"></td>
+    </tr>
+    
+    <tr>
+      <td colspan="11" height="1%">&nbsp;</td>
+    </tr>
+  </table>
 
 
-    <table width="100%" border="0" cellspacing="0" cellpadding="0">
-      <tr>
-        <td width="9%"></td>
-        
-        <% @visitors[5..9].each do |visitor| %>
-        <td width="3%"></td>
-        <td>
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td width="9%"></td>
+      
+      <% @visitors[5..9].each do |visitor| %>
+      <td width="3%"></td>
+      <td>
         <div class="box_a">
-            <div id="out_<%= visitor.number %>" class="out">
-              <img src="/assets/tvwall/out.png" width="100%"/>
-            </div>
-            <div id="black_<%= visitor.number %>" class="black"></div>
-            <table width="100%" border="0" cellspacing="0" cellpadding="0">
-              <tr>
-                <td>
+          <div id="out_<%= visitor.number %>" class="out">
+            <img src="/assets/tvwall/out.png" width="100%"/>
+          </div>
+          <div id="black_<%= visitor.number %>" class="black"></div>
+          <table width="100%" border="0" cellspacing="0" cellpadding="0">
+            <tr>
+              <td>
                 <div class="TopBpx">
-                    <div id="user_photo_<%= visitor.number %>" class="photo">
-                      <%= render_gamer_photo(visitor,"medium",'100%','100%',"") %>
-                    </div>
-                    <div class="nameBox">
-                      <p class="name"><%= visitor.title %><br /><%= visitor.name %></p>
-                    </div>
-                    <br class="CLEAR" />
+                  <div id="user_photo_<%= visitor.number %>" class="photo">
+                    <%= render_gamer_photo(visitor,"medium",'100%','100%',"") %>
+                  </div>
+                  <div class="nameBox">
+                    <p class="name"><%= visitor.title %><br /><%= visitor.name %></p>
+                  </div>
+                  <br class="CLEAR" />
                 </div>
-                </td>
-              </tr>
-              <tr>
-                <td>
+              </td>
+            </tr>
+            <tr>
+              <td>
                 <div id="grid_<%= visitor.number %>" class="Grid">
-                    <div id="glow_<%= visitor.number %>" class="inner_glow"><img src="/assets/tvwall/img_Grid_b_green.png" width="100%"/></div>
-                    <div id="yes_img_<%= visitor.number %>" class="correct"><img src="/assets/tvwall/red_ring.png" width="100%"/></div>
-                    <canvas id="origin_<%= visitor.number %>" width="100%" ></canvas>
+                  <div id="glow_<%= visitor.number %>" class="inner_glow"><img src="/assets/tvwall/img_Grid_b_green.png" width="100%"/></div>
+                  <div id="yes_img_<%= visitor.number %>" class="correct"><img src="/assets/tvwall/red_ring.png" width="100%"/></div>
+                  <canvas id="origin_<%= visitor.number %>" width="100%" ></canvas>
                 </div>
-                </td>
-              </tr>
-            </table>
-      </div>
-        </td>
-        
-        
-        <% end %>
-        
-        <td width="10%"></td>
-      </tr>
-    </table>
-        
+              </td>
+            </tr>
+          </table>
+        </div>
+      </td>
+      
+      
+      <% end %>
+      
+      <td width="10%"></td>
+    </tr>
+  </table>
+  
 </div>
 
 <% content_for :javascripts do %>
@@ -229,10 +229,10 @@ $(document).ready(function() {
   //window.chatApp.bindEvents();
 
   (function collectGamers() {
-           <% @visitors.each do |visitor| %>
-           gamers.push('<%= visitor.number %>');
-           <% end %>
-  }) ();
+   <% @visitors.each do |visitor| %>
+   gamers.push('<%= visitor.number %>');
+   <% end %>
+ }) ();
 
   setTimeout(function(){
     if(!sketchSecondIns){

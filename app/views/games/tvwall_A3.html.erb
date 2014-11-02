@@ -11,56 +11,60 @@ body,.container{
 </style>
 <% end %>
 <div class="Content"> 
-<table width="100%" border="0" cellspacing="0" cellpadding="0">
-      <tr>
-        <td colspan="5" height="20">&nbsp;</td>
-      </tr>
-      
-      <tr>
-        <td width="25%"></td>
-        <% @visitors.each do |visitor| %>
-        <td>
-          
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td colspan="5" height="20">&nbsp;</td>
+    </tr>
+    
+    <tr>
+      <td width="25%"></td>
+      <% @visitors.each do |visitor| %>
+      <td>
+        
         <div class="box_a">
-            <table width="100%" border="0" cellspacing="0" cellpadding="0">
-              <tr>
-                <td>
+          <div id="out_<%= visitor.number %>" class="out">
+            <img src="/assets/tvwall/out.png" width="100%"/>
+          </div>
+          <div id="black_<%= visitor.number %>" class="black"></div>
+          <table width="100%" border="0" cellspacing="0" cellpadding="0">
+            <tr>
+              <td>
                 <div class="TopBpx s1">
-                    <div class="photo">
-                      <%= render_gamer_photo(visitor,"medium",'100%','100%','') %>
-                    </div>
-                    <div class="nameBox br_line03">
-                      <p class="name"><%= visitor.title %><br /><%= visitor.name %></p>
-                    </div>
-                    <div class="answer10" style="padding:15px 0 0 10px;"><img id="no_correct_<%= visitor.number %>" src="/assets/tvwall/answer10/answer10_1.png" width="100%" style="display:none"/></div>
-                    <br class="CLEAR" />
+                  <div class="photo">
+                    <%= render_gamer_photo(visitor,"medium",'100%','100%','') %>
+                  </div>
+                  <div class="nameBox br_line03">
+                    <p class="name"><%= visitor.title %><br /><%= visitor.name %></p>
+                  </div>
+                  <div class="answer10" style="padding:15px 0 0 10px;"><img id="no_correct_<%= visitor.number %>" src="/assets/tvwall/answer10/answer10_1.png" width="100%" style="display:none"/></div>
+                  <br class="CLEAR" />
                 </div>
-                </td>
-              </tr>
-              <tr>
-                <td>
+              </td>
+            </tr>
+            <tr>
+              <td>
                 <div id="grid_<%= visitor.number %>" class="Grid">
                   <div id="glow_<%= visitor.number %>" class="inner_glow"><img src="/assets/tvwall/img_Grid_b_green.png" width="100%"/></div>
-                    <div id="yes_img_<%= visitor.number %>" class="correct"><img src="/assets/tvwall/red_ring.png" width="100%"/></div>
-                    <canvas id="origin_<%= visitor.number %>" width="100%" ></canvas>
+                  <div id="yes_img_<%= visitor.number %>" class="correct"><img src="/assets/tvwall/red_ring.png" width="100%"/></div>
+                  <canvas id="origin_<%= visitor.number %>" width="100%" ></canvas>
                 </div>
-                </td>
-              </tr>
-            </table>
-      </div>
-        </td>
-        
-        <td width="1%"></td>
-        
-<% end %>
-        <td width="24%"></td>
-      </tr>
+              </td>
+            </tr>
+          </table>
+        </div>
+      </td>
       
+      <td width="1%"></td>
+      
+      <% end %>
+      <td width="24%"></td>
+    </tr>
+    
 
-      <tr>
-        <td colspan="11" height="1%">&nbsp;</td>
-      </tr>
-    </table>
+    <tr>
+      <td colspan="11" height="1%">&nbsp;</td>
+    </tr>
+  </table>
 </div>
 
 
@@ -82,7 +86,7 @@ var receiveCancelSubmitHandler = function(o){
   $('#glow_'+o.user_id).hide();
 };
 
-      
+
 function clearSetStyle(o){
   CM('origin_'+o.user_id).clear();
 }
@@ -165,10 +169,10 @@ $(document).ready(function() {
   // window.chatApp = new ChatApp(500,500,'0');
   // window.chatApp.bindEvents();
   (function collectGamers() {
-           <% @visitors.each do |visitor| %>
-           gamers.push('<%= visitor.number %>');
-           <% end %>
-  }) ();
+   <% @visitors.each do |visitor| %>
+   gamers.push('<%= visitor.number %>');
+   <% end %>
+ }) ();
 
   responsiveMethod();
 });

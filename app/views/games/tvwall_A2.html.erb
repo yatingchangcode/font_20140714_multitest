@@ -20,13 +20,13 @@ body,.container{
     <tr>
       <td width="5%"></td>
 
-<% @visitors.each do |visitor| %>
+      <% @visitors.each do |visitor| %>
       <td>
         <div class="box_a">
           <div id="out_<%= visitor.number %>" class="out">
-              <img src="/assets/tvwall/out.png" width="100%"/>
-            </div>
-            <div id="black_<%= visitor.number %>" class="black"></div>
+            <img src="/assets/tvwall/out.png" width="100%"/>
+          </div>
+          <div id="black_<%= visitor.number %>" class="black"></div>
           <table width="100%" border="0" cellspacing="0" cellpadding="0">
             <tr>
               <td>
@@ -45,8 +45,8 @@ body,.container{
               <td>
                 <div id="grid_<%= visitor.number %>" class="Grid">
                   <div id="glow_<%= visitor.number %>" class="inner_glow"><img src="/assets/tvwall/img_Grid_b_green.png" width="100%"/></div>
-                    <div id="yes_img_<%= visitor.number %>" class="correct"><img src="/assets/tvwall/red_ring.png" width="100%"/></div>
-                    <canvas id="origin_<%= visitor.number %>" width="100%" ></canvas>
+                  <div id="yes_img_<%= visitor.number %>" class="correct"><img src="/assets/tvwall/red_ring.png" width="100%"/></div>
+                  <canvas id="origin_<%= visitor.number %>" width="100%" ></canvas>
                 </div>
               </td>
             </tr>
