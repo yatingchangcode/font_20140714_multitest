@@ -91,7 +91,7 @@
     var testCan = document.getElementById('origin_'+ o.block.row +'_' + o.block.column);
     var w = $(testCan).width();
     var context = testCan.getContext("2d");
-    context.fillStyle = "purple";
+    context.fillStyle = "#ececec";
     context.font = "bold " + (w * 13 / 15) + "px 標楷體";
     context.fillText(o.text, w / 15, w * 12 / 15);
   };
