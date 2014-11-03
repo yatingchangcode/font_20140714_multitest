@@ -148,6 +148,8 @@ window.responsiveMethod = function(){
   jqEl.width(w);
 };
 
+window.addEventListener('resize', window.responsiveMethod);
+
 $(document).ready(function() {
   CM.prop({
     width: 500,
