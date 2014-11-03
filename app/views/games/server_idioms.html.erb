@@ -113,13 +113,11 @@ var getOffset = function(){
   return offset;
 }
 
-var blockChooseSetStyle = function(o){
-  var offset = getOffset();
-  $('#user_two').addClass("user_two");
-  $('#user_two').css({
-    top:(o.block.row-1)*101+offset.top + "px",
-    left:(o.block.column-1)*97+offset.left + "px"
-  });
+var blockCancelOneSubmitSetStyle = function(o){
+  $('#origin_'+o.block.row+'_'+o.block.column).css({
+        zindex:1,
+        border:"1px solid red"
+      });
 };
 
 //使用者送出確認

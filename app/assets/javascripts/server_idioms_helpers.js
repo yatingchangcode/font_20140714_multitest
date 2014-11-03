@@ -84,7 +84,7 @@
   }
 
   var receiveMoveBlockHandler = function(o){
-    blockChooseSetStyle(o);
+    blockCancelOneSubmitSetStyle(o);
   };
 
   var receiveSendTextHandler = function(o){
