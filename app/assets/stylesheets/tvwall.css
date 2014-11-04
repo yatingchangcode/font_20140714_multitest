@@ -36,5 +36,14 @@ a{ text-decoration:none; outline: none; /* for Firefox */  hlbr:expression(this.
 .HP_bar .red{ background-color:#ff0c00;}
 .HP_bar .yello{ background-color:#fcff00;}
 
+table.Chessboard p{ color:#ddced0; text-align:center;}
+
+.Content .box_b .photo{ width:45%; margin:0 auto;}
+.Content .box_b .green{ box-shadow:0px 0px 30px #00ff00;}
+.Content .box_b p.name{ color:#FFF; text-align:center;}
+
+.Content table.Chessboard .Grid{ width:97%; position:relative; border:5px solid #000000; border-width:0.3vw; margin:0 auto;}
+.Content table.Chessboard .Grid .write{ width:90%; position:absolute; left:2%; top:2%; z-index:40;}
+.Content table.Chessboard .Grid .inner_glow{ width:100%; position:absolute; top:0px; left:0px;display:none;}
 
 
