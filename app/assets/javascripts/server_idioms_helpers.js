@@ -47,41 +47,25 @@
 
   var receiveStartHandler = function(o){
     start_button(o.user_id);
-  }     
+  };
+
+  var receiveStopHandler = function(c){
+    stop_button(c.user_id);
+  };
 
   var start_button = function(value){
     gamers.setActive(value);
     startSetStyle(value);
     startCounter(value);
-  }
-
-  function receiveStopHandler(c){
-    stop_button(c.user_id);
-  }
+  };
 
   var stop_button = function(value){
-    clearInterval(window.alarm[value]);
-    window.alarm[value] = null;
+    //clearInterval(window.alarm[value]);
+    //window.alarm[value] = null;
+    clearInterval(window.alarm);
+    window.alarm = null; 
     stopSetStyle(value);
-  }
-
-  function startCounter(thisvalue) {
-    console.log(window.alarm);
-    if(window.alarm && window.alarm[thisvalue]) return; 
-    if (window.alarm === null) { 
-      window.alarm = {};
-    }
-
-    window.alarm[thisvalue] = setInterval(function(){
-      var s = parseFloat($('#second_'+thisvalue).text()).toFixed(1);
-      if (s > 0){
-        $('#second_'+thisvalue).text((s-0.1).toFixed(1) + "秒");
-      } else {
-        clearInterval(window.alarm[thisvalue]);
-        window.alarm[thisvalue] = null;
-      }
-    },100); 
-  }
+  };
 
   var receiveMoveBlockHandler = function(o){
     blockCancelOneSubmitSetStyle(o);
@@ -97,11 +81,12 @@
   };
 
   var receiveEndRoundHandler = function(o){
+    /*
     clearInterval(window.alarm);
     window.alarm = null;
     blockCancelSubmitSetStyle(o);
     window.chatApp.action(o.user_id,'stop');
-
+    */
   };
 
   var receiveSubmitHandler = function(o){

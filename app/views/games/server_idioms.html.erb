@@ -43,6 +43,10 @@ h4 {
   position:absolute;
 }
 
+.progress-bar {
+  transition: width 0.1s;
+}
+
 </style>
 <% end %>
 <div id="user_one"></div>
@@ -99,6 +103,13 @@ h4 {
     <input id="showText" type="text" value="" style="width:50px;" />
     <button id="showTextButton">出題</button>
   </div>
+  <div class="col-md-4">
+    <div class="progress"> 
+      <div id="progress_bar" class="progress-bar" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%;">
+      <%= @second %>s
+      </div>
+    </div>
+  </div>
 </div>
 
 <% content_for :javascripts do %>
@@ -138,7 +149,8 @@ var blockCancelSubmitSetStyle = function(o){
   $('#user_two').removeClass("user_two");
   for(var x=1;x<8;x++){
     for(var y=1;y<12;y++){
-      $('#origin_'+x+'_'+y).css({
+      var el = document.getElementById('origin_'+x+'_'+y);
+      $(el).css({
         zindex:1,
         border:"1px solid red"
       });
@@ -146,85 +158,141 @@ var blockCancelSubmitSetStyle = function(o){
   }
 };
 
+function startCounter(thisvalue) {
+  console.log(window.alarm);
+
+  /*
+  if(window.alarm && window.alarm[thisvalue]) return; 
+  if (window.alarm === null) { 
+    window.alarm = {};
+  }
+
+  window.alarm[thisvalue] = setInterval(function(){
+    var s = parseFloat($('#second_'+thisvalue).text()).toFixed(1);
+    if (s > 0){
+      $('#second_'+thisvalue).text((s-0.1).toFixed(1) + "秒");
+    } else {
+      clearInterval(window.alarm[thisvalue]);
+      window.alarm[thisvalue] = null;
+    }
+  },100);
+  */
+
+  if(window.alarm) return;
+    var s = parseFloat($('#second').text()).toFixed(1);
+    //if (s === (0.0).toFixed(1)) resetProgressBarAndTime();
+    window.alarm = setInterval(function(){
+      var s = parseFloat($('#second').text()).toFixed(1);
+      if (s > 0){
+        setProgressBarAndTime(s);
+      } else {
+        clearInterval(window.alarm);
+        window.alarm = null;
+        gamers.all().forEach(function(e){
+          window.chatApp.action(e,'stop');
+          //receiveSubmitHandler({user_id:e});
+        });
+        if(tvwall && tvwall.clearTimebar) tvwall.clearTimebar();
+      }
+    }, 100); 
+
+}
+
 function startSetStyle(c) {
   $('#user_photo_'+c).addClass("user_picture_block");
 }
 
 function stopSetStyle(c) {
   $('#user_photo_'+c).removeClass("user_picture_block");
+  blockCancelSubmitSetStyle();
 }
 
-      //var alarm = {};
-      var tvwall = window.open("tvwall_<%= params[:stage] %>?join_visitors_number=<%= params[:join_visitors_number] %>&second=<%= @second %>","tvwallWindow","width=800, height=800");
-      //window.open("record_idioms?join_visitors_number=<%= params[:join_visitors_number] %>","recordWindow","width=800, height=800");
+function resetProgressBarAndTime() {
+    $('#progress_bar').css("width", "100%").attr("aria-valuenow","100%").text(window.timeRemaining+"s");
+    console.log(window.timeRemaining);
+    $('#second').text(window.timeRemaining);  
+}
 
-      window.alarm = null;
+function setProgressBarAndTime(s) {
+  var percent = 100 * (s-0.1) / window.timeRemaining;
+  $('#progress_bar').css("width", percent+"%").attr('aria-valuenow', percent).text((s-0.1).toFixed(1)+"s");
+  $('#second').text((s - 0.1).toFixed(1));
+}
 
+//var alarm = {};
+var tvwall = window.open("tvwall_<%= params[:stage] %>?join_visitors_number=<%= params[:join_visitors_number] %>&second=<%= @second %>","tvwallWindow","width=800, height=800");
+//window.open("record_idioms?join_visitors_number=<%= params[:join_visitors_number] %>","recordWindow","width=800, height=800");
 
-      $(document).ready(function() {
-        CM.prop({
-          width: 500,
-          height: 500,
-          lineWidth: 15,
-          lineColor: '#ffffff',
-          targetZoomScale: 0.035
-        });
-        <% (1..8).to_a.each do |x| %>
-        <% (1..12).to_a.each do |y| %>
-        CM.reg('origin_<%= x %>_<%= y %>');
-        <% end %>
-        <% end %>
+window.timeRemaining = parseInt(<%= @second %>);
+window.alarm = null;
 
 
-        window.chatApp = new ChatApp(500,500,'0');
-        window.chatApp.bindEvents();
-        window.chatApp.reset({stage:'<%= params[:stage] %>'});
+$(document).ready(function() {
+  CM.prop({
+    width: 500,
+    height: 500,
+    lineWidth: 15,
+    lineColor: '#ffffff',
+    targetZoomScale: 0.035
+  });
+  <% (1..8).to_a.each do |x| %>
+  <% (1..12).to_a.each do |y| %>
+  CM.reg('origin_<%= x %>_<%= y %>');
+  <% end %>
+  <% end %>
 
-        (function collectGamers() {
-          <% @visitors.each do |visitor| %>
-          gamers.push('<%= visitor.number %>');
-          <% end %>
-        })();
+
+  window.chatApp = new ChatApp(500,500,'0');
+  window.chatApp.bindEvents();
+  window.chatApp.reset({stage:'<%= params[:stage] %>'});
+
+  (function collectGamers() {
+    <% @visitors.each do |visitor| %>
+    gamers.push('<%= visitor.number %>');
+    <% end %>
+  })();
 
 
-        $('[id^=start_button_]').click(function(){
-          window.chatApp.action(this.value,'start');
-        });
+  $('[id^=start_button_]').click(function(){
+    resetProgressBarAndTime();
+    window.chatApp.action(this.value,'start');
+  });
 
-        $('[id^=stop_button_]').click(function(){
+  $('[id^=stop_button_]').click(function(){
 
-         window.chatApp.action(this.value,'stop');
-           //receiveSubmitHandler({user_id:this.value});
-         });
+   window.chatApp.action(this.value,'stop');
+     //receiveSubmitHandler({user_id:this.value});
+   });
 
-        $('#next_button').click(function(){
-          // stop last user
-          if (gamers.prev() != null) {
-            window.chatApp.action(gamers.prev(),'stop');
-          }
-          var newgamer = gamers.next();
-          // call old gamer to stop
-          // call new user to clear screen
-          window.chatApp.action(newgamer,'start');
-          //there is not setActive?
-          // startSetStyle(newgamer);
-          // startCounter(newgamer);
-        });
+  $('#next_button').click(function(){
+    // stop last user
+    if (gamers.prev() != null) {
+      window.chatApp.action(gamers.prev(),'stop');
+    }
+    var newgamer = gamers.next();
+    // call old gamer to stop
+    // call new user to clear screen
+    resetProgressBarAndTime();
+    window.chatApp.action(newgamer,'start');
+    //there is not setActive?
+    // startSetStyle(newgamer);
+    // startCounter(newgamer);
+  });
 
-        $('[name^=clear]').click(function(){
+  $('[name^=clear]').click(function(){
 
-          var xy = this.value.split(',');
-          var block = { row: xy[0], column:xy[1] };
+    var xy = this.value.split(',');
+    var block = { row: xy[0], column:xy[1] };
 
-          window.chatApp.clear(0,block); 
-        });
+    window.chatApp.clear(0,block); 
+  });
 
-        $('#showTextButton').click(function(){
+  $('#showTextButton').click(function(){
 
-          window.chatApp.sendText($('#showText').val(),{row: $('#row').val(), column:$('#column').val()});
+    window.chatApp.sendText($('#showText').val(),{row: $('#row').val(), column:$('#column').val()});
 
-        });
+  });
 
-      });
+});
 </script>
 <% end %>

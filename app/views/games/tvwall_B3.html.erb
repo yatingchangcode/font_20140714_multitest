@@ -135,6 +135,15 @@ body,.container{
 
 var sketchSecondIns;
 
+// overrides
+var start_button = function(value){
+    gamers.setActive(value);
+    startSetStyle(value);
+};
+var stop_button = function(value){
+    stopSetStyle(value);
+};
+
 var blockCancelOneSubmitSetStyle = function(o){
   $('#glow_'+o.block.row+'_'+o.block.column).hide();
 };
@@ -147,10 +156,15 @@ var blockSubmitSetStyle = function(o){
 var blockCancelSubmitSetStyle = function(o){
     for(var x=1;x<8;x++){
       for(var y=1;y<12;y++){
-        $('#glow_'+x+'_'+y).hide();
+        var c = document.getElementById('glow_'+x+'_'+y);
+        $(c).hide();
       }
     }
 };
+
+function clearTimebar(c){
+  sketchSecondIns.clearBar();
+}
 
 function startSetStyle(c) {
   $('#user_photo_'+c).addClass("green");
@@ -161,10 +175,8 @@ function startSetStyle(c) {
 function stopSetStyle(c) {
   $('#user_photo_'+c).removeClass("green");
   sketchSecondIns.doStop();
+  blockCancelSubmitSetStyle();
 }
-
-window.timeRemaining = parseInt(<%= @second %>);
-window.alarm = null;
 
 window.responsiveMethod = function(){
   var jqEl = $('[id^=grid_]');
@@ -207,7 +219,7 @@ $(document).ready(function() {
     var p = $(document.getElementById('sketchSecond').parentElement);
     sketchSecondIns.setSize(p.width(), p.height());
     sketchSecondIns.setSecond(<%= @second %>);
-  },300);
+  },400);
 
   responsiveMethod();
 });
