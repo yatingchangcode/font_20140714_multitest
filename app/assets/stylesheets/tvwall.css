@@ -8,7 +8,7 @@ a{ text-decoration:none; outline: none; /* for Firefox */  hlbr:expression(this.
 .Content .box_a{ width:100%; position:relative;}
 .Content .box_a .TopBpx{ width:100%;}
 .Content .box_a .TopBpx .photo{ float:left; width:28%;}
-.Content .box_a .TopBpx .green{ box-shadow:0px 0px 30px #00ff00;}
+.Content .box_a .TopBpx .green{ box-shadow:0px 0px 2.5vw #00ff00;}
 .Content .box_a .TopBpx .nameBox{ float:left; width:67%; height:100%; overflow:hidden; background:url(/assets/tvwall/name_line.png) right no-repeat;}
 .Content .box_a .TopBpx .nameBox p.name{ color:#FFF; padding-left:7%;}
 .Content .box_a .TopBpx .answer10{ float:left; width:25%;}
@@ -20,7 +20,7 @@ a{ text-decoration:none; outline: none; /* for Firefox */  hlbr:expression(this.
 .Content .box_a .TopBpx .br_line03{ width:35%; background:url(/assets/tvwall/name_line_03.png) right 25px no-repeat;}
 .Content .box_a .TopBpx .br_line04{ width:35%; background:url(/assets/tvwall/name_line_04.png) right 18px no-repeat;}
 
-.Content .box_a .Grid{ width:99%; position:relative; border:3px solid #c0c0c0;}
+.Content .box_a .Grid{ width:99%; position:relative; border:0.2vw solid #c0c0c0;}
 .Content .box_a .Grid .write{ width:95%; position:absolute; left:2%; top:2%; z-index:40;}
 .Content .box_a .Grid .correct{ width:32%; position:absolute; right:1%; bottom:2%; z-index:50;display:none;}
 .Content .box_a .bor_g{ border:3px solid #98c4a7;}
@@ -39,10 +39,10 @@ a{ text-decoration:none; outline: none; /* for Firefox */  hlbr:expression(this.
 table.Chessboard p{ color:#ddced0; text-align:center;}
 
 .Content .box_b .photo{ width:45%; margin:0 auto;}
-.Content .box_b .green{ box-shadow:0px 0px 30px #00ff00;}
+.Content .box_b .green{ box-shadow:0px 0px 2.5vw #00ff00;}
 .Content .box_b p.name{ color:#FFF; text-align:center;}
 
-.Content table.Chessboard .Grid{ width:97%; position:relative; border:5px solid #000000; border-width:0.3vw; margin:0 auto;}
+.Content table.Chessboard .Grid{ width:100%; position:relative; border:0.2vw solid #000000; margin:0 auto;}
 .Content table.Chessboard .Grid .write{ width:90%; position:absolute; left:2%; top:2%; z-index:40;}
 .Content table.Chessboard .Grid .inner_glow{ width:100%; position:absolute; top:0px; left:0px;display:none;}
 

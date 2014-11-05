@@ -1,13 +1,16 @@
 <% content_for :stylesheets do %>
 <%= stylesheet_link_tag 'reset','tvwall' %>
 <style type="text/css">
-p.name{ font-size:20px; padding-bottom:20px;}
-table.Chessboard p{ font-size:22px;}
+p.name{
+  padding-bottom:6%;
+}
 
 body,.container{
   background-color: #000000;
   width: 100%;
   height:100%;
+  //width: 1600px;
+  //height:1000px;
 }
 </style>
 <% end %>
@@ -35,8 +38,8 @@ body,.container{
         
         <td valign="top" width="9%">
         <div class="box_b">
-            <table width="100%" border="0" cellspacing="0" cellpadding="0">
-              <tr height="145">
+            <table width="100%" height="100%" border="0" cellspacing="0" cellpadding="0">
+              <tr class="nameTop">
                 <td>&nbsp;</td>
               </tr>
               <tr>
@@ -98,7 +101,7 @@ body,.container{
         <td valign="top" width="9%">
         <div class="box_b">
             <table width="100%" border="0" cellspacing="0" cellpadding="0">
-              <tr height="145">
+              <tr class="nameTop">
                 <td>&nbsp;</td>
               </tr>
               <tr>
@@ -182,9 +185,27 @@ window.responsiveMethod = function(){
   var jqEl = $('[id^=grid_]');
 
   var w = $(window).width()*0.04;
+  //var w = $('.container').width()*0.04;
   jqEl.height(w);
   jqEl.width(w);
 };
+
+window.tunePosition = function(){
+  var w = $('.photo').width();
+  //var namebox = $('.nameBox');
+  var name = $('.name');
+  name.css('font-size', w / 3 * 14 / 15);
+
+  var board = $('.Chessboard');
+  $('.nameTop').height(board.height() / 4);
+
+  var jqEl = $('[id^=grid_]');
+
+  $('table.Chessboard p').css('font-size', jqEl.height() / 3 * 1.1);
+
+};
+
+window.addEventListener('resize', window.responsiveMethod);
 
 $(document).ready(function() {
   CM.prop({
@@ -222,6 +243,9 @@ $(document).ready(function() {
   },400);
 
   responsiveMethod();
+  setTimeout(function(){
+    tunePosition();    
+  }, 100);
 });
 </script>
 <% end %>
