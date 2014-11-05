@@ -39,7 +39,11 @@ body,.container{
                     <%= render_gamer_photo(visitor,"medium",'100%','100%',"") %>
                   </div>
                   <div class="nameBox br_line02">
-                    <p class="name"><%= visitor.title || '　' %></p>
+                    <% if(visitor.title) %>
+                    <p class="name"><%= visitor.title %></p>
+                    <% else %>
+                    <p class="name">&nbsp;</p>
+                    <% end %>
                     <p class="name"><%= visitor.name %></p>
                   </div>
                   <br class="CLEAR" />

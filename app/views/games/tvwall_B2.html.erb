@@ -1,12 +1,16 @@
 <% content_for :stylesheets do %>
 <%= stylesheet_link_tag 'reset','tvwall' %>
 <style type="text/css">
-p{font-size:22px; line-height:32px; padding-top:2px}
+p{
+  padding-top:5%;
+}
 
 body,.container{
   background-color: #000000;
   width: 100%;
   height:100%;
+  //width:1920px;
+  //height:1080px;
 }
 </style>
 <% end %>
@@ -33,7 +37,12 @@ body,.container{
                     <%= render_gamer_photo(visitor,"medium",'100%','100%','') %>
                   </div>
                   <div class="nameBox br_line04">
-                    <p class="name"><%= visitor.name %><br />&nbsp;</p>
+                    <% if(visitor.title) %>
+                    <p class="name"><%= visitor.title %></p>
+                    <% else %>
+                    <p class="name">&nbsp;</p>
+                    <% end %>
+                    <p class="name"><%= visitor.name %></p>
                   </div>
                   <div class="answer10" style="padding:15px 0 0 10px;"><img id="no_correct_<%= visitor.number %>" src="/assets/tvwall/answer10/answer10_1.png" width="100%" style="display:none"/></div>
                   <br class="CLEAR" />
@@ -144,8 +153,22 @@ window.responsiveMethod = function(){
   var jqEl = $('[id^=grid_]');
 
   var w = $(window).width()*0.191;
+  //var w = $('.container').width()*0.191;
   jqEl.height(w);
   jqEl.width(w);
+};
+
+window.tuneLinePosition = function(){
+  var w = $('.photo').width();
+  var namebox = $('.nameBox');
+  var name = $('.name');
+  name.css('font-size', w / 3 * 14 / 15);
+  namebox.height(w);
+  // 44 means picture height
+  //namebox.css('background-position-y', w / 2 - parseFloat(name.css('padding-top')) * 1.8 - w / 3 / 15 * 0.2 );
+  //namebox.css('background-position-y', w / 2 - parseFloat(name.css('padding-top')) * 2 - (44 - 38) / 2 );
+  namebox.css('background-position-y', (w - 24) / 2 );
+  //alert(w);
 };
 
 window.addEventListener('resize', window.responsiveMethod);
@@ -174,6 +197,9 @@ $(document).ready(function() {
  }) ();
 
   responsiveMethod();
+  setTimeout(function(){
+    tuneLinePosition();    
+  }, 100);
 });
 </script>
 <% end %>
