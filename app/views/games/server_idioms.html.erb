@@ -1,46 +1,16 @@
 <% content_for :stylesheets do %>
+<%= stylesheet_link_tag 'reset','tvwall' %>
 <style type="text/css">
+p.name{
+  padding-bottom:6%;
+}
 
 body,.container{
   background-color: #000000;
   width: 100%;
-}
-
-h4 {
-  color: #ffffff
-}
-
-.border_radius{
-  border: 2px solid #D6D6D6;
-  -webkit-border-radius: 100px;
-  -moz-border-radius: 100px;
-  border-radius: 100px;
-}
-
-
-.every_writer_box{
-  float:left;
-  padding-top:22%;
-  width:5%;
-}
-
-.img_box{
-  display:block;
-  margin:0 auto;
-}
-
-.user_one{
-  border:2px solid green;
-  width:96px;
-  height:96px;
-  position:absolute;
-}
-
-.user_two{
-  border:2px solid yellow;
-  width:96px;
-  height:96px;
-  position:absolute;
+  height:100%;
+  //width: 1600px;
+  //height:1000px;
 }
 
 .progress-bar {
@@ -49,140 +19,181 @@ h4 {
 
 </style>
 <% end %>
-<div id="user_one"></div>
-<div id="user_two"></div>
-<span id="second" style="color:red font-size:12px;" class="badge"><%= @second %>秒</span>
-<div>
-  <div class="every_writer_box">
-    <h4 class="text-center"><%= @visitors[0].name %></h4>
-    <%= render_gamer_photo(@visitors[0],"thumb",50,50,"img_box") %>
-    <br>
-    <button id="start_button_<%= @visitors[0].number %>" style="font-size:12px;" value="<%= @visitors[0].number %>" type="button" class="btn btn-default navbar-btn">Start</button>
-    <button id="stop_button_<%= @visitors[0].number %>" style="font-size:12px;" value="<%= @visitors[0].number %>" type="button" class="btn btn-default navbar-btn">Stop</button>
-  </div>
-  <% alpha = "ABCDEFGHIJKL" %>
-  <table id="canvasTable" style="border-collapse:separate;border-spacing:1px 0px;width:65%;float:left;table-layout:auto;">
-    <tr>
-      <td></td>
-      <% (0..11).to_a.each do |x| %>
-      <td>
-        <h4><%= alpha[x] %></h4>
-      </td>
-      <% end %>
-    </tr>
-    <% (1..8).to_a.each do |x| %>
-    <tr>
-      <td>
-        <h4><%= x %></h4>
-      </td>
-      <% (1..12).to_a.each do |y| %>
-      <td>
-        <button name="clear" value="<%= x %>,<%= y %>" type="button" class="btn btn-xs btn-default" style="position:absolute">Clear</button>
-        <canvas id="origin_<%= x %>_<%= y %>" style="z-index:1;border:1px solid red"></canvas>
-      </td>
-      <% end %>
-    </tr>
-    <% end %>
-  </table>
 
-  <div class="every_writer_box">
-    <h4 class="text-center"><%= @visitors[1].name %></h4>
-    <%= render_gamer_photo(@visitors[1],"thumb",50,50,"img_box") %>
-    <br>
-    <button id="start_button_<%= @visitors[1].number %>" style="font-size:12px;" value="<%= @visitors[1].number %>" type="button" class="btn btn-default navbar-btn">Start</button>
-    <button id="stop_button_<%= @visitors[1].number %>" style="font-size:12px;" value="<%= @visitors[1].number %>" type="button" class="btn btn-default navbar-btn">Stop</button>
-  </div>
-</div>
-<div class="row">
-  <div class="col-md-12">
-
-
-    <button id="next_button" style="font-size:20px;">下一位</button>
-    <input id="row" type="number" value="1" />
-    <input id="column" type="number" value="1" />
-    <input id="showText" type="text" value="" style="width:50px;" />
-    <button id="showTextButton">出題</button>
-  </div>
-  <div class="col-md-4">
-    <div class="progress"> 
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td colspan="3" height="5%">&nbsp;</td>
+  </tr>
+  <tr>
+    <td width="35%">&nbsp;</td>
+    <td>    <div class="progress"> 
       <div id="progress_bar" class="progress-bar" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%;">
-      <%= @second %>s
+        <%= @second %>s
       </div>
-    </div>
-  </div>
+    </div></td>
+    <td width="35%">&nbsp;</td>
+  </tr>
+  <tr>
+    <td></td>
+    <td>
+      <button id="next_button" style="font-size:20px;">下一位</button>
+      <input id="row" type="number" value="1" style="width:10%;" /><p style="color:white;display:inline">列</p>
+      <input id="column" type="number" value="1" style="width:10%;" /><p style="color:white;display:inline">行</p>
+      <input id="showText" type="text" value="" style="width:10%;" />
+      <button id="showTextButton">出題</button>
+    </td>
+    <td></td>
+  </tr>
+  
+</table>
+
+<div class="Content"> 
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td colspan="5">&nbsp;</td>
+    </tr>
+
+    <tr>
+      <td width="9%"></td>
+
+      <td valign="top" width="9%">
+        <div class="box_b">
+          <table width="100%" height="100%" border="0" cellspacing="0" cellpadding="0">
+            <tr class="nameTop">
+              <td>&nbsp;</td>
+            </tr>
+            <tr>
+              <td><p class="name"><%= @visitors[0].name %></p></td>
+            </tr>
+            <tr>
+              <td>
+                <div id="user_photo_<%= @visitors[0].number %>" class="photo">
+                  <%= render_gamer_photo(@visitors[0],"medium",'100%','100%','') %>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <button id="start_button_<%= @visitors[0].number %>" style="font-size:12px;" value="<%= @visitors[0].number %>" type="button" class="btn btn-default navbar-btn">Start</button>
+                <button id="stop_button_<%= @visitors[0].number %>" style="font-size:12px;" value="<%= @visitors[0].number %>" type="button" class="btn btn-default navbar-btn">Stop</button>
+              </td>
+            </tr>
+
+          </table>
+        </div>
+      </td>
+
+      <td width="2%">&nbsp;</td>
+
+      <td width="56%">
+        <table class="Chessboard" width="100%" border="0" cellspacing="0" cellpadding="0">
+          <tr>
+            <td>&nbsp;</td>
+            <td width="8%"><p>A</p></td>
+            <td width="8%"><p>B</p></td>
+            <td width="8%"><p>C</p></td>
+            <td width="8%"><p>D</p></td>
+            <td width="8%"><p>E</p></td>
+            <td width="8%"><p>F</p></td>
+            <td width="8%"><p>G</p></td>
+            <td width="8%"><p>H</p></td>
+            <td width="8%"><p>I</p></td>
+            <td width="8%"><p>J</p></td>
+            <td width="8%"><p>K</p></td>
+            <td width="8%"><p>L</p></td>
+          </tr>
+
+          <% (1..8).to_a.each do |x| %>
+          <tr>
+            <td>
+              <p><%= x %></p>
+            </td>
+            <% (1..12).to_a.each do |y| %>
+            <td>
+              <div id="grid_<%= x %>_<%= y %>" class="Grid bor_g">
+                <div id="glow_<%= x %>_<%= y %>" class="inner_glow"><img src="/assets/tvwall/img_Grid_g_green.png" width="100%"/></div>
+                <button name="clear" value="<%= x %>,<%= y %>" type="button" class="btn btn-xs btn-default" style="position:absolute;opacity:0.6">Clear</button>
+                <canvas id="origin_<%= x %>_<%= y %>" width="100%" ></canvas>
+              </div>
+            </td>
+            <% end %>
+          </tr>
+          <% end %>
+
+        </table>
+      </td>
+
+      <td width="2%">&nbsp;</td>
+
+      <td valign="top" width="9%">
+        <div class="box_b">
+          <table width="100%" border="0" cellspacing="0" cellpadding="0">
+            <tr class="nameTop">
+              <td>&nbsp;</td>
+            </tr>
+            <tr>
+              <td><p class="name"><%= @visitors[1].name %></p></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="TopBpx">
+                  <div id="user_photo_<%= @visitors[1].number %>" class="photo">
+                    <%= render_gamer_photo(@visitors[1],"medium",'100%','100%','') %>
+                  </div>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <button id="start_button_<%= @visitors[1].number %>" style="font-size:12px;" value="<%= @visitors[1].number %>" type="button" class="btn btn-default navbar-btn">Start</button>
+                <button id="stop_button_<%= @visitors[1].number %>" style="font-size:12px;" value="<%= @visitors[1].number %>" type="button" class="btn btn-default navbar-btn">Stop</button>
+              </td>
+            </tr>
+          </table>
+        </div>
+      </td>
+
+      <td width="13%"></td>
+    </tr>
+
+  </table>
 </div>
+
+
 
 <% content_for :javascripts do %>
 <%= javascript_include_tag 'server_idioms' %>
 <%= javascript_include_tag 'server_idioms_helpers' %>
 <script>
 
-var getOffset = function(){
-  var offset = $('#canvasTable').offset();
-  offset.top += 40;
-  offset.left += 25;
-  return offset;
-}
 
 var blockCancelOneSubmitSetStyle = function(o){
-  $('#origin_'+o.block.row+'_'+o.block.column).css({
-        zindex:1,
-        border:"1px solid red"
-      });
+  $('#glow_'+o.block.row+'_'+o.block.column).hide();
 };
 
-//使用者送出確認
 var blockSubmitSetStyle = function(o){
-  var offset = getOffset();
-  $('#origin_'+o.block.row+'_'+o.block.column).css({
-    border:"1px solid green",
-    width:"96px",
-    height:"96px",
-    position:"absolute",
-    top:(o.block.row-1)*101+offset.top + "px",
-    left:(o.block.column-1)*96+offset.left + "px"
-  });
+  $('#glow_'+o.block.row+'_'+o.block.column).show();
 };
 
 //後台取消確認
 var blockCancelSubmitSetStyle = function(o){
-  $('#user_two').removeClass("user_two");
   for(var x=1;x<8;x++){
     for(var y=1;y<12;y++){
-      var el = document.getElementById('origin_'+x+'_'+y);
-      $(el).css({
-        zindex:1,
-        border:"1px solid red"
-      });
+      var c = document.getElementById('glow_'+x+'_'+y);
+      $(c).hide();
     }
   }
 };
-
 function startCounter(thisvalue) {
   console.log(window.alarm);
 
-  /*
-  if(window.alarm && window.alarm[thisvalue]) return; 
-  if (window.alarm === null) { 
-    window.alarm = {};
-  }
 
-  window.alarm[thisvalue] = setInterval(function(){
-    var s = parseFloat($('#second_'+thisvalue).text()).toFixed(1);
-    if (s > 0){
-      $('#second_'+thisvalue).text((s-0.1).toFixed(1) + "秒");
-    } else {
-      clearInterval(window.alarm[thisvalue]);
-      window.alarm[thisvalue] = null;
-    }
-  },100);
-  */
 
   if(window.alarm) return;
-    var s = parseFloat($('#second').text()).toFixed(1);
+  var s = parseFloat($('#progress_bar').text()).toFixed(1);
     //if (s === (0.0).toFixed(1)) resetProgressBarAndTime();
     window.alarm = setInterval(function(){
-      var s = parseFloat($('#second').text()).toFixed(1);
+      var s = parseFloat($('#progress_bar').text()).toFixed(1);
       if (s > 0){
         setProgressBarAndTime(s);
       } else {
@@ -196,28 +207,25 @@ function startCounter(thisvalue) {
       }
     }, 100); 
 
-}
+  }
 
-function startSetStyle(c) {
-  $('#user_photo_'+c).addClass("user_picture_block");
-}
+  function startSetStyle(c) {
+    $('#user_photo_'+c).addClass("green");
+  }
 
-function stopSetStyle(c) {
-  $('#user_photo_'+c).removeClass("user_picture_block");
-  blockCancelSubmitSetStyle();
-}
-
-function resetProgressBarAndTime() {
+  function stopSetStyle(c) {
+    $('#user_photo_'+c).removeClass("green");
+    blockCancelSubmitSetStyle();
+  }
+  function resetProgressBarAndTime() {
     $('#progress_bar').css("width", "100%").attr("aria-valuenow","100%").text(window.timeRemaining+"s");
     console.log(window.timeRemaining);
-    $('#second').text(window.timeRemaining);  
-}
+  }
 
-function setProgressBarAndTime(s) {
-  var percent = 100 * (s-0.1) / window.timeRemaining;
-  $('#progress_bar').css("width", percent+"%").attr('aria-valuenow', percent).text((s-0.1).toFixed(1)+"s");
-  $('#second').text((s - 0.1).toFixed(1));
-}
+  function setProgressBarAndTime(s) {
+    var percent = 100 * (s-0.1) / window.timeRemaining;
+    $('#progress_bar').css("width", percent+"%").attr('aria-valuenow', percent).text((s-0.1).toFixed(1)+"s");
+  }
 
 //var alarm = {};
 var tvwall = window.open("tvwall_<%= params[:stage] %>?join_visitors_number=<%= params[:join_visitors_number] %>&second=<%= @second %>","tvwallWindow","width=800, height=800");
@@ -231,9 +239,11 @@ $(document).ready(function() {
   CM.prop({
     width: 500,
     height: 500,
-    lineWidth: 15,
-    lineColor: '#ffffff',
-    targetZoomScale: 0.035
+    lineWidth: 13,
+    lineColor: '#ececec',
+    targetZoomScale: 0.015,
+    responsiveByParent: true,
+    backgroundImage: '/assets/tvwall/img_Grid_g.gif'
   });
   <% (1..8).to_a.each do |x| %>
   <% (1..12).to_a.each do |y| %>
