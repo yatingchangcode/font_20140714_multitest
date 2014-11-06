@@ -23,7 +23,7 @@ a{ text-decoration:none; outline: none; /* for Firefox */  hlbr:expression(this.
 .Content .box_a .Grid{ width:99%; position:relative; border:0.2vw solid #c0c0c0;}
 .Content .box_a .Grid .write{ width:95%; position:absolute; left:2%; top:2%; z-index:40;}
 .Content .box_a .Grid .correct{ width:32%; position:absolute; right:1%; bottom:2%; z-index:50;display:none;}
-.Content .box_a .bor_g{ border:3px solid #98c4a7;}
+.Content .box_a .bor_g{ border:0.2vw solid #98c4a7;}
 .Content .box_a .Grid .inner_glow{ width:100%; position:absolute; top:0px; left:0px;display:none;}
 
 .Content .box_a table tr td{ padding-bottom:10px;}
