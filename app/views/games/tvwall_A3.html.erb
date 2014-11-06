@@ -116,6 +116,7 @@ function removeO(c){
 
 function startSetStyle(c) {
   $('#user_photo_'+c).addClass("green");
+  receiveCancelSubmitHandler({user_id:c});
 }
 
 function stopSetStyle(c) {
