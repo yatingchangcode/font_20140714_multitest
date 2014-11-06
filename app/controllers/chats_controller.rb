@@ -55,7 +55,7 @@ class ChatsController < WebsocketRails::BaseController
     # p message[:user_id]+" close_file"
     # file_path = controller_store[:user_id_file_path][message[:trade_key]][0]
     begin
-      p Subprocess.check_call(["ffmpeg", "-framerate", framerate.to_s, "-i", "#{file_path}/%d.png", "#{file_path}.mp4", "-y"])
+      p Subprocess.check_call(["ffmpeg", "-framerate", framerate.to_s, "-pix_fmt", "yuv420p", "-s", "480x480", "-i", "#{file_path}/%d.png", "#{file_path}.mp4", "-y"])
       controller_store[:user_id_file_path][message[:trade_key]] = nil
     rescue Subprocess::NonZeroExit => e
       puts e.message
