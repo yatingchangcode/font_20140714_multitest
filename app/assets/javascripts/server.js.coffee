@@ -65,6 +65,7 @@ class @ChatApp
     @dispatcher.bind 'action', @receiveAction
     @dispatcher.bind 'userOut', @receiveUserOut
     @dispatcher.bind 'reset',   @receiveReset
+    @dispatcher.bind 'client_connected', @receiveClientConnected
 
   receiveDown: (message) =>
     if(receiveDownHandler && tvwall.receiveDownHandler)
@@ -149,5 +150,8 @@ class @ChatApp
       tvwall.receiveResetHandler message
     return
 
+  receiveClientConnected: (message) =>
+    receiveChangeConnectionStatusHandler message
+    return
 
 

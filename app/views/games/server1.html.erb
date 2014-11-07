@@ -40,7 +40,7 @@
             <div class="col-md-3">
                 <%= render_gamer_photo(x,"thumb",50,50) %>
                 <p><%= x.name %></p>
-                
+                <span id="status_<%= x.number %>" class="label label-danger">OffLine</span>
                 <% if @stage != 'A1' %>
                 <span>答對:</span><span id="no_correct_<%= x.number %>" class="badge">0題</span>
                 <% end -%>
@@ -112,6 +112,16 @@
 
       var no_correct = null;
       var correct_users = null;
+      
+      var receiveChangeConnectionStatusHandler = function(o){
+        for(var x in o) {
+          if (o[x] == true){
+            $('#status_'+x).attr('class','label label-success').text("OnLine");
+          }else{
+            $('#status_'+x).attr('class','label label-danger').text("OffLine");
+          }
+        }
+      }
 
       var receiveSubmitHandler = function(o){
         $('#visitor_'+o.user_id).css("background-color", "#e6e6f0");

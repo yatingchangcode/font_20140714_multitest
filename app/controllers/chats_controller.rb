@@ -21,7 +21,7 @@ class ChatsController < WebsocketRails::BaseController
     @visitor = @game.visitors.find_by(number: message[:user_id])
 
     file_name = "#{@visitor.name}_stage#{message[:stage]}_#{Time.now.strftime("%Y%m%d_%H%M%S")}"
-   
+
     record_path ||= File.expand_path(File.join("record"), Rails.public_path)
     file_path = FileUtils.mkdir_p("#{record_path}/game#{message[:game]}_#{@game.created_at.strftime("%Y%m%d")}/#{file_name}")
     
@@ -67,20 +67,22 @@ class ChatsController < WebsocketRails::BaseController
 
   def client_connected
     controller_store[:user_count] += 1
-    if params[:client_id] == 'record'
-      p "is_recode_open"
-      Setting.messaging['is_record_open'] = true
-    end
+
+    set_record_status(true)
+    
+    set_connection_status(params,true)
+
     p "user_count #{controller_store[:user_count]} ,user #{params[:client_id]} connected #{Time.now}"
     WebsocketRails.users[params[:client_id]] = connection
   end
 
   def client_disconnected
     controller_store[:user_count] -= 1
-    if params[:client_id] == 'record'
-      p "is_recode_close"
-      Setting.messaging['is_record_open'] = false
-    end
+
+    set_record_status(false)
+    
+    set_connection_status(params,false)
+
     p "user_count #{controller_store[:user_count]} ,user #{params[:client_id]} disconnected #{Time.now}"
     known_connections = WebsocketRails.users[params[:client_id]]
     known_connections.connections.delete connection
@@ -111,6 +113,28 @@ class ChatsController < WebsocketRails::BaseController
       it += ms
     end
     return computed
+  end
+
+  def set_record_status(status)
+    if params[:client_id] == 'record'
+      p "is_record_open"
+      Setting.messaging['is_record_open'] = status
+    end
+  end
+
+  def set_connection_status(params,status)
+    if params[:client_id] == '0' || params[:client_id] == 'record'
+      #do nothing
+    else
+      link_number = params[:client_id].to_i
+      link_number_str = params[:client_id].to_s
+      data = { :"#{link_number_str}" => status}
+      manager_connection =  WebsocketRails.users[0]
+      manager_connection.send_message :client_connected, data
+
+      # trigger_connection =  WebsocketRails.users[link_number]
+      # trigger_connection.send_message :client_connected, data
+    end
   end
 
 end

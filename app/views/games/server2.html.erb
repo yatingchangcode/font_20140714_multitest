@@ -22,6 +22,7 @@
               <div class="col-md-3">
                 <div id="photo_<%= x.number %>"><%= render_gamer_photo(x,"thumb",50,50) %></div>
                 <p><%= x.name %></p>
+                <span id="status_<%= x.number %>" class="label label-danger">OffLine</span>
                 <span>剩餘:</span><span id="second_<%= x.number %>" style="color:red font-size:12px;" class="badge"><%= @second %>秒</span>
                 <span>答對:</span><span id="no_correct_<%= x.number %>" class="badge">0題</span>
               </div>
@@ -58,6 +59,16 @@
       <%= javascript_include_tag 'server' %>
       
       <script>
+
+      var receiveChangeConnectionStatusHandler = function(o){
+        for(var x in o) {
+          if (o[x] == true){
+            $('#status_'+x).attr('class','label label-success').text("OnLine");
+          }else{
+            $('#status_'+x).attr('class','label label-danger').text("OffLine");
+          }
+        }
+      }
 
       //Gamer send submit
       var receiveSubmitHandler = function(o){
