@@ -53,9 +53,10 @@ body,.container{
             <tr>
               <td>
                 <div id="grid_<%= visitor.number %>" class="Grid">
+                  <canvas id="origin_<%= visitor.number %>" width="100%" ></canvas>
+                  <div id="metal_<%= visitor.number %>" class="inner_metal"><img src="/assets/tvwall/Metal-Frame.png" width="100%"/></div>
                   <div id="glow_<%= visitor.number %>" class="inner_glow"><img src="/assets/tvwall/img_Grid_b_green.png" width="100%"/></div>
                   <div id="yes_img_<%= visitor.number %>" class="correct"><img src="/assets/tvwall/red_ring.png" width="100%"/></div>
-                  <canvas id="origin_<%= visitor.number %>" width="100%" ></canvas>
                 </div>
               </td>
             </tr>
@@ -167,7 +168,7 @@ window.tuneLinePosition = function(){
   var w = $('.photo').width();
   var namebox = $('.nameBox');
   var name = $('.name');
-  name.css('font-size', w / 3 * 14 / 15);
+  name.css('font-size', w / 3 * 14.7 / 15);
   namebox.height(w);
   // 44 means picture height
   //namebox.css('background-position-y', w / 2 - parseFloat(name.css('padding-top')) * 1.8 - w / 3 / 15 * 0.2 );
@@ -186,7 +187,8 @@ $(document).ready(function() {
     lineColor: '#ececec',
     targetZoomScale: 0.40,
     responsiveByParent: true,
-    backgroundImage: '/assets/tvwall/img_Grid_b.gif'
+    backgroundLine: '7px #ff0000',
+    //backgroundImage: '/assets/tvwall/img_Grid_b.gif'
   });
   <% @visitors.each do |visitor| %>
   CM.reg('origin_<%= visitor.number %>');
@@ -201,6 +203,7 @@ $(document).ready(function() {
  }) ();
 
   responsiveMethod();
+  CM.doAllResponsive();
   setTimeout(function(){
     tuneLinePosition();    
   }, 100);
