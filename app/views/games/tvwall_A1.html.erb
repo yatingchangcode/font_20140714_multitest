@@ -199,7 +199,6 @@ function correctCountSetStyle(o){
   $("#no_correct_" + o.user_id).text(o.count+"題");
 }
 
-
 function clearAllSetStyle() {
   $('[id^=yes_img_]').hide();
   //$('[id^=answer_correct_]').text("?").css("color","");
@@ -246,7 +245,7 @@ $(document).ready(function() {
     lineColor: '#ececec',
     targetZoomScale: 0.15,
     responsiveByParent: true,
-    backgroundLine: '7px #ff0000'
+    backgroundLine: '7px rgba(255,0,0,0.6)'
     //backgroundImage: '/assets/tvwall/Metal-Frame.png'
   });
   <% @visitors.each do |visitor| %>
@@ -277,6 +276,15 @@ $(document).ready(function() {
   setTimeout(function(){
     tuneLinePosition();    
   }, 100);
+
+  /*
+  var borderWidth = 10;
+  $('.Grid').css("background", "url("+ generateBorderBase64($('.Grid'), borderWidth, 
+    ['0 #222222', '0.4 #999999', '0.6 #ffffff', '1 #222222'] ) +
+  ")");
+  $('.Grid').css("padding", borderWidth);
+  */
+
 });
 </script>
 <% end %>
