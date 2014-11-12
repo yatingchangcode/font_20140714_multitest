@@ -4,40 +4,6 @@
  */
 
 /*  畫 Border
-var c = document.getElementById("myCanvas");
-var ctx = c.getContext("2d");
-var grd = ctx.createLinearGradient(0, 0, 15, 0);
-ctx.lineWidth = 0;
-
-// 直的
-grd.addColorStop(0, "#333333");
-grd.addColorStop(0.4, "white");
-grd.addColorStop(0.6, "#c0c0c0");
-grd.addColorStop(1, "#333333");
-ctx.fillStyle = grd;
-ctx.fillRect(0, 15, 15, 285);
-// 上方角落
-ctx.beginPath();
-ctx.moveTo(0,0);
-ctx.lineTo(0,15);
-ctx.lineTo(15,15);
-ctx.fill();
-
-
-// 橫的
-grd = ctx.createLinearGradient(0, 0, 0, 15);
-grd.addColorStop(0, "#333333");
-grd.addColorStop(0.4, "white");
-grd.addColorStop(0.6, "#c0c0c0");
-grd.addColorStop(1, "#333333");
-ctx.fillStyle = grd;
-ctx.fillRect(15, 0, 285, 15);
-// 左方角落
-ctx.beginPath();
-ctx.moveTo(0,0);
-ctx.lineTo(15,0);
-ctx.lineTo(15,15);
-ctx.fill();
 
 */
 
@@ -87,8 +53,8 @@ ctx.fill();
 		lineCap: 'round',
 		lineColor: '#00ccff',
 		targetZoomScale: 1,
-		responsiveByParent: false,
-		backgroundLine: '6px #ff0000'
+		responsiveByParent: false
+		// backgroundLine: '6px #ff0000'
 		// backgroundImage
 	};
 	
