@@ -13,16 +13,35 @@ a{ text-decoration:none; outline: none; /* for Firefox */  hlbr:expression(this.
 .Content .box_a .TopBpx{ width:100%;}
 .Content .box_a .TopBpx .photo{ float:left; width:28%;}
 .Content .box_a .TopBpx .green{ box-shadow:0px 0px 2.5vw #00ff00;}
-.Content .box_a .TopBpx .nameBox{ float:left; width:67%; height:100%; overflow:hidden; background:url(/assets/tvwall/name_line.png) right no-repeat;}
+.Content .box_a .TopBpx .nameBox{ float:left; width:67%; height:100%; overflow:hidden; 
+	background:url(/assets/tvwall/Upper-Metal-Bar.png) -25px no-repeat;
+	background-size: 100% 8%;
+}
 .Content .box_a .TopBpx .nameBox p.name{ color:#FFF; padding-left:7%;}
 .Content .box_a .TopBpx .answer10{ float:left; width:25%;}
 
 .Content .box_a .s1 .photo{ width:20%;}
   
-.Content .box_a .TopBpx .br_line01{ background:url(/assets/tvwall/name_line_01.png) right 18px no-repeat;}
-.Content .box_a .TopBpx .br_line02{ background:url(/assets/tvwall/name_line_02.png) right 18px no-repeat;}
-.Content .box_a .TopBpx .br_line03{ width:35%; background:url(/assets/tvwall/name_line_03.png) right 25px no-repeat;}
-.Content .box_a .TopBpx .br_line04{ width:35%; background:url(/assets/tvwall/name_line_04.png) right 18px no-repeat;}
+.Content .box_a .TopBpx .br_line01{ 
+	//background:url(/assets/tvwall/name_line_01.png) right 18px no-repeat;
+	background:url(/assets/tvwall/Upper-Metal-Bar.png) -35px no-repeat;
+	background-size: 100% 8%;
+}
+.Content .box_a .TopBpx .br_line02{ 
+	//background:url(/assets/tvwall/name_line_02.png) right 18px no-repeat;
+	background:url(/assets/tvwall/Upper-Metal-Bar.png) -35px no-repeat;
+	background-size: 100% 8%;
+}
+.Content .box_a .TopBpx .br_line03{ width:35%;
+	//background:url(/assets/tvwall/name_line_03.png) right 25px no-repeat;
+	background:url(/assets/tvwall/Upper-Metal-Bar.png) -20px no-repeat;
+	background-size: 100% 8%;
+}
+.Content .box_a .TopBpx .br_line04{ width:35%; 
+	//background:url(/assets/tvwall/name_line_04.png) right 18px no-repeat;
+	background:url(/assets/tvwall/Upper-Metal-Bar.png) -15px no-repeat;
+	background-size: 100% 8%;
+}
 
 .Content .box_a .Grid{ width:99%; position:relative; 
 	//border:0.2vw solid #c0c0c0;
