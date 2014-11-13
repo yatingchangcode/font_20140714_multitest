@@ -77,7 +77,7 @@
     var context = testCan.getContext("2d");
     context.fillStyle = "#ececec";
     //context.font = "bold " + (w * 13 / 15) + "px 標楷體";
-    context.font = (w * 13 / 15) + "px 標楷體";
+    context.font = (w * 13 / 15) + "px Sans-serif";
     context.fillText(o.text, w / 15, w * 12 / 15);
   };
 
