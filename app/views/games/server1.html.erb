@@ -77,7 +77,9 @@
             -->
            
             <% if @stage != 'B2' %>
-            <button id="show_correct_button" style="font-size:15px;">顯示正確使用者</button>
+              <% if !['A3', 'B1'].include? @stage %>
+              <button id="show_correct_button" style="font-size:15px;">顯示正確使用者</button>
+              <% end -%>
             <button id="start_button" style="font-size:15px;">全部開始</button>
             <% end -%>
 
@@ -311,7 +313,7 @@
 
          $('[id^=correct_button_]').click(function(){
           //window.chatApp.right(this.value);
-          <% if (@stage == "B2") %>
+          <% if ['A3','B1','B2'].include? @stage %>
             window.chatApp.right(this.value);
           <% else %>
             if (!correct_users) correct_users = [];
@@ -327,6 +329,8 @@
               no_correct[this.value] += 1;
             }
             window.chatApp.setCorrectCount(this.value, no_correct[this.value]);
+
+            
          });
 
         $('[id^=remove_O_button_]').click(function(){
@@ -379,11 +383,13 @@
               //window.chatApp.cancelSubmit(i);
               //receiveSubmitHandler({user_id:i});
             <% end %>
+            <% if @stage != 'B2' %>
             gamers.all().forEach(function(i){
               window.chatApp.action(i,'start');
             });
 
             setTimeout(startCounter,100);
+            <% end %>
 
         });
 
