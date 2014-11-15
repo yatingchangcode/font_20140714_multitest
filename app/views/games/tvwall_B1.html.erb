@@ -17,7 +17,7 @@ body,.container{
 <div class="Content"> 
   <table width="100%" border="0" cellspacing="0" cellpadding="0">
     <tr>
-      <td colspan="5" height="20">&nbsp;</td>
+      <td colspan="5" height="140">&nbsp;</td>
     </tr>
     
     <tr>
@@ -54,7 +54,7 @@ body,.container{
               <td>
                 <div id="grid_<%= visitor.number %>" class="Grid">
                   <canvas id="origin_<%= visitor.number %>" width="100%" ></canvas>
-                  <div id="metal_<%= visitor.number %>" class="inner_metal"><img src="/assets/tvwall/Metal-Frame.png" width="100%"/></div>
+                  <div id="metal_<%= visitor.number %>" class="inner_metal"></div>
                   <div id="glow_<%= visitor.number %>" class="inner_glow"><img src="/assets/tvwall/img_Grid_b_green.png" width="100%"/></div>
                   <div id="yes_img_<%= visitor.number %>" class="correct"><img src="/assets/tvwall/red_ring.png" width="100%"/></div>
                 </div>
@@ -131,10 +131,12 @@ function resetSetStyle(s) {
 }
 
 function correctCountSetStyle(o){
+  /*
   $("#no_correct_" + o.user_id).show();
   if(o.count <= 10){
     $("#no_correct_" + o.user_id).attr('src',"/assets/tvwall/answer10/answer10_"+ o.count +".png");  
   }
+*/
 }
 
 
@@ -199,6 +201,13 @@ $(document).ready(function() {
  }) ();
 
   responsiveMethod();
+
+  var borderWidth = 15;
+  $('.Grid').css("background", "url("+ generateBorderBase64($('.Grid'), borderWidth, 
+    ['0 #ffffff', '0.5 #aaaaaa', '1 #aaaaaa'] ) +
+  ")");
+  $('.Grid').css("padding", borderWidth);
+
   CM.doAllResponsive();
   setTimeout(function(){
     tuneLinePosition();    

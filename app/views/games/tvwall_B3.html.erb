@@ -17,12 +17,12 @@ body,.container{
 
 <table width="100%" border="0" cellspacing="0" cellpadding="0">
   <tr>
-    <td colspan="3" height="5%">&nbsp;</td>
+    <td colspan="3" height="100">&nbsp;</td>
   </tr>
   <tr>
-    <td width="35%">&nbsp;</td>
-    <td><div class="HP_bar" style="height:12px;"> <canvas id="sketchSecond" data-processing-sources="/assets/timebar.pde"></canvas></div></td>
-    <td width="35%">&nbsp;</td>
+    <td width="32%">&nbsp;</td>
+    <td><div class="HP_bar" style="height:20px;"> <canvas id="sketchSecond" data-processing-sources="/assets/timebar.pde"></canvas></div></td>
+    <td width="33%">&nbsp;</td>
   </tr>
   
 </table>
@@ -191,14 +191,15 @@ window.tunePosition = function(){
   var w = $('.photo').width();
   //var namebox = $('.nameBox');
   var name = $('.name');
-  name.css('font-size', w / 3 * 14.5 / 15);
+  name.css('font-size', w / 3 * 17.5 / 15);
 
   var board = $('.Chessboard');
   $('.nameTop').height(board.height() / 4);
 
   var jqEl = $('[id^=grid_]');
 
-  $('table.Chessboard p').css('font-size', jqEl.height() / 3 * 1.1);
+  $('table.Chessboard p').css('font-weight', 'bold');
+  $('table.Chessboard p').css('font-size', jqEl.height() / 3 * 1.3);
 
 };
 

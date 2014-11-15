@@ -37,11 +37,8 @@ body,.container{
                     <%= render_gamer_photo(visitor,"medium",'100%','100%','') %>
                   </div>
                   <div class="nameBox br_line04">
-                    <% if(visitor.title) %>
-                    <p class="name"><%= visitor.title %></p>
-                    <% else %>
-                    <p class="name">&nbsp;</p>
-                    <% end %>
+
+
                     <p class="name"><%= visitor.name %></p>
                   </div>
                   <div class="answer10" style="padding:15px 0 0 10px;"><img id="no_correct_<%= visitor.number %>" src="/assets/tvwall/answer10/answer10_1.png" width="100%" style="display:none"/></div>
@@ -53,7 +50,7 @@ body,.container{
               <td>
                 <div id="grid_<%= visitor.number %>" class="Grid">
                   <canvas id="origin_<%= visitor.number %>" width="100%" ></canvas>
-                  <div id="metal_<%= visitor.number %>" class="inner_metal"><img src="/assets/tvwall/Metal-Frame.png" width="100%"/></div>
+                  <div id="metal_<%= visitor.number %>" class="inner_metal"></div>
                   <div id="glow_<%= visitor.number %>" class="inner_glow"><img src="/assets/tvwall/img_Grid_b_green.png" width="100%"/></div>
                   <div id="yes_img_<%= visitor.number %>" class="correct"><img src="/assets/tvwall/red_ring.png" width="100%"/></div>
                   
@@ -164,7 +161,7 @@ window.tuneLinePosition = function(){
   var w = $('.photo').width();
   var namebox = $('.nameBox');
   var name = $('.name');
-  name.css('font-size', w / 3 * 14.7 / 15);
+  name.css('font-size', w / 3 * 17 / 15);
   namebox.height(w);
   // 44 means picture height
   //namebox.css('background-position-y', w / 2 - parseFloat(name.css('padding-top')) * 1.8 - w / 3 / 15 * 0.2 );
@@ -200,6 +197,15 @@ $(document).ready(function() {
  }) ();
 
   responsiveMethod();
+
+
+  var borderWidth = 11;
+  $('.Grid').css("background", "url("+ generateBorderBase64($('.Grid'), borderWidth, 
+    ['0 #ffffff', '0.5 #aaaaaa', '1 #aaaaaa'] ) +
+  ")");
+  $('.Grid').css("padding", borderWidth);
+  
+
   CM.doAllResponsive();
   setTimeout(function(){
     tuneLinePosition();    
