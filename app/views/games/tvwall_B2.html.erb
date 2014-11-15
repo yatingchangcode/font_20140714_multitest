@@ -41,7 +41,7 @@ body,.container{
 
                     <p class="name"><%= visitor.name %></p>
                   </div>
-                  <div class="answer10" style="padding:15px 0 0 10px;"><img id="no_correct_<%= visitor.number %>" src="/assets/tvwall/answer10/answer10_1.png" width="100%" style="display:none"/></div>
+                  <div class="answer10" style="padding:15px 0 0 10px;"><img id="no_correct_<%= visitor.number %>" src="/assets/tvwall/answer10/answer10_1.png" width="100%" style="opacity:0;"/></div>
                   <br class="CLEAR" />
                 </div>
               </td>
@@ -129,7 +129,8 @@ function resetSetStyle(s) {
 }
 
 function correctCountSetStyle(o){
-  $("#no_correct_" + o.user_id).show();
+  //$("#no_correct_" + o.user_id).show();
+  $("#no_correct_" + o.user_id).css('opacity', 1);
   if(o.count <= 10){
     $("#no_correct_" + o.user_id).attr('src',"/assets/tvwall/answer10/answer10_"+ o.count +".png");  
   }
