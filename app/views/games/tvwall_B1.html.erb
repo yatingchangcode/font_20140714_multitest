@@ -38,11 +38,7 @@ body,.container{
                     <%= render_gamer_photo(visitor,"medium",'100%','100%','') %>
                   </div>
                   <div class="nameBox br_line03">
-                    <% if(visitor.title) %>
-                    <p class="name"><%= visitor.title %></p>
-                    <% else %>
-                    <p class="name">&nbsp;</p>
-                    <% end %>
+                    
                     <p class="name"><%= visitor.name %></p>
                   </div>
                   <div class="answer10" style="padding:15px 0 0 10px;"><img id="no_correct_<%= visitor.number %>" src="/assets/tvwall/answer10/answer10_1.png" width="100%" style="display:none"/></div>
