@@ -38,7 +38,7 @@ body,.container{
     <td>
       <button id="next_button" style="font-size:20px;">下一位</button>
       <input id="row" type="number" value="1" style="width:10%;" /><p style="color:white;display:inline">列</p>
-      <input id="column" type="number" value="1" style="width:10%;" /><p style="color:white;display:inline">行</p>
+      <input id="column" type="text" value="1" style="width:10%;" /><p style="color:white;display:inline">行</p>
       <input id="showText" type="text" value="" style="width:10%;" />
       <button id="showTextButton">出題</button>
     </td>
@@ -298,8 +298,16 @@ $(document).ready(function() {
   });
 
   $('#showTextButton').click(function(){
-
-    window.chatApp.sendText($('#showText').val(),{row: $('#row').val(), column:$('#column').val()});
+    var row = $('#row').val();
+    var col = $('#column').val();
+    var columnArray = ['a','b','c','d','e','f','g','h','i','j','k','l'];
+    if(isNaN(col)){
+      var idx = columnArray.indexOf(col.toLowerCase());
+      if(idx != -1){
+        col = (idx + 1).toString();
+      }
+    }
+    window.chatApp.sendText($('#showText').val(),{row: row, column: col});
 
   });
 
