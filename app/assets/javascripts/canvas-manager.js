@@ -2,6 +2,12 @@
  * @fileoverview Utilities for handling canvases in html page.
  * @author miecowbai@gmail.com (Kino Lien)
  */
+
+/*  畫 Border
+
+*/
+
+
  
 (function(scope){
 	/**
@@ -48,6 +54,7 @@
 		lineColor: '#00ccff',
 		targetZoomScale: 1,
 		responsiveByParent: false
+		// backgroundLine: '6px #ff0000'
 		// backgroundImage
 	};
 	
@@ -110,6 +117,38 @@
 		}		
 	};
 
+	var drawSplitLines_ = function(ins, info){
+		var backLine = info;
+		if(backLine){
+			var con = ins.context_;
+			var w = ins.width_;
+			var h = ins.height_;
+			var sourceMinWidth = Math.min(prop_.width, prop_.height);
+			var minWidth = Math.min(w, h);
+			var splits = backLine.split(' ');
+			var px = parseInt(splits[0] || '1px');
+			var color = splits[1] || '#000000';
+			if(!isNaN(px) && color){
+				con.lineWidth = minWidth / (sourceMinWidth / px ) ;
+				con.lineCap = 'square';
+				con.strokeStyle = color;
+
+				con.beginPath();
+				con.moveTo(0, h * 1 / 3);
+				con.lineTo(w, h * 1 / 3);
+				con.moveTo(0, h * 2 / 3);
+				con.lineTo(w, h * 2 / 3);
+
+				con.moveTo(w * 1 / 3, 0);
+				con.lineTo(w * 1 / 3, h);
+				con.moveTo(w * 2 / 3 , 0);
+				con.lineTo(w * 2 / 3 , h);
+				con.stroke();
+
+			}
+		}
+	}
+
 	/**
 	 * Initialize the Canvas Empty Instance
 	 * @private
@@ -144,6 +183,7 @@
 		);
 		
 		var con = this.context_ = this.el_.getContext('2d');
+
 		var back = prop_.backgroundImage;
 		if(back){
 			if(typeof back == 'string'){
@@ -228,9 +268,15 @@
 	 */
 	CanvasInstance.prototype.clear = function(callback){
 		if(this.backImg_){
+			this.context_.save();
+			drawSplitLines_(this, prop_.backgroundLine);
+			this.context_.restore();
 			this.context_.drawImage(this.backImg_, 0, 0, this.width_, this.height_);
 		}else{
 			this.context_.clearRect(0, 0, this.width_, this.height_);
+			this.context_.save();
+			drawSplitLines_(this, prop_.backgroundLine);
+			this.context_.restore();
 		}
 		this.track_ = [];
 		if(typeof callback == 'function'){
@@ -254,7 +300,7 @@
 			// p.clientHeight - paddings = actual height
 
 			var squareSize = Math.min(aw, ah);
-			
+			console.log([p.clientWidth, squareSize]);
 			ins.width_ = squareSize;
 			ins.height_ = squareSize;
 			ins.el_.width = Math.round(squareSize);
@@ -262,15 +308,18 @@
 			ins.rootScale_ = ins.width_ / prop_.width;
 
 			var sourceMinWidth = Math.min(prop_.width, prop_.height);
-			ins.context_.lineWidth = squareSize / (sourceMinWidth / prop_.lineWidth);
-			ins.context_.lineCap = prop_.lineCap;
-			ins.context_.strokeStyle = prop_.lineColor;
+			var con = ins.context_;
+
+			drawSplitLines_(ins, prop_.backgroundLine);
+
+			con.lineWidth = squareSize / (sourceMinWidth / prop_.lineWidth);
+			con.lineCap = prop_.lineCap;
+			con.strokeStyle = prop_.lineColor;
 
 			if(ins.backImgLoad_){
 				ins.context_.drawImage(ins.backImg_, 0, 0, squareSize, squareSize);
 			}
 			// rewrite cached drawing
-			var con = ins.context_;
 			for(var i = 0, len = ins.track_.length; i < len; i++){
 				var single = ins.track_[i];
 				var pslen = single.length;
@@ -386,6 +435,10 @@
 			}
 		}
 		return prop_;
+	};
+
+	CM.doAllResponsive = function(){
+		doResponse_();
 	};
 	
 	hookResponse_(prop_.responsiveByParent);

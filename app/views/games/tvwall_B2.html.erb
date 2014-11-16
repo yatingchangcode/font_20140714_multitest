@@ -37,14 +37,11 @@ body,.container{
                     <%= render_gamer_photo(visitor,"medium",'100%','100%','') %>
                   </div>
                   <div class="nameBox br_line04">
-                    <% if(visitor.title) %>
-                    <p class="name"><%= visitor.title %></p>
-                    <% else %>
-                    <p class="name">&nbsp;</p>
-                    <% end %>
+
+
                     <p class="name"><%= visitor.name %></p>
                   </div>
-                  <div class="answer10" style="padding:15px 0 0 10px;"><img id="no_correct_<%= visitor.number %>" src="/assets/tvwall/answer10/answer10_1.png" width="100%" style="display:none"/></div>
+                  <div class="answer10" style="padding:15px 0 0 10px;"><img id="no_correct_<%= visitor.number %>" src="/assets/tvwall/answer10/answer10_1.png" width="100%" style="opacity:0;"/></div>
                   <br class="CLEAR" />
                 </div>
               </td>
@@ -52,9 +49,11 @@ body,.container{
             <tr>
               <td>
                 <div id="grid_<%= visitor.number %>" class="Grid">
+                  <canvas id="origin_<%= visitor.number %>" width="100%" ></canvas>
+                  <div id="metal_<%= visitor.number %>" class="inner_metal"></div>
                   <div id="glow_<%= visitor.number %>" class="inner_glow"><img src="/assets/tvwall/img_Grid_b_green.png" width="100%"/></div>
                   <div id="yes_img_<%= visitor.number %>" class="correct"><img src="/assets/tvwall/red_ring.png" width="100%"/></div>
-                  <canvas id="origin_<%= visitor.number %>" width="100%" ></canvas>
+                  
                 </div>
               </td>
             </tr>
@@ -130,7 +129,8 @@ function resetSetStyle(s) {
 }
 
 function correctCountSetStyle(o){
-  $("#no_correct_" + o.user_id).show();
+  //$("#no_correct_" + o.user_id).show();
+  $("#no_correct_" + o.user_id).css('opacity', 1);
   if(o.count <= 10){
     $("#no_correct_" + o.user_id).attr('src',"/assets/tvwall/answer10/answer10_"+ o.count +".png");  
   }
@@ -162,12 +162,12 @@ window.tuneLinePosition = function(){
   var w = $('.photo').width();
   var namebox = $('.nameBox');
   var name = $('.name');
-  name.css('font-size', w / 3 * 14 / 15);
+  name.css('font-size', w / 3 * 17 / 15);
   namebox.height(w);
   // 44 means picture height
   //namebox.css('background-position-y', w / 2 - parseFloat(name.css('padding-top')) * 1.8 - w / 3 / 15 * 0.2 );
   //namebox.css('background-position-y', w / 2 - parseFloat(name.css('padding-top')) * 2 - (44 - 38) / 2 );
-  namebox.css('background-position-y', (w - 24) / 2 );
+  namebox.css('background-position-y', (w + 5) / 2 );
   //alert(w);
 };
 
@@ -181,7 +181,8 @@ $(document).ready(function() {
     lineColor: '#ececec',
     targetZoomScale: 0.40,
     responsiveByParent: true,
-    backgroundImage: '/assets/tvwall/img_Grid_b.gif'
+    backgroundLine: '7px rgba(255,0,0,0.6)'
+    //backgroundImage: '/assets/tvwall/img_Grid_b.gif'
   });
   <% @visitors.each do |visitor| %>
   CM.reg('origin_<%= visitor.number %>');
@@ -197,6 +198,16 @@ $(document).ready(function() {
  }) ();
 
   responsiveMethod();
+
+
+  var borderWidth = 11;
+  $('.Grid').css("background", "url("+ generateBorderBase64($('.Grid'), borderWidth, 
+    ['0 #ffffff', '0.5 #aaaaaa', '1 #aaaaaa'] ) +
+  ")");
+  $('.Grid').css("padding", borderWidth);
+  
+
+  CM.doAllResponsive();
   setTimeout(function(){
     tuneLinePosition();    
   }, 100);
