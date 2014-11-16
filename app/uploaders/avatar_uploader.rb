@@ -16,7 +16,7 @@ class AvatarUploader < CarrierWave::Uploader::Base
     "uploads/#{model.class.to_s.underscore}/#{mounted_as}/#{model.id}"
   end
 
-  #process :resize_to_fit => [800, 800]
+  process :resize_to_fit => [700, 1000]
 
   version :thumb do
     process :resize_to_fill => [100,100]
