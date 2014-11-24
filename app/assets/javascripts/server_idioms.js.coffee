@@ -23,6 +23,9 @@ class @ChatApp
     @dispatcher.bind 'clear', @receiveClear
     @dispatcher.bind 'action', @receiveAction
 
+  continue_write: (uid) ->
+    @dispatcher.trigger 'continue_write', user_id: uid
+
   receiveDown: (message) =>
     if(receiveDownHandler && tvwall.receiveDownHandler)
       receiveDownHandler message
