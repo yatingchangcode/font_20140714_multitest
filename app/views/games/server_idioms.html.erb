@@ -76,6 +76,7 @@ body,.container{
               <td>
                 <button id="start_button_<%= @visitors[0].number %>" style="font-size:12px;" value="<%= @visitors[0].number %>" type="button" class="btn btn-default navbar-btn">Start</button>
                 <button id="stop_button_<%= @visitors[0].number %>" style="font-size:12px;" value="<%= @visitors[0].number %>" type="button" class="btn btn-default navbar-btn">Stop</button>
+                <button id="continue_<%= @visitors[0].number %>" style="font-size:12px;" value="<%= @visitors[0].number %>" type="button" class="btn btn-default navbar-btn">繼續寫</button>
               </td>
             </tr>
 
@@ -147,6 +148,7 @@ body,.container{
               <td>
                 <button id="start_button_<%= @visitors[1].number %>" style="font-size:12px;" value="<%= @visitors[1].number %>" type="button" class="btn btn-default navbar-btn">Start</button>
                 <button id="stop_button_<%= @visitors[1].number %>" style="font-size:12px;" value="<%= @visitors[1].number %>" type="button" class="btn btn-default navbar-btn">Stop</button>
+                <button id="continue_<%= @visitors[1].number %>" style="font-size:12px;" value="<%= @visitors[1].number %>" type="button" class="btn btn-default navbar-btn">繼續寫</button>
               </td>
             </tr>
           </table>
@@ -273,6 +275,13 @@ $(document).ready(function() {
    window.chatApp.action(this.value,'stop');
      //receiveSubmitHandler({user_id:this.value});
    });
+
+  $('[id^=continue_]').click(function(){
+          window.chatApp.continue_write(this.value);
+          //window.chatApp.cancelSubmit(this.value);
+          //$('#visitor_'+this.value).css("background-color", "");
+        });
+
 
   $('#next_button').click(function(){
     // stop last user

@@ -6,7 +6,7 @@
 }
 
 .visitor  {
-  width: 20%;
+  width: 22%;
   height: 20%
 }
 </style>
@@ -28,7 +28,7 @@
             <%= index+1 %>
             <div class="row-fluid" style="margin:auto; width:72%">
                 <button id="correct_button_<%= x.number %>" style="font-size:12px;" value="<%= x.number %>" type="button" class="correct_button btn btn-default navbar-btn">答對</button>
-            
+                <button id="continue_<%= x.number %>" style="font-size:12px;" value="<%= x.number %>" type="button" class="btn btn-default navbar-btn">繼續寫</button>
                 <%if @stage == "B2" %>    
                 <button id="start_button_<%= x.number %>" style="font-size:12px;" value="<%= x.number %>" type="button" class="btn btn-default navbar-btn">開始</button>
                 <button id="stop_button_<%= x.number %>" style="font-size:12px;" value="<%= x.number %>" type="button" class="btn btn-default navbar-btn">停止</button>
@@ -83,7 +83,7 @@
             <button id="start_button" style="font-size:15px;">全部開始</button>
             <% end -%>
 
-            <% if ['A3', 'B1'].include? @stage %>
+            <% if ['A1', 'A3', 'B1'].include? @stage %>
             <button id="stop_all_button" style="font-size:15px;">全部停止</button>
             <% end -%>
             <!-- <button id="stop_button" style="font-size:15px;">停止已選</button> -->
@@ -271,6 +271,12 @@
         }) ();
 
 
+        $('[id^=continue_]').click(function(){
+          window.chatApp.continue_write(this.value);
+          window.chatApp.cancelSubmit(this.value);
+          //$('#visitor_'+this.value).css("background-color", "");
+        });
+
         $('#clear_button').click(function(){
           window.chatApp.clearAll();
           correct_users = null;
@@ -383,6 +389,7 @@
               //window.chatApp.cancelSubmit(i);
               //receiveSubmitHandler({user_id:i});
             <% end %>
+            /*
             <% if @stage != 'B2' %>
             gamers.all().forEach(function(i){
               window.chatApp.action(i,'start');
@@ -390,6 +397,7 @@
 
             setTimeout(startCounter,100);
             <% end %>
+            */
 
         });
 
