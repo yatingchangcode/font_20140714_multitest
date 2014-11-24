@@ -68,14 +68,16 @@ class @ChatApp
     @dispatcher.bind 'client_connected', @receiveClientConnected
 
   receiveDown: (message) =>
-    if(receiveDownHandler && tvwall.receiveDownHandler)
+    if(receiveDownHandler)
       receiveDownHandler message
+    if(tvwall.window && tvwall.receiveDownHandler)
       tvwall.receiveDownHandler message
     return
 
   receiveMove: (message) =>
-    if(receiveMoveHandler && tvwall.receiveMoveHandler)
+    if(receiveMoveHandler)
       receiveMoveHandler message
+    if(tvwall.window && tvwall.receiveMoveHandler)
       tvwall.receiveMoveHandler message
     return
 
@@ -84,69 +86,80 @@ class @ChatApp
 
   receiveSubmit: (message) =>
     receiveSubmitHandler message
-    if(receiveSubmitHandler && tvwall.receiveSubmitHandler)
+    if(receiveSubmitHandler)
       receiveSubmitHandler message
+    if(tvwall.window && tvwall.receiveSubmitHandler)
       tvwall.receiveSubmitHandler message
     return
 
   receiveCancelSubmit: (message) =>
-    if(receiveCancelSubmitHandler && tvwall.receiveCancelSubmitHandler)
+    if(receiveCancelSubmitHandler)
       receiveCancelSubmitHandler message
+    if(tvwall.window && tvwall.receiveCancelSubmitHandler)
       tvwall.receiveCancelSubmitHandler message
     return
 
   receiveClear: (message) =>
-    if(receiveClearHandler && tvwall.receiveClearHandler)
+    if(receiveClearHandler)
       receiveClearHandler message
+    if(tvwall.window && tvwall.receiveClearHandler)
       tvwall.receiveClearHandler message
     return
 
   receiveO: (message) => 
-    if(receiveOHandler && tvwall.receiveOHandler)
+    if(receiveOHandler)
       receiveOHandler message
+    if(tvwall.window && tvwall.receiveOHandler)
       tvwall.receiveOHandler message
     return
 
   receiveRemoveO: (message) =>
-    if(receiveRemoveOHandler && tvwall.receiveRemoveOHandler)
+    if(receiveRemoveOHandler)
       receiveRemoveOHandler message
+    if(tvwall.window && tvwall.receiveRemoveOHandler)
       tvwall.receiveRemoveOHandler message
     return
 
   receiveCorrectCount: (message) ->
-    if(receiveCorrectCountHandler && tvwall.receiveCorrectCountHandler)
+    if(receiveCorrectCountHandler)
       receiveCorrectCountHandler message
+    if(tvwall.window && tvwall.receiveCorrectCountHandler)
       tvwall.receiveCorrectCountHandler message
     return
 
   receiveCorrectUsers: (users) ->
-    if(receiveCorrectUsersHandler && tvwall.receiveCorrectUsersHandler)
+    if(receiveCorrectUsersHandler)
       receiveCorrectUsersHandler users
+    if(tvwall.window && tvwall.receiveCorrectUsersHandler)
       tvwall.receiveCorrectUsersHandler users
     return
   
   receiveAction: (message) =>
     name = message.action
     if name is "start"
-      if(receiveStartHandler && tvwall.receiveStartHandler)
+      if(receiveStartHandler)
         receiveStartHandler message
+      if(tvwall.window && tvwall.receiveStartHandler)
         tvwall.receiveStartHandler message
       return
     else if name is "stop"
-      if(receiveStopHandler && tvwall.receiveStopHandler)
+      if(receiveStopHandler)
         receiveStopHandler message
+      if(tvwall.window && tvwall.receiveStopHandler)
         tvwall.receiveStopHandler message
       return
 
   receiveUserOut: (message) =>
-    if(receiveUserOutHandler && tvwall.receiveUserOutHandler)
+    if(receiveUserOutHandler)
       receiveUserOutHandler message
+    if(tvwall.window && tvwall.receiveUserOutHandler)
       tvwall.receiveUserOutHandler message
     return
 
   receiveReset: (message) =>
-    if(receiveResetHandler && tvwall.receiveResetHandler)
+    if(receiveResetHandler)
       receiveResetHandler message
+    if(tvwall.window && tvwall.receiveResetHandler)
       tvwall.receiveResetHandler message
     return
 
