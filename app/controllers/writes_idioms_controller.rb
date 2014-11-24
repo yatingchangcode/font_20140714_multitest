@@ -51,6 +51,11 @@ class WritesIdiomsController < WebsocketRails::BaseController
     manager_connection.send_message :end_round, data
   end
 
+  def rewrite
+    data = {block: message[:block], :stamp => message[:stamp], ink: message[:ink]}
+    broadcast_message :rewrite, data
+  end
+
   private 
 
   def transfer_column_row_to_block(hash)

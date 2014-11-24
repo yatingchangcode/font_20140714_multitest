@@ -42,7 +42,10 @@ body,.container{
       <input id="showText" type="text" value="" style="width:10%;" />
       <button id="showTextButton">出題</button>
     </td>
-    <td></td>
+    <td>
+      <button id="undoButton" style="margin-right:10px;">回溯</button>
+      <button id="redoButton">重做</button>
+    </td>
   </tr>
   
 </table>
@@ -166,6 +169,12 @@ body,.container{
 <%= javascript_include_tag 'server_idioms_helpers' %>
 <script>
 
+window.fromServerCommand = false;
+
+var updateTrackButtons = function(){  
+  $("#undoButton").attr("disabled", !(trackCache.hasUndo() && !window.alarm));
+  $("#redoButton").attr("disabled", !(trackCache.hasRedo() && !window.alarm));
+};
 
 var blockCancelOneSubmitSetStyle = function(o){
   $('#glow_'+o.block.row+'_'+o.block.column).hide();
@@ -184,48 +193,47 @@ var blockCancelSubmitSetStyle = function(o){
     }
   }
 };
+
 function startCounter(thisvalue) {
   console.log(window.alarm);
-
-
-
   if(window.alarm) return;
   var s = parseFloat($('#progress_bar').text()).toFixed(1);
     //if (s === (0.0).toFixed(1)) resetProgressBarAndTime();
-    window.alarm = setInterval(function(){
-      var s = parseFloat($('#progress_bar').text()).toFixed(1);
-      if (s > 0){
-        setProgressBarAndTime(s);
-      } else {
-        clearInterval(window.alarm);
-        window.alarm = null;
-        gamers.all().forEach(function(e){
-          window.chatApp.action(e,'stop');
-          //receiveSubmitHandler({user_id:e});
-        });
-        if(tvwall && tvwall.clearTimebar) tvwall.clearTimebar();
-      }
-    }, 100); 
+  window.alarm = setInterval(function(){
+    var s = parseFloat($('#progress_bar').text()).toFixed(1);
+    if (s > 0){
+      setProgressBarAndTime(s);
+    } else {
+      clearInterval(window.alarm);
+      window.alarm = null;
+      gamers.all().forEach(function(e){
+        window.chatApp.action(e,'stop');
+        //receiveSubmitHandler({user_id:e});
+      });
+      if(tvwall && tvwall.clearTimebar) tvwall.clearTimebar();
+    }
+  }, 100); 
+}
 
-  }
+function startSetStyle(c) {
+  $('#user_photo_'+c).addClass("green");
+  updateTrackButtons();
+}
 
-  function startSetStyle(c) {
-    $('#user_photo_'+c).addClass("green");
-  }
+function stopSetStyle(c) {
+  $('#user_photo_'+c).removeClass("green");
+  blockCancelSubmitSetStyle();
+  updateTrackButtons();
+}
+function resetProgressBarAndTime() {
+  $('#progress_bar').css("width", "100%").attr("aria-valuenow","100%").text(window.timeRemaining+"s");
+  console.log(window.timeRemaining);
+}
 
-  function stopSetStyle(c) {
-    $('#user_photo_'+c).removeClass("green");
-    blockCancelSubmitSetStyle();
-  }
-  function resetProgressBarAndTime() {
-    $('#progress_bar').css("width", "100%").attr("aria-valuenow","100%").text(window.timeRemaining+"s");
-    console.log(window.timeRemaining);
-  }
-
-  function setProgressBarAndTime(s) {
-    var percent = 100 * (s-0.1) / window.timeRemaining;
-    $('#progress_bar').css("width", percent+"%").attr('aria-valuenow', percent).text((s-0.1).toFixed(1)+"s");
-  }
+function setProgressBarAndTime(s) {
+  var percent = 100 * (s-0.1) / window.timeRemaining;
+  $('#progress_bar').css("width", percent+"%").attr('aria-valuenow', percent).text((s-0.1).toFixed(1)+"s");
+}
 
 //var alarm = {};
 var tvwall = window.open("tvwall_<%= params[:stage] %>?join_visitors_number=<%= params[:join_visitors_number] %>&second=<%= @second %>","tvwallWindow","width=800, height=800");
@@ -233,7 +241,6 @@ var tvwall = window.open("tvwall_<%= params[:stage] %>?join_visitors_number=<%= 
 
 window.timeRemaining = parseInt(<%= @second %>);
 window.alarm = null;
-
 
 $(document).ready(function() {
   CM.prop({
@@ -250,7 +257,8 @@ $(document).ready(function() {
   CM.reg('origin_<%= x %>_<%= y %>');
   <% end %>
   <% end %>
-
+  $("#undoButton").attr("disabled", true);
+  $("#redoButton").attr("disabled", true);
 
   window.chatApp = new ChatApp(500,500,'0');
   window.chatApp.bindEvents();
@@ -290,16 +298,15 @@ $(document).ready(function() {
   });
 
   $('[name^=clear]').click(function(){
-
     var xy = this.value.split(',');
     var block = { row: xy[0], column:xy[1] };
-
-    window.chatApp.clear(0,block); 
+    fromServerCommand = true;
+    window.chatApp.clear(0,block);
   });
 
   $('#showTextButton').click(function(){
-    var row = $('#row').val();
-    var col = $('#column').val();
+    var row = parseInt($('#row').val());
+    var col = parseInt($('#column').val());
     var columnArray = ['a','b','c','d','e','f','g','h','i','j','k','l'];
     if(isNaN(col)){
       var idx = columnArray.indexOf(col.toLowerCase());
@@ -307,9 +314,67 @@ $(document).ready(function() {
         col = (idx + 1).toString();
       }
     }
-    window.chatApp.sendText($('#showText').val(),{row: row, column: col});
-
+    var text = $('#showText').val();
+    var block = {row: row, column: col};
+    fromServerCommand = true;
+    window.chatApp.sendText(text, block);
   });
+
+  $('#undoButton').click(function(){
+    var track = trackCache.getUndo();
+    if(track){
+      var commandName = '';
+      var first = '';
+      switch(track.action){
+        case 'rewrite':
+          commandName = 'rewrite';
+          first = track.ink;
+          break;
+        case 'text':
+          commandName = 'sendText';
+          first = track.text;
+          break;
+        case 'clear':
+          commandName = 'clear';
+          first = 0;
+          break;
+      }
+      if(commandName){
+        window.chatApp[commandName](first, track.block);
+        console.log(commandName + ': ' + JSON.stringify(track.block) + ' <' + JSON.stringify(first) + '> ');
+      }
+    }
+    updateTrackButtons();
+  });
+
+  $('#redoButton').click(function(){
+    var track = trackCache.getRedo();
+    if(track){
+      var commandName = '';
+      var first = '';
+      switch(track.action){
+        case 'rewrite':
+          commandName = 'rewrite';
+          first = track.ink;
+          break;
+        case 'text':
+          commandName = 'sendText';
+          first = track.text;
+          break;
+        case 'clear':
+          commandName = 'clear';
+          first = 0;
+          break;
+      }
+      if(commandName){
+        window.chatApp[commandName](first, track.block);
+        console.log(commandName + ': ' + JSON.stringify(track.block) + ' <' + JSON.stringify(first) + '> ');
+      }
+    }
+    updateTrackButtons();
+  });
+
+  //updateTrackButtons();
 
 });
 </script>

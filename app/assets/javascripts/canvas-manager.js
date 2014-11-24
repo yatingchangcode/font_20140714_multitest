@@ -300,7 +300,7 @@
 			// p.clientHeight - paddings = actual height
 
 			var squareSize = Math.min(aw, ah);
-			console.log([p.clientWidth, squareSize]);
+			//console.log([p.clientWidth, squareSize]);
 			ins.width_ = squareSize;
 			ins.height_ = squareSize;
 			ins.el_.width = Math.round(squareSize);

@@ -19,6 +19,7 @@ class @ChatApp
     @dispatcher.bind 'move_block', @receiveMoveBlock
     @dispatcher.bind 'send_text', @receiveSendText
     @dispatcher.bind 'end_round', @receiveEndRound
+    @dispatcher.bind 'rewrite', @receiveRewrite
     @dispatcher.bind 'clear', @receiveClear
     @dispatcher.bind 'action', @receiveAction
 
@@ -80,6 +81,12 @@ class @ChatApp
         tvwall.receiveStopHandler message
       return
 
+  receiveRewrite: (message) =>
+    if(receiveRewriteHandler && tvwall.receiveRewriteHandler)
+      receiveRewriteHandler message
+      tvwall.receiveRewriteHandler message
+    return
+
   action: (uid,action) =>
     @dispatcher.trigger @stage_name+'.action' , user_id: uid, action: action
 
@@ -97,5 +104,7 @@ class @ChatApp
   sendText: (text,block) =>
     @dispatcher.trigger @stage_name+'.send_text' ,  block: block, text: text
 
+  rewrite: (ink, block) =>
+    @dispatcher.trigger @stage_name+'.rewrite' ,  block: block, ink: ink
 
 
