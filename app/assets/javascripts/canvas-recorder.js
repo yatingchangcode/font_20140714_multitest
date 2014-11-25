@@ -53,7 +53,8 @@
 		lineColor: '#000000',
 		recordFormat: '480p',
 		frameRate: 30,
-		cacheLastFrame: true
+		cacheLastFrame: true,
+		lazyOutput: false
 		// backgroundImage
 	};
 	
@@ -153,9 +154,10 @@
 	RecorderEmptyInstance.prototype.point = function(){return this;};
 	RecorderEmptyInstance.prototype.line = function(){return this;};
 	RecorderEmptyInstance.prototype.clear = function(){return this;};
-	RecorderEmptyInstance.prototype.start = function(){};
-	RecorderEmptyInstance.prototype.stop = function(){};
-	RecorderEmptyInstance.prototype.prop = function(){};
+	RecorderEmptyInstance.prototype.start = function(){return this;};
+	RecorderEmptyInstance.prototype.stop = function(){return this;};
+	RecorderEmptyInstance.prototype.prop = function(){return this;};
+	//RecorderEmptyInstance.prototype.compile = function(){return this;};
 	
 	/**
 	 * Initialize the Canvas Recorder Instance
@@ -212,6 +214,7 @@
 		this.status_ = Status_.IDLE;
 		this.history_ = [];
 		this.compiledHistory_ = {};
+		this.lazyCache = {};
 	}
 	
 	/**
@@ -360,24 +363,30 @@
 			var compilingTemp = self.history_.slice(0);
 			self.history_ = [];
 			self.status_ = Status_.IDLE;
-			var item;
-			var timeseq = 0;
-			var stampKey = compilingTemp[0].stamp + "-" + compilingTemp[compilingTemp.length-1].stamp;
-			self.compiledHistory_[stampKey] = [];
-			while(item = compilingTemp.shift()){
-				isLast = compilingTemp.length == 0;
-				setTimeout((function(scope, t, last, key){
-					return function(){	
-						scope.compiledHistory_[key].push({stamp:t.stamp, base64:t.el.toDataURL()});
-						//compiled.push({stamp:t.stamp, base64:t.el.toDataURL()});
-						if(last){
-							resultsCallback.call(scope, arrangeFrame_(scope.compiledHistory_[key].slice(0), frameRate));
-							scope.compiledHistory_[key] = null;
-						}
-					};
-				})(self, item, isLast, stampKey), timeseq += 3);
+
+			var stampKey = self.id_ + "-" + compilingTemp[0].stamp;
+			if(prop_.lazyOutput){
+				//this.lazyCache = {};
+				self.lazyCache[stampKey] = compilingTemp;
+				resultsCallback.call(self, compilingTemp.slice(0));
+			}else{
+				var item;
+				var timeseq = 0;
+				self.compiledHistory_[stampKey] = [];
+				while(item = compilingTemp.shift()){
+					isLast = compilingTemp.length == 0;
+					setTimeout((function(scope, t, last, key){
+						return function(){	
+							scope.compiledHistory_[key].push({stamp:t.stamp, base64:t.el.toDataURL()});
+							//compiled.push({stamp:t.stamp, base64:t.el.toDataURL()});
+							if(last){
+								resultsCallback.call(scope, arrangeFrame_(scope.compiledHistory_[key].slice(0), frameRate));
+								scope.compiledHistory_[key] = null;
+							}
+						};
+					})(self, item, isLast, stampKey), timeseq += 3);
+				}
 			}
-			
 		}
 	};
 
@@ -396,6 +405,21 @@
 		}
 		return this.prop_;
 	};
+
+	/*
+	Object.defineProperty(RecorderInstance.prototype, 'count', {
+	  get: function() {
+	  	if(prop_.lazyOutput){
+	  		var cache = this.lazyCache;
+	  		var count = 0;
+	  		for(var x in cache)
+	  			count++;
+	  		return count;
+	  	}
+	  	return 0;
+	  }
+	});
+	*/
 	
 	/**
 	 * Gets the canvas recorder instance or empty object.
@@ -485,6 +509,73 @@
 		return prop_;
 	};
 	
+	Object.defineProperty(CR, 'cacheCount', {
+		get: function(){
+			if(prop_.lazyOutput){
+				var count = 0;
+				for(var ins in instanceMap_){
+					var cache = instanceMap_[ins].lazyCache;
+					for(var key in cache)
+						count++;
+				}
+				return count;
+			}
+			return 0;
+		}
+	});
+	
+
+	CR.compileAll = function(eachCallback, compiledCallback){
+		if(prop_.lazyOutput){
+			//self.lazyCache[stampKey] = compilingTemp;
+			var compileList = [];
+			for(var ins in instanceMap_){
+				var cache = instanceMap_[ins].lazyCache;
+				for(var key in cache){
+					compileList.push({
+						key: key,
+						ink: cache[key]
+					});
+				}
+				instanceMap_[ins].lazyCache = {};
+			}
+
+			var wordItem;
+			var timeseq = 0;
+			var outputArray = [];
+			//self.compiledHistory_[stampKey] = [];
+			while(wordItem = compileList.shift()){
+				var inkList = wordItem.ink;
+				for(var i = 0, len = inkList.length; i < len; i++){
+					var isInkFirst = i == 0;
+					var isInkLast = i + 1 == len;
+					var hasToBack = compileList.length == 0 && isInkLast;
+					var inkItem = inkList[i];
+					setTimeout((function(scope, t, group, last, inkStart, inkEnd){
+						return function(){
+							var obj = {
+								stamp: t.stamp,
+								base64: t.el.toDataURL(),
+								id: group.key.split('-')[0],
+								key: group.key,
+								start: inkStart,
+								end: inkEnd
+							};
+							outputArray.push(obj);
+							if(inkStart){
+								eachCallback.call(scope, obj);
+							}
+							if(last){
+								compiledCallback.call(scope, outputArray.slice(0));
+							}
+						};
+					})(this, inkItem, wordItem, hasToBack, isInkFirst, isInkLast), timeseq += 5);
+				}
+			}
+		}
+	};
+
+
 	CR.clearAll = function(){
 		for(var ins in instanceMap_){
 			instanceMap_[ins].clear();

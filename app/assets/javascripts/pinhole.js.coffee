@@ -15,6 +15,7 @@ class @Pinhole
     @dispatcher.bind 'clear', @receiveClear
     @dispatcher.bind 'action', @receiveAction
     @dispatcher.bind 'reset', @receiveReset
+    @dispatcher.bind 'save_record', @receiveSaveRecord
     return
 
   receiveDown: (message) =>
@@ -50,3 +51,9 @@ class @Pinhole
     if(receiveResetHandler)
       receiveResetHandler message
     return
+
+  receiveSaveRecord: (message) ->
+    if(receiveSaveRecordHandler)
+      receiveSaveRecordHandler message
+    return
+

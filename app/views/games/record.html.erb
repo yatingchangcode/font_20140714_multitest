@@ -42,6 +42,7 @@
 
       var receiveDeviceStopHandler = function(o){
         CR(o.user_id).stop(o.stamp, stopCallBack(o.user_id));
+        //CR(o.user_id).stop(o.stamp);
       };
 
       var receiveResetHandler = function(o){
@@ -62,6 +63,80 @@
         }
       };
 
+      var receiveSaveRecordHandler = function(o){
+        if(o.is_saved || o.log) return;
+        var count = CR.cacheCount * 3;
+        CR.compileAll(
+          (function(total){
+            var scope = window.pinhole;
+            return function(data){
+              setTimeout((function(dispatcher, name){
+                return function(){
+                  dispatcher.trigger("save_record", { log: '編號[' + name + ']筆跡轉換中', total_count: total });
+                };
+              })(scope.dispatcher, data.key), 10);
+            };
+          })(count),
+          (function(total){
+          var scope = window.pinhole;
+          return function(data){
+            if(data && data.length > 0){
+              for(var i = 0, len = data.length; i < len; i++){
+                var item = data[i];
+                if(item.start){
+                  setTimeout((function(dispatcher, t){
+                    return function(){
+                      dispatcher.trigger("open_file", {
+                        user_id: t.id,
+                        trade_key: t.key,
+                        create_at: t.key.split('-')[1].substr(0, 10), // time exclude millseconds
+                        game: <%= @game.id %>,
+                        stage: '<%= @stage %>'
+                      });
+                      dispatcher.trigger("save_record", { log: '編號[' + t.key + ']存檔中', total_count: total });
+                    };
+                  })(scope.dispatcher, item), fileSaveActionCount++ * delayTime);
+                }
+
+                setTimeout((function(dispatcher, t){
+                  return function(){
+                    dispatcher.trigger("save_file", {
+                      user_id: t.id,
+                      timestamp: t.stamp.toString(),
+                      base64: t.base64.split(',')[1],
+                      trade_key: t.key
+                    });
+                  };
+                })(scope.dispatcher, item), fileSaveActionCount++ * delayTime);
+
+                if(item.end){
+                  setTimeout((function(dispatcher, t, isEnd){
+                    return function(){
+                      dispatcher.trigger("close_file", {
+                        user_id: t.id,
+                        trade_key: t.key,
+                        is_total_end: isEnd,
+                        total_count: total
+                      });
+                    };
+                  })(scope.dispatcher, item, i + 1 == len), fileSaveActionCount++ * delayTime);
+                }
+
+
+              }
+              /*
+              setTimeout((function(dispatcher){
+                return function(){
+                  dispatcher.trigger("save_record", { is_saved: true });
+                };
+              })(scope.dispatcher), fileSaveActionCount * delayTime);
+              */
+            }
+          };
+        })(count));
+
+      };
+
       $(document).ready(function() {
         CR.prop({
           width: 500,
@@ -70,6 +145,7 @@
           lineColor: '#ececec',
           frameRate: 50,
           cacheLastFrame: true,
+          lazyOutput: true,
           backgroundImage: '/assets/block-524-black-with-line.png'
         });
 
@@ -88,6 +164,7 @@
           return function(data) {
             element.html(pre + 'STOP<br/>');
 
+            /*
             var tkey = uid + "_" + (new Date()).getTime().toString();
 
             setTimeout((function(dispatcher, id, key){
@@ -95,6 +172,7 @@
                 dispatcher.trigger("open_file", {
                   user_id: id,
                   trade_key: key,
+                  create_at: key.split('-')[1].substr(0, 10),
                   game: <%= @game.id %>,
                   stage: '<%= @stage %>'
                 });
@@ -121,10 +199,12 @@
               return function(){
                 dispatcher.trigger("close_file", {
                   user_id: id,
-                  trade_key: key,
+                  trade_key: key
                 });
               };
             })(scope.dispatcher, uid, tkey), fileSaveActionCount++ * delayTime);
+            */
+
 
             /*
             var i, len;
@@ -155,6 +235,7 @@
           };
         };
 
+        /*
         setInterval(function(){
           if(fileSaveActionCount == preActionCount){
             fileSaveActionCount = preActionCount = 0;
@@ -162,6 +243,7 @@
             preActionCount = fileSaveActionCount;
           }
         },1300);
+        */
 
         window.startCallBack = function(){
           var id = this.id_;

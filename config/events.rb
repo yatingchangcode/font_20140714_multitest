@@ -16,6 +16,8 @@ WebsocketRails::EventMap.describe do
   subscribe :open_file, :to => ChatsController, :with_method => :open_file
   subscribe :save_file, :to => ChatsController, :with_method => :save_file
   subscribe :close_file, :to => ChatsController, :with_method => :close_file
+  subscribe :save_record, :to => ChatsController, :with_method => :save_record
+  subscribe :is_connected, :to => ChatsController, :with_method => :is_connected
 
   # namespace :stage1and2 do
     subscribe :down_location, :to => WritesController, :with_method => :down_location

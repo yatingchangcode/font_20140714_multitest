@@ -14,13 +14,33 @@ class ChatsController < WebsocketRails::BaseController
     connection.send_message :get_user_count, data
   end
 
+  def is_connected
+    from_id = message[:user_id]
+    target_id = message[:check_id]
+    target_connection = WebsocketRails.users[target_id]
+    if target_connection
+      WebsocketRails.users[from_id].send_message :is_connected, { connected: true }
+    else
+      WebsocketRails.users[from_id].send_message :is_connected, { connected: false }
+    end
+  end
+
+  def save_record
+    record_connection = WebsocketRails.users["record"]
+    control_connection = WebsocketRails.users[0]
+    record_connection.send_message :save_record, message
+    control_connection.send_message :save_record, message
+  end
+
   def open_file
     p message[:user_id]+" open_file"
 
     @game = Game.find(message[:game])
     @visitor = @game.visitors.find_by(number: message[:user_id])
 
-    file_name = "#{@visitor.name}_stage#{message[:stage]}_#{Time.now.strftime("%Y%m%d_%H%M%S")}"
+    p message[:create_at].to_i
+    client_create_time = Time.at(message[:create_at].to_i).strftime("%Y%m%d_%H%M%S")
+    file_name = "#{@visitor.name}_stage#{message[:stage]}_#{client_create_time}"
 
     record_path ||= File.expand_path(File.join("record"), Rails.public_path)
     file_path = FileUtils.mkdir_p("#{record_path}/game#{message[:game]}_#{@game.created_at.strftime("%Y%m%d")}/#{file_name}")
@@ -57,6 +77,9 @@ class ChatsController < WebsocketRails::BaseController
     begin
       p Subprocess.check_call(["ffmpeg", "-framerate", framerate.to_s, "-pix_fmt", "yuv420p", "-s", "480x480", "-i", "#{file_path}/%d.png", "#{file_path}.mp4", "-y"])
       controller_store[:user_id_file_path][message[:trade_key]] = nil
+      control_connection = WebsocketRails.users[0]
+      log_msg = "編號[" + message[:trade_key] + "]已存檔"
+      control_connection.send_message :save_record, {is_saved: message[:is_total_end], log: log_msg, total_count: message[:total_count] }
     rescue Subprocess::NonZeroExit => e
       puts e.message
       puts "Why aren't llamas one of your favorite animals?"
