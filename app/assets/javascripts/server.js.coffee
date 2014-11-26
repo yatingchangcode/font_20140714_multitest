@@ -39,6 +39,9 @@ class @ChatApp
   continue_write: (uid) ->
     @dispatcher.trigger 'continue_write', user_id: uid
 
+  is_connected: (uid) ->
+    @dispatcher.trigger 'is_connected', user_id: @user_id, check_id: uid
+
   reset: (s) =>
     if(s)
       @dispatcher.trigger 'reset', second: s.second, stage: s.stage
@@ -68,6 +71,7 @@ class @ChatApp
     @dispatcher.bind 'action', @receiveAction
     @dispatcher.bind 'userOut', @receiveUserOut
     @dispatcher.bind 'reset',   @receiveReset
+    @dispatcher.bind 'is_connected', @receiveIsConnected
     @dispatcher.bind 'client_connected', @receiveClientConnected
     @dispatcher.bind 'save_record', @receiveSaveRecord
 
@@ -165,6 +169,10 @@ class @ChatApp
       receiveResetHandler message
     if(tvwall.window && tvwall.receiveResetHandler)
       tvwall.receiveResetHandler message
+    return
+
+  receiveIsConnected: (message) =>
+    receiveIsConnectedHandler message
     return
 
   receiveClientConnected: (message) =>

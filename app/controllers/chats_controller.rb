@@ -15,14 +15,12 @@ class ChatsController < WebsocketRails::BaseController
   end
 
   def is_connected
-    from_id = message[:user_id]
     target_id = message[:check_id]
+    from_connection = WebsocketRails.users[message[:user_id]]
     target_connection = WebsocketRails.users[target_id]
-    if target_connection
-      WebsocketRails.users[from_id].send_message :is_connected, { connected: true }
-    else
-      WebsocketRails.users[from_id].send_message :is_connected, { connected: false }
-    end
+    # p target_connection.methods
+    # p target_connection.connections.length
+    from_connection.send_message :is_connected, { check_id:target_id, connected: target_connection.connections.length }
   end
 
   def save_record
@@ -104,11 +102,13 @@ class ChatsController < WebsocketRails::BaseController
 
     set_record_status(false)
     
-    set_connection_status(params,false)
+    # set_connection_status(params,false)
 
     p "user_count #{controller_store[:user_count]} ,user #{params[:client_id]} disconnected #{Time.now}"
     known_connections = WebsocketRails.users[params[:client_id]]
     known_connections.connections.delete connection
+
+    set_connection_status(params, known_connections.connections.length > 0)
   end
 
   private 

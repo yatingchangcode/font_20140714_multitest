@@ -124,6 +124,15 @@ progress::-webkit-progress-value {
           $('#progressText').html('正在開始');
         }
       };
+      
+      var receiveIsConnectedHandler = function(o){
+        var x = o.check_id;
+        if (o.connected){
+          $('#status_'+x).attr('class','label label-success').text("OnLine");
+        }else{
+          $('#status_'+x).attr('class','label label-danger').text("OffLine");
+        }
+      };
 
       var receiveChangeConnectionStatusHandler = function(o){
         for(var x in o) {
@@ -325,6 +334,10 @@ progress::-webkit-progress-value {
 
         $('#progressDiv').hide();
         updateHasToSaveState();
+
+        <% @visitors.each do |visitor| %>
+        window.chatApp.is_connected(<%= visitor.number %>);
+        <% end %>
 
       });
 

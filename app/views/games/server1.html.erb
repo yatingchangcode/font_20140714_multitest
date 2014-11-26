@@ -135,7 +135,6 @@ progress::-webkit-progress-value {
           <% end %>
         </div>
       </div>
-      
 
       <% content_for :javascripts do %>
       <script>
@@ -174,6 +173,15 @@ progress::-webkit-progress-value {
           window.chatApp.action(e, 'stop');
         });
         <% end -%>
+      };
+
+      var receiveIsConnectedHandler = function(o){
+        var x = o.check_id;
+        if (o.connected){
+          $('#status_'+x).attr('class','label label-success').text("OnLine");
+        }else{
+          $('#status_'+x).attr('class','label label-danger').text("OffLine");
+        }
       };
 
       var receiveSaveRecordHandler = function(o){
@@ -471,6 +479,10 @@ progress::-webkit-progress-value {
         $('#progressDiv').hide();
         updateHasToSaveState();
 
+        <% @visitors.each do |visitor| %>
+        window.chatApp.is_connected(<%= visitor.number %>);
+        <% end %>
+
       });
 
       //window.onbeforeunload = function() { return 'You have unsaved changes!'; };
@@ -478,6 +490,6 @@ progress::-webkit-progress-value {
         if(isNotSave){
           return '嘿！你忘了存檔了！！  下面的按鈕別點錯啊！';
         }
-      } );
+      });
       </script>
       <% end %>
