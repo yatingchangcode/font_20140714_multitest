@@ -2,7 +2,7 @@
 <%= stylesheet_link_tag 'reset','tvwall' %>
 <style type="text/css">
 p{
-  padding-top:3.25%;
+  padding-top:0.5%;
 }
 
 body,.container{
@@ -17,12 +17,12 @@ body,.container{
 
 <table width="100%" border="0" cellspacing="0" cellpadding="0">
   <tr>
-    <td colspan="3" height="5%">&nbsp;</td>
+    <td colspan="3" height="100">&nbsp;</td>
   </tr>
   <tr>
-    <td width="35%">&nbsp;</td>
-    <td><div class="HP_bar" style="height:12px;"><canvas id="sketchSecond" data-processing-sources="/assets/timebar.pde"></canvas></div></div></td>
-    <td width="35%">&nbsp;</td>
+    <td width="32%">&nbsp;</td>
+    <td><div class="HP_bar" style="height:16px;"><canvas id="sketchSecond" data-processing-sources="/assets/timebar.pde"></canvas></div></div></td>
+    <td width="33%">&nbsp;</td>
   </tr>
   
 </table>
@@ -61,7 +61,7 @@ body,.container{
               <td>
                 <div id="grid_<%= visitor.number %>" class="Grid">
                   <canvas id="origin_<%= visitor.number %>" width="100%" ></canvas>
-                  <div id="metal_<%= visitor.number %>" class="inner_metal"><img src="/assets/tvwall/Metal-Frame.png" width="100%"/></div>
+                  <div id="metal_<%= visitor.number %>" class="inner_metal"></div>
                   <div id="glow_<%= visitor.number %>" class="inner_glow"><img src="/assets/tvwall/img_Grid_b_green.png" width="100%"/></div>
                   <div id="yes_img_<%= visitor.number %>" class="correct"><img src="/assets/tvwall/red_ring.png" width="100%"/></div>
                 </div>
@@ -118,7 +118,7 @@ body,.container{
               <td>
                 <div id="grid_<%= visitor.number %>" class="Grid">
                   <canvas id="origin_<%= visitor.number %>" width="100%" ></canvas>
-                  <div id="metal_<%= visitor.number %>" class="inner_metal"><img src="/assets/tvwall/Metal-Frame.png" width="100%"/></div>
+                  <div id="metal_<%= visitor.number %>" class="inner_metal"></div>
                   <div id="glow_<%= visitor.number %>" class="inner_glow"><img src="/assets/tvwall/img_Grid_b_green.png" width="100%"/></div>
                   <div id="yes_img_<%= visitor.number %>" class="correct"><img src="/assets/tvwall/red_ring.png" width="100%"/></div>
                   
@@ -226,12 +226,12 @@ window.tuneLinePosition = function(){
   var w = $('.photo').width();
   var namebox = $('.nameBox');
   var name = $('.name');
-  name.css('font-size', w / 3 * 14.5 / 15);
+  name.css('font-size', w / 3 * 16.5 / 15);
   namebox.height(w);
   // 44 means picture height
   //namebox.css('background-position-y', w / 2 - parseFloat(name.css('padding-top')) * 1.8 - w / 3 / 15 * 0.2 );
   //namebox.css('background-position-y', w / 2 - parseFloat(name.css('padding-top')) * 2 - (44 - 38) / 2 );
-  namebox.css('background-position-y', (w + 5) / 2 );
+  namebox.css('background-position-y', (w + 1) / 2 );
   
 };
 
@@ -272,6 +272,13 @@ $(document).ready(function() {
   },300);
 
   responsiveMethod();
+
+  var borderWidth = 8;
+  $('.Grid').css("background", "url("+ generateBorderBase64($('.Grid'), borderWidth, 
+    ['0 #ffffff', '0.5 #aaaaaa', '1 #aaaaaa'] ) +
+  ")");
+  $('.Grid').css("padding", borderWidth);
+
   CM.doAllResponsive();
   setTimeout(function(){
     tuneLinePosition();    
