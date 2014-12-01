@@ -41,6 +41,10 @@ progress::-webkit-progress-value {
 <!--         <h4>目前上線人數<span id="user_count">0</span>人</h4>
  -->    <% if @stage == 'A1' %>
           <h3>倒數計時 <span id="second" style="color:red"><%= @second %></span> 秒 </h3>
+          <div style="padding:5px;">
+            <input id="secondInput" value="<%= @second %>" style="width:60px;" />
+            <button id="secondUpdate">更新秒數</button>
+          </div>
         <% else %>
           <h4>不倒數計時</h4>
         <% end %>
@@ -270,6 +274,9 @@ progress::-webkit-progress-value {
       }
 
       <% if @stage == 'A1' %>
+      function resetSetStyle(s){
+        resetProgressBarAndTime();
+      };
       function resetProgressBarAndTime() {
           $('#progress_bar').css("width", "100%").attr("aria-valuenow","100%")
                             .text(window.timeRemaining+"s");
@@ -427,7 +434,16 @@ progress::-webkit-progress-value {
         $('#show_correct_button').click(function(){
           window.chatApp.showCorrectUsers(correct_users);
           //showCorrectUsers(correct_users);
-        })
+        });
+
+        <% if @stage == 'A1' %>
+        $('#secondUpdate').click(function(){
+          if(!window.alarm){
+            window.timeRemaining = parseInt($('#secondInput').val()); 
+            window.chatApp.reset({second: window.timeRemaining});
+          }
+        });        
+        <% end %>
 
         $('#stop_all_button').click(function(){
            <% if @stage == 'A1' %>

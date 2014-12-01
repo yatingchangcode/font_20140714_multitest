@@ -139,6 +139,11 @@ body,.container{
 </div>
 
 <% content_for :javascripts do %>
+<script>
+// cache stage name for server1-tvwall.js
+var hasCounter = true;
+
+</script>
 <%= javascript_include_tag 'server1-tvwall' %>
 
 <script>
