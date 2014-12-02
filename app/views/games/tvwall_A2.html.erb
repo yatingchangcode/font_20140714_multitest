@@ -2,7 +2,7 @@
 <%= stylesheet_link_tag 'reset','tvwall' %>
 <style type="text/css">
 p{
-  padding-top:3.25%;
+  padding-top:1.25%;
 }
 
 body,.container{
@@ -18,11 +18,12 @@ body,.container{
 <div class="Content"> 
   <table width="100%" border="0" cellspacing="0" cellpadding="0">
     <tr>
-      <td colspan="11" height="110">&nbsp;</td>
+      <td colspan="11" height="<%= @space_top %>">&nbsp;</td>
     </tr>
 
     <tr>
-      <td width="5%"></td>
+
+      <td width="<%= @space_left %>"></td>
 
       <% @visitors.each do |visitor| %>
       <td>
@@ -54,7 +55,7 @@ body,.container{
               <td>
                 <div id="grid_<%= visitor.number %>" class="Grid">
                   <canvas id="origin_<%= visitor.number %>" width="100%" ></canvas>
-                  <div id="metal_<%= visitor.number %>" class="inner_metal"><img src="/assets/tvwall/Metal-Frame.png" width="100%"/></div>
+                  <div id="metal_<%= visitor.number %>" class="inner_metal"></div>
                   <div id="glow_<%= visitor.number %>" class="inner_glow"><img src="/assets/tvwall/img_Grid_b_green.png" width="100%"/></div>
                   <div id="yes_img_<%= visitor.number %>" class="correct"><img src="/assets/tvwall/red_ring.png" width="100%"/></div>
                 </div>
@@ -65,7 +66,7 @@ body,.container{
                 <table width="100%" border="0" cellspacing="0" cellpadding="0">
                  <tr>
                   <td width="10%">&nbsp;</td>
-                  <td><div class="HP_bar" style="height:12px;"><canvas id="sketchSecond_<%= visitor.number %>" data-processing-sources="/assets/timebar.pde"></canvas></div></td>
+                  <td><div class="HP_bar" style="height:<%= @timebar_height %>;"><canvas id="sketchSecond_<%= visitor.number %>" data-processing-sources="/assets/timebar.pde"></canvas></div></td>
                   <td width="10%">&nbsp;</td>
                 </tr>
               </table>
@@ -77,7 +78,7 @@ body,.container{
     <td width="1%"></td>
     <% end %>
 
-    <td width="4%"></td>
+    <td width="<%= @space_right %>"></td>
   </tr>
 
 
@@ -163,8 +164,8 @@ function correctCountSetStyle(o){
 window.responsiveMethod = function(){
   var jqEl = $('[id^=grid_]');
 
-  var w = $(window).width()*0.171;
-  //var w = $('.container').width()*0.171;
+  var w = $(window).width() * <%= @canvas_scale %>;
+  //var w = $('.container').width() * <%= @canvas_scale %>;
   jqEl.height(w);
   jqEl.width(w);
 };
@@ -173,12 +174,12 @@ window.tuneLinePosition = function(){
   var w = $('.photo').width();
   var namebox = $('.nameBox');
   var name = $('.name');
-  name.css('font-size', w / 3 * 14.5 / 15);
+  name.css('font-size', <%= @font_formula %>);
   namebox.height(w);
   // 44 means picture height
   //namebox.css('background-position-y', w / 2 - parseFloat(name.css('padding-top')) * 1.8 - w / 3 / 15 * 0.2 );
   //namebox.css('background-position-y', w / 2 - parseFloat(name.css('padding-top')) * 2 - (44 - 38) / 2 );
-  namebox.css('background-position-y', (w + 5) / 2 );
+  namebox.css('background-position-y', <%= @bar_formula %> );
   //alert(w);
 };
 
@@ -226,6 +227,13 @@ $(document).ready(function() {
   }, <%= @visitors.length %> * 60);
 
   responsiveMethod();
+
+  var borderWidth = <%= @canvas_border %>;
+  $('.Grid').css("background", "url("+ generateBorderBase64($('.Grid'), borderWidth, 
+    ['0 #ffffff', '0.5 #aaaaaa', '1 #aaaaaa'] ) +
+  ")");
+  $('.Grid').css("padding", borderWidth);
+
   CM.doAllResponsive();
   setTimeout(function(){
     tuneLinePosition();    

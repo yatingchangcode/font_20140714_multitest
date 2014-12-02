@@ -90,6 +90,38 @@ class GamesController < ApplicationController
     @range = 1..@visitors.size
 
     @second = params[:second]
+
+    @space_top = "120"
+    @space_left = "5%"
+    @space_right = "4%"
+    @canvas_scale = 0.171
+    @canvas_border = 9
+    @font_formula = "w / 3 * 16 / 15"
+    @bar_formula = "(w + 5) / 2"
+    @timebar_height = "12px"
+    case @visitors.length
+    when 2
+      @canvas_scale = 0.243
+      @canvas_border = 15
+      @space_top = "140"
+      @space_left = "25%"
+      @space_right = "24%"
+      @timebar_height = "16px"
+    when 3
+      @canvas_scale = 0.217
+      @canvas_border = 13
+      @space_left = "18%"
+      @space_right = "17%"
+      @timebar_height = "15px"
+    when 4
+      @font_formula = "w / 3 * 16.2 / 15"
+      @bar_formula = "(w + 3) / 2"
+      @canvas_scale = 0.191
+      @canvas_border = 11
+      @space_left = "10%"
+      @space_right = "9%"
+      @timebar_height = "14px"
+    end
   end
 
   def tvwall_A3
