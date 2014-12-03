@@ -112,16 +112,14 @@ progress::-webkit-progress-value {
             <button id="out_button" style="font-size:15px;">淘汰</button>
             -->
            
-            <% if @stage != 'B2' %>
-              <% if !['A3', 'B1'].include? @stage %>
-              <button id="show_correct_button" style="font-size:15px;">顯示正確使用者</button>
-              <% end -%>
+            
+            <% if @stage == 'A1' %>
+            <button id="show_correct_button" style="font-size:15px;">顯示正確使用者</button>
+            <% end -%>
             <button id="start_button" style="font-size:15px;">全部開始</button>
-            <% end -%>
 
-            <% if ['A1', 'A3', 'B1'].include? @stage %>
             <button id="stop_all_button" style="font-size:15px;">全部停止</button>
-            <% end -%>
+            
             <!-- <button id="stop_button" style="font-size:15px;">停止已選</button> -->
           
             <button id="clear_button" style="font-size:15px;">全部清除</button>
