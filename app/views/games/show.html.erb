@@ -47,12 +47,14 @@
     尚無參賽人員
     <% end %>
     <br>
-    <%= link_to "明星藝言堂 (10人)","#",id: "stage1",class: "btn btn-lg btn-success"  %>
-    <%= link_to "計時接力賽 (5人)","#",id: "stage2",class: "btn btn-lg btn-success"  %>
-    <%= link_to "一字千金 (2人)","#",id: "stage3",class: "btn btn-lg btn-success"  %>
-    <%= link_to "捉對廝殺 (8人，每次2人)","#",id: "stage4",class: "btn btn-lg btn-info"  %>
-    <%= link_to "掌握先機 (4人)","#",id: "stage5",class: "btn btn-lg btn-info"  %>
-    <%= link_to "成語連連看 (2人)","#",id: "stage6",class: "btn btn-lg btn-info"  %>
+    <%= link_to "明星藝言堂 (10人)","#",id: "stageA1",class: "btn btn-lg btn-success"  %>
+    <%= link_to "計時接力賽 (5人)","#",id: "stageA2",class: "btn btn-lg btn-success"  %>
+    <%= link_to "一字千金 (2人)","#",id: "stageA3",class: "btn btn-lg btn-success"  %>
+    <%= link_to "捉對廝殺 (8人，每次2人)","#",id: "stageB1",class: "btn btn-lg btn-info"  %>
+    <%= link_to "掌握先機 (4人)","#",id: "stageB2",class: "btn btn-lg btn-info"  %>
+    <%= link_to "成語連連看 (2人)","#",id: "stageB3",class: "btn btn-lg btn-info"  %>
+
+    <%= link_to "掌握先機(舊版) (4人)","#",id: "stageB2_v1",class: "btn btn-lg btn-warning"  %>
   </div>
 </div>
 
@@ -82,46 +84,53 @@ $(document).ready(function(){
     return join_visitors_number;
   } 
 
-  document.getElementById('stage1').onclick = function(e){
+  document.getElementById('stageA1').onclick = function(e){
 
     var join_visitors_number = getVisitorsNumberArray(e);
     
     location.href = '/games/<%= @game.id %>/stage1?stage=A1&join_visitors_number=' + join_visitors_number;
   }
 
-  document.getElementById('stage2').onclick = function(e){
+  document.getElementById('stageA2').onclick = function(e){
 
     var join_visitors_number = getVisitorsNumberArray(e);
 
     location.href = '/games/<%= @game.id %>/stage2?stage=A2&join_visitors_number=' + join_visitors_number;
   }
 
-  document.getElementById('stage3').onclick = function(e){
+  document.getElementById('stageA3').onclick = function(e){
 
     var join_visitors_number = getVisitorsNumberArray(e);
 
     location.href = '/games/<%= @game.id %>/stage1?stage=A3&join_visitors_number=' + join_visitors_number;
   }
 
-  document.getElementById('stage4').onclick = function(e){
+  document.getElementById('stageB1').onclick = function(e){
 
     var join_visitors_number = getVisitorsNumberArray(e);
 
     location.href = '/games/<%= @game.id %>/stage1?stage=B1&join_visitors_number=' + join_visitors_number;
   }
 
-  document.getElementById('stage5').onclick = function(e){
+  document.getElementById('stageB2').onclick = function(e){
 
     var join_visitors_number = getVisitorsNumberArray(e);
 
     location.href = '/games/<%= @game.id %>/stage1?stage=B2&join_visitors_number=' + join_visitors_number;
   }
 
-  document.getElementById('stage6').onclick = function(e){
+  document.getElementById('stageB3').onclick = function(e){
 
     var join_visitors_number = getVisitorsNumberArray(e);
 
     location.href = '/games/<%= @game.id %>/stage_idioms?stage=B3&join_visitors_number=' + join_visitors_number;
+  }
+
+  document.getElementById('stageB2_v1').onclick = function(e){
+
+    var join_visitors_number = getVisitorsNumberArray(e);
+
+    location.href = '/games/<%= @game.id %>/stage1?stage=B2_v1&join_visitors_number=' + join_visitors_number;
   }
 });
 </script>

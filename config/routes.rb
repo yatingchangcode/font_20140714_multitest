@@ -38,6 +38,7 @@ Rails.application.routes.draw do
       get 'tvwall_A2'
       get 'tvwall_A3'
       get 'tvwall_B1'
+      get 'tvwall_B2_v1'
       get 'tvwall_B2'
       get 'tvwall_B3'
     end

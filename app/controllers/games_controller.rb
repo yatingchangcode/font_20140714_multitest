@@ -108,6 +108,14 @@ class GamesController < ApplicationController
     @second = params[:second]
   end
 
+  def tvwall_B2_v1
+    @game = Game.find(params[:id])
+    @visitors = @game.visitors.where(number: params[:join_visitors_number].split(","))
+    @range = 1..@visitors.size
+
+    @second = params[:second]
+  end
+
   def tvwall_B2
     @game = Game.find(params[:id])
     @visitors = @game.visitors.where(number: params[:join_visitors_number].split(","))
