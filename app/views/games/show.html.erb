@@ -53,7 +53,6 @@
     <%= link_to "捉對廝殺 (8人，每次2人)","#",id: "stageB1",class: "btn btn-lg btn-info"  %>
     <%= link_to "掌握先機 (4人)","#",id: "stageB2",class: "btn btn-lg btn-info"  %>
     <%= link_to "成語連連看 (2人)","#",id: "stageB3",class: "btn btn-lg btn-info"  %>
-
     <%= link_to "掌握先機(舊版) (4人)","#",id: "stageB2_v1",class: "btn btn-lg btn-warning"  %>
   </div>
 </div>
@@ -116,7 +115,7 @@ $(document).ready(function(){
 
     var join_visitors_number = getVisitorsNumberArray(e);
 
-    location.href = '/games/<%= @game.id %>/stage1?stage=B2&join_visitors_number=' + join_visitors_number;
+    location.href = '/games/<%= @game.id %>/stageB2?stage=B2&join_visitors_number=' + join_visitors_number;
   }
 
   document.getElementById('stageB3').onclick = function(e){

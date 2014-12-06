@@ -34,6 +34,14 @@ class GamesController < ApplicationController
     @join_visitors_number = params[:join_visitors_number]
   end
 
+  def stageB2
+    @game = Game.find(params[:id])
+
+    @stage = params[:stage]
+
+    @join_visitors_number = params[:join_visitors_number]
+  end
+
   def stage_idioms
     @game = Game.find(params[:id])
 
@@ -75,6 +83,24 @@ class GamesController < ApplicationController
       `xdg-open #{Setting.messaging['record_url']} || open #{Setting.messaging['record_url']}`
     end
   end
+
+  def serverB2
+    @game = Game.find(params[:id])
+    @visitors = @game.visitors.where(number: params[:join_visitors_number].split(","))
+    @range = 1..@visitors.size
+    @second = params[:second]
+
+    Setting.messaging['second'] = params[:second]
+    Setting.messaging['game'] = params[:id]
+    Setting.messaging['stage'] = params[:stage]
+    @stage = params[:stage]
+    Setting.messaging['record_url'] = "http://0.0.0.0:3000/games/#{params[:id]}/record?join_visitors_number=#{params[:join_visitors_number]}"
+    #@user_unregs = [1,4]
+    if Setting.messaging['is_record_open'] != true
+      `xdg-open #{Setting.messaging['record_url']} || open #{Setting.messaging['record_url']}`
+    end
+  end
+
 
   def tvwall_A1
     @game = Game.find(params[:id])
