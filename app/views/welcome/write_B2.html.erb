@@ -18,6 +18,7 @@
 
       <% content_for :javascripts do %>
       <%= javascript_include_tag 'writes_B2' %>
+
       <script>
       $(document).ready(function() {
         CM.prop({
@@ -31,7 +32,7 @@
 
         CM.reg('origin_<%= @user_id %>');
         ocan = document.getElementById('origin_<%= @user_id %>');
-
+        
         window.chatApp = null;
         $('#moveBlock').click(function(){
           if(!window.chatApp){

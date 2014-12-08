@@ -75,7 +75,8 @@ progress::-webkit-progress-value {
           <div class="row">
             <%= index+1 %>
             <div class="row-fluid">
-                <button id="correct_button_<%= x.number %>" style="font-size:12px;" value="<%= x.number %>" type="button" class="correct_button btn btn-default navbar-btn">答對</button>
+                <!-- <button id="correct_button_<%= x.number %>" style="font-size:12px;" value="<%= x.number %>" type="button" class="correct_button btn btn-default navbar-btn">答對</button>
+                -->
                 <button id="continue_<%= x.number %>" style="font-size:12px;" value="<%= x.number %>" type="button" class="btn btn-default navbar-btn">繼續寫</button>
                 <%if @stage == "B2" %>    
                 <button id="start_button_<%= x.number %>" style="font-size:12px;" value="<%= x.number %>" type="button" class="btn btn-default navbar-btn">開始</button>
@@ -118,18 +119,19 @@ progress::-webkit-progress-value {
                       <div class="col-md-4 nopadding" style="background-color:#999;border:3px solid rgba(0,0,0,.4)">
                       
                       <button name="clear" value="<%= i %>,<%= j %>" type="button" class="btn btn-xs btn-default" style="position:absolute;top:0px;left:0px;opacity:0.6;z-index:2">C</button>
-                      <button name="correct" value="<%= i %>,<%= j %>" type="button" class="btn btn-xs btn-default" style="position:absolute;top:0px;left:21px;opacity:0.6;z-index:2">Ｏ</button>
-                     
+                      <button name="correct_button_<%= x.number %>_<%= i %>_<%= j %>" value="<%= i %>,<%= j %>" type="button" class="btn btn-xs btn-default" style="position:absolute;top:0px;left:21px;opacity:0.6;z-index:2">O</button>
+                      <button name="remove_O_button_<%= x.number %>_<%= i %>_<%= j %>" value="<%= i %>,<%= j %>" type="button" class="btn btn-xs btn-default" style="position:absolute;top:0px;left:42px;opacity:0.6;z-index:2">⦰</button>
                       <canvas id="origin_<%= x.number %>_<%= i %>_<%= j %>" class="orgincanvas" style="z-index:1"></canvas>
+                      <img id="yes_img_<%= x.number %>_<%= i %>_<%= j %>" src="/assets/O-mark.png" height="150" style="display:none;z-index:10;position:absolute;right:-20px;bottom:8px;" ></img>
+                      <img id="no_<%= x.number %>" src="/assets/X-Mark.png" height="150" style="display:none;z-index:10;position:absolute;right:-20px;bottom:8px;" ></img>
                       </div>
                       <% end %>
                  </div>
                 <% end %>
-                <img id="yes_img_<%= x.number %>" src="/assets/O-mark.png" height="150" style="display:none;z-index:10;position:absolute;right:-20px;bottom:8px;" ></img>
-                <img id="no_<%= x.number %>" src="/assets/X-Mark.png" height="150" style="display:none;z-index:10;position:absolute;right:-20px;bottom:8px;" ></img>
+                
               </div>
             </div>
-            <div class="row-fluid" style="margin:auto; width:72%">
+            <div class="row-fluid" style="margin:auto">
               <button id="out_button_<%= x.number %>" style="font-size:12px;" value="<%= x.number %>" type="button" class="btn btn-default navbar-btn">淘汰</button>
 
               <% if @stage != 'A1' %>
@@ -184,7 +186,7 @@ progress::-webkit-progress-value {
       </script>
       <%= javascript_include_tag 'serverB2' %>
       <%= javascript_include_tag 'serverB2_helpers' %>
-      <%= javascript_include_tag 'server1-tvwall' %>
+      <!-- <%= javascript_include_tag 'server1-tvwall' %> -->
       <script>
 
       var no_correct = null;
@@ -435,8 +437,9 @@ progress::-webkit-progress-value {
            //receiveSubmitHandler({user_id:this.value});
          });
 
-         $('[id^=correct_button_]').click(function(){
+         $('[name^=correct_button_]').click(function(){
           //window.chatApp.right(this.value);
+          console.log(this);
           <% if ['A3','B1','B2'].include? @stage %>
             window.chatApp.right(this.value);
           <% else %>
@@ -456,6 +459,7 @@ progress::-webkit-progress-value {
 
             
          });
+
 
         $('[id^=remove_O_button_]').click(function(){
           window.chatApp.removeO(this.value);

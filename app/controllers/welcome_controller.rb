@@ -8,6 +8,10 @@ class WelcomeController < ApplicationController
     @user_id = params[:user_id]
   end
 
+  def write_B2
+    @user_id = params[:user_id]
+  end
+
   def read
     @count = 20
 

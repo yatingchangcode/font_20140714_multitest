@@ -3,7 +3,7 @@
 class @ChatApp
 
   constructor: (@left ,@top, @user_id,@block = undefiend, @currentChannel = undefined) ->
-    @stage_name = "idioms"
+    @stage_name = "B2"
     @dispatcher = new WebSocketRails(window.location.host + "/websocket?client_id=" + @user_id)
     @originOffset = {left: @left, top: @top}
 
@@ -47,7 +47,8 @@ class @ChatApp
     @dispatcher.trigger @stage_name+'.up_location' , user_id: @user_id
 
   clearMypad: (e) =>
-    @dispatcher.trigger @stage_name+'.clear' , user_id: @user_id,block: @block
+    @dispatcher.trigger @stage_name+'.clear' , user_id: @user_id, block: @block
+    console.log(@user_id)
     CM('origin_'+ @user_id).clear();
 
   submitMypad: (e) =>
@@ -56,7 +57,7 @@ class @ChatApp
 
   moveBlock: (block) =>
     @block = block
-    @dispatcher.trigger @stage_name+'.move_block' , user_id: @user_id,block: @block
+    @dispatcher.trigger @stage_name+'.move_block' , user_id: @user_id, block: @block
 
   endRound: =>
     @dispatcher.trigger @stage_name+'.end_round' , user_id: @user_id,blocks: [@block]
@@ -70,4 +71,5 @@ class @ChatApp
     action = $(e.currentTarget).attr 'action'
     @dispatcher.trigger 'action' , user_id: uid, action: action
 
+  
 

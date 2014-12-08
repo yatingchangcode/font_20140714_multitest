@@ -4,7 +4,7 @@
 class @ChatApp
 
   constructor: (@left ,@top, @user_id,@currentChannel = undefined) ->
-    @stage_name = "idioms"
+    @stage_name = "B2"
     @dispatcher = new WebSocketRails(window.location.host + "/websocket?client_id=" + @user_id)
     @originOffset = {left: @left, top: @top}
 
@@ -24,6 +24,8 @@ class @ChatApp
     @dispatcher.bind 'action', @receiveAction
     @dispatcher.bind 'is_connected', @receiveIsConnected
     @dispatcher.bind 'save_record', @receiveSaveRecord
+    @dispatcher.bind 'right',       @receiveO
+    @dispatcher.bind 'removeO', @receiveRemoveO
 
   continue_write: (uid) ->
     @dispatcher.trigger 'continue_write', user_id: uid
@@ -41,6 +43,30 @@ class @ChatApp
     return
 
   receiveUp: (message) =>
+    return
+
+  receiveO: (message) => 
+    if(receiveOHandler)
+      receiveOHandler message
+    if(tvwall.window && tvwall.receiveOHandler)
+      tvwall.receiveOHandler message
+    return
+
+  removeO: (uid) =>
+    @dispatcher.trigger 'removeO' , user_id: uid
+
+  receiveRemoveO: (message) =>
+    if(receiveRemoveOHandler)
+      receiveRemoveOHandler message
+    if(tvwall.window && tvwall.receiveRemoveOHandler)
+      tvwall.receiveRemoveOHandler message
+    return
+
+  receiveCorrectCount: (message) ->
+    if(receiveCorrectCountHandler)
+      receiveCorrectCountHandler message
+    if(tvwall.window && tvwall.receiveCorrectCountHandler)
+      tvwall.receiveCorrectCountHandler message
     return
 
   receiveSubmit: (message) =>
@@ -104,6 +130,12 @@ class @ChatApp
   action: (uid,action) =>
     @dispatcher.trigger @stage_name+'.action' , user_id: uid, action: action
 
+  right: (uid, block) =>
+    @dispatcher.trigger 'right' , user_id: uid, block: block
+
+  setCorrectCount: (uid, count) ->
+    @dispatcher.trigger 'setCorrectCount', user_id: uid, count: count
+
   clear: (uid,block) ->
     #如果要清空個別使用者時,送出user_id
     #清空全部的時候會送出空的object: {}
@@ -111,7 +143,7 @@ class @ChatApp
     
   is_connected: (uid) ->
     @dispatcher.trigger 'is_connected', user_id: @user_id, check_id: uid
-    
+
   reset: (o) =>
     if(o)
       @dispatcher.trigger @stage_name+'.reset', second:o.second, stage:o.stage

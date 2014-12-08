@@ -52,6 +52,20 @@ WebsocketRails::EventMap.describe do
     subscribe :reset,   :to => WritesController, :with_method => :reset
   end
 
+  namespace :B2 do
+    subscribe :down_location, :to => WritesIdiomsController, :with_method => :down_location
+    subscribe :move_location, :to => WritesIdiomsController, :with_method => :move_location
+    subscribe :up_location, :to => WritesIdiomsController, :with_method => :up_location
+    subscribe :clear, :to => WritesIdiomsController, :with_method => :clear
+    subscribe :submit, :to => WritesIdiomsController, :with_method => :submit
+    subscribe :move_block, :to => WritesIdiomsController, :with_method => :move_block
+    subscribe :send_text, :to => WritesIdiomsController, :with_method => :send_text
+    subscribe :end_round, :to => WritesIdiomsController, :with_method => :end_round
+    subscribe :rewrite, :to => WritesIdiomsController, :with_method => :rewrite
+    subscribe :action,   :to => WritesController, :with_method => :action
+    subscribe :reset,   :to => WritesController, :with_method => :reset
+  end
+
 
   subscribe :client_connected, to: ChatsController, with_method: :client_connected
   subscribe :client_connected, :to => ChatsController, :with_method => :get_user_count
