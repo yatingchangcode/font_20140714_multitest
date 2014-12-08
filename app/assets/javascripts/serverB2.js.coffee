@@ -1,183 +1,130 @@
-      var gamers = {
-          gamersList : [],
-          last: null,
-          
-          next : function() {
-            var newgamer = this.gamersList.shift();
-            this.gamersList.push(newgamer);
-            this.last = newgamer;
-            return newgamer;
-          },
-          prev: function() {
-            return this.last;
-          },
-          push : function(i) {
-            this.gamersList.push(i);
-          }, 
-          remove : function(i) {
-            var idx = this.gamersList.indexOf(i);
-            if (idx > -1) {
-              this.gamersList.splice(idx, 1);
-            }
-          },
-
-          all: function() {
-            return this.gamersList.slice(0);
-          },
-
-          setActive: function(i) {
-            this.last = i;
-            var idx = this.gamersList.indexOf(i);
-            var head = this.gamersList.splice(0, idx+1);
-            this.gamersList = this.gamersList.concat(head);
-            console.log(this.gamersList);
-          }
-        };
-
-        var receiveDownHandler = function(o){
-          CM('origin_'+o.user_id).point({ x: o.x, y: o.y });
-        };
-
-        var receiveMoveHandler = function(o){
-          CM('origin_'+o.user_id).line({ x: o.x, y: o.y });
-        };
-
-        var receiveStartHandler = function(o){
-          start_button(o.user_id);
-        };     
-
-        var start_button = function(value){
-          startSetStyle(value);
-        };
-
-        var receiveStopHandler = function(c){
-          stop_button(c.user_id);
-        };
-
-        var stop_button = function(value){
-          //console.log(hasCounter);
-          if (window.hasCounter){
-            clearInterval(window.alarm);
-            window.alarm = null;  
-          }
-          //gamers.pushStarted(value, window.resetAndStart);
-          stopSetStyle(value);
-        };
+@isDrawing = false
 
 
-        var isEmpty = function(obj) {
-          for (var prop in obj) {
-            if (obj.hasOwnProperty(prop))
-              return false;
-          }
-          return true;
-        };
+class @ChatApp
 
-        var receiveOHandler = function(o){
-          showO(o.user_id);
-        };
+  constructor: (@left ,@top, @user_id,@currentChannel = undefined) ->
+    @stage_name = "idioms"
+    @dispatcher = new WebSocketRails(window.location.host + "/websocket?client_id=" + @user_id)
+    @originOffset = {left: @left, top: @top}
 
-        var receiveRemoveOHandler = function(o){
-          removeO(o.user_id);
-        };
+  triggerEvents: ->
+    #$('#clearBtn').click @clearMypad
 
-        var receiveUserOutHandler = function(o){
-            console.log(o.user_id);
-            CM.unreg('origin_'+o.user_id);
-            //this.disabled = true;
-            gamers.remove(o.user_id);
-            outSetStyle(o.user_id);
-        };
+  bindEvents: ->
+    @dispatcher.bind 'down_location', @receiveDown
+    @dispatcher.bind 'move_location', @receiveMove
+    @dispatcher.bind 'up_location', @receiveUp
+    @dispatcher.bind 'submit', @receiveSubmit
+    @dispatcher.bind 'move_block', @receiveMoveBlock
+    @dispatcher.bind 'send_text', @receiveSendText
+    @dispatcher.bind 'end_round', @receiveEndRound
+    @dispatcher.bind 'rewrite', @receiveRewrite
+    @dispatcher.bind 'clear', @receiveClear
+    @dispatcher.bind 'action', @receiveAction
+    @dispatcher.bind 'is_connected', @receiveIsConnected
+    @dispatcher.bind 'save_record', @receiveSaveRecord
 
-        var receiveClearHandler = function(o){
-          if (isEmpty(o)) {
-            clearAllSetStyle();
-          } else {
-            clearSetStyle(o);
-          }
-        };
+  continue_write: (uid) ->
+    @dispatcher.trigger 'continue_write', user_id: uid
 
-        var receiveResetHandler = function(o){
-          if (o.second != null) {
-            if(window.hasCounter){
-              // for (key in window.alarm){
-              //   clearInterval(window.alarm[key]);
-              //   window.alarm[key] = null;
-              // }  
-              resetSetStyle(o.second);
-            }
-          }
-        };
+  receiveDown: (message) =>
+    if(receiveDownHandler && tvwall.receiveDownHandler)
+      receiveDownHandler message
+      tvwall.receiveDownHandler message
+    return
 
-        var receiveCorrectCountHandler = function(o){
-          correctCountSetStyle(o);
-        };
+  receiveMove: (message) =>
+    if(receiveMoveHandler && tvwall.receiveMoveHandler)
+      receiveMoveHandler message
+      tvwall.receiveMoveHandler message
+    return
 
-      var receiveCorrectUsersHandler = function(o) {
-        showCorrectUsers(o);
-      };
+  receiveUp: (message) =>
+    return
 
-      var showCorrectUsers = function(users) {
-            users.sort(function(a,b) {
-              return parseInt(a) - parseInt(b);
-            });
-            
-            for (var i in users) { 
-              setTimeout( (function(a){
-                return function() {
-                  console.log(a);
-                  $("#yes_img_"+a).show();
-                }
-              })(users[i]), 800 * i);
-            }
-            users = null;
-      };
+  receiveSubmit: (message) =>
+    if(receiveSubmitHandler && tvwall.receiveSubmitHandler)
+      receiveSubmitHandler message
+      tvwall.receiveSubmitHandler message
+    return
 
-      var generateBorderBase64 = function(dependEl, px, splits){
-        var w = $(dependEl).width();
-        var h = $(dependEl).height();
-        var canvasEl = document.createElement('canvas');
-        var canvasContext = canvasEl.getContext('2d');
-        var grd;
-        var gradientSizeArray = [
-          [0, 0, px, 0],
-          [w, 0, w - px, 0],
-          [0, 0, 0, px],
-          [0, h, 0, h - px]
-        ];
-        var positionArray = [
-          [[0, 0], [px, px], [px, h - px], [0, h]], // vertical-left
-          [[w, 0], [w - px, px], [w - px, h - px], [w, h]], // vertical-right
-          [[0, 0], [px, px], [w - px, px], [w, 0]], // horizontal-top
-          [[0, h], [px, h - px], [w - px, h - px], [w, h]]  // horizontal-bottom
-        ];
-        var colorStopArray = [];
-        canvasEl.width = w;
-        canvasEl.height = h;
-        canvasContext.lineWidth = 0;
-        
-        for(var i = 0, len = splits.length; i < len; i++){
-          var s = splits[i].split(' ');
-          colorStopArray.push([parseFloat(s[0]).toFixed(1), s[1]]);
-        }
+  receiveClear: (message) => 
+    if(receiveClearHandler && tvwall.receiveClearHandler)
+      receiveClearHandler message
+      tvwall.receiveClearHandler message
+    return
 
-        px = px || 3;
+  receiveMoveBlock: (message) =>
+    if(receiveMoveBlockHandler && tvwall.receiveMoveBlockHandler)
+      receiveMoveBlockHandler message
+      tvwall.receiveMoveBlockHandler message
+    return
 
-        for(var i = 0, len = gradientSizeArray.length; i < len; i++){
-          grd = canvasContext.createLinearGradient.apply(canvasContext, gradientSizeArray[i]);
-          for(var a = 0, alen = colorStopArray.length; a < alen; a++){
-            grd.addColorStop(colorStopArray[a][0], colorStopArray[a][1]);  
-          }
-          
-          canvasContext.fillStyle = grd;
-          canvasContext.beginPath();
-          var positions = positionArray[i];
-          canvasContext.moveTo.apply(canvasContext, positions[0]);
-          canvasContext.lineTo.apply(canvasContext, positions[1]);
-          canvasContext.lineTo.apply(canvasContext, positions[2]);
-          canvasContext.lineTo.apply(canvasContext, positions[3]);
-          canvasContext.fill();
-        }
+  receiveSendText: (message) => 
+    if(receiveSendTextHandler && tvwall.receiveSendTextHandler)
+      receiveSendTextHandler message
+      tvwall.receiveSendTextHandler message 
+    return
 
-        return canvasEl.toDataURL();
-      };
+  receiveEndRound: (message) =>
+    if(receiveEndRoundHandler && tvwall.receiveEndRoundHandler)
+      receiveEndRoundHandler message
+      tvwall.receiveEndRoundHandler message
+    return
+
+  receiveAction: (message) =>
+    name = message.action
+    if name is "start"
+      if(receiveStartHandler && tvwall.receiveStartHandler)
+        receiveStartHandler message
+        tvwall.receiveStartHandler message
+      return
+    else if name is "stop"
+      if(receiveStopHandler && tvwall.receiveStopHandler)
+        receiveStopHandler message
+        tvwall.receiveStopHandler message
+      return
+
+  receiveRewrite: (message) =>
+    if(receiveRewriteHandler && tvwall.receiveRewriteHandler)
+      receiveRewriteHandler message
+      tvwall.receiveRewriteHandler message
+    return
+
+  receiveSaveRecord: (message) =>
+    if(receiveSaveRecordHandler)
+      receiveSaveRecordHandler message
+    return
+
+  receiveIsConnected: (message) =>
+    receiveIsConnectedHandler message
+    return
+
+  action: (uid,action) =>
+    @dispatcher.trigger @stage_name+'.action' , user_id: uid, action: action
+
+  clear: (uid,block) ->
+    #如果要清空個別使用者時,送出user_id
+    #清空全部的時候會送出空的object: {}
+    @dispatcher.trigger @stage_name+'.clear', user_id: uid , block: block
+    
+  is_connected: (uid) ->
+    @dispatcher.trigger 'is_connected', user_id: @user_id, check_id: uid
+    
+  reset: (o) =>
+    if(o)
+      @dispatcher.trigger @stage_name+'.reset', second:o.second, stage:o.stage
+    else
+      @dispatcher.trigger @stage_name+'.reset', {}
+
+  sendText: (text,block) =>
+    @dispatcher.trigger @stage_name+'.send_text' ,  block: block, text: text
+
+  rewrite: (ink, block) =>
+    @dispatcher.trigger @stage_name+'.rewrite' ,  block: block, ink: ink
+
+  saveRecord: (isSave) ->
+    @dispatcher.trigger 'save_record', { is_saved: isSave }
+
+

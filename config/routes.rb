@@ -17,6 +17,7 @@ Rails.application.routes.draw do
       get 'demo'
       get 'write'
       get 'write_idioms'
+      get 'write_B2'
       get 'read'
       eval(arrayMapReduce)
       eval(arrayMapReduce2)
