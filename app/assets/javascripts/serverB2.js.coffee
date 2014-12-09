@@ -52,8 +52,8 @@ class @ChatApp
       tvwall.receiveOHandler message
     return
 
-  removeO: (uid) =>
-    @dispatcher.trigger 'removeO' , user_id: uid
+  removeO: (uid, block) =>
+    @dispatcher.trigger 'removeO' , user_id: uid, block: block
 
   receiveRemoveO: (message) =>
     if(receiveRemoveOHandler)

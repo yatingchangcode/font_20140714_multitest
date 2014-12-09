@@ -38,7 +38,7 @@ WebsocketRails::EventMap.describe do
     # read trigger start or stop, write bind receiveAlert
   # end
 
-  namespace :Idioms do
+  namespace :idioms do
     subscribe :down_location, :to => WritesIdiomsController, :with_method => :down_location
     subscribe :move_location, :to => WritesIdiomsController, :with_method => :move_location
     subscribe :up_location, :to => WritesIdiomsController, :with_method => :up_location
