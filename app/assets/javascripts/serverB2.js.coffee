@@ -21,6 +21,7 @@ class @ChatApp
     @dispatcher.bind 'end_round', @receiveEndRound
     @dispatcher.bind 'rewrite', @receiveRewrite
     @dispatcher.bind 'clear', @receiveClear
+    @dispatcher.bind 'clearAll', @receiveClearAll
     @dispatcher.bind 'action', @receiveAction
     @dispatcher.bind 'is_connected', @receiveIsConnected
     @dispatcher.bind 'save_record', @receiveSaveRecord
@@ -79,6 +80,13 @@ class @ChatApp
     if(receiveClearHandler && tvwall.receiveClearHandler)
       receiveClearHandler message
       tvwall.receiveClearHandler message
+    return
+
+  receiveClearAll: (message) => 
+    console.log message
+    if(receiveClearAllHandler && tvwall.receiveClearAllHandler)
+      receiveClearAllHandler message
+      tvwall.receiveClearAllHandler message
     return
 
   receiveMoveBlock: (message) =>
@@ -140,6 +148,9 @@ class @ChatApp
     #如果要清空個別使用者時,送出user_id
     #清空全部的時候會送出空的object: {}
     @dispatcher.trigger @stage_name+'.clear', user_id: uid , block: block
+
+  clearAll: () ->
+    @dispatcher.trigger @stage_name+'.clearAll' 
     
   is_connected: (uid) ->
     @dispatcher.trigger 'is_connected', user_id: @user_id, check_id: uid

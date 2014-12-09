@@ -258,14 +258,19 @@
             outSetStyle(o.user_id);
         };
 
+
         var receiveClearHandler = function(o){
-          CM('origin_'+o.user_id + '_' + o.block.row + '_' + o.block.column).clear();
-          //if(o.user_id != '0') trackCache.clear(o.block.row, o.block.column);
-          if(window.fromServerCommand || o.user_id != '0'){
+          if (isEmpty(o)) {
+            clearAllSetStyle();
+          } else {
+            clearSetStyle(o);
+            if(window.fromServerCommand || o.user_id != '0'){
             trackCache.clear(o.block.row, o.block.column, window.fromServerCommand);
             window.fromServerCommand = false;
           }
+          }
         };
+
 
 
         var receiveResetHandler = function(o){

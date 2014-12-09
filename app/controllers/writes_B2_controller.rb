@@ -27,7 +27,7 @@ class WritesB2Controller < WebsocketRails::BaseController
     p message[:user_id]
     broadcast_message :clear, {:user_id => message[:user_id],block: message[:block], :stamp => message[:stamp]}
   end
-  
+
   def submit
     data = {:user_id => message[:user_id],block: message[:block], :stamp => message[:stamp]}
     broadcast_message :submit, data

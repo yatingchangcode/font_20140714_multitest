@@ -77,7 +77,6 @@ progress::-webkit-progress-value {
             <div class="row-fluid">
                 <!-- <button id="correct_button_<%= x.number %>" style="font-size:12px;" value="<%= x.number %>" type="button" class="correct_button btn btn-default navbar-btn">答對</button>
                 -->
-                <button id="continue_<%= x.number %>" style="font-size:12px;" value="<%= x.number %>" type="button" class="btn btn-default navbar-btn">繼續寫</button>
                 <%if @stage == "B2" %>    
                 <button id="start_button_<%= x.number %>" style="font-size:12px;" value="<%= x.number %>" type="button" class="btn btn-default navbar-btn">開始</button>
                 <button id="stop_button_<%= x.number %>" style="font-size:12px;" value="<%= x.number %>" type="button" class="btn btn-default navbar-btn">停止</button>
@@ -135,8 +134,8 @@ progress::-webkit-progress-value {
               <button id="out_button_<%= x.number %>" style="font-size:12px;" value="<%= x.number %>" type="button" class="btn btn-default navbar-btn">淘汰</button>
 
               <% if @stage != 'A1' %>
-              <button id="remove_O_button_<%= x.number %>" style="font-size:12px;" value="<%= x.number %>" type="button" class="correct_button btn btn-default navbar-btn">清除Ｏ</button>
-              <button id="remove_writing_button_<%= x.number %>" style="font-size:12px;" value="<%= x.number %>" type="button" class="correct_button btn btn-default navbar-btn">清除筆跡</button>
+              <button name="remove_all_O_button_<%= x.number %>" value="<%= x.number %>" style="font-size:12px;" value="<%= x.number %>" type="button" class="correct_button btn btn-default navbar-btn">清除Ｏ</button>
+              <button name="remove_writing_button_<%= x.number %>" value="<%= x.number %>" style="font-size:12px;" value="<%= x.number %>" type="button" class="correct_button btn btn-default navbar-btn">清除筆跡</button>
               <% end -%>
             </div>
           </div>
@@ -294,14 +293,19 @@ progress::-webkit-progress-value {
           <% end %>
 
           gamers.all().forEach(function(e){
-            CM('origin_'+e).clear();
+            for (var i = 1; i <=3; i++)
+              for (var j = 1; j <= 3; j++){
+                CM('origin_'+e+"_"+i+"_"+j).clear();
+              }
+            
             $('#visitor_'+e).css("background-color", "#ebf0fa");
             $("#correct_button_"+e).removeClass("btn-success");
             stopSetStyle(e);
           });
-        }
+      }
 
       function outSetStyle(user_id) {
+
           $("#correct_button_"+user_id).attr("disabled", true);
           $("#out_button_"+user_id).attr("disabled", true);
           $("#start_button_"+user_id).attr("disabled", true);
@@ -310,7 +314,7 @@ progress::-webkit-progress-value {
       }
 
       function clearSetStyle(o){
-       CM('origin_'+o.user_id).clear();
+        CM('origin_'+o.user_id + '_' + o.block.row + '_' + o.block.column).clear();
       }
 
       <% if @stage == 'A1' %>
@@ -402,11 +406,6 @@ progress::-webkit-progress-value {
         $('#clear_button').click(function(){
           window.chatApp.clearAll();
           correct_users = null;
-          <% if @stage == 'A1' %>
-          clearInterval(window.alarm);
-          window.alarm = null;
-          resetProgressBarAndTime();
-          <% end %>
         });
 
         $("[id^=out_button_]").click(function(){
@@ -484,13 +483,25 @@ progress::-webkit-progress-value {
             window.chatApp.removeO(uid, block);
          });
 
+        $('[name^=remove_all_O_button_]').click(function(){
+            var uid = this.value;
+            for (var i = 1; i <= 3; i++)
+              for (var j = 1; j <= 3; j++) {
+                window.chatApp.removeO(uid, { row: i , column: j });
+              }
+         });
 
-        $('[id^=remove_O_button_]').click(function(){
+        $('[id^=remove_O_button_]').click(function() {
           window.chatApp.removeO(this.value);
         });
 
-        $('[id^=remove_writing_button_]').click(function(){
-          window.chatApp.clear(this.value);
+        $('[name^=remove_writing_button_]').click(function() {
+            var uid = this.value;
+            fromServerCommand = true;
+            for (var i = 1; i <= 3; i++)
+                for (var j = 1; j <= 3; j++) {
+                  window.chatApp.clear(uid, { row: i, column: j });
+            }
         });
 
         $('#clear_correct_button').click(function(){

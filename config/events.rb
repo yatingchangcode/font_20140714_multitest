@@ -57,6 +57,7 @@ WebsocketRails::EventMap.describe do
     subscribe :move_location, :to => WritesB2Controller, :with_method => :move_location
     subscribe :up_location, :to => WritesB2Controller, :with_method => :up_location
     subscribe :clear, :to => WritesB2Controller, :with_method => :clear
+    subscribe :clearAll, :to => WritesController, :with_method => :clearAll
     subscribe :submit, :to => WritesB2Controller, :with_method => :submit
     subscribe :move_block, :to => WritesB2Controller, :with_method => :move_block
     subscribe :send_text, :to => WritesB2Controller, :with_method => :send_text
