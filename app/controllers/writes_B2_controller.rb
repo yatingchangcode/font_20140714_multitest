@@ -1,4 +1,4 @@
-class WritesIdiomsController < WebsocketRails::BaseController
+class WritesB2Controller < WebsocketRails::BaseController
 
   def initialize_session
     # perform application setup here
@@ -31,6 +31,11 @@ class WritesIdiomsController < WebsocketRails::BaseController
   def submit
     data = {:user_id => message[:user_id],block: message[:block], :stamp => message[:stamp]}
     broadcast_message :submit, data
+  end
+
+  def right
+    data = {:user_id => message[:user_id], block: message[:block], :stamp => message[:stamp]}
+    broadcast_message :right, data
   end
 
   def move_block

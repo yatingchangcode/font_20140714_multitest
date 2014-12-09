@@ -131,12 +131,12 @@ class @ChatApp
     @dispatcher.trigger @stage_name+'.action' , user_id: uid, action: action
 
   right: (uid, block) =>
-    @dispatcher.trigger 'right' , user_id: uid, block: block
+    @dispatcher.trigger @stage_name+'.right' , user_id: uid, block: block
 
   setCorrectCount: (uid, count) ->
     @dispatcher.trigger 'setCorrectCount', user_id: uid, count: count
 
-  clear: (uid,block) ->
+  clear: (uid, block) ->
     #如果要清空個別使用者時,送出user_id
     #清空全部的時候會送出空的object: {}
     @dispatcher.trigger @stage_name+'.clear', user_id: uid , block: block

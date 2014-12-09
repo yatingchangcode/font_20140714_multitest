@@ -237,7 +237,8 @@
         };
 
         var receiveOHandler = function(o){
-          showO(o.user_id);
+
+          showO(o);
         };
 
         var receiveRemoveOHandler = function(o){

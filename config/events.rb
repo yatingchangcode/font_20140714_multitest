@@ -38,7 +38,7 @@ WebsocketRails::EventMap.describe do
     # read trigger start or stop, write bind receiveAlert
   # end
 
-  namespace :idioms do
+  namespace :Idioms do
     subscribe :down_location, :to => WritesIdiomsController, :with_method => :down_location
     subscribe :move_location, :to => WritesIdiomsController, :with_method => :move_location
     subscribe :up_location, :to => WritesIdiomsController, :with_method => :up_location
@@ -53,17 +53,18 @@ WebsocketRails::EventMap.describe do
   end
 
   namespace :B2 do
-    subscribe :down_location, :to => WritesIdiomsController, :with_method => :down_location
-    subscribe :move_location, :to => WritesIdiomsController, :with_method => :move_location
-    subscribe :up_location, :to => WritesIdiomsController, :with_method => :up_location
-    subscribe :clear, :to => WritesIdiomsController, :with_method => :clear
-    subscribe :submit, :to => WritesIdiomsController, :with_method => :submit
-    subscribe :move_block, :to => WritesIdiomsController, :with_method => :move_block
-    subscribe :send_text, :to => WritesIdiomsController, :with_method => :send_text
-    subscribe :end_round, :to => WritesIdiomsController, :with_method => :end_round
-    subscribe :rewrite, :to => WritesIdiomsController, :with_method => :rewrite
+    subscribe :down_location, :to => WritesB2Controller, :with_method => :down_location
+    subscribe :move_location, :to => WritesB2Controller, :with_method => :move_location
+    subscribe :up_location, :to => WritesB2Controller, :with_method => :up_location
+    subscribe :clear, :to => WritesB2Controller, :with_method => :clear
+    subscribe :submit, :to => WritesB2Controller, :with_method => :submit
+    subscribe :move_block, :to => WritesB2Controller, :with_method => :move_block
+    subscribe :send_text, :to => WritesB2Controller, :with_method => :send_text
+    subscribe :end_round, :to => WritesB2Controller, :with_method => :end_round
+    subscribe :rewrite, :to => WritesB2Controller, :with_method => :rewrite
     subscribe :action,   :to => WritesController, :with_method => :action
     subscribe :reset,   :to => WritesController, :with_method => :reset
+    subscribe :right,    :to => WritesB2Controller, :with_method => :right
   end
 
 
