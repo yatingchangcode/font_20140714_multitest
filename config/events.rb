@@ -65,6 +65,7 @@ WebsocketRails::EventMap.describe do
     subscribe :action,   :to => WritesController, :with_method => :action
     subscribe :reset,   :to => WritesController, :with_method => :reset
     subscribe :right,    :to => WritesB2Controller, :with_method => :right
+    subscribe :remove_o,    :to => WritesB2Controller, :with_method => :remove_o
   end
 
 

@@ -38,6 +38,11 @@ class WritesB2Controller < WebsocketRails::BaseController
     broadcast_message :right, data
   end
 
+  def remove_o
+    data = {:user_id => message[:user_id], block: message[:block], :stamp => message[:stamp]}
+    broadcast_message :remove_o, data
+  end
+
   def move_block
     data = {:user_id => message[:user_id],block: message[:block], :stamp => message[:stamp]}
     broadcast_message :move_block, data

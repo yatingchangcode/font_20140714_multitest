@@ -237,12 +237,11 @@
         };
 
         var receiveOHandler = function(o){
-
           showO(o);
         };
 
         var receiveRemoveOHandler = function(o){
-          removeO(o.user_id);
+          removeO(o);
         };
 
         var receiveMoveBlockHandler = function(o){

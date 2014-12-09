@@ -118,9 +118,9 @@ progress::-webkit-progress-value {
                       <% (1..3).to_a.each do |j| %>
                       <div class="col-md-4 nopadding" style="background-color:#999;border:3px solid rgba(0,0,0,.4)">
                       
-                      <button name="clear_button_<%= x.number %>_<%= i %>_<%= j %>" value="<%= x.number %>,<%= i %>,<%= j %>" type="button" class="btn btn-xs btn-default" style="position:absolute;top:0px;left:0px;opacity:0.6;z-index:2">C</button>
-                      <button name="correct_button_<%= x.number %>_<%= i %>_<%= j %>" value="<%= x.number %>,<%= i %>,<%= j %>" type="button" class="btn btn-xs btn-default" style="position:absolute;top:0px;left:21px;opacity:0.6;z-index:2">O</button>
-                      <button name="remove_O_button_<%= x.number %>_<%= i %>_<%= j %>" value="<%= i %>,<%= j %>" type="button" class="btn btn-xs btn-default" style="position:absolute;top:0px;left:42px;opacity:0.6;z-index:2">⦰</button>
+                      <button name="clear_button_<%= x.number %>_<%= i %>_<%= j %>" value="<%= x.number %>,<%= i %>,<%= j %>" type="button" class="btn btn-xs btn-default" style="position:absolute;top:0px;left:0px;opacity:0.6;z-index:2;text-decoration:line-through;">✎</button>
+                      <button name="correct_button_<%= x.number %>_<%= i %>_<%= j %>" value="<%= x.number %>,<%= i %>,<%= j %>" type="button" class="btn btn-xs btn-default" style="position:absolute;top:0px;left:21px;opacity:0.6;z-index:2">◯</button>
+                      <button name="remove_O_button_<%= x.number %>_<%= i %>_<%= j %>" value="<%= x.number %>,<%= i %>,<%= j %>" type="button" class="btn btn-xs btn-default" style="position:absolute;top:0px;left:42px;opacity:0.6;z-index:2;text-decoration:line-through;">◯</button>
                       <canvas id="origin_<%= x.number %>_<%= i %>_<%= j %>" class="orgincanvas" style="z-index:1"></canvas>
                       <img id="yes_img_<%= x.number %>_<%= i %>_<%= j %>" src="/assets/O-mark.png" height="30" style="display:none;z-index:10;position:absolute;right:0px;bottom:0px;" ></img>
                       <img id="no_<%= x.number %>" src="/assets/X-Mark.png" height="150" style="display:none;z-index:10;position:absolute;right:-20px;bottom:8px;" ></img>
@@ -253,14 +253,15 @@ progress::-webkit-progress-value {
       };
 
       function showO(c){
-        console.log(c);
+        //console.log(c);
         $("#yes_img_" + c.user_id + "_" + c.block.row + "_" + c.block.column).show();
       }
 
       //Remove O
       function removeO(c) {
-        console.log('removeO');
-        $('#yes_img_'+c).hide();
+        //console.log("r"+c);
+        //console.log('removeO');
+        $("#yes_img_" + c.user_id + "_" + c.block.row + "_" + c.block.column).hide();
       }
 
       function correctCountSetStyle(o) {
@@ -480,7 +481,7 @@ progress::-webkit-progress-value {
             var xy = val;
             var block = { row: xy[0], column:xy[1] };
             fromServerCommand = true;
-            window.chatApp.removeO(uid,block);
+            window.chatApp.removeO(uid, block);
          });
 
 

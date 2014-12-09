@@ -25,7 +25,7 @@ class @ChatApp
     @dispatcher.bind 'is_connected', @receiveIsConnected
     @dispatcher.bind 'save_record', @receiveSaveRecord
     @dispatcher.bind 'right',       @receiveO
-    @dispatcher.bind 'removeO', @receiveRemoveO
+    @dispatcher.bind 'remove_o', @receiveRemoveO
 
   continue_write: (uid) ->
     @dispatcher.trigger 'continue_write', user_id: uid
@@ -53,7 +53,7 @@ class @ChatApp
     return
 
   removeO: (uid, block) =>
-    @dispatcher.trigger 'removeO' , user_id: uid, block: block
+    @dispatcher.trigger @stage_name + '.remove_o' , user_id: uid, block: block
 
   receiveRemoveO: (message) =>
     if(receiveRemoveOHandler)
