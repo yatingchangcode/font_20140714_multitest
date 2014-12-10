@@ -271,6 +271,22 @@
           }
         };
 
+        var showCorrectUsers = function(users) {
+          console.log(users);
+            users.sort(function(a,b) {
+              return parseInt(a) - parseInt(b);
+            });
+            
+            for (var i in users) { 
+              setTimeout( (function(a){
+                return function() {
+                  console.log(a);
+                  $("#yes_img_"+a).show();
+                }
+              })(users[i]), 800 * i);
+            }
+            users = null;
+      };
 
 
         var receiveResetHandler = function(o){
@@ -293,21 +309,6 @@
         showCorrectUsers(o);
       };
 
-      var showCorrectUsers = function(users) {
-            users.sort(function(a,b) {
-              return parseInt(a) - parseInt(b);
-            });
-            
-            for (var i in users) { 
-              setTimeout( (function(a){
-                return function() {
-                  console.log(a);
-                  $("#yes_img_"+a).show();
-                }
-              })(users[i]), 800 * i);
-            }
-            users = null;
-      };
 
       var generateBorderBase64 = function(dependEl, px, splits){
         var w = $(dependEl).width();

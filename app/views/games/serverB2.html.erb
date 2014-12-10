@@ -151,9 +151,8 @@ progress::-webkit-progress-value {
             -->
            
             
-            <% if @stage == 'A1' %>
+            
             <button id="show_correct_button" style="font-size:15px;">顯示正確使用者</button>
-            <% end -%>
             <button id="start_button" style="font-size:15px;">全部開始</button>
 
             <button id="stop_all_button" style="font-size:15px;">全部停止</button>
@@ -454,24 +453,19 @@ progress::-webkit-progress-value {
           var uid = val.shift();
           var xy  = val;
           var block = { row: xy[0], column:xy[1] };
-          <% if ['A3','B1','B2'].include? @stage %>
-            window.chatApp.right(uid, block);
-          <% else %>
-            if (!correct_users) correct_users = [];
-            if (correct_users.indexOf(this.value) != -1) return;
-
-            correct_users.push(this.value);
-          <% end -%> 
           
-            if (!no_correct) no_correct = {};
-            if (!no_correct[this.value]) {
-              no_correct[this.value] = 1;
-            } else {
-              no_correct[this.value] += 1;
-            }
-            window.chatApp.setCorrectCount(this.value, no_correct[this.value]);
+          if (!correct_users) correct_users = [];
+          if (correct_users.indexOf(uid) != -1) return;
 
-            
+          correct_users.push({uid: uid, block: block});
+          
+          if (!no_correct) no_correct = {};
+          if (!no_correct[uid]) {
+            no_correct[uid] = 1;
+          } else {
+            no_correct[uid] += 1;
+          }
+          window.chatApp.setCorrectCount(uid, no_correct[uid]);  
          });
 
         $('[name^=remove_O_button_]').click(function(){
@@ -513,6 +507,7 @@ progress::-webkit-progress-value {
          });
 
         $('#show_correct_button').click(function(){
+          console.log(correct_users);
           window.chatApp.showCorrectUsers(correct_users);
           //showCorrectUsers(correct_users);
         });

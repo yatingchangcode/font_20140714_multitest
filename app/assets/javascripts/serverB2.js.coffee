@@ -27,6 +27,7 @@ class @ChatApp
     @dispatcher.bind 'save_record', @receiveSaveRecord
     @dispatcher.bind 'right',       @receiveO
     @dispatcher.bind 'remove_o', @receiveRemoveO
+    @dispatcher.bind 'showCorrectUsers', @receiveCorrectUsers
 
   continue_write: (uid) ->
     @dispatcher.trigger 'continue_write', user_id: uid
@@ -69,6 +70,14 @@ class @ChatApp
     if(tvwall.window && tvwall.receiveCorrectCountHandler)
       tvwall.receiveCorrectCountHandler message
     return
+
+  receiveCorrectUsers: (users) ->
+    if(receiveCorrectUsersHandler)
+      receiveCorrectUsersHandler users
+    if(tvwall.window && tvwall.receiveCorrectUsersHandler)
+      tvwall.receiveCorrectUsersHandler users
+    return
+  
 
   receiveSubmit: (message) =>
     if(receiveSubmitHandler && tvwall.receiveSubmitHandler)
@@ -143,6 +152,9 @@ class @ChatApp
 
   setCorrectCount: (uid, count) ->
     @dispatcher.trigger 'setCorrectCount', user_id: uid, count: count
+
+  showCorrectUsers: (users) ->
+    @dispatcher.trigger 'showCorrectUsers', users
 
   clear: (uid, block) ->
     #如果要清空個別使用者時,送出user_id
