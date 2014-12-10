@@ -184,7 +184,7 @@ progress::-webkit-progress-value {
       </script>
       <%= javascript_include_tag 'serverB2' %>
       <%= javascript_include_tag 'serverB2_helpers' %>
-      <!-- <%= javascript_include_tag 'server1-tvwall' %> -->
+      
       <script>
 
       var no_correct = null;
@@ -263,10 +263,8 @@ progress::-webkit-progress-value {
       }
 
       function correctCountSetStyle(o) {
-        console.log(o);
-        <% if @stage != "B2" %>
+        console.log(o); 
         $("#correct_button_"+o.user_id).addClass("btn-success");
-        <% end -%>
         $("#no_correct_" + o.user_id).text(no_correct[o.user_id]+"題");
       }
 
@@ -457,7 +455,7 @@ progress::-webkit-progress-value {
           if (!correct_users) correct_users = [];
           if (correct_users.indexOf(uid) != -1) return;
 
-          correct_users.push({uid: uid, block: block});
+          correct_users.push( { uid: uid, block: block } ) ;
           
           if (!no_correct) no_correct = {};
           if (!no_correct[uid]) {
@@ -465,6 +463,7 @@ progress::-webkit-progress-value {
           } else {
             no_correct[uid] += 1;
           }
+          
           window.chatApp.setCorrectCount(uid, no_correct[uid]);  
          });
 

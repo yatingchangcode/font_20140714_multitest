@@ -28,6 +28,7 @@ class @ChatApp
     @dispatcher.bind 'right',       @receiveO
     @dispatcher.bind 'remove_o', @receiveRemoveO
     @dispatcher.bind 'showCorrectUsers', @receiveCorrectUsers
+    @dispatcher.bind 'setCorrectCount', @receiveCorrectCount
 
   continue_write: (uid) ->
     @dispatcher.trigger 'continue_write', user_id: uid
@@ -92,7 +93,6 @@ class @ChatApp
     return
 
   receiveClearAll: (message) => 
-    console.log message
     if(receiveClearAllHandler && tvwall.receiveClearAllHandler)
       receiveClearAllHandler message
       tvwall.receiveClearAllHandler message
@@ -151,7 +151,7 @@ class @ChatApp
     @dispatcher.trigger @stage_name+'.right' , user_id: uid, block: block
 
   setCorrectCount: (uid, count) ->
-    @dispatcher.trigger 'setCorrectCount', user_id: uid, count: count
+    @dispatcher.trigger @stage_name+'.setCorrectCount', user_id: uid, count: count
 
   showCorrectUsers: (users) ->
     @dispatcher.trigger 'showCorrectUsers', users

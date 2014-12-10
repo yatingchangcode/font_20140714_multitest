@@ -272,7 +272,7 @@
         };
 
         var showCorrectUsers = function(users) {
-          console.log(users);
+            mapCorrectUsers(users);
             users.sort(function(a,b) {
               return parseInt(a) - parseInt(b);
             });
@@ -280,13 +280,22 @@
             for (var i in users) { 
               setTimeout( (function(a){
                 return function() {
-                  console.log(a);
                   $("#yes_img_"+a).show();
                 }
               })(users[i]), 800 * i);
             }
             users = null;
       };
+
+        var mapCorrectUsers = function(data) {
+          var correctMatrix = [];
+          data.forEach(function(d) {
+            if (!correctMatrix[d.uid]) correctMatrix[d.uid] = [];
+            correctMatrix[d.uid].push(d.block);
+          });
+          console.log(correctMatrix);
+          return correctMatrix;
+        };
 
 
         var receiveResetHandler = function(o){
