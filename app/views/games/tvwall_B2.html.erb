@@ -154,7 +154,11 @@ function clearAllSetStyle() {
   $('[id^=yes_img_]').hide();
   //$('[id^=answer_correct_]').text("?").css("color","");
   gamers.all().forEach(function(e){
-    CM('origin_'+e).clear();
+    for (var i = 1; i <=3; i++){
+      for (var j = 1; j <= 3; j++){
+        CM('origin_'+e+"_"+i+"_"+j).clear();
+      }
+    }
     receiveCancelSubmitHandler({user_id: e});
     stopSetStyle(e);
   });
