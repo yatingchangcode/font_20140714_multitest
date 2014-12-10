@@ -18,30 +18,32 @@
       var fileSaveActionCount = 0;
       var delayTime = 60;
 
+      var blockToUserIdMap = {};
+
       var receiveDownHandler = function(o){
-        CR(o.user_id).point({ stamp: o.stamp, x: o.x, y: o.y }, writeToLog);
+        CR(o.cid || o.user_id).point({ stamp: o.stamp, x: o.x, y: o.y }, writeToLog);
       };
 
       var receiveMoveHandler = function(o){
-        CR(o.user_id).line({ stamp: o.stamp, x: o.x, y: o.y }, writeToLog);
+        CR(o.cid || o.user_id).line({ stamp: o.stamp, x: o.x, y: o.y }, writeToLog);
       };
 
       var receiveUpHandler = function(o){};
 
       var receiveClearHandler = function(o){
-        if(o && o.user_id){
-          CR(o.user_id).clear(o.stamp);
+        if(o && (o.cid || o.user_id)){
+          CR(o.cid || o.user_id).clear(o.stamp);
         }else{
           CR.clearAll();  
         }
       };
 
       var receiveDeviceStartHandler = function(o){
-        CR(o.user_id).start(o.stamp, startCallBack);
+        CR(o.cid || o.user_id).start(o.stamp, startCallBack);
       };
 
       var receiveDeviceStopHandler = function(o){
-        CR(o.user_id).stop(o.stamp, stopCallBack(o.user_id));
+        CR(o.cid || o.user_id).stop(o.stamp, stopCallBack(o));
         //CR(o.user_id).stop(o.stamp);
       };
 
@@ -87,7 +89,7 @@
                   setTimeout((function(dispatcher, t){
                     return function(){
                       dispatcher.trigger("open_file", {
-                        user_id: t.id,
+                        user_id: blockToUserIdMap[t.id],
                         trade_key: t.key,
                         create_at: t.key.split('-')[1].substr(0, 10), // time exclude millseconds
                         game: <%= @game.id %>,
@@ -101,7 +103,7 @@
                 setTimeout((function(dispatcher, t){
                   return function(){
                     dispatcher.trigger("save_file", {
-                      user_id: t.id,
+                      user_id: blockToUserIdMap[t.id],
                       timestamp: t.stamp.toString(),
                       base64: t.base64.split(',')[1],
                       trade_key: t.key
@@ -113,7 +115,7 @@
                   setTimeout((function(dispatcher, t, isEnd){
                     return function(){
                       dispatcher.trigger("close_file", {
-                        user_id: t.id,
+                        user_id: blockToUserIdMap[t.id],
                         trade_key: t.key,
                         is_total_end: isEnd,
                         total_count: total
@@ -149,20 +151,34 @@
           backgroundImage: '/assets/block-524-black-with-line.png'
         });
 
-        <% @visitors.each do |visitor| %>
-        CR.reg('<%= visitor.number %>');
+        <% if @stage == 'B2' %>
+          <% @visitors.each do |visitor| %>
+            <% (1..3).to_a.each do |x| %>
+              <% (1..3).to_a.each do |y| %>
+                CR.reg('<%= visitor.number %>_<%= x %>_<%= y %>');
+                //CR.reg('<%= visitor.number %>');
+              <% end %>
+            <% end %>
+          <% end %>
+        <% else %>
+          <% @visitors.each do |visitor| %>
+          CR.reg('<%= visitor.number %>');
+          <% end %>
         <% end %>
 
         //window.pinhole = new Pinhole('0');
         window.pinhole = new Pinhole('record');
 		    window.pinhole.bindEvents();
 
-        window.stopCallBack = function(uid) {
+        var currentLog = "";
+
+        window.stopCallBack = function(o) {
           var scope = window.pinhole;
+          var uid = o.user_id;
+          blockToUserIdMap[o.cid || uid] = uid;
           var element = $("#console_"+uid);
-          var pre = element.html();
           return function(data) {
-            element.html(pre + 'STOP<br/>');
+            element.html(currentLog += 'STOP<br/>');
 
             /*
             var tkey = uid + "_" + (new Date()).getTime().toString();
@@ -248,15 +264,16 @@
         window.startCallBack = function(){
           var id = this.id_;
           var element = $("#console_"+id);
-          var pre = element.html();
-          element.html(pre + 'START<br/>');
+          currentLog = "";
+          currentLog += 'START<br/>';
+          element.html(currentLog);
         }
 
         window.writeToLog = function(pt){
           var id = this.id_;
           var element = $("#console_"+id);
-          var pre = element.html();
-          element.html(pre + 'stamp:'+pt.stamp + ' x:' + pt.x + ' y:' + pt.y + '<br/>');
+          currentLog += 'stamp:'+pt.stamp + ' x:' + pt.x + ' y:' + pt.y + '<br/>';
+          element.html(currentLog);
         };
       
 
