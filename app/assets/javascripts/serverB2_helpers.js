@@ -277,6 +277,9 @@
           }
         };
 
+        var toIdx = function(i, j) {
+          return (i-1) * 3 + j;
+        }
         var showCorrectUsers = function(users) {
             //mapCorrectUsers(users);
             users.sort(function(a,b) {
@@ -285,7 +288,8 @@
             
             for (var i in users) { 
               if (users[i]) {
-                console.log(users[i]);
+                users[i].sort(function(a, b) { return toIdx(a.row, a.column) - toIdx(b.row, b.column); });
+                //users[i].sort(function(a, b) { return parseInt(a.row) - parseInt(b.row); });
                 for(var o=0;o<users[i].length;o++){
                     setTimeout( (function(a){
                       var uid = i;
@@ -294,7 +298,7 @@
                         if (ij)
                         $("#yes_img_"+uid+"_"+ij.row+"_"+ij.column).show();
                       }
-                      })(users[i][o]), 100 * i + 0*o);
+                      })(users[i][o]), 0* i + 300*o);
                 }
               }
             }
