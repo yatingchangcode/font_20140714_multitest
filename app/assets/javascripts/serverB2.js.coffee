@@ -150,8 +150,8 @@ class @ChatApp
   right: (uid, block) =>
     @dispatcher.trigger @stage_name+'.right' , user_id: uid, block: block
 
-  setCorrectCount: (uid, count) ->
-    @dispatcher.trigger @stage_name+'.setCorrectCount', user_id: uid, count: count
+  setCorrectCount: (uid, block, count) ->
+    @dispatcher.trigger @stage_name+'.setCorrectCount', user_id: uid, block: block, count: count
 
   showCorrectUsers: (users) ->
     @dispatcher.trigger 'showCorrectUsers', users

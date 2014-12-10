@@ -263,8 +263,8 @@ progress::-webkit-progress-value {
       }
 
       function correctCountSetStyle(o) {
-        console.log(o); 
-        $("#correct_button_"+o.user_id).addClass("btn-success");
+        console.log(o.cid); 
+        $("[name^=correct_button_"+o.cid+"]").addClass("btn-success");
         $("#no_correct_" + o.user_id).text(no_correct[o.user_id]+"題");
       }
 
@@ -453,9 +453,12 @@ progress::-webkit-progress-value {
           var block = { row: xy[0], column:xy[1] };
           
           if (!correct_users) correct_users = [];
-          if (correct_users.indexOf(uid) != -1) return;
-
-          correct_users.push( { uid: uid, block: block } ) ;
+          if (!correct_users[uid]) correct_users[uid] = [];
+          if (inArray(correct_users[uid], block)) return;
+          
+          correct_users[uid].push(block);
+          //console.log(correct_users);
+          //correct_users.push( { uid: uid, block: block } ) ;
           
           if (!no_correct) no_correct = {};
           if (!no_correct[uid]) {
@@ -463,8 +466,8 @@ progress::-webkit-progress-value {
           } else {
             no_correct[uid] += 1;
           }
-          
-          window.chatApp.setCorrectCount(uid, no_correct[uid]);  
+
+          window.chatApp.setCorrectCount(uid, block, no_correct[uid]);  
          });
 
         $('[name^=remove_O_button_]').click(function(){

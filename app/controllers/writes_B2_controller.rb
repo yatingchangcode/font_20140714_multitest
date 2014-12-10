@@ -48,6 +48,12 @@ class WritesB2Controller < WebsocketRails::BaseController
     broadcast_message :move_block, data
   end
 
+  def setCorrectCount
+    manager_connection = WebsocketRails.users[0]
+    data = data = {:user_id => message[:user_id],block: message[:block], count: message[:count], :stamp => message[:stamp], cid: "#{message[:user_id]}_#{message[:block][:row]}_#{message[:block][:column]}" }
+    manager_connection.send_message :setCorrectCount, data
+  end
+
   def end_round
     controller_store[:user_id_write_block][message[:user_id]] = message[:blocks]
 
