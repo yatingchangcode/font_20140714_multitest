@@ -95,18 +95,18 @@ body,.container{
 <script>
 
 var receiveSubmitHandler = function(o){
-  $('#grid_'+o.user_id).addClass("bor_g");
-  $('#glow_'+o.user_id).show();
+  $('#grid_'+o.cid).addClass("bor_g");
+  $('#glow_'+o.cid).show();
 };
 
 
 var receiveCancelSubmitHandler = function(o){
-  $('#grid_'+o.user_id).removeClass("bor_g");
-  $('#glow_'+o.user_id).hide();
+  $('#grid_'+o.cid).removeClass("bor_g");
+  $('#glow_'+o.cid).hide();
 };
 
 function clearSetStyle(o){
-  CM('origin_'+o.user_id).clear();
+  CM('origin_'+o.cid).clear();
 }
 
 
