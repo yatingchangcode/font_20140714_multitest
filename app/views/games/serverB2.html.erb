@@ -293,10 +293,10 @@ progress::-webkit-progress-value {
             for (var i = 1; i <=3; i++)
               for (var j = 1; j <= 3; j++){
                 CM('origin_'+e+"_"+i+"_"+j).clear();
+                $("[name^=correct_button_"+e+"_"+i+"_"+j+"]").removeClass("btn-success");
               }
             
             $('#visitor_'+e).css("background-color", "#ebf0fa");
-            $("#correct_button_"+e).removeClass("btn-success");
             stopSetStyle(e);
           });
       }
@@ -451,7 +451,7 @@ progress::-webkit-progress-value {
           var uid = val.shift();
           var xy  = val;
           var block = { row: xy[0], column:xy[1] };
-          
+
           if (!correct_users) correct_users = [];
           if (!correct_users[uid]) correct_users[uid] = [];
           if (inArray(correct_users[uid], block)) return;

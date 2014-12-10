@@ -177,38 +177,11 @@
   };
 
   function inArray(array, item) {
-    for (var d in array) {
-      if (isEquivalent(d, item)) 
-        return true;
-    }
-    return false;
+    return array.some(function(d) {
+      return (d.row === item.row && d.column === item.column); 
+    }); 
   }
 
-  function isEquivalent(a, b) {
-    // Create arrays of property names
-    var aProps = Object.getOwnPropertyNames(a);
-    var bProps = Object.getOwnPropertyNames(b);
-
-    // If number of properties is different,
-    // objects are not equivalent
-    if (aProps.length != bProps.length) {
-        return false;
-    }
-
-    for (var i = 0; i < aProps.length; i++) {
-        var propName = aProps[i];
-
-        // If values of same property are not equal,
-        // objects are not equivalent
-        if (a[propName] !== b[propName]) {
-            return false;
-        }
-    }
-
-    // If we made it this far, objects
-    // are considered equivalent
-    return true;
-}
 
         var receiveDownHandler = function(o){
           CM('origin_'+o.user_id + '_' +o.block.row+'_'+o.block.column).point({ x: o.x, y: o.y });
@@ -305,22 +278,31 @@
         };
 
         var showCorrectUsers = function(users) {
-            mapCorrectUsers(users);
+            //mapCorrectUsers(users);
             users.sort(function(a,b) {
               return parseInt(a) - parseInt(b);
             });
             
             for (var i in users) { 
-              setTimeout( (function(a){
-                return function() {
-                  $("#yes_img_"+a).show();
+              if (users[i]) {
+                console.log(users[i]);
+                for(var o=0;o<users[i].length;o++){
+                    setTimeout( (function(a){
+                      var uid = i;
+                      var ij = a;
+                      return function() {
+                        if (ij)
+                        $("#yes_img_"+uid+"_"+ij.row+"_"+ij.column).show();
+                      }
+                      })(users[i][o]), 100 * i + 0*o);
                 }
-              })(users[i]), 800 * i);
+              }
             }
             users = null;
       };
 
         var mapCorrectUsers = function(data) {
+          console.log(data);
           var correctMatrix = [];
           data.forEach(function(d) {
             if (!correctMatrix[d.uid]) correctMatrix[d.uid] = [];

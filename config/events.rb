@@ -68,7 +68,7 @@ WebsocketRails::EventMap.describe do
     subscribe :right,    :to => WritesB2Controller, :with_method => :right
     subscribe :remove_o,    :to => WritesB2Controller, :with_method => :remove_o
     subscribe :setCorrectCount, :to => WritesB2Controller, :with_method => :setCorrectCount
-    subscribe :showCorrectUsers,    :to => WritesController, :with_method => :showCorrectUsers
+    subscribe :showCorrectUsers,    :to => WritesB2Controller, :with_method => :showCorrectUsers
   end
 
 

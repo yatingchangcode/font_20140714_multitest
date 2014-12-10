@@ -54,6 +54,13 @@ class WritesB2Controller < WebsocketRails::BaseController
     manager_connection.send_message :setCorrectCount, data
   end
 
+  def showCorrectUsers
+    manager_connection = WebsocketRails.users[0]
+    data = message
+    manager_connection.send_message :showCorrectUsers, data
+  end
+
+
   def end_round
     controller_store[:user_id_write_block][message[:user_id]] = message[:blocks]
 
