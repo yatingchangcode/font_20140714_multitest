@@ -9,48 +9,43 @@ class WritesB2Controller < WebsocketRails::BaseController
 
 
   def down_location
-    data = {:user_id => message[:user_id],block: message[:block], :x => message[:x], :y => message[:y], :stamp => message[:stamp]}
+    data = {:user_id => message[:user_id],block: message[:block], :x => message[:x], :y => message[:y], :stamp => message[:stamp], cid: "#{message[:user_id]}_#{message[:block][:row]}_#{message[:block][:column]}" }
     broadcast_message :down_location, data
   end
 
   def move_location
-    data = {:user_id => message[:user_id],block: message[:block], :x => message[:x], :y => message[:y], :stamp => message[:stamp]}
+    data = {:user_id => message[:user_id],block: message[:block], :x => message[:x], :y => message[:y], :stamp => message[:stamp], cid: "#{message[:user_id]}_#{message[:block][:row]}_#{message[:block][:column]}" }
     broadcast_message :move_location, data
   end
 
   def up_location
-    data = {}
+    data = {cid: "#{message[:user_id]}_#{message[:block][:row]}_#{message[:block][:column]}" }
     broadcast_message :up_location, data
   end
 
   def clear
     p message[:user_id]
-    broadcast_message :clear, {:user_id => message[:user_id],block: message[:block], :stamp => message[:stamp]}
+    broadcast_message :clear, {:user_id => message[:user_id],block: message[:block], :stamp => message[:stamp], cid: "#{message[:user_id]}_#{message[:block][:row]}_#{message[:block][:column]}" }
   end
 
   def submit
-    data = {:user_id => message[:user_id],block: message[:block], :stamp => message[:stamp]}
+    data = {:user_id => message[:user_id],block: message[:block], :stamp => message[:stamp], cid: "#{message[:user_id]}_#{message[:block][:row]}_#{message[:block][:column]}" }
     broadcast_message :submit, data
   end
 
   def right
-    data = {:user_id => message[:user_id], block: message[:block], :stamp => message[:stamp]}
+    data = {:user_id => message[:user_id], block: message[:block], :stamp => message[:stamp], cid: "#{message[:user_id]}_#{message[:block][:row]}_#{message[:block][:column]}" }
     broadcast_message :right, data
   end
 
   def remove_o
-    data = {:user_id => message[:user_id], block: message[:block], :stamp => message[:stamp]}
+    data = {:user_id => message[:user_id], block: message[:block], :stamp => message[:stamp], cid: "#{message[:user_id]}_#{message[:block][:row]}_#{message[:block][:column]}" }
     broadcast_message :remove_o, data
   end
 
   def move_block
-    data = {:user_id => message[:user_id],block: message[:block], :stamp => message[:stamp]}
+    data = {:user_id => message[:user_id],block: message[:block], :stamp => message[:stamp], cid: "#{message[:user_id]}_#{message[:block][:row]}_#{message[:block][:column]}" }
     broadcast_message :move_block, data
-  end
-
-  def send_text
-    data = {block: message[:block], :stamp => message[:stamp], text: message[:text]}
-    broadcast_message :send_text, data
   end
 
   def end_round
