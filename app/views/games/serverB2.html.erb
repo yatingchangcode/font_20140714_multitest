@@ -257,9 +257,9 @@ progress::-webkit-progress-value {
 
       //Remove O
       function removeO(c) {
-        //console.log("r"+c);
-        //console.log('removeO');
-        $("#yes_img_" + c.user_id + "_" + c.block.row + "_" + c.block.column).hide();
+        console.log(c.cid);
+        var img = "#yes_img_" + c.cid;
+        $(img).hide();
       }
 
       function correctCountSetStyle(o) {
@@ -290,12 +290,12 @@ progress::-webkit-progress-value {
           <% end %>
 
           gamers.all().forEach(function(e){
-            for (var i = 1; i <=3; i++)
+            for (var i = 1; i <=3; i++){
               for (var j = 1; j <= 3; j++){
                 CM('origin_'+e+"_"+i+"_"+j).clear();
                 $("[name^=correct_button_"+e+"_"+i+"_"+j+"]").removeClass("btn-success");
               }
-            
+            }
             $('#visitor_'+e).css("background-color", "#ebf0fa");
             stopSetStyle(e);
           });

@@ -116,11 +116,11 @@ var receiveCorrectUsersHandler = function(users){
 
 //後台送出答對
 function showO(c){
-  $("#yes_img_" + c).show();
+  $("#yes_img_" + c.cid).show();
 }
 
 function removeO(c){
-  $("#yes_img_" + c).hide();
+  $("#yes_img_" + c.cid).hide();
 }
 
 function startSetStyle(c) {
