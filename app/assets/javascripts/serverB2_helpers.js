@@ -296,7 +296,7 @@
                       var ij = a;
                       return function() {
                         if (ij)
-                        $("#yes_img_"+uid+"_"+ij.row+"_"+ij.column).show();
+                          showOstyle(uid,ij);
                       }
                       })(users[i][o]), 0* i + 300*o);
                 }

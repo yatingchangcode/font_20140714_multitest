@@ -94,6 +94,10 @@ body,.container{
 
 <script>
 
+var showOstyle = function(uid,ij){
+  $("#yes_img_"+uid+"_"+ij.row+"_"+ij.column).show();
+}
+
 var receiveSubmitHandler = function(o){
   $('#grid_'+o.cid).addClass("bor_g");
   $('#glow_'+o.cid).show();
