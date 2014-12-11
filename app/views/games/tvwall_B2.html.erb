@@ -41,7 +41,7 @@ body,.container{
 
                     <p class="name"><%= visitor.name %></p>
                   </div>
-                  <div class="answer10" style="padding:15px 0 0 10px;"><img id="no_correct_<%= visitor.number %>" src="/assets/tvwall/answer10/answer10_1.png" width="100%" style="opacity:0;"/></div>
+                  <div class="answer10" style="padding:15px 0 0 10px;"><h3 id="no_correct_<%= visitor.number %>" width="100%" style="opacity:0;color:red"></h3></div>
                   <br class="CLEAR" />
                 </div>
               </td>
@@ -51,23 +51,23 @@ body,.container{
 
                 <div class="Grid_fix">
                   <div style="padding:11px 0 11px 0">
-                <table style="margin:0 11px 0 11px">
-                  <% (1..3).to_a.each do |x| %>
-                  <tr style="border: 1px solid red">
-                    <% (1..3).to_a.each do |y| %>
-                    <td style="border: 1px solid red">
-                      <div id="grid_<%= visitor.number %>_<%= x %>_<%= y %>" class="Grid">
-                        <canvas id="origin_<%= visitor.number %>_<%= x %>_<%= y %>" width="100%" ></canvas>
-                        <div id="glow_<%= visitor.number %>_<%= x %>_<%= y %>" class="inner_glow"><img src="/assets/tvwall/img_Grid_b_green.png" width="100%"/></div>
-                        <div id="yes_img_<%= visitor.number %>_<%= x %>_<%= y %>" class="correct"><img src="/assets/tvwall/red_ring.png" width="100%"/></div>
-                      </div>
-                    </td>
-                    <% end %>
-                  </tr>
-                  <% end %>
-                </table> 
-              </div>
-              </div>
+                    <table style="margin:0 11px 0 11px">
+                      <% (1..3).to_a.each do |x| %>
+                      <tr style="border: 1px solid red">
+                        <% (1..3).to_a.each do |y| %>
+                        <td style="border: 1px solid red">
+                          <div id="grid_<%= visitor.number %>_<%= x %>_<%= y %>" class="Grid">
+                            <canvas id="origin_<%= visitor.number %>_<%= x %>_<%= y %>" width="100%" ></canvas>
+                            <div id="glow_<%= visitor.number %>_<%= x %>_<%= y %>" class="inner_glow"><img src="/assets/tvwall/img_Grid_b_green.png" width="100%"/></div>
+                            <div id="yes_img_<%= visitor.number %>_<%= x %>_<%= y %>" class="correct"><img src="/assets/tvwall/red_ring.png" width="100%"/></div>
+                          </div>
+                        </td>
+                        <% end %>
+                      </tr>
+                      <% end %>
+                    </table> 
+                  </div>
+                </div>
               </td>
             </tr>
           </table>
@@ -141,12 +141,11 @@ function resetSetStyle(s) {
   $('#second_' + key).text(s + "秒");
 }
 
+var tempcount = 0;
 function correctCountSetStyle(o){
   //$("#no_correct_" + o.user_id).show();
   $("#no_correct_" + o.user_id).css('opacity', 1);
-  if(o.count <= 10){
-    $("#no_correct_" + o.user_id).attr('src',"/assets/tvwall/answer10/answer10_"+ o.count +".png");  
-  }
+  tempcount = o.count; 
 }
 
 
