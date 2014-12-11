@@ -94,6 +94,13 @@ body,.container{
 
 <script>
 
+var showOstyle = function(uid,ij){
+  $("#yes_img_"+uid+"_"+ij.row+"_"+ij.column).show();
+
+  $("#no_correct_" + uid).text(tempcount[uid]);
+
+}
+
 var receiveSubmitHandler = function(o){
   $('#grid_'+o.cid).addClass("bor_g");
   $('#glow_'+o.cid).show();
@@ -141,11 +148,11 @@ function resetSetStyle(s) {
   $('#second_' + key).text(s + "秒");
 }
 
-var tempcount = 0;
+var tempcount = {};
 function correctCountSetStyle(o){
   //$("#no_correct_" + o.user_id).show();
   $("#no_correct_" + o.user_id).css('opacity', 1);
-  tempcount = o.count; 
+  tempcount[o.user_id] = o.count;
 }
 
 

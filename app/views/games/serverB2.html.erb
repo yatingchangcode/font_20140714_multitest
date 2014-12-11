@@ -190,6 +190,10 @@ progress::-webkit-progress-value {
       var no_correct = null;
       var correct_users = null;
       var isNotSave = false;
+
+      var showOstyle = function(uid,ij){
+        $("#yes_img_"+uid+"_"+ij.row+"_"+ij.column).show();
+      }
       
       var updateHasToSaveState = function(){
         $('#saveRecordButton').attr("disabled", !isNotSave);
