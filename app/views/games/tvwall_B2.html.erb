@@ -151,6 +151,11 @@ function resetSetStyle(s) {
   $('#second_' + key).text(s + "秒");
 }
 
+var blockCancelOneSubmitSetStyle = function(o){
+  $('#glow_'+o.cid).hide();
+
+};
+
 var tempcount = {};
 function correctCountSetStyle(o){
   //$("#no_correct_" + o.user_id).show();
@@ -166,9 +171,11 @@ function clearAllSetStyle() {
     for (var i = 1; i <=3; i++){
       for (var j = 1; j <= 3; j++){
         CM('origin_'+e+"_"+i+"_"+j).clear();
+        blockCancelOneSubmitSetStyle({cid: e+"_"+i+"_"+j});
       }
     }
-    receiveCancelSubmitHandler({user_id: e});
+    //receiveCancelSubmitHandler({user_id: e});
+    //receiveCancelSubmitHandler({cid: e+"_"+i+"_"+j});
     stopSetStyle(e);
   });
 }

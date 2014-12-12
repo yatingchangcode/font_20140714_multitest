@@ -209,6 +209,10 @@ progress::-webkit-progress-value {
         }
       }
 
+      var blockCancelOneSubmitSetStyle = function(o){
+
+      };
+
       var receiveSubmitHandler = function(o){
         $('#visitor_'+o.user_id).css("background-color", "#e6e6f0");
         isNotSave = true;
@@ -252,6 +256,7 @@ progress::-webkit-progress-value {
       //後台取消確認(尚未實作)
       var receiveCancelSubmitHandler = function(o){
         $('#origin_'+o.user_id).removeClass("canvas_box_block");
+        //$('#origin_'+o.cid).removeClass("canvas_box_block");
       };
 
       function showO(c){
