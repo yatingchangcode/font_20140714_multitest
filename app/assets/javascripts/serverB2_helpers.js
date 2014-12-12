@@ -34,148 +34,6 @@
           }
         };
 
-        var trackCache = {
-    tracks:[],
-    currentBlock:{},
-    currentPoints:[],
-    statusIndex:0,
-    checkBlock:function(row, col){
-      var self = this;
-      if(self.currentBlock.row != row || self.currentBlock.column != col){
-        self.saveToCache();
-        self.currentBlock.row = row;
-        self.currentBlock.column = col;
-      }
-    },
-    findPrev:function(row, col, index){
-      var lasts = this.tracks.slice(0, index);
-      for(var len = lasts.length; len--; ){
-        var p = lasts[len];
-        if(p.block.row == row && p.block.column == col){
-          return p;
-        }
-      }
-      return null;
-    },
-    isEmptyTrack:function(track){
-      if(!track) return null;
-      return track.ink && track.ink.length == 0 && !track.text;
-    },
-    saveToCache:function(){
-      var self = this;
-      if(self.currentBlock.row && self.currentBlock.column){
-        var track = {
-          block:{
-            row: self.currentBlock.row,
-            column: self.currentBlock.column
-          },
-          ink: self.currentPoints.slice(0)
-        };
-        self.currentPoints = [];
-        self.currentBlock = {};
-        //self.push(track);
-        self.tracks.splice(self.statusIndex, self.tracks.length - self.statusIndex);
-        self.tracks.push(track);
-        self.statusIndex++;
-      }
-    },
-    moveToBlock:function(row, col){
-      this.saveToCache();
-      this.currentBlock.row = row;
-      this.currentBlock.column = col;
-    },
-    addText:function(row, col, text){
-      var self = this;
-      self.checkBlock(row, col);
-      self.tracks.splice(self.statusIndex, self.tracks.length - self.statusIndex);
-      self.tracks.push({
-        block:{
-          row: self.currentBlock.row,
-          column: self.currentBlock.column
-        },
-        text:text
-      });
-      self.currentPoints = [];
-      self.currentBlock = {};
-      self.statusIndex++;
-    },
-    addPoint:function(row, col, x, y){
-      this.checkBlock(row, col);
-      //this.currentPoints.push([ { x: x, y: y } ]);
-      this.currentPoints.push([ [x], [y] ]);
-    },
-    addLintPoint:function(row, col, x, y){
-      var self = this;
-      self.checkBlock(row, col);
-      //if(!self.currentPoints.length) self.currentPoints.push([ { x: x, y: y } ]);
-      //self.currentPoints[self.currentPoints.length - 1].push({ x: x, y: y });
-      if(!self.currentPoints.length) self.currentPoints.push([ [x], [y] ]);
-      var p = self.currentPoints[self.currentPoints.length - 1];
-      p[0].push(x);
-      p[1].push(y);
-    },
-    clear:function(row, col, addToCache){
-      this.checkBlock(row, col);
-      var isInCurrentClear = this.currentPoints.length > 0;
-      this.currentPoints = [];
-      if(!this.isEmptyTrack(this.findPrev(row, col)) && !isInCurrentClear){
-        this.saveToCache();
-      }
-    },
-
-    hasUndo:function(){
-      return this.statusIndex > 0;
-    },
-    hasRedo:function(){
-      return this.statusIndex < this.tracks.length;
-    },
-
-    getUndo:function(){
-      if(!this.hasUndo()) return null;
-      var idx = --this.statusIndex;
-      var track = this.tracks[idx];
-      if(this.isEmptyTrack(track)){
-        // this is clear
-        // find last status
-        // var lasts = this.tracks.slice(0, idx);
-        var clearRow = track.block.row;
-        var clearCol = track.block.column;
-        // for(var len = lasts.length; len--; ){
-        //   var p = lasts[len];
-        //   if(p.block.row == clearRow && p.block.column == clearCol){
-        //     track = p;
-        //     break;
-        //   }
-        // }
-        track = this.findPrev(clearRow, clearCol, idx) || track;
-
-        // to recover 
-        if(track.text){
-          return { action: 'text', block: track.block, text: track.text };
-        }else if(track.ink && track.ink.length > 0){
-          return { action: 'rewrite', block: track.block, ink: track.ink };
-        }else{
-          return { action: 'clear', block: track.block };
-        }
-      }else{
-        // to do clear
-        return { action: 'clear', block: track.block};
-      }
-    },
-
-    getRedo:function(){
-      if(!this.hasRedo()) return null;
-      var track = this.tracks[this.statusIndex++];
-      if(track.ink && track.ink.length > 0){
-        return { action: 'rewrite', block: track.block, ink: track.ink };
-      }else if(track.text){
-        return { action: 'text', block: track.block, text: track.text };
-      }else{
-        return { action: 'clear', block: track.block };
-      }
-    }
-  };
-
   function inArray(array, item) {
     return array.some(function(d) {
       return (d.row === item.row && d.column === item.column); 
@@ -185,13 +43,11 @@
 
         var receiveDownHandler = function(o){
           CM('origin_'+o.user_id + '_' +o.block.row+'_'+o.block.column).point({ x: o.x, y: o.y });
-          trackCache.addPoint(o.block.row, o.block.column, o.x, o.y);
         };
 
         var receiveMoveHandler = function(o){
           //console.log('origin_'+o.user_id + '_' +o.block.row+'_'+o.block.column);
           CM('origin_'+o.user_id + '_' +o.block.row+'_'+o.block.column).line({ x: o.x, y: o.y });
-          trackCache.addLintPoint(o.block.row, o.block.column, o.x, o.y);
         };
 
         var receiveRewriteHandler = function(o){
@@ -252,7 +108,6 @@
 
         var receiveMoveBlockHandler = function(o){
           blockCancelOneSubmitSetStyle(o);
-         //trackCache.moveToBlock(o.block.row, o.block.column);
         };
 
 
@@ -271,7 +126,6 @@
           } else {
             clearSetStyle(o);
             if(window.fromServerCommand || o.user_id != '0'){
-            trackCache.clear(o.block.row, o.block.column, window.fromServerCommand);
             window.fromServerCommand = false;
           }
           }
@@ -282,23 +136,25 @@
         }
         var showCorrectUsers = function(users) {
             //mapCorrectUsers(users);
+            /*
             users.sort(function(a,b) {
+              // a, b will be an object or null
               return parseInt(a) - parseInt(b);
             });
-            
+            */
             for (var i in users) { 
               if (users[i]) {
                 users[i].sort(function(a, b) { return toIdx(a.row, a.column) - toIdx(b.row, b.column); });
                 //users[i].sort(function(a, b) { return parseInt(a.row) - parseInt(b.row); });
                 for(var o=0;o<users[i].length;o++){
-                    setTimeout( (function(a){
-                      var uid = i;
-                      var ij = a;
-                      return function() {
-                        if (ij)
-                          showOstyle(uid,ij);
-                      }
-                      })(users[i][o]), 0* i + 300*o);
+                  setTimeout( (function(a, uid){
+                    //var uid = i;
+                    var ij = a;
+                    return function() {
+                      if (ij)
+                        showOstyle(uid,ij);
+                    }
+                  })(users[i][o], i), 0* i + 300*o);
                 }
               }
             }
