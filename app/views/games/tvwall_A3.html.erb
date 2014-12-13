@@ -45,7 +45,8 @@ body,.container{
                     <% end %>
                     <p class="name"><%= visitor.name %></p>
                   </div>
-                  <div class="answer10" style="padding:15px 0 0 10px;"><img id="no_correct_<%= visitor.number %>" src="/assets/tvwall/answer10/answer10_1.png" width="100%" style="opacity:0;"/></div>
+                  <div class="answer10" style="padding:15px 0 0 10px;">
+                  <span id="no_correct_<%= visitor.number %>" width="100%" class="label label-primary" style="opacity:0;font-size:1.5em"></span></div>
                   <br class="CLEAR" />
                 </div>
               </td>
@@ -139,13 +140,15 @@ function resetSetStyle(s) {
   $('#second_' + key).text(s + "秒");
 }
 
+var tempcount = {};
 function correctCountSetStyle(o){
   //$("#no_correct_" + o.user_id).show();
   $("#no_correct_" + o.user_id).css('opacity', 1);
-  if(o.count <= 10){
-    $("#no_correct_" + o.user_id).attr('src',"/assets/tvwall/answer10/answer10_"+ o.count +".png");  
-  }
+  console.log(o);
+  $("#no_correct_" + o.user_id).text(o.count).css('opacity', 1);
+  tempcount[o.user_id] = o.count;
 }
+
 
 
 function clearAllSetStyle() {

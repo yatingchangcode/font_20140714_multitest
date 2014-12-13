@@ -393,6 +393,7 @@ progress::-webkit-progress-value {
 
          $('[id^=correct_button_]').click(function(){
           //window.chatApp.right(this.value);
+
           <% if ['A3','B1','B2'].include? @stage %>
             window.chatApp.right(this.value);
           <% else %>
@@ -409,8 +410,7 @@ progress::-webkit-progress-value {
               no_correct[this.value] += 1;
             }
             window.chatApp.setCorrectCount(this.value, no_correct[this.value]);
-
-            
+            window.chatApp.action(this.value,'stop');
          });
 
         $('[id^=remove_O_button_]').click(function(){
