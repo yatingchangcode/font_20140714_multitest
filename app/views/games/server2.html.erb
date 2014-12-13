@@ -236,6 +236,7 @@ progress::-webkit-progress-value {
 
         $('[id^=continue_]').click(function(){
           window.chatApp.continue_write(this.value);
+          window.chatApp.action(this.value, 'start');
           window.chatApp.cancelSubmit(this.value);
           //$('#visitor_'+this.value).css("background-color", "");
         });
@@ -253,6 +254,7 @@ progress::-webkit-progress-value {
         $('[id^=correct_button_]').click(function(){
           
           window.chatApp.right(this.value);
+          window.chatApp.action(this.value,'stop');
           if (!no_correct) no_correct = {};
           if (!no_correct[this.value]) {
             no_correct[this.value] = 1;
@@ -285,6 +287,8 @@ progress::-webkit-progress-value {
           var newgamer = gamers.next();
           // call old gamer to stop
           // call new user to clear screen
+          
+          window.chatApp.reset({second: seconds});
           window.chatApp.removeO(newgamer);
           window.chatApp.clear(newgamer);
           window.chatApp.action(newgamer,'start');
