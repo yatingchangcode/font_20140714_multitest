@@ -142,11 +142,13 @@
               return parseInt(a) - parseInt(b);
             });
             */
+            var total = 0;
             for (var i in users) { 
               if (users[i]) {
                 users[i].sort(function(a, b) { return toIdx(a.row, a.column) - toIdx(b.row, b.column); });
                 //users[i].sort(function(a, b) { return parseInt(a.row) - parseInt(b.row); });
                 for(var o=0;o<users[i].length;o++){
+                  total += 1;
                   setTimeout( (function(a, uid){
                     //var uid = i;
                     var ij = a;
@@ -154,7 +156,7 @@
                       if (ij)
                         showOstyle(uid,ij);
                     }
-                  })(users[i][o], i), 0* i + 300*o);
+                  })(users[i][o], i), 600 * total);
                 }
               }
             }
