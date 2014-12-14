@@ -78,6 +78,7 @@ class GamesController < ApplicationController
     Setting.messaging['game'] = params[:id]
     Setting.messaging['stage'] = params[:stage]
     #@user_unregs = [1,4]
+    @stage = params[:stage]
     Setting.messaging['record_url'] = "http://0.0.0.0:3000/games/#{params[:id]}/record?join_visitors_number=#{params[:join_visitors_number]}"
     if Setting.messaging['is_record_open'] != true
       `xdg-open #{Setting.messaging['record_url']} || open #{Setting.messaging['record_url']}`
