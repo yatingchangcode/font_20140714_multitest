@@ -145,7 +145,7 @@ function correctCountSetStyle(o){
   //$("#no_correct_" + o.user_id).show();
   $("#no_correct_" + o.user_id).css('opacity', 1);
   console.log(o);
-  $("#no_correct_" + o.user_id).text(o.count).css('opacity', 1);
+  $("#no_correct_" + o.user_id).text(o.count).css('opacity', 1).css('color', 'black');
   tempcount[o.user_id] = o.count;
 }
 
