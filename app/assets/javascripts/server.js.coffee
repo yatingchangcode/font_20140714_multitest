@@ -33,6 +33,9 @@ class @ChatApp
   right: (uid) =>
     @dispatcher.trigger 'right' , user_id: uid
 
+  setGameInfo: (game_id, stage_name) => 
+    @dispatcher.trigger 'set_gameinfo_to_socket', game:game_id, stage: stage_name    
+
   removeO: (uid) =>
     @dispatcher.trigger 'removeO' , user_id: uid
 

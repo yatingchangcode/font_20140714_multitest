@@ -3,6 +3,9 @@ class WritesController < WebsocketRails::BaseController
   def initialize_session
     # perform application setup here
     controller_store[:write_count] = 0
+    controller_store[:user_id_file_path] = {}
+    controller_store[:game_id] = 0
+    controller_store[:stage_name] = ""
   end
 
 
@@ -13,9 +16,17 @@ class WritesController < WebsocketRails::BaseController
     broadcast_message :get_write_count, data
   end
 
+  def set_gameinfo_to_socket
+    controller_store[:game_id] = message[:game]
+    controller_store[:stage_name] = message[:stage]
+    p controller_store[:game_id]
+    p controller_store[:stage_name]
+  end
+
   def down_location
     manager_connection = WebsocketRails.users[0]
     record_connection = WebsocketRails.users["record"]
+    cache_action(message[:user_id], "down", message[:x], message[:y], message[:stamp])
     data = {:user_id => message[:user_id], :x => message[:x], :y => message[:y], :stamp => message[:stamp]}
     manager_connection.send_message :down_location, data
     record_connection.send_message :down_location, data
@@ -24,6 +35,7 @@ class WritesController < WebsocketRails::BaseController
   def move_location
     manager_connection = WebsocketRails.users[0]
     record_connection = WebsocketRails.users["record"]
+    cache_action(message[:user_id], "move", message[:x], message[:y], message[:stamp])
     data = {:user_id => message[:user_id], :x => message[:x], :y => message[:y], :stamp => message[:stamp]}
     manager_connection.send_message :move_location, data
     record_connection.send_message :move_location, data
@@ -39,6 +51,7 @@ class WritesController < WebsocketRails::BaseController
 
   def clear
     p message[:user_id]
+    cache_action(message[:user_id], "clear", nil, nil, message[:stamp])
     broadcast_message :clear, {:user_id => message[:user_id], :stamp => message[:stamp]}
   end
 
@@ -80,6 +93,15 @@ class WritesController < WebsocketRails::BaseController
     record_connection = WebsocketRails.users["record"]
     # Just for passing other properties 
     data = message
+    p message[:action]
+    if message[:action] == "device_start"
+      #save
+      start_cache(trigger_id, trigger_id, controller_store[:game_id], controller_store[:stage_name])
+      cache_action(trigger_id, "create", nil, nil, message[:stamp])
+    elsif message[:action] == "device_stop"
+      cache_action(trigger_id, "end", nil, nil, message[:stamp])
+      save_action(trigger_id)
+    end
     #data = {:action => message[:action], :user_id => trigger_id.to_s, :stamp => message[:stamp]}
     manager_connection.send_message :action, data
     trigger_connection.send_message :action, data
@@ -117,4 +139,36 @@ class WritesController < WebsocketRails::BaseController
   end
 
 
+  private
+  def start_cache(uid, cid, game_id, stage)
+    @game = Game.find(game_id)
+    @visitor = @game.visitors.find_by(number: uid)
+
+    #p message[:create_at].to_i
+    #client_create_time = Time.at(message[:create_at].to_i).strftime("%Y%m%d_%H%M%S")
+    #file_name = "#{@visitor.name}_stage#{message[:stage]}_#{client_create_time}"
+    file_name = "#{@visitor.name}_stage#{stage}_#{Time.now.strftime("%Y%m%d_%H%M%S")}"
+
+    record_path ||= File.expand_path(File.join("record"), Rails.public_path)
+    file_path = FileUtils.mkdir_p("#{record_path}/game#{game_id}_#{@game.created_at.strftime("%Y%m%d")}/#{file_name}")
+    
+    controller_store[:user_id_file_path][cid] = file_path
+  end
+
+  def cache_action(cid, action, x, y, stamp)
+    #p message[:user_id]+" save_file: cache frames"
+    controller_store[:user_id_file_path][cid] << [ action, x, y, stamp ]
+  end
+
+  def save_action(cid)
+    data = controller_store[:user_id_file_path][cid]
+    controller_store[:user_id_file_path][cid] = nil;
+
+    file_path = data[0]
+    #data = data[1..-1]
+    #data.each do |x|
+    #f = File.open("#{file_path}.json", 'a') {|f| f.write(x)}
+    #end
+    f = File.open("#{file_path}.json", 'a') {|f| f.write(JSON.dump data)}
+  end
 end
