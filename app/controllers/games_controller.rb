@@ -60,11 +60,11 @@ class GamesController < ApplicationController
     Setting.messaging['game'] = params[:id]
     Setting.messaging['stage'] = params[:stage]
     @stage = params[:stage]
-    Setting.messaging['record_url'] = "http://0.0.0.0:3000/games/#{params[:id]}/record?join_visitors_number=#{params[:join_visitors_number]}"
+    #Setting.messaging['record_url'] = "http://0.0.0.0:3000/games/#{params[:id]}/record?join_visitors_number=#{params[:join_visitors_number]}"
     #@user_unregs = [1,4]
-    if Setting.messaging['is_record_open'] != true
-      `xdg-open #{Setting.messaging['record_url']} || open #{Setting.messaging['record_url']}`
-    end
+    # if Setting.messaging['is_record_open'] != true
+    #   `xdg-open #{Setting.messaging['record_url']} || open #{Setting.messaging['record_url']}`
+    # end
   end
 
   def server2
@@ -79,10 +79,10 @@ class GamesController < ApplicationController
     Setting.messaging['stage'] = params[:stage]
     #@user_unregs = [1,4]
     @stage = params[:stage]
-    Setting.messaging['record_url'] = "http://0.0.0.0:3000/games/#{params[:id]}/record?join_visitors_number=#{params[:join_visitors_number]}"
-    if Setting.messaging['is_record_open'] != true
-      `xdg-open #{Setting.messaging['record_url']} || open #{Setting.messaging['record_url']}`
-    end
+    # Setting.messaging['record_url'] = "http://0.0.0.0:3000/games/#{params[:id]}/record?join_visitors_number=#{params[:join_visitors_number]}"
+    # if Setting.messaging['is_record_open'] != true
+    #   `xdg-open #{Setting.messaging['record_url']} || open #{Setting.messaging['record_url']}`
+    # end
   end
 
   def serverB2
@@ -95,11 +95,11 @@ class GamesController < ApplicationController
     Setting.messaging['game'] = params[:id]
     Setting.messaging['stage'] = params[:stage]
     @stage = params[:stage]
-    Setting.messaging['record_url'] = "http://0.0.0.0:3000/games/#{params[:id]}/record?join_visitors_number=#{params[:join_visitors_number]}"
+    # Setting.messaging['record_url'] = "http://0.0.0.0:3000/games/#{params[:id]}/record?join_visitors_number=#{params[:join_visitors_number]}"
     #@user_unregs = [1,4]
-    if Setting.messaging['is_record_open'] != true
-      `xdg-open #{Setting.messaging['record_url']} || open #{Setting.messaging['record_url']}`
-    end
+    # if Setting.messaging['is_record_open'] != true
+    #   `xdg-open #{Setting.messaging['record_url']} || open #{Setting.messaging['record_url']}`
+    # end
   end
 
 
@@ -167,13 +167,13 @@ class GamesController < ApplicationController
     # for idioms stage, rule is 60 seconds
     @second = params[:second]
     Setting.messaging['second'] = params[:second]
-
+    @stage = params[:stage]
     Setting.messaging['game'] = params[:id]
     Setting.messaging['stage'] = params[:stage]
-    Setting.messaging['record_url'] = "http://0.0.0.0:3000/games/#{params[:id]}/record_idioms?join_visitors_number=#{params[:join_visitors_number]}"
-    if Setting.messaging['is_record_open'] != true
-      `xdg-open #{Setting.messaging['record_url']} || open #{Setting.messaging['record_url']}`
-    end
+    # Setting.messaging['record_url'] = "http://0.0.0.0:3000/games/#{params[:id]}/record_idioms?join_visitors_number=#{params[:join_visitors_number]}"
+    # if Setting.messaging['is_record_open'] != true
+    #   `xdg-open #{Setting.messaging['record_url']} || open #{Setting.messaging['record_url']}`
+    # end
   end
 
   def record
