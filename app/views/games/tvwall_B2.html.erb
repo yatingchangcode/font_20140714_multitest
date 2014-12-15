@@ -158,7 +158,10 @@ function resetSetStyle(s) {
 
 var blockCancelOneSubmitSetStyle = function(o){
   $('#glow_'+o.cid).hide();
-
+  //$('#grid_'+o.cid).css("opacity", 0);
+  $('#grid_'+o.cid).css("box-shadow", '');
+  $("#grid_"+o.cid).css("opacity", "0");
+  $('#grid_'+o.cid).css("opacity", "1");
 };
 
 var tempcount = {};
