@@ -95,8 +95,9 @@ progress::-webkit-progress-value {
             <div class="row-fluid" style="margin:auto; width:72%">
               <button id="out_button_<%= x.number %>" style="font-size:12px;" value="<%= x.number %>" type="button" class="btn btn-default navbar-btn">淘汰</button>
 
-              <% if @stage != 'A1' %>
+              
               <button id="remove_O_button_<%= x.number %>" style="font-size:12px;" value="<%= x.number %>" type="button" class="correct_button btn btn-default navbar-btn">清除Ｏ</button>
+              <% if @stage != 'A1' %>
               <button id="remove_writing_button_<%= x.number %>" style="font-size:12px;" value="<%= x.number %>" type="button" class="correct_button btn btn-default navbar-btn">清除筆跡</button>
               <% end -%>
             </div>
