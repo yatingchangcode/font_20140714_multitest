@@ -6,6 +6,7 @@ class WritesController < WebsocketRails::BaseController
     controller_store[:user_id_file_path] = {}
     controller_store[:game_id] = 0
     controller_store[:stage_name] = ""
+    controller_store[:visitors] = []
   end
 
 
@@ -19,8 +20,10 @@ class WritesController < WebsocketRails::BaseController
   def set_gameinfo_to_socket
     controller_store[:game_id] = message[:game]
     controller_store[:stage_name] = message[:stage]
+    controller_store[:visitors] = message[:visitors].split(",")
     p controller_store[:game_id]
     p controller_store[:stage_name]
+    p controller_store[:visitors]
   end
 
   def down_location
@@ -56,6 +59,7 @@ class WritesController < WebsocketRails::BaseController
   end
 
   def clearAll
+      renew_all(controller_store[:visitors], true)
       broadcast_message :clear, {}
   end
 
@@ -140,6 +144,17 @@ class WritesController < WebsocketRails::BaseController
 
 
   private
+  def renew_one(cid, renew)
+    controller_store[:user_id_file_path]["#{cid}-renew"] = renew
+  end
+
+  def renew_all(visitors, renew)
+    visitors.each do |x|
+      renew_one(x, renew)
+      #controller_store[:user_id_file_path]["#{x}-renew"] = renew
+    end
+  end
+
   def start_cache(uid, cid, game_id, stage)
     @game = Game.find(game_id)
     @visitor = @game.visitors.find_by(number: uid)
@@ -165,10 +180,15 @@ class WritesController < WebsocketRails::BaseController
     controller_store[:user_id_file_path][cid] = nil;
 
     file_path = data[0]
+    tosave = {}
+    tosave[:file_path] = data[0]
+    tosave[:renew] = controller_store[:user_id_file_path]["#{cid}-renew"] || false
+    tosave[:data] = data[1..-1]
     #data = data[1..-1]
     #data.each do |x|
     #f = File.open("#{file_path}.json", 'a') {|f| f.write(x)}
     #end
-    f = File.open("#{file_path}.json", 'a') {|f| f.write(JSON.dump data)}
+    f = File.open("#{file_path}.json", 'a') {|f| f.write(JSON.dump tosave)}
+    renew_one(cid, false)
   end
 end

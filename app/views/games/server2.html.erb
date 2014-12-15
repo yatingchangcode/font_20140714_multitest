@@ -227,7 +227,9 @@ progress::-webkit-progress-value {
         window.chatApp = new ChatApp(500,500,'0');
         window.chatApp.bindEvents();
         window.chatApp.reset({stage:'<%= params[:stage] %>'});
-        window.chatApp.setGameInfo(<%= @game.id %>, "<%= @stage %>");
+        //window.chatApp.setGameInfo(<%= @game.id %>, "<%= @stage %>");
+        window.chatApp.setGameInfo(<%= @game.id %>, "<%= @stage %>", "<%= params[:join_visitors_number] %>");
+
 
 
         (function collectGamers() {
