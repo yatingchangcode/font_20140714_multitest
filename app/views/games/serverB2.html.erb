@@ -115,7 +115,7 @@ progress::-webkit-progress-value {
                 <% (1..3).to_a.each do |i| %>
                 <div class="row nopadding"> 
                       <% (1..3).to_a.each do |j| %>
-                      <div class="col-md-4 nopadding" style="background-color:#999;border:3px solid rgba(0,0,0,.4)">
+                      <div name="word_<%= x.number %>_<%= i %>_<%= j %>" class="col-md-4 nopadding" style="background-color:#999;border:3px solid rgba(0,0,0,.4)">
                       
                       <button name="clear_button_<%= x.number %>_<%= i %>_<%= j %>" value="<%= x.number %>,<%= i %>,<%= j %>" type="button" class="btn btn-xs btn-default" style="position:absolute;top:0px;left:0px;opacity:0.6;z-index:2;text-decoration:line-through;">✎</button>
                       <button name="correct_button_<%= x.number %>_<%= i %>_<%= j %>" value="<%= x.number %>,<%= i %>,<%= j %>" type="button" class="btn btn-xs btn-default" style="position:absolute;top:0px;left:21px;opacity:0.6;z-index:2">◯</button>
@@ -214,7 +214,8 @@ progress::-webkit-progress-value {
       };
 
       var receiveSubmitHandler = function(o){
-        $('#visitor_'+o.user_id).css("background-color", "#e6e6f0");
+        console.log(o.cid);
+        $('[name=word_'+o.cid+']').css("background-color", "#060");
         isNotSave = true;
         <% if (@stage == 'A3') %>
         gamers.all().forEach(function(e){
@@ -278,13 +279,16 @@ progress::-webkit-progress-value {
       }
 
       function startSetStyle(c) {
+        console.log(c);
         $('#visitor_'+c).css("border-color", "#4d4ddb");
+        $('[name^=word_'+c+']').css("background-color", "#999");
         $('#visitor_'+c).css("background-color", "#ebf0fa");
         $('#saveRecordButton').attr("disabled", true);
         isNotSave = true;
       }
 
       function stopSetStyle(c) {
+        $('[name=word_'+c.cid+']').css("background-color", "#999");
         $('#visitor_'+c).css("border-color", "#f8f8f8");
         updateHasToSaveState();
       }
@@ -299,13 +303,14 @@ progress::-webkit-progress-value {
           <% end %>
 
           gamers.all().forEach(function(e){
+            $('[name^=word_'+e+']').css("background-color", "#999");
             for (var i = 1; i <=3; i++){
               for (var j = 1; j <= 3; j++){
                 CM('origin_'+e+"_"+i+"_"+j).clear();
                 $("[name^=correct_button_"+e+"_"+i+"_"+j+"]").removeClass("btn-success");
               }
             }
-            $('#visitor_'+e).css("background-color", "#ebf0fa");
+            
             stopSetStyle(e);
           });
       }
