@@ -33,6 +33,9 @@ class @ChatApp
   continue_write: (uid) ->
     @dispatcher.trigger 'continue_write', user_id: uid
 
+  setGameInfo: (game_id, stage_name, v) => 
+    @dispatcher.trigger @stage_name + '.set_gameinfo_to_socket', game:game_id, stage: stage_name, visitors:v
+
   receiveDown: (message) =>
     if(receiveDownHandler && tvwall.receiveDownHandler)
       receiveDownHandler message

@@ -57,14 +57,15 @@ WebsocketRails::EventMap.describe do
     subscribe :down_location, :to => WritesB2Controller, :with_method => :down_location
     subscribe :move_location, :to => WritesB2Controller, :with_method => :move_location
     subscribe :up_location, :to => WritesB2Controller, :with_method => :up_location
+    subscribe :set_gameinfo_to_socket, :to => WritesB2Controller, :with_method => :set_gameinfo_to_socket
     subscribe :clear, :to => WritesB2Controller, :with_method => :clear
-    subscribe :clearAll, :to => WritesController, :with_method => :clearAll
+    subscribe :clearAll, :to => WritesB2Controller, :with_method => :clearAll
     subscribe :submit, :to => WritesB2Controller, :with_method => :submit
     subscribe :move_block, :to => WritesB2Controller, :with_method => :move_block
     subscribe :send_text, :to => WritesB2Controller, :with_method => :send_text
     subscribe :end_round, :to => WritesB2Controller, :with_method => :end_round
     subscribe :rewrite, :to => WritesB2Controller, :with_method => :rewrite
-    subscribe :action,   :to => WritesController, :with_method => :action
+    subscribe :action,   :to => WritesB2Controller, :with_method => :action
     subscribe :reset,   :to => WritesController, :with_method => :reset
     subscribe :right,    :to => WritesB2Controller, :with_method => :right
     subscribe :remove_o,    :to => WritesB2Controller, :with_method => :remove_o
