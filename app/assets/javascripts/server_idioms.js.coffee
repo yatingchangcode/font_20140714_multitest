@@ -99,6 +99,9 @@ class @ChatApp
   action: (uid,action) =>
     @dispatcher.trigger @stage_name+'.action' , user_id: uid, action: action
 
+  setGameInfo: (game_id, stage_name, v) => 
+    @dispatcher.trigger @stage_name+'.set_gameinfo_to_socket', game:game_id, stage: stage_name, visitors:v
+
   clear: (uid,block) ->
     #如果要清空個別使用者時,送出user_id
     #清空全部的時候會送出空的object: {}

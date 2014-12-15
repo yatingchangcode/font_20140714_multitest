@@ -40,6 +40,7 @@ WebsocketRails::EventMap.describe do
   # end
 
   namespace :idioms do
+    subscribe :set_gameinfo_to_socket, :to => WritesIdiomsController, :with_method => :set_gameinfo_to_socket
     subscribe :down_location, :to => WritesIdiomsController, :with_method => :down_location
     subscribe :move_location, :to => WritesIdiomsController, :with_method => :move_location
     subscribe :up_location, :to => WritesIdiomsController, :with_method => :up_location
@@ -49,7 +50,7 @@ WebsocketRails::EventMap.describe do
     subscribe :send_text, :to => WritesIdiomsController, :with_method => :send_text
     subscribe :end_round, :to => WritesIdiomsController, :with_method => :end_round
     subscribe :rewrite, :to => WritesIdiomsController, :with_method => :rewrite
-    subscribe :action,   :to => WritesController, :with_method => :action
+    subscribe :action,   :to => WritesIdiomsController, :with_method => :action
     subscribe :reset,   :to => WritesController, :with_method => :reset
   end
 
