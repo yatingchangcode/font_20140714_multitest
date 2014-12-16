@@ -7,7 +7,10 @@
 <div class="row">
   <div class="col-md-12">
     <h1>Game N</h1>
-    <h2>參賽人員列表<%= link_to "新增人員",new_game_visitor_path(@game),class: "btn btn-lg btn-info"  %></h2>
+    <h2>參賽人員列表</h2>
+    <%= link_to "新增人員",new_game_visitor_path(@game),class: "btn btn-lg btn-info"  %>
+    <%= link_to "轉檔頁面", convert_page_game_path(@game), class: "btn btn-lg btn-success pull-right" %>  
+  </p>
     <% if @visitors.present? %>
     <table class="table table-bordered">
       <thead>

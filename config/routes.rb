@@ -44,6 +44,7 @@ Rails.application.routes.draw do
       get 'tvwall_B2_v1'
       get 'tvwall_B2'
       get 'tvwall_B3'
+      get 'convert_page'
     end
     collection do
       get 'get_game_data'

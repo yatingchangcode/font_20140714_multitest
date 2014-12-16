@@ -48,7 +48,6 @@ class ChatsController < WebsocketRails::BaseController
   end
 
   def save_file 
-    p message[:user_id]+" save_file: cache frames"
     controller_store[:user_id_file_path][message[:trade_key]] << [ message[:timestamp], Base64.decode64(message[:base64]) ]
     # file_path = controller_store[:user_id_file_path][message[:trade_key]][0]
     # file_name = message[:timestamp]
@@ -57,27 +56,20 @@ class ChatsController < WebsocketRails::BaseController
   end
 
   def close_file
-    p message[:user_id]+" close_file: prepare arrange"
     framerate = 50
     file_path = controller_store[:user_id_file_path][message[:trade_key]][0]
     arranged = arrange_frames(controller_store[:user_id_file_path][message[:trade_key]][1..-1], framerate)
-    p message[:user_id]+" close_file: frame arranged"
-    p message[:user_id]+" close_file: saving arranged frames"
     arranged.each do |frame|
       file_name = frame[0]
       f = File.open("#{file_path}/#{file_name}.png", 'wb') {|f| f.write(frame[1])}
     end
-    p message[:user_id]+" close_file: arranged frames saved"
-    #file_path = controller_store[:user_id_file_path][message[:trade_key]][0]
-    #p Dir[file_path + "/*.png"]
-    # p message[:user_id]+" close_file"
-    # file_path = controller_store[:user_id_file_path][message[:trade_key]][0]
+
     begin
       p Subprocess.check_call(["ffmpeg", "-framerate", framerate.to_s, "-pix_fmt", "yuv420p", "-s", "480x480", "-i", "#{file_path}/%d.png", "#{file_path}.mp4", "-y"])
       controller_store[:user_id_file_path][message[:trade_key]] = nil
-      control_connection = WebsocketRails.users[0]
+      #control_connection = WebsocketRails.users[0]
       log_msg = "編號[" + message[:trade_key] + "]已存檔"
-      control_connection.send_message :save_record, {is_saved: message[:is_total_end], log: log_msg, total_count: message[:total_count] }
+      #control_connection.send_message :save_record, {is_saved: message[:is_total_end], log: log_msg, total_count: message[:total_count] }
     rescue Subprocess::NonZeroExit => e
       puts e.message
       puts "Why aren't llamas one of your favorite animals?"
