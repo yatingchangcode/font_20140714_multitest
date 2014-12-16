@@ -86,7 +86,11 @@ body,.container{
 
 
     <tr>
-      <td colspan="11" height="1%">&nbsp;</td>
+      <td colspan="11" height="1%" style="padding-top:123px;">
+        <video width="100%" autoplay="autoplay" loop="loop" style="padding-top:0px;">
+          <source src="/assets/cycle1111ok.webm" type="video/webm"></source>
+        </video>
+      </td>
     </tr>
   </table>
 </div>
@@ -243,7 +247,6 @@ $(document).ready(function() {
  }) ();
 
   responsiveMethod();
-
 
   var borderWidth = <%= @block_border_width %>;
   $('.Grid_fix').css("background", "url("+ generateBorderBase64($('.Grid_fix'), borderWidth, 
