@@ -24,7 +24,6 @@ class @ChatApp
     @dispatcher.bind 'clearAll', @receiveClearAll
     @dispatcher.bind 'action', @receiveAction
     @dispatcher.bind 'is_connected', @receiveIsConnected
-    @dispatcher.bind 'save_record', @receiveSaveRecord
     @dispatcher.bind 'right',       @receiveO
     @dispatcher.bind 'remove_o', @receiveRemoveO
     @dispatcher.bind 'showCorrectUsers', @receiveCorrectUsers
@@ -138,11 +137,6 @@ class @ChatApp
       tvwall.receiveRewriteHandler message
     return
 
-  receiveSaveRecord: (message) =>
-    if(receiveSaveRecordHandler)
-      receiveSaveRecordHandler message
-    return
-
   receiveIsConnected: (message) =>
     receiveIsConnectedHandler message
     return
@@ -181,8 +175,5 @@ class @ChatApp
 
   rewrite: (ink, block) =>
     @dispatcher.trigger @stage_name+'.rewrite' ,  block: block, ink: ink
-
-  saveRecord: (isSave) ->
-    @dispatcher.trigger 'save_record', { is_saved: isSave }
 
 
