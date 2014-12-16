@@ -6,29 +6,25 @@
 }
 
 progress{
-  background-color: #f3f3f3;
+  /*background-color: #f3f3f3;
   border: 0;
   width: 240px;
   height: 20px;
   border-radius: 10px;
   vertical-align: middle;
-  margin: 0 8px;
+  margin: 0 8px;*/
 }
 progress::-webkit-progress-bar {  
     /* style rules */  
-    background: #f3f3f3;
+    /*background: #f3f3f3;
     box-shadow: 0px 0px 8px #a0a0a0 inset;
-    border-radius: 10px;
+    border-radius: 10px;*/
 }  
 progress::-webkit-progress-value {  
     /* style rules */  
-    background: #6666ee;
-    border-radius: 10px;
+    /*background: #6666ee;
+    border-radius: 10px;*/
 } 
-
-#progressDiv{
-  display: inline-block;
-}
 
 .visitor  {
   width: 22%;
@@ -48,13 +44,6 @@ progress::-webkit-progress-value {
         <% else %>
           <h4>不倒數計時</h4>
         <% end %>
-        <div>
-          <button id="saveRecordButton">錄影軌跡轉檔</button>
-          <div id="progressDiv">
-            <progress id="saveProgress" value="0" max="300"></progress>
-            <span id="progressText">正在開始</span>
-          </div>
-        </div>
       </div>
       <div style="">
         <div id="gamers_div" class="row">
@@ -152,12 +141,7 @@ progress::-webkit-progress-value {
 
       var no_correct = null;
       var correct_users = null;
-      var isNotSave = false;
       
-      var updateHasToSaveState = function(){
-        $('#saveRecordButton').attr("disabled", !isNotSave);
-      };
-
       var receiveChangeConnectionStatusHandler = function(o){
         for(var x in o) {
           if (o[x] == true){
@@ -170,7 +154,6 @@ progress::-webkit-progress-value {
 
       var receiveSubmitHandler = function(o){
         $('#visitor_'+o.user_id).css("background-color", "#ff0");
-        isNotSave = true;
         <% if (@stage == 'A3') %>
         gamers.all().forEach(function(e){
           window.chatApp.action(e, 'stop');
@@ -184,27 +167,6 @@ progress::-webkit-progress-value {
           $('#status_'+x).attr('class','label label-success').text("OnLine");
         }else{
           $('#status_'+x).attr('class','label label-danger').text("OffLine");
-        }
-      };
-
-      var receiveSaveRecordHandler = function(o){
-        if(o.total_count){
-          var count = parseInt(o.total_count);
-          var max = $('#saveProgress').attr('max');
-          var step = parseInt(max) / (count || 1);
-          var currentVal = parseFloat($('#saveProgress').val());
-          console.log('max:'+ max + '  step:' + step + '  curval:' + currentVal); 
-          $('#saveProgress').val(currentVal + step);
-        }
-        if(o.log){
-          $('#progressText').html(o.log);
-        }
-        if(o.is_saved){
-          isNotSave = false;
-          alert('錄影存檔完成');
-          $('#progressDiv').hide();
-          $('#saveProgress').val(0);
-          $('#progressText').html('正在開始');
         }
       };
 
@@ -234,13 +196,10 @@ progress::-webkit-progress-value {
       function startSetStyle(c) {
         $('#visitor_'+c).css("border-color", "#4d4ddb");
         $('#visitor_'+c).css("background-color", "#ebf0fa");
-        $('#saveRecordButton').attr("disabled", true);
-        isNotSave = true;
       }
 
       function stopSetStyle(c) {
         $('#visitor_'+c).css("border-color", "#f8f8f8");
-        updateHasToSaveState();
       }
 
       function clearAllSetStyle() {
@@ -486,15 +445,6 @@ progress::-webkit-progress-value {
             */
 
         });
-        
-        $('#saveRecordButton').click(function(){
-          window.chatApp.saveRecord(!isNotSave);
-          $('#saveRecordButton').attr("disabled", true);
-          $('#progressDiv').show();
-        });
-
-        $('#progressDiv').hide();
-        updateHasToSaveState();
 
         <% @visitors.each do |visitor| %>
         window.chatApp.is_connected(<%= visitor.number %>);
@@ -502,11 +452,5 @@ progress::-webkit-progress-value {
 
       });
 
-      //window.onbeforeunload = function() { return 'You have unsaved changes!'; };
-      $(window).bind('beforeunload', function() {
-        if(isNotSave){
-          return '嘿！你忘了存檔了！！  下面的按鈕別點錯啊！';
-        }
-      });
       </script>
       <% end %>

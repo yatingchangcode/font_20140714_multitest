@@ -51,9 +51,6 @@ class @ChatApp
     else
       @dispatcher.trigger 'reset', {}
 
-  saveRecord: (isSave) ->
-    @dispatcher.trigger 'save_record', { is_saved: isSave }
-
   setCorrectCount: (uid, count) ->
     @dispatcher.trigger 'setCorrectCount', user_id: uid, count: count
 
@@ -76,7 +73,6 @@ class @ChatApp
     @dispatcher.bind 'reset',   @receiveReset
     @dispatcher.bind 'is_connected', @receiveIsConnected
     @dispatcher.bind 'client_connected', @receiveClientConnected
-    @dispatcher.bind 'save_record', @receiveSaveRecord
 
   receiveDown: (message) =>
     if(receiveDownHandler)
@@ -181,9 +177,3 @@ class @ChatApp
   receiveClientConnected: (message) =>
     receiveChangeConnectionStatusHandler message
     return
-
-  receiveSaveRecord: (message) =>
-    if(receiveSaveRecordHandler)
-      receiveSaveRecordHandler message
-    return
-
