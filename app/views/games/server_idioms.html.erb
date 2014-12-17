@@ -319,10 +319,11 @@ $(document).ready(function() {
 
   $('#showTextButton').click(function(){
     var row = parseInt($('#row').val());
-    var col = parseInt($('#column').val());
+    var originCol = $('#column').val();
+    var col = parseInt(originCol);
     var columnArray = ['a','b','c','d','e','f','g','h','i','j','k','l'];
     if(isNaN(col)){
-      var idx = columnArray.indexOf(col.toLowerCase());
+      var idx = columnArray.indexOf(originCol.toLowerCase());
       if(idx != -1){
         col = (idx + 1).toString();
       }

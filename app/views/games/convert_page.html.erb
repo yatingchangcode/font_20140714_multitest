@@ -182,10 +182,6 @@ test.substr(0, test.length - 12)
 
   var receiveSaveRecordHandler = function(o){
   	if(o.callback_id){
-      window.isIdle = true;
-      window.currentUrl = null;
-      window.fileSaveActionCount = 0;
-      
   		var originId = o.callback_id;
   		var last = originId.split('/').pop();
   		var el = document.getElementById(last);
@@ -327,9 +323,18 @@ test.substr(0, test.length - 12)
               trade_key: key,
               callback_id: filePath+".json"
             });
+            isIdle = true;
+            currentUrl = null;
+            fileSaveActionCount = 0;
           };
         })(scope.dispatcher, cid), fileSaveActionCount++ * delayTime);
-        
+
+        setTimeout(function(){
+          isIdle = true;
+          currentUrl = null;
+          fileSaveActionCount = 0;
+        },fileSaveActionCount++ * delayTime);
+
         /*
         var i, len;
         scope.dispatcher.trigger("open_file", {
@@ -369,14 +374,15 @@ test.substr(0, test.length - 12)
 				isIdle = false;
         console.log(currentUrl);
 				$.getJSON(currentUrl,
-			      function(data){       
-			      	var id = currentUrl.split('/').pop();
-			      	var el = document.getElementById(id);
-			        //var res = JSON.parse(data);
-			        $(el).html("轉換檔案中...");
-			        parsePoints(data);
-			        //alert(JSON.stringify(data));
-			      }
+            (function(url){
+              return function(data){
+                var id = url.split('/').pop();
+                var el = document.getElementById(id);
+                //var res = JSON.parse(data);
+                $(el).html("轉換檔案中...");
+                parsePoints(data);
+              };
+            })(currentUrl)
 			    ).fail(function(e){
 			      if(e.status == "200" && e.statusText == "OK"){
               console.log(e.responseText);
