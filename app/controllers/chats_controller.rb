@@ -32,8 +32,12 @@ class ChatsController < WebsocketRails::BaseController
 
   def open_file
 
-    file_path = FileUtils.mkdir_p(message[:file_path])
+    record_path ||= File.expand_path(File.join("record"), Rails.public_path)
+    file_path = FileUtils.mkdir_p("#{record_path}/#{message[:file_path]}")
+    # message[:file_path] = game#{game_id}_#{@game.created_at.strftime("%Y%m%d")}/#{file_name}
+    # file_path = FileUtils.mkdir_p(message[:file_path])
     p "open_file"
+    p file_path
     #controller_store[:user_id_file_path][message[:trade_key]] = file_path
     controller_store[:user_id_file_path][message[:trade_key]] = file_path
     #p controller_store[:user_id_file_path]

@@ -182,6 +182,10 @@ test.substr(0, test.length - 12)
 
   var receiveSaveRecordHandler = function(o){
   	if(o.callback_id){
+      window.isIdle = true;
+      window.currentUrl = null;
+      window.fileSaveActionCount = 0;
+      
   		var originId = o.callback_id;
   		var last = originId.split('/').pop();
   		var el = document.getElementById(last);
@@ -280,7 +284,10 @@ test.substr(0, test.length - 12)
     window.stopCallBack = function(o) {
       var scope = window.pinhole;
       //console.log(o);
-      var filePath = o.file_path;
+      var filePath = o.file_path.split('/');
+      filePath = filePath.slice(filePath.length-2).join('/');
+      //console.error();
+
       var cid = o.cid || filePath;
 
       // var uid = o.user_id;
@@ -320,9 +327,6 @@ test.substr(0, test.length - 12)
               trade_key: key,
               callback_id: filePath+".json"
             });
-            isIdle = true;
-            currentUrl = null;
-            fileSaveActionCount = 0;
           };
         })(scope.dispatcher, cid), fileSaveActionCount++ * delayTime);
         
@@ -363,6 +367,7 @@ test.substr(0, test.length - 12)
 			if(isIdle && urlList.length > 0){
 				currentUrl = urlList.shift();
 				isIdle = false;
+        console.log(currentUrl);
 				$.getJSON(currentUrl,
 			      function(data){       
 			      	var id = currentUrl.split('/').pop();
@@ -373,7 +378,17 @@ test.substr(0, test.length - 12)
 			        //alert(JSON.stringify(data));
 			      }
 			    ).fail(function(e){
-			      console.log('get json error');
+			      if(e.status == "200" && e.statusText == "OK"){
+              console.log(e.responseText);
+              //var data = JSON.parse(e.responseText);
+              // data = data.data;
+              // //console.log(data);
+              // var id = currentUrl.split('/').pop();
+              // var el = document.getElementById(id);
+              // //var res = JSON.parse(data);
+              // $(el).html("轉換檔案中...");
+              // parsePoints(data);  
+            }
 			    });
 			}
 	    },requestClockTime);
