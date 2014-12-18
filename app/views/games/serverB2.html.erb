@@ -83,7 +83,7 @@
                 <% (1..3).to_a.each do |i| %>
                 <div class="row nopadding"> 
                       <% (1..3).to_a.each do |j| %>
-                      <div class="col-md-4 nopadding" style="background-color:#999;border:3px solid rgba(0,0,0,.4)">
+                      <div name="word_<%= x.number %>_<%= i %>_<%= j %>" class="col-md-4 nopadding" style="background-color:#999;border:3px solid rgba(0,0,0,.4)">
                       
                       <button name="clear_button_<%= x.number %>_<%= i %>_<%= j %>" value="<%= x.number %>,<%= i %>,<%= j %>" type="button" class="btn btn-xs btn-default" style="position:absolute;top:0px;left:0px;opacity:0.6;z-index:2;text-decoration:line-through;">✎</button>
                       <button name="correct_button_<%= x.number %>_<%= i %>_<%= j %>" value="<%= x.number %>,<%= i %>,<%= j %>" type="button" class="btn btn-xs btn-default" style="position:absolute;top:0px;left:21px;opacity:0.6;z-index:2">◯</button>
@@ -102,7 +102,8 @@
               <button id="out_button_<%= x.number %>" style="font-size:12px;" value="<%= x.number %>" type="button" class="btn btn-default navbar-btn">淘汰</button>
 
               <% if @stage != 'A1' %>
-              <button name="remove_all_O_button_<%= x.number %>" value="<%= x.number %>" style="font-size:12px;" value="<%= x.number %>" type="button" class="correct_button btn btn-default navbar-btn">清除Ｏ</button>
+              <button name="remove_all_O_button_<%= x.number %>" value="<%= x.number %>" style="font-size:12px;" value="<%= x.number %>" type="button" class="correct_button btn btn-default navbar-btn">清除圈圈</button>
+              <!-- <button name="minus_one_button_<%= x.number %>" value="<%= x.number %>" style="font-size:12px;" value="<%= x.number %>" type="button" class="correct_button btn btn-default navbar-btn">扣一分</button> -->
               <button name="remove_writing_button_<%= x.number %>" value="<%= x.number %>" style="font-size:12px;" value="<%= x.number %>" type="button" class="correct_button btn btn-default navbar-btn">清除筆跡</button>
               <% end -%>
             </div>
@@ -178,7 +179,8 @@
       };
 
       var receiveSubmitHandler = function(o){
-        $('#visitor_'+o.user_id).css("background-color", "#e6e6f0");
+        console.log(o.cid);
+        $('[name=word_'+o.cid+']').css("background-color", "#060");
         isNotSave = true;
         <% if (@stage == 'A3') %>
         gamers.all().forEach(function(e){
@@ -216,16 +218,22 @@
 
       function correctCountSetStyle(o) {
         console.log(o.cid); 
-        $("[name^=correct_button_"+o.cid+"]").addClass("btn-success");
+        if ($("[name^=correct_button_"+o.cid+"]").hasClass("btn-success")) {
+          $("[name^=correct_button_"+o.cid+"]").removeClass("btn-success");
+        }
+        else $("[name^=correct_button_"+o.cid+"]").addClass("btn-success");
         $("#no_correct_" + o.user_id).text(no_correct[o.user_id]+"題");
       }
 
       function startSetStyle(c) {
+        console.log(c);
         $('#visitor_'+c).css("border-color", "#4d4ddb");
+        $('[name^=word_'+c+']').css("background-color", "#999");
         $('#visitor_'+c).css("background-color", "#ebf0fa");
       }
 
       function stopSetStyle(c) {
+        $('[name=word_'+c.cid+']').css("background-color", "#999");
         $('#visitor_'+c).css("border-color", "#f8f8f8");
       }
 
@@ -239,13 +247,14 @@
           <% end %>
 
           gamers.all().forEach(function(e){
+            $('[name^=word_'+e+']').css("background-color", "#999");
             for (var i = 1; i <=3; i++){
               for (var j = 1; j <= 3; j++){
                 CM('origin_'+e+"_"+i+"_"+j).clear();
                 $("[name^=correct_button_"+e+"_"+i+"_"+j+"]").removeClass("btn-success");
               }
             }
-            $('#visitor_'+e).css("background-color", "#ebf0fa");
+            
             stopSetStyle(e);
           });
       }
@@ -421,13 +430,31 @@
          });
 
         $('[name^=remove_O_button_]').click(function(){
+
             var val = this.value.split(',');
             var uid = val.shift();
             var xy = val;
             var block = { row: xy[0], column:xy[1] };
             fromServerCommand = true;
             window.chatApp.removeO(uid, block);
+            
+            if (inArray(correct_users[uid], block)) {
+              correct_users[uid].splice(indexOfBlock(correct_users[uid], block),1);
+              minusOne(uid);
+              console.log(correct_users);
+              console.log(no_correct);
+              window.chatApp.setCorrectCount(uid, block, no_correct[uid]);
+            }
          });
+
+        function minusOne(uid) {
+            if (!no_correct) no_correct = {};
+            if (!no_correct[uid]) {
+              no_correct[uid] = 0;
+            } else {
+              no_correct[uid] -= 1;
+            }
+        }
 
         $('[name^=remove_all_O_button_]').click(function(){
             var uid = this.value;
@@ -448,6 +475,18 @@
                 for (var j = 1; j <= 3; j++) {
                   window.chatApp.clear(uid, { row: i, column: j });
             }
+        });
+
+        $('[name^=minus_one_button_]').click(function(){
+          console.log(no_correct);
+          if (!no_correct) no_correct = {};
+          if (!no_correct[this.value]) {
+              no_correct[this.value] = 0;
+          } else {
+              no_correct[this.value] -= 1;
+          }
+
+          window.chatApp.setCorrectCount(this.value, {}, no_correct[this.value]);
         });
 
         $('#clear_correct_button').click(function(){

@@ -34,12 +34,18 @@
           }
         };
 
-  function inArray(array, item) {
-    return array.some(function(d) {
-      return (d.row === item.row && d.column === item.column); 
-    }); 
-  }
+        function inArray(array, item) {
+          return array.some(function(d) {
+            return (d.row === item.row && d.column === item.column); 
+         }); 
+       }
 
+        function indexOfBlock(array, item) {
+          for (var i = 0; i < array.length; i++) {
+              if (array[i].row === item.row && array[i].column === item.column) return i;
+          }
+          return -1;
+        }
 
         var receiveDownHandler = function(o){
           CM('origin_'+o.user_id + '_' +o.block.row+'_'+o.block.column).point({ x: o.x, y: o.y });
@@ -147,7 +153,7 @@
               if (users[i]) {
                 users[i].sort(function(a, b) { return toIdx(a.row, a.column) - toIdx(b.row, b.column); });
                 //users[i].sort(function(a, b) { return parseInt(a.row) - parseInt(b.row); });
-                for(var o=0;o<users[i].length;o++){
+                for(var o = 0;o < users[i].length; o++) {
                   total += 1;
                   setTimeout( (function(a, uid){
                     //var uid = i;
@@ -158,7 +164,16 @@
                     }
                   })(users[i][o], i), 600 * total);
                 }
+                
+                total += 1;
+                setTimeout( (function(uid){
+                    //var uid = i;
+                    return function() {
+                        updateCorrectCount(uid);
+                    }
+                  })(i), 600 * total);
               }
+
             }
             users = null;
       };

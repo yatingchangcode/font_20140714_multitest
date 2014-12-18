@@ -104,9 +104,10 @@ body,.container{
 
 var showOstyle = function(uid,ij){
   $("#yes_img_"+uid+"_"+ij.row+"_"+ij.column).show();
+}
 
+var updateCorrectCount = function(uid) {
   $("#no_correct_" + uid).text(tempcount[uid]).css("color", "black");
-
 }
 
 var receiveSubmitHandler = function(o){

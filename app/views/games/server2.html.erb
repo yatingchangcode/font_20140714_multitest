@@ -38,7 +38,7 @@
             </div>
             <div class="row-fluid">
               <button id="out_button_<%= x.number %>" style="font-size:12px;" value="<%= x.number %>" type="button" class="btn btn-default navbar-btn">淘汰</button>
-              <button id="remove_O_button_<%= x.number %>" style="font-size:12px;" value="<%= x.number %>" type="button" class="correct_button btn btn-default navbar-btn">清除Ｏ</button>
+              <button id="remove_O_button_<%= x.number %>" style="font-size:12px;" value="<%= x.number %>" type="button" class="correct_button btn btn-default navbar-btn">清除圈圈</button>
               <button id="remove_writing_button_<%= x.number %>" style="font-size:12px;" value="<%= x.number %>" type="button" class="correct_button btn btn-default navbar-btn">清除筆跡</button>
             </div>
 
@@ -84,8 +84,11 @@
       }
 
       //Gamer send submit
-      var receiveSubmitHandler = function(o){
+      var receiveSubmitHandler = function(o) {
+        console.log(o);
+
         $('#visitor_'+o.user_id).css("background-color", "#ff0");
+        window.chatApp.action(o.user_id,'stop');
       };
 
       //後台取消確認(尚未實作)

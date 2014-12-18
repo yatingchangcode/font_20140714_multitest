@@ -85,7 +85,8 @@ progress::-webkit-progress-value {
               <button id="out_button_<%= x.number %>" style="font-size:12px;" value="<%= x.number %>" type="button" class="btn btn-default navbar-btn">淘汰</button>
 
               
-              <button id="remove_O_button_<%= x.number %>" style="font-size:12px;" value="<%= x.number %>" type="button" class="correct_button btn btn-default navbar-btn">清除Ｏ</button>
+              <button id="remove_O_button_<%= x.number %>" style="font-size:12px;" value="<%= x.number %>" type="button" class="correct_button btn btn-default navbar-btn">清除圈圈</button>
+              <button id="minus_one_button_<%= x.number %>" style="font-size:12px;" value="<%= x.number %>" type="button" class="correct_button btn btn-default navbar-btn">扣一分</button>
               <% if @stage != 'A1' %>
               <button id="remove_writing_button_<%= x.number %>" style="font-size:12px;" value="<%= x.number %>" type="button" class="correct_button btn btn-default navbar-btn">清除筆跡</button>
               <% end -%>
@@ -114,7 +115,7 @@ progress::-webkit-progress-value {
           
             <button id="clear_button" style="font-size:15px;">全部清除</button>
             <button id="next_question_button" style="font-size:15px;">下一題</button>
-            <button id="clear_correct_button" style="font-size:15px;">清空答題記錄</button>
+            <!-- <button id="clear_correct_button" style="font-size:15px;">清空答題記錄</button> -->
           </div>
           <% if @stage == 'A1' %>
           <div class="col-md-4">
@@ -154,6 +155,7 @@ progress::-webkit-progress-value {
 
       var receiveSubmitHandler = function(o){
         $('#visitor_'+o.user_id).css("background-color", "#ff0");
+        console.log(o);
         <% if (@stage == 'A3') %>
         gamers.all().forEach(function(e){
           window.chatApp.action(e, 'stop');
@@ -311,6 +313,8 @@ progress::-webkit-progress-value {
           window.chatApp.continue_write(this.value);
           window.chatApp.cancelSubmit(this.value);
           //$('#visitor_'+this.value).css("background-color", "");
+          startSetStyle(this.value);
+
         });
 
         $('#clear_button').click(function(){
@@ -377,6 +381,16 @@ progress::-webkit-progress-value {
 
         $('[id^=remove_O_button_]').click(function(){
           window.chatApp.removeO(this.value);
+        });
+
+        $('[id^=minus_one_button_]').click(function(){
+          if (!no_correct) no_correct = {};
+          if (!no_correct[this.value]) {
+              no_correct[this.value] = 0;
+          } else {
+              no_correct[this.value] -= 1;
+          }
+          window.chatApp.setCorrectCount(this.value, no_correct[this.value]);
         });
 
         $('[id^=remove_writing_button_]').click(function(){
