@@ -155,6 +155,7 @@ progress::-webkit-progress-value {
 
       var receiveSubmitHandler = function(o){
         $('#visitor_'+o.user_id).css("background-color", "#ff0");
+        console.log(o);
         <% if (@stage == 'A3') %>
         gamers.all().forEach(function(e){
           window.chatApp.action(e, 'stop');
