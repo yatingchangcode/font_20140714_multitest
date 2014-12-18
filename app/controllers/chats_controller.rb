@@ -31,24 +31,20 @@ class ChatsController < WebsocketRails::BaseController
   end
 
   def open_file
-    p message[:user_id]+" open_file"
-
-    @game = Game.find(message[:game])
-    @visitor = @game.visitors.find_by(number: message[:user_id])
-
-    p message[:create_at].to_i
-    client_create_time = Time.at(message[:create_at].to_i).strftime("%Y%m%d_%H%M%S")
-    file_name = "#{@visitor.name}_stage#{message[:stage]}_#{client_create_time}"
 
     record_path ||= File.expand_path(File.join("record"), Rails.public_path)
-    file_path = FileUtils.mkdir_p("#{record_path}/game#{message[:game]}_#{@game.created_at.strftime("%Y%m%d")}/#{file_name}")
-    
+    file_path = FileUtils.mkdir_p("#{record_path}/#{message[:file_path]}")
+    # message[:file_path] = game#{game_id}_#{@game.created_at.strftime("%Y%m%d")}/#{file_name}
+    # file_path = FileUtils.mkdir_p(message[:file_path])
+    p "open_file"
+    p file_path
+    #controller_store[:user_id_file_path][message[:trade_key]] = file_path
     controller_store[:user_id_file_path][message[:trade_key]] = file_path
     #p controller_store[:user_id_file_path]
   end
 
   def save_file 
-    p message[:user_id]+" save_file: cache frames"
+    p "save_frames"
     controller_store[:user_id_file_path][message[:trade_key]] << [ message[:timestamp], Base64.decode64(message[:base64]) ]
     # file_path = controller_store[:user_id_file_path][message[:trade_key]][0]
     # file_name = message[:timestamp]
@@ -57,27 +53,21 @@ class ChatsController < WebsocketRails::BaseController
   end
 
   def close_file
-    p message[:user_id]+" close_file: prepare arrange"
+    p "trans_to_mp4"
     framerate = 50
     file_path = controller_store[:user_id_file_path][message[:trade_key]][0]
     arranged = arrange_frames(controller_store[:user_id_file_path][message[:trade_key]][1..-1], framerate)
-    p message[:user_id]+" close_file: frame arranged"
-    p message[:user_id]+" close_file: saving arranged frames"
     arranged.each do |frame|
       file_name = frame[0]
       f = File.open("#{file_path}/#{file_name}.png", 'wb') {|f| f.write(frame[1])}
     end
-    p message[:user_id]+" close_file: arranged frames saved"
-    #file_path = controller_store[:user_id_file_path][message[:trade_key]][0]
-    #p Dir[file_path + "/*.png"]
-    # p message[:user_id]+" close_file"
-    # file_path = controller_store[:user_id_file_path][message[:trade_key]][0]
+
     begin
       p Subprocess.check_call(["ffmpeg", "-framerate", framerate.to_s, "-pix_fmt", "yuv420p", "-s", "480x480", "-i", "#{file_path}/%d.png", "#{file_path}.mp4", "-y"])
       controller_store[:user_id_file_path][message[:trade_key]] = nil
-      control_connection = WebsocketRails.users[0]
-      log_msg = "編號[" + message[:trade_key] + "]已存檔"
-      control_connection.send_message :save_record, {is_saved: message[:is_total_end], log: log_msg, total_count: message[:total_count] }
+      control_connection = WebsocketRails.users["record"]
+      #log_msg = "編號[" + message[:trade_key] + "]已存檔"
+      control_connection.send_message :save_record, {callback_id: message[:callback_id], is_saved: message[:is_total_end] }
     rescue Subprocess::NonZeroExit => e
       puts e.message
       puts "Why aren't llamas one of your favorite animals?"

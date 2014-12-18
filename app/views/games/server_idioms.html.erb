@@ -17,30 +17,6 @@ body,.container{
   transition: width 0.1s;
 }
 
-progress{
-  background-color: #f3f3f3;
-  border: 0;
-  width: 200px;
-  height: 20px;
-  border-radius: 10px;
-  vertical-align: middle;
-  margin: 0 8px;
-}
-progress::-webkit-progress-bar {  
-    /* style rules */  
-    background: #f3f3f3;
-    box-shadow: 0px 0px 8px #a0a0a0 inset;
-    border-radius: 10px;
-}  
-progress::-webkit-progress-value {  
-    /* style rules */  
-    background: #6666ee;
-    border-radius: 10px;
-} 
-
-#progressDiv{
-  display: inline-block;
-}
 
 </style>
 <% end %>
@@ -60,13 +36,7 @@ progress::-webkit-progress-value {
   </tr>
   <tr>
     <td>
-      <div>
-        <button id="saveRecordButton">錄影軌跡轉檔</button>
-        <div id="progressDiv">
-          <progress id="saveProgress" value="0" max="300"></progress>
-          <span id="progressText">正在開始</span>
-        </div>
-      </div>
+      
     </td>
     <td>
       <button id="next_button" style="font-size:20px;">下一位</button>
@@ -206,33 +176,6 @@ progress::-webkit-progress-value {
 
 window.fromServerCommand = false;
 
-var isNotSave = false;
-      
-var updateHasToSaveState = function(){
-  $('#saveRecordButton').attr("disabled", !isNotSave);
-};
-
-var receiveSaveRecordHandler = function(o){
-  if(o.total_count){
-    var count = parseInt(o.total_count);
-    var max = $('#saveProgress').attr('max');
-    var step = parseInt(max) / (count || 1);
-    var currentVal = parseFloat($('#saveProgress').val());
-    console.log('max:'+ max + '  step:' + step + '  curval:' + currentVal); 
-    $('#saveProgress').val(currentVal + step);
-  }
-  if(o.log){
-    $('#progressText').html(o.log);
-  }
-  if(o.is_saved){
-    isNotSave = false;
-    alert('錄影存檔完成');
-    $('#progressDiv').hide();
-    $('#saveProgress').val(0);
-    $('#progressText').html('正在開始');
-  }
-};
-
 var updateTrackButtons = function(){  
   $("#undoButton").attr("disabled", !(trackCache.hasUndo() && !window.alarm));
   $("#redoButton").attr("disabled", !(trackCache.hasRedo() && !window.alarm));
@@ -244,7 +187,6 @@ var blockCancelOneSubmitSetStyle = function(o){
 
 var blockSubmitSetStyle = function(o){
   $('#glow_'+o.block.row+'_'+o.block.column).show();
-  isNotSave = true;
 };
 
 //後台取消確認
@@ -280,14 +222,11 @@ function startCounter(thisvalue) {
 
 function startSetStyle(c) {
   $('#user_photo_'+c).addClass("green");
-  isNotSave = true;
-  updateTrackButtons();
 }
 
 function stopSetStyle(c) {
   $('#user_photo_'+c).removeClass("green");
   blockCancelSubmitSetStyle();
-  updateHasToSaveState();
   updateTrackButtons();
 }
 function resetProgressBarAndTime() {
@@ -380,10 +319,11 @@ $(document).ready(function() {
 
   $('#showTextButton').click(function(){
     var row = parseInt($('#row').val());
-    var col = parseInt($('#column').val());
+    var originCol = $('#column').val();
+    var col = parseInt(originCol);
     var columnArray = ['a','b','c','d','e','f','g','h','i','j','k','l'];
     if(isNaN(col)){
-      var idx = columnArray.indexOf(col.toLowerCase());
+      var idx = columnArray.indexOf(originCol.toLowerCase());
       if(idx != -1){
         col = (idx + 1).toString();
       }
@@ -448,21 +388,6 @@ $(document).ready(function() {
     updateTrackButtons();
   });
 
-  $('#saveRecordButton').click(function(){
-    window.chatApp.saveRecord(!isNotSave);
-    $('#saveRecordButton').attr("disabled", true);
-    $('#progressDiv').show();
-  });
-
-  $('#progressDiv').hide();
-  updateHasToSaveState();
-
 });
-
-$(window).bind('beforeunload', function() {
-  if(isNotSave){
-    return '嘿！你忘了存檔了！！  下面的按鈕別點錯啊！';
-  }
-} );
 </script>
 <% end %>

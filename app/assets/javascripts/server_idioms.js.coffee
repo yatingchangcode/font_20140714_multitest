@@ -22,7 +22,6 @@ class @ChatApp
     @dispatcher.bind 'rewrite', @receiveRewrite
     @dispatcher.bind 'clear', @receiveClear
     @dispatcher.bind 'action', @receiveAction
-    @dispatcher.bind 'save_record', @receiveSaveRecord
 
   continue_write: (uid) ->
     @dispatcher.trigger 'continue_write', user_id: uid
@@ -91,11 +90,6 @@ class @ChatApp
       tvwall.receiveRewriteHandler message
     return
 
-  receiveSaveRecord: (message) =>
-    if(receiveSaveRecordHandler)
-      receiveSaveRecordHandler message
-    return
-
   action: (uid,action) =>
     @dispatcher.trigger @stage_name+'.action' , user_id: uid, action: action
 
@@ -118,8 +112,5 @@ class @ChatApp
 
   rewrite: (ink, block) =>
     @dispatcher.trigger @stage_name+'.rewrite' ,  block: block, ink: ink
-
-  saveRecord: (isSave) ->
-    @dispatcher.trigger 'save_record', { is_saved: isSave }
 
 

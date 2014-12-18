@@ -28,39 +28,33 @@ class WritesController < WebsocketRails::BaseController
 
   def down_location
     manager_connection = WebsocketRails.users[0]
-    record_connection = WebsocketRails.users["record"]
-    cache_action(message[:user_id], "down", message[:x], message[:y], message[:stamp])
     data = {:user_id => message[:user_id], :x => message[:x], :y => message[:y], :stamp => message[:stamp]}
     manager_connection.send_message :down_location, data
-    record_connection.send_message :down_location, data
+    cache_action(message[:user_id], "down", message[:x], message[:y], message[:stamp])
   end
 
   def move_location
     manager_connection = WebsocketRails.users[0]
-    record_connection = WebsocketRails.users["record"]
-    cache_action(message[:user_id], "move", message[:x], message[:y], message[:stamp])
     data = {:user_id => message[:user_id], :x => message[:x], :y => message[:y], :stamp => message[:stamp]}
     manager_connection.send_message :move_location, data
-    record_connection.send_message :move_location, data
+    cache_action(message[:user_id], "move", message[:x], message[:y], message[:stamp])
   end
 
   def up_location
     manager_connection = WebsocketRails.users[0]
-    record_connection = WebsocketRails.users["record"]
     data = {}
     manager_connection.send_message :up_location, data
-    record_connection.send_message :up_location, data
   end
 
   def clear
     p message[:user_id]
-    cache_action(message[:user_id], "clear", nil, nil, message[:stamp])
     broadcast_message :clear, {:user_id => message[:user_id], :stamp => message[:stamp]}
+    cache_action(message[:user_id], "clear", nil, nil, message[:stamp])
   end
 
   def clearAll
-      renew_all(controller_store[:visitors], true)
-      broadcast_message :clear, {}
+    broadcast_message :clear, {}
+    renew_all(controller_store[:visitors], true)
   end
 
   def reset
@@ -78,10 +72,8 @@ class WritesController < WebsocketRails::BaseController
 
   def submit
     manager_connection = WebsocketRails.users[0]
-    record_connection = WebsocketRails.users["record"]
     data = {:user_id => message[:user_id], :stamp => message[:stamp]}
     manager_connection.send_message :submit, data
-    record_connection.send_message :submit, data
   end
 
   def cancelSubmit
@@ -94,7 +86,6 @@ class WritesController < WebsocketRails::BaseController
     trigger_id = message[:user_id]
     manager_connection = WebsocketRails.users[0]
     trigger_connection = WebsocketRails.users[trigger_id.to_i]
-    record_connection = WebsocketRails.users["record"]
     # Just for passing other properties 
     data = message
     p message[:action]
@@ -109,7 +100,6 @@ class WritesController < WebsocketRails::BaseController
     #data = {:action => message[:action], :user_id => trigger_id.to_s, :stamp => message[:stamp]}
     manager_connection.send_message :action, data
     trigger_connection.send_message :action, data
-    record_connection.send_message :action, data
   end
 
   def setCorrectCount
@@ -172,23 +162,27 @@ class WritesController < WebsocketRails::BaseController
 
   def cache_action(cid, action, x, y, stamp)
     #p message[:user_id]+" save_file: cache frames"
-    controller_store[:user_id_file_path][cid] << [ action, x, y, stamp ]
+    if controller_store[:user_id_file_path] && controller_store[:user_id_file_path][cid]
+      controller_store[:user_id_file_path][cid] << [ action, x, y, stamp ]
+    end
   end
 
   def save_action(cid)
-    data = controller_store[:user_id_file_path][cid]
-    controller_store[:user_id_file_path][cid] = nil;
+    if controller_store[:user_id_file_path]
+      data = controller_store[:user_id_file_path][cid]
+      controller_store[:user_id_file_path][cid] = nil;
 
-    file_path = data[0]
-    tosave = {}
-    tosave[:file_path] = data[0]
-    tosave[:renew] = controller_store[:user_id_file_path]["#{cid}-renew"] || false
-    tosave[:data] = data[1..-1]
-    #data = data[1..-1]
-    #data.each do |x|
-    #f = File.open("#{file_path}.json", 'a') {|f| f.write(x)}
-    #end
-    f = File.open("#{file_path}.json", 'a') {|f| f.write(JSON.dump tosave)}
-    renew_one(cid, false)
+      file_path = data[0]
+      tosave = {}
+      tosave[:file_path] = data[0]
+      tosave[:renew] = controller_store[:user_id_file_path]["#{cid}-renew"] || false
+      tosave[:data] = data[1..-1]
+      #data = data[1..-1]
+      #data.each do |x|
+      #f = File.open("#{file_path}.json", 'a') {|f| f.write(x)}
+      #end
+      f = File.open("#{file_path}.json", 'a') {|f| f.write(JSON.dump tosave)}
+      renew_one(cid, false)
+    end
   end
 end

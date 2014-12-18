@@ -1,0 +1,413 @@
+
+  <div class="jumbotron">
+    <h2>一字千金 軌跡轉檔程式</h2>
+    <div>
+      <button id="saveRecordButton">錄影軌跡轉檔</button>
+      <!-- <div id="progressDiv">
+        <progress id="saveProgress" value="0" max="300"></progress>
+        <span id="progressText">正在開始</span>
+      </div> -->
+    </div>
+  </div>
+  <div class="row">
+  	<% @files.each do |x| %>
+  	  <div>
+  	  	<span>name: </span>
+  	  	<span style="color:#2087b1;"><%= link_to x.split('/').last,x %></span>
+  	  	<span>status: </span>
+  	  	<span id="<%= x.split('/').last %>" style="color:#2087b1;">尚未開始</span>
+  	  </div>
+	<% end %>  
+  </div>
+
+  <% content_for :javascripts do %>
+  <%= javascript_include_tag 'pinhole' %>
+  <script>
+  var urlList = <%= @files.to_json.html_safe %>;
+  <%=
+  	#@files.to_json.html_safe
+  %>
+/*
+urlList[0].split('/').slice(2)
+["game2_20140904", "派大星_stageA1_20141216_143039.json"]
+urlList[0].split('/').slice(3)
+["派大星_stageA1_20141216_143039.json"]
+urlList[0].split('/').last()
+VM2465:2 Uncaught TypeError: undefined is not a function
+urlList[0].split('/').pop()
+"派大星_stageA1_20141216_143039.json"
+var test = urlList[0].split('/').pop()
+undefined
+test.substr(0, test.length - 1)
+"派大星_stageA1_20141216_143039.jso"
+test.substr(0, test.length - 11)
+"派大星_stageA1_20141216_"
+test.substr(0, test.length - 12)
+"派大星_stageA1_20141216"
+*/
+  var isIdle = true;
+  var requestClockTime = 1000;
+  var requestClockInterval = null;
+
+  var preActionCount = 0;
+  var fileSaveActionCount = 0;
+  var delayTime = 60;
+
+  var blockToUserIdMap = {};
+
+  var lastStampCache = {};
+
+  var checkRenew = function(stage, crkey, stamp){
+  	var renew = false;
+	switch(stage){
+		case "A1":
+			renew = true;
+			break;
+		case "A2":
+		case "A3":
+		case "B1":
+			var lastStamp = lastStampCache[crkey];
+			if(lastStamp){
+				renew = (stamp - lastStamp > 10000);
+			}
+			break;
+		case "B2":
+			var lastStamp = lastStampCache[crkey];
+			if(lastStamp){
+				renew = (stamp - lastStamp > 30000);
+			}
+			break;
+		case "B3":
+			renew = false;
+	}  	
+	return renew;
+  }
+
+  var parsePoints = function(info){
+  	var file_name = info.file_path.split('/').pop();
+  	var stage = file_name.split('stage')[1].substr(0, 2);
+  	var crkey = file_name.substr(0, file_name.length - 7) + "_" + (info.cid || "");
+  	var points = info.data;
+  	CR.reg(crkey);
+  	//console.log(crkey);
+
+  	for(var i = 0, len = points.length; i < len; i++){
+  		var p = points[i];
+  		var actionName = p[0];
+  		var x = p[1];
+  		var y = p[2];
+  		var stamp = p[3];
+  		switch(p[0]){
+  			case 'create':
+  				if(info.renew === true || checkRenew(stage, crkey, stamp)){
+  					CR(crkey).prop({cacheLastFrame:false});
+  				}else{
+  					CR(crkey).prop({cacheLastFrame:true});
+  				}
+  				//console.log("start");
+  				CR(crkey).start(stamp);
+  				break;
+  			case 'down':
+  				var o = { stamp: stamp, x: x, y: y };
+  				//console.log(o);
+  				CR(crkey).point(o);
+  				break;
+  			case 'move':
+  				var o = { stamp: stamp, x: x, y: y };
+  				//console.log(o);
+  				CR(crkey).line(o);
+  				break;
+  			case 'clear':
+  				//console.log('clear');
+  				CR(crkey).clear(stamp);
+  				break;
+  			case 'end':
+  				lastStampCache[crkey] = stamp;
+  				//console.log("stop");
+  				CR(crkey).stop(stamp, window.stopCallBack(info));
+  				break;
+  		}
+  	}
+  };
+
+
+  var receiveDownHandler = function(o){
+    //CR(o.cid || o.user_id).point({ stamp: o.stamp, x: o.x, y: o.y }, writeToLog);
+  };
+
+  var receiveMoveHandler = function(o){
+    //CR(o.cid || o.user_id).line({ stamp: o.stamp, x: o.x, y: o.y }, writeToLog);
+  };
+
+  var receiveUpHandler = function(o){};
+
+  var receiveClearHandler = function(o){
+    /*
+    if(o && (o.cid || o.user_id)){
+      CR(o.cid || o.user_id).clear(o.stamp);
+    }else{
+      CR.clearAll();  
+    }
+    */
+  };
+
+  var receiveDeviceStartHandler = function(o){
+    //CR(o.cid || o.user_id).start(o.stamp, startCallBack);
+  };
+
+  var receiveDeviceStopHandler = function(o){
+    //CR(o.cid || o.user_id).stop(o.stamp, stopCallBack(o));
+    //CR(o.user_id).stop(o.stamp);
+  };
+
+  var receiveResetHandler = function(o){
+    /*
+    if(o && o.stage){
+      //if(o.stage != "<%= @stage %>"){
+        $.getJSON('/games/get_game_data.json?id=record',
+          function(data){            
+            //var res = JSON.parse(data);
+            //alert(data);
+            if(data.recordUrl){
+              window.location.replace(data.recordUrl);
+            }
+          }
+        ).fail(function(e){
+          console.log('error');
+        });
+      //}
+    }
+    */
+  };
+
+  var receiveSaveRecordHandler = function(o){
+  	if(o.callback_id){
+  		var originId = o.callback_id;
+  		var last = originId.split('/').pop();
+  		var el = document.getElementById(last);
+  		$(el).html("轉檔完成");
+  	}
+    /*
+    if(o.is_saved || o.log) return;
+    var count = CR.cacheCount * 3;
+    CR.compileAll(
+      (function(total){
+        var scope = window.pinhole;
+        return function(data){
+          setTimeout((function(dispatcher, name){
+            return function(){
+              dispatcher.trigger("save_record", { log: '編號[' + name + ']筆跡轉換中', total_count: total });
+            };
+          })(scope.dispatcher, data.key), 10);
+        };
+      })(count),
+      (function(total){
+      var scope = window.pinhole;
+      return function(data){
+        if(data && data.length > 0){
+          for(var i = 0, len = data.length; i < len; i++){
+            var item = data[i];
+            if(item.start){
+              setTimeout((function(dispatcher, t){
+                return function(){
+                  dispatcher.trigger("open_file", {
+                    user_id: blockToUserIdMap[t.id],
+                    trade_key: t.key,
+                    create_at: t.key.split('-')[1].substr(0, 10), // time exclude millseconds
+                    game: <%= @game.id %>,
+                    stage: '<%= @stage %>'
+                  });
+                  dispatcher.trigger("save_record", { log: '編號[' + t.key + ']存檔中', total_count: total });
+                };
+              })(scope.dispatcher, item), fileSaveActionCount++ * delayTime);
+            }
+
+            setTimeout((function(dispatcher, t){
+              return function(){
+                dispatcher.trigger("save_file", {
+                  user_id: blockToUserIdMap[t.id],
+                  timestamp: t.stamp.toString(),
+                  base64: t.base64.split(',')[1],
+                  trade_key: t.key
+                });
+              };
+            })(scope.dispatcher, item), fileSaveActionCount++ * delayTime);
+
+            if(item.end){
+              setTimeout((function(dispatcher, t, isEnd){
+                return function(){
+                  dispatcher.trigger("close_file", {
+                    user_id: blockToUserIdMap[t.id],
+                    trade_key: t.key,
+                    is_total_end: isEnd,
+                    total_count: total
+                  });
+                };
+              })(scope.dispatcher, item, i + 1 == len), fileSaveActionCount++ * delayTime);
+            }
+
+
+          }
+          
+        }
+      };
+    })(count));
+	*/
+  };
+
+  $(document).ready(function() {
+    CR.prop({
+      width: 500,
+      height: 500,
+      lineWidth: 13,
+      lineColor: '#ececec',
+      frameRate: 50,
+      //cacheLastFrame: true,
+      lazyOutput: false,
+      backgroundImage: '/assets/block-524-black-with-line.png'
+    });
+
+    //cacheLastFrame
+
+
+
+    //window.pinhole = new Pinhole('0');
+    window.pinhole = new Pinhole('record');
+	window.pinhole.bindEvents();
+
+    var currentLog = "";
+
+    window.stopCallBack = function(o) {
+      var scope = window.pinhole;
+      //console.log(o);
+      var filePath = o.file_path.split('/');
+      filePath = filePath.slice(filePath.length-2).join('/');
+      //console.error();
+
+      var cid = o.cid || filePath;
+
+      // var uid = o.user_id;
+      // blockToUserIdMap[o.cid || uid] = uid;
+      // var element = $("#console_"+uid);
+      return function(data) {
+        //element.html(currentLog += 'STOP<br/>');
+
+        //var tkey = uid + "_" + (new Date()).getTime().toString();
+        console.log("Stop call back");
+        //console.log(data);
+        setTimeout((function(dispatcher, path, key){
+          return function(){
+            dispatcher.trigger("open_file", {
+              trade_key: key,
+              file_path: path
+            });
+          };
+        })(scope.dispatcher, filePath, cid), fileSaveActionCount++ * delayTime);
+
+        for (var i = 0, len = data.length; i < len; i++){
+          var frameInfo = {
+            timestamp: data[i].stamp.toString(), 
+            base64: data[i].base64.split(',')[1],
+            trade_key: cid
+          };
+          setTimeout((function(dispatcher, obj){
+            return function(){
+              dispatcher.trigger("save_file", obj);
+            };
+          })(scope.dispatcher, frameInfo), fileSaveActionCount++ * delayTime);
+        }
+
+        setTimeout((function(dispatcher, key){
+          return function(){
+            dispatcher.trigger("close_file", {
+              trade_key: key,
+              callback_id: filePath+".json"
+            });
+            isIdle = true;
+            currentUrl = null;
+            fileSaveActionCount = 0;
+          };
+        })(scope.dispatcher, cid), fileSaveActionCount++ * delayTime);
+
+        setTimeout(function(){
+          isIdle = true;
+          currentUrl = null;
+          fileSaveActionCount = 0;
+        },fileSaveActionCount++ * delayTime);
+
+        /*
+        var i, len;
+        scope.dispatcher.trigger("open_file", {
+          user_id: uid
+        });
+        i = 0;
+        len = data.length;
+        while (i < len) {
+          setTimeout((function(dispatcher, last, obj){
+            return function(){
+              dispatcher.trigger("save_file", obj);
+              if(last){
+                dispatcher.trigger("close_file", {user_id: obj.user_id});
+              }
+            };
+          })(scope.dispatcher, (i + 1 == len), {
+            user_id: uid, 
+            timestamp: data[i].stamp.toString(), 
+            base64: data[i].base64.split(',')[1]
+          }), fileSaveActionCount * 60);
+          
+          fileSaveActionCount++;
+          i++;
+        }
+        */
+
+      };
+    };
+
+    urlList.sort();
+
+    $("#saveRecordButton").click(function(){
+    	$("#saveRecordButton").attr("disabled", true);
+    	requestClockInterval = setInterval(function(){
+			if(isIdle && urlList.length > 0){
+				currentUrl = urlList.shift();
+				isIdle = false;
+        console.log(currentUrl);
+				$.getJSON(currentUrl,
+            (function(url){
+              return function(data){
+                var id = url.split('/').pop();
+                var el = document.getElementById(id);
+                //var res = JSON.parse(data);
+                $(el).html("轉換檔案中...");
+                parsePoints(data);
+              };
+            })(currentUrl)
+			    ).fail(function(e){
+			      if(e.status == "200" && e.statusText == "OK"){
+              console.log(e.responseText);
+              //var data = JSON.parse(e.responseText);
+              // data = data.data;
+              // //console.log(data);
+              // var id = currentUrl.split('/').pop();
+              // var el = document.getElementById(id);
+              // //var res = JSON.parse(data);
+              // $(el).html("轉換檔案中...");
+              // parsePoints(data);  
+            }
+			    });
+			}
+	    },requestClockTime);
+    });
+    
+    
+  });
+
+  $(window).bind('beforeunload', function() {
+    if(!isIdle){
+      return '正在存檔中，你確定要離開？';
+    }
+  });
+
+  </script>
+  <% end %>
