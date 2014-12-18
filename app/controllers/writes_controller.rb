@@ -9,8 +9,6 @@ class WritesController < WebsocketRails::BaseController
     controller_store[:visitors] = []
   end
 
-
-
   def get_write_count
     # perform application setup here
     data = {:write_count => controller_store[:write_count]}
@@ -21,9 +19,9 @@ class WritesController < WebsocketRails::BaseController
     controller_store[:game_id] = message[:game]
     controller_store[:stage_name] = message[:stage]
     controller_store[:visitors] = message[:visitors].split(",")
-    p controller_store[:game_id]
-    p controller_store[:stage_name]
-    p controller_store[:visitors]
+    # p controller_store[:game_id]
+    # p controller_store[:stage_name]
+    # p controller_store[:visitors]
   end
 
   def down_location
@@ -47,9 +45,16 @@ class WritesController < WebsocketRails::BaseController
   end
 
   def clear
-    p message[:user_id]
-    broadcast_message :clear, {:user_id => message[:user_id], :stamp => message[:stamp]}
-    cache_action(message[:user_id], "clear", nil, nil, message[:stamp])
+    #p message[:user_id]
+    cid = message[:user_id]
+    broadcast_message :clear, {:user_id => cid, :stamp => message[:stamp]}
+    if cid
+      if controller_store[:user_id_file_path] && controller_store[:user_id_file_path][cid]
+        cache_action(cid, "clear", nil, nil, message[:stamp])
+      else
+        renew_one(cid, true)
+      end
+    end
   end
 
   def clearAll
@@ -68,6 +73,9 @@ class WritesController < WebsocketRails::BaseController
       data = message
       manager_connection.send_message :continue_write, data
       trigger_connection.send_message :continue_write, data
+      if trigger_id
+        renew_one(trigger_id, false)
+      end
   end
 
   def submit
@@ -135,7 +143,9 @@ class WritesController < WebsocketRails::BaseController
 
   private
   def renew_one(cid, renew)
-    controller_store[:user_id_file_path]["#{cid}-renew"] = renew
+    if controller_store[:user_id_file_path]
+      controller_store[:user_id_file_path]["#{cid}-renew"] = renew
+    end
   end
 
   def renew_all(visitors, renew)
@@ -155,9 +165,11 @@ class WritesController < WebsocketRails::BaseController
     file_name = "#{@visitor.name}_stage#{stage}_#{Time.now.strftime("%Y%m%d_%H%M%S")}"
 
     record_path ||= File.expand_path(File.join("record"), Rails.public_path)
-    file_path = FileUtils.mkdir_p("#{record_path}/game#{game_id}_#{@game.created_at.strftime("%Y%m%d")}/#{file_name}")
+    file_path = "#{record_path}/game#{game_id}_#{@game.created_at.strftime("%Y%m%d")}/#{file_name}"
     
-    controller_store[:user_id_file_path][cid] = file_path
+    if controller_store[:user_id_file_path]
+      controller_store[:user_id_file_path][cid] = [file_path]
+    end
   end
 
   def cache_action(cid, action, x, y, stamp)
@@ -168,7 +180,7 @@ class WritesController < WebsocketRails::BaseController
   end
 
   def save_action(cid)
-    if controller_store[:user_id_file_path]
+    if controller_store[:user_id_file_path] && controller_store[:user_id_file_path][cid]
       data = controller_store[:user_id_file_path][cid]
       controller_store[:user_id_file_path][cid] = nil;
 
@@ -176,6 +188,7 @@ class WritesController < WebsocketRails::BaseController
       tosave = {}
       tosave[:file_path] = data[0]
       tosave[:renew] = controller_store[:user_id_file_path]["#{cid}-renew"] || false
+      tosave[:cid] = cid
       tosave[:data] = data[1..-1]
       #data = data[1..-1]
       #data.each do |x|

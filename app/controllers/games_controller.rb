@@ -15,6 +15,9 @@ class GamesController < ApplicationController
 
     @game.save
 
+    record_path ||= File.expand_path(File.join("record"), Rails.public_path)
+    file_path = FileUtils.mkdir_p("#{record_path}/game#{@game.id}_#{@game.created_at.strftime("%Y%m%d")}")
+
     redirect_to game_path(@game)
   end
 

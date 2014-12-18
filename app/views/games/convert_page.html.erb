@@ -27,24 +27,7 @@
   <%=
   	#@files.to_json.html_safe
   %>
-/*
-urlList[0].split('/').slice(2)
-["game2_20140904", "派大星_stageA1_20141216_143039.json"]
-urlList[0].split('/').slice(3)
-["派大星_stageA1_20141216_143039.json"]
-urlList[0].split('/').last()
-VM2465:2 Uncaught TypeError: undefined is not a function
-urlList[0].split('/').pop()
-"派大星_stageA1_20141216_143039.json"
-var test = urlList[0].split('/').pop()
-undefined
-test.substr(0, test.length - 1)
-"派大星_stageA1_20141216_143039.jso"
-test.substr(0, test.length - 11)
-"派大星_stageA1_20141216_"
-test.substr(0, test.length - 12)
-"派大星_stageA1_20141216"
-*/
+
   var isIdle = true;
   var requestClockTime = 1000;
   var requestClockInterval = null;
@@ -85,7 +68,7 @@ test.substr(0, test.length - 12)
 
   var parsePoints = function(info){
   	var file_name = info.file_path.split('/').pop();
-  	var stage = file_name.split('stage')[1].substr(0, 2);
+  	//var stage = file_name.split('stage')[1].substr(0, 2);
   	var crkey = file_name.substr(0, file_name.length - 7) + "_" + (info.cid || "");
   	var points = info.data;
   	CR.reg(crkey);
@@ -99,12 +82,13 @@ test.substr(0, test.length - 12)
   		var stamp = p[3];
   		switch(p[0]){
   			case 'create':
-  				if(info.renew === true || checkRenew(stage, crkey, stamp)){
-  					CR(crkey).prop({cacheLastFrame:false});
-  				}else{
-  					CR(crkey).prop({cacheLastFrame:true});
-  				}
+  				// if(info.renew === true || checkRenew(stage, crkey, stamp)){
+  				// 	CR(crkey).prop({cacheLastFrame:false});
+  				// }else{
+  				// 	CR(crkey).prop({cacheLastFrame:true});
+  				// }
   				//console.log("start");
+          CR(crkey).prop({cacheLastFrame:!info.renew});
   				CR(crkey).start(stamp);
   				break;
   			case 'down':
@@ -122,7 +106,7 @@ test.substr(0, test.length - 12)
   				CR(crkey).clear(stamp);
   				break;
   			case 'end':
-  				lastStampCache[crkey] = stamp;
+  				// lastStampCache[crkey] = stamp;
   				//console.log("stop");
   				CR(crkey).stop(stamp, window.stopCallBack(info));
   				break;
@@ -273,7 +257,7 @@ test.substr(0, test.length - 12)
 
     //window.pinhole = new Pinhole('0');
     window.pinhole = new Pinhole('record');
-	window.pinhole.bindEvents();
+	   window.pinhole.bindEvents();
 
     var currentLog = "";
 
@@ -284,8 +268,8 @@ test.substr(0, test.length - 12)
       filePath = filePath.slice(filePath.length-2).join('/');
       //console.error();
 
-      var cid = o.cid || filePath;
-
+      // var cid = o.cid || filePath;
+      var tkey = o.cid + "-" + filePath + "-" + (new Date()).getTime().toString();
       // var uid = o.user_id;
       // blockToUserIdMap[o.cid || uid] = uid;
       // var element = $("#console_"+uid);
@@ -302,13 +286,13 @@ test.substr(0, test.length - 12)
               file_path: path
             });
           };
-        })(scope.dispatcher, filePath, cid), fileSaveActionCount++ * delayTime);
+        })(scope.dispatcher, filePath, tkey), fileSaveActionCount++ * delayTime);
 
         for (var i = 0, len = data.length; i < len; i++){
           var frameInfo = {
             timestamp: data[i].stamp.toString(), 
             base64: data[i].base64.split(',')[1],
-            trade_key: cid
+            trade_key: tkey
           };
           setTimeout((function(dispatcher, obj){
             return function(){
@@ -327,7 +311,7 @@ test.substr(0, test.length - 12)
             currentUrl = null;
             fileSaveActionCount = 0;
           };
-        })(scope.dispatcher, cid), fileSaveActionCount++ * delayTime);
+        })(scope.dispatcher, tkey), fileSaveActionCount++ * delayTime);
 
         setTimeout(function(){
           isIdle = true;

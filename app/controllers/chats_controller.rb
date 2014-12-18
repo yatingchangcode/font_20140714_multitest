@@ -57,6 +57,7 @@ class ChatsController < WebsocketRails::BaseController
     framerate = 50
     file_path = controller_store[:user_id_file_path][message[:trade_key]][0]
     arranged = arrange_frames(controller_store[:user_id_file_path][message[:trade_key]][1..-1], framerate)
+    controller_store[:user_id_file_path][message[:trade_key]] = nil
     arranged.each do |frame|
       file_name = frame[0]
       f = File.open("#{file_path}/#{file_name}.png", 'wb') {|f| f.write(frame[1])}
@@ -64,7 +65,6 @@ class ChatsController < WebsocketRails::BaseController
 
     begin
       p Subprocess.check_call(["ffmpeg", "-framerate", framerate.to_s, "-pix_fmt", "yuv420p", "-s", "480x480", "-i", "#{file_path}/%d.png", "#{file_path}.mp4", "-y"])
-      controller_store[:user_id_file_path][message[:trade_key]] = nil
       control_connection = WebsocketRails.users["record"]
       #log_msg = "編號[" + message[:trade_key] + "]已存檔"
       control_connection.send_message :save_record, {callback_id: message[:callback_id], is_saved: message[:is_total_end] }
