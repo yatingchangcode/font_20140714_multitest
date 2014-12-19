@@ -29,7 +29,7 @@
   %>
 
   var isIdle = true;
-  var requestClockTime = 1000;
+  var requestClockTime = 500;
   var requestClockInterval = null;
 
   var preActionCount = 0;
@@ -166,6 +166,10 @@
 
   var receiveSaveRecordHandler = function(o){
   	if(o.callback_id){
+      window.isIdle = true;
+      window.currentUrl = null;
+      window.fileSaveActionCount = 0;
+
   		var originId = o.callback_id;
   		var last = originId.split('/').pop();
   		var el = document.getElementById(last);
@@ -307,17 +311,17 @@
               trade_key: key,
               callback_id: filePath+".json"
             });
-            isIdle = true;
-            currentUrl = null;
-            fileSaveActionCount = 0;
+            // isIdle = true;
+            // currentUrl = null;
+            // fileSaveActionCount = 0;
           };
         })(scope.dispatcher, tkey), fileSaveActionCount++ * delayTime);
 
-        setTimeout(function(){
-          isIdle = true;
-          currentUrl = null;
-          fileSaveActionCount = 0;
-        },fileSaveActionCount++ * delayTime);
+        // setTimeout(function(){
+        //   isIdle = true;
+        //   currentUrl = null;
+        //   fileSaveActionCount = 0;
+        // },fileSaveActionCount++ * delayTime);
 
         /*
         var i, len;
@@ -367,19 +371,29 @@
                 parsePoints(data);
               };
             })(currentUrl)
-			    ).fail(function(e){
-			      if(e.status == "200" && e.statusText == "OK"){
-              console.log(e.responseText);
-              //var data = JSON.parse(e.responseText);
-              // data = data.data;
-              // //console.log(data);
-              // var id = currentUrl.split('/').pop();
-              // var el = document.getElementById(id);
-              // //var res = JSON.parse(data);
-              // $(el).html("轉換檔案中...");
-              // parsePoints(data);  
-            }
-			    });
+			    ).fail((function(url){
+            return function(e){
+              var id = url.split('/').pop();
+              var el = document.getElementById(id);
+              if(e.status == "200" && e.statusText == "OK"){
+                console.log(e.responseText);
+                $(el).html("檔案格式錯誤");
+                //var data = JSON.parse(e.responseText);
+                // data = data.data;
+                // //console.log(data);
+                // var id = currentUrl.split('/').pop();
+                // var el = document.getElementById(id);
+                // //var res = JSON.parse(data);
+                // $(el).html("轉換檔案中...");
+                // parsePoints(data);  
+              }else{
+                $(el).html("抓不到檔案");
+              }
+              window.isIdle = true;
+              window.currentUrl = null;
+              window.fileSaveActionCount = 0;
+            };
+          })(currentUrl));
 			}
 	    },requestClockTime);
     });
