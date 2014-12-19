@@ -21,29 +21,39 @@ class WritesB2Controller < WebsocketRails::BaseController
   end
 
   def down_location
+    manager_connection = WebsocketRails.users[0]
     data = {:user_id => message[:user_id],block: message[:block], :x => message[:x], :y => message[:y], :stamp => message[:stamp], cid: "#{message[:user_id]}_#{message[:block][:row]}_#{message[:block][:column]}" }
-    p data[:cid]
-    broadcast_message :down_location, data
+    manager_connection.send_message :down_location, data
     cache_action(data[:cid], "down", message[:x], message[:y], message[:stamp])
   end
 
   def move_location
+    manager_connection = WebsocketRails.users[0]
     data = {:user_id => message[:user_id],block: message[:block], :x => message[:x], :y => message[:y], :stamp => message[:stamp], cid: "#{message[:user_id]}_#{message[:block][:row]}_#{message[:block][:column]}" }
-    p data[:cid]
-    broadcast_message :move_location, data
+    manager_connection.send_message :move_location, data
     cache_action(data[:cid], "move", message[:x], message[:y], message[:stamp])
   end
 
   def up_location
+    manager_connection = WebsocketRails.users[0]
     data = {cid: "#{message[:user_id]}_#{message[:block][:row]}_#{message[:block][:column]}" }
-    broadcast_message :up_location, data
+    manager_connection.send_message :up_location, data
+    #broadcast_message :up_location, data
   end
 
   def clear
     data = {:user_id => message[:user_id],block: message[:block], :stamp => message[:stamp], cid: "#{message[:user_id]}_#{message[:block][:row]}_#{message[:block][:column]}" }
-    p data[:cid]
+    # broadcast_message :clear, data
+    # cache_action(data[:cid], "clear", nil, nil, message[:stamp])
     broadcast_message :clear, data
-    cache_action(data[:cid], "clear", nil, nil, message[:stamp])
+    cid = data[:cid]
+    if cid
+      if controller_store[:user_id_file_path] && controller_store[:user_id_file_path][cid]
+        cache_action(cid, "clear", nil, nil, message[:stamp])
+      else
+        renew_one(cid, true)
+      end
+    end
   end
 
   def clearAll
@@ -52,23 +62,31 @@ class WritesB2Controller < WebsocketRails::BaseController
   end
 
   def submit
+    manager_connection = WebsocketRails.users[0]
     data = {:user_id => message[:user_id],block: message[:block], :stamp => message[:stamp], cid: "#{message[:user_id]}_#{message[:block][:row]}_#{message[:block][:column]}" }
-    broadcast_message :submit, data
+    # broadcast_message :submit, data
+    manager_connection.send_message :submit, data
   end
 
   def right
+    manager_connection = WebsocketRails.users[0]
     data = {:user_id => message[:user_id], block: message[:block], :stamp => message[:stamp], cid: "#{message[:user_id]}_#{message[:block][:row]}_#{message[:block][:column]}" }
-    broadcast_message :right, data
+    # broadcast_message :right, data
+    manager_connection.send_message :right, data
   end
 
   def remove_o
+    manager_connection = WebsocketRails.users[0]
     data = {:user_id => message[:user_id], block: message[:block], :stamp => message[:stamp], cid: "#{message[:user_id]}_#{message[:block][:row]}_#{message[:block][:column]}" }
-    broadcast_message :remove_o, data
+    # broadcast_message :remove_o, data
+    manager_connection.send_message :remove_o, data
   end
 
   def move_block
+    manager_connection = WebsocketRails.users[0]
     data = {:user_id => message[:user_id],block: message[:block], :stamp => message[:stamp], cid: "#{message[:user_id]}_#{message[:block][:row]}_#{message[:block][:column]}" }
-    broadcast_message :move_block, data
+    # broadcast_message :move_block, data
+    manager_connection.send_message :move_block, data
   end
 
   def setCorrectCount
@@ -83,20 +101,6 @@ class WritesB2Controller < WebsocketRails::BaseController
     manager_connection.send_message :showCorrectUsers, data
   end
 
-
-  def end_round
-    controller_store[:user_id_write_block][message[:user_id]] = message[:blocks]
-
-    manager_connection = WebsocketRails.users[0]
-    data = {:user_id => message[:user_id]}
-    manager_connection.send_message :end_round, data
-  end
-
-  def rewrite
-    data = {block: message[:block], :stamp => message[:stamp], ink: message[:ink]}
-    broadcast_message :rewrite, data
-  end
-
   def action
     trigger_id = message[:user_id]
     manager_connection = WebsocketRails.users[0]
@@ -106,13 +110,11 @@ class WritesB2Controller < WebsocketRails::BaseController
     if message[:action] == "device_start"
       #save
       cid = "#{message[:user_id]}_#{message[:block][:row]}_#{message[:block][:column]}"
-      p "start "+cid
       start_cache(trigger_id, cid, controller_store[:game_id], controller_store[:stage_name])
       cache_action(cid, "create", nil, nil, message[:stamp])
       #p controller_store[:user_id_file_path]
     elsif message[:action] == "device_stop"
       cid = "#{message[:user_id]}_#{message[:block][:row]}_#{message[:block][:column]}"
-      p "stop "+cid
       cache_action(cid, "end", nil, nil, message[:stamp])
       save_action(cid)
     end
@@ -127,7 +129,9 @@ class WritesB2Controller < WebsocketRails::BaseController
   end
 
   def renew_one(cid, renew)
-    controller_store[:user_id_file_path]["#{cid}-renew"] = renew
+    if controller_store[:user_id_file_path]
+      controller_store[:user_id_file_path]["#{cid}-renew"] = renew
+    end
   end
 
   def renew_all(visitors, renew)
@@ -151,16 +155,13 @@ class WritesB2Controller < WebsocketRails::BaseController
     #client_create_time = Time.at(message[:create_at].to_i).strftime("%Y%m%d_%H%M%S")
     #file_name = "#{@visitor.name}_stage#{message[:stage]}_#{client_create_time}"
     file_name = "#{visitor.name}_stage#{stage}_#{Time.now.strftime("%Y%m%d_%H%M%S")}"
-
     record_path ||= File.expand_path(File.join("record"), Rails.public_path)
-
     #p "#{record_path}/game#{game_id}_#{game.created_at.strftime("%Y%m%d")}/#{file_name}"
-    file_path = FileUtils.mkdir_p("#{record_path}/game#{game_id}_#{game.created_at.strftime("%Y%m%d")}/#{file_name}")
+    file_path = "#{record_path}/game#{game_id}_#{game.created_at.strftime("%Y%m%d")}/#{file_name}"
     
-    if controller_store[:user_id_file_path].nil?
-      controller_store[:user_id_file_path] = {}
+    if controller_store[:user_id_file_path]
+      controller_store[:user_id_file_path][cid] = [file_path]
     end
-    controller_store[:user_id_file_path][cid] = file_path
   end
 
   def cache_action(cid, action, x, y, stamp)
@@ -172,7 +173,7 @@ class WritesB2Controller < WebsocketRails::BaseController
 
   def save_action(cid)
     p "in save action"
-    if controller_store[:user_id_file_path]
+    if controller_store[:user_id_file_path] && controller_store[:user_id_file_path][cid]
       data = controller_store[:user_id_file_path][cid]
       controller_store[:user_id_file_path][cid] = nil;
 

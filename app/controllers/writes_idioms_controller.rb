@@ -19,16 +19,15 @@ class WritesIdiomsController < WebsocketRails::BaseController
 
 
   def down_location
-    data = {:user_id => message[:user_id],block: message[:block], :x => message[:x], :y => message[:y], :stamp => message[:stamp]}
+    data = {:user_id => message[:user_id],block: message[:block], :x => message[:x], :y => message[:y], :stamp => message[:stamp], cid: "#{message[:block][:row]}_#{message[:block][:column]}"}
     broadcast_message :down_location, data
-    cache_action("#{message[:user_id]}_#{message[:block][:row]}_#{message[:block][:column]}", "down", message[:x], message[:y], message[:stamp])
-
+    cache_action(data[:cid], "down", message[:x], message[:y], message[:stamp])
   end
 
   def move_location
-    data = {:user_id => message[:user_id],block: message[:block], :x => message[:x], :y => message[:y], :stamp => message[:stamp]}
+    data = {:user_id => message[:user_id],block: message[:block], :x => message[:x], :y => message[:y], :stamp => message[:stamp], cid: "#{message[:block][:row]}_#{message[:block][:column]}"}
     broadcast_message :move_location, data
-    cache_action("#{message[:user_id]}_#{message[:block][:row]}_#{message[:block][:column]}", "move", message[:x], message[:y], message[:stamp])
+    cache_action(data[:cid], "move", message[:x], message[:y], message[:stamp])
   end
 
   def up_location
@@ -37,9 +36,16 @@ class WritesIdiomsController < WebsocketRails::BaseController
   end
 
   def clear
-    p message[:user_id]
-    broadcast_message :clear, {:user_id => message[:user_id],block: message[:block], :stamp => message[:stamp]}
-    cache_action("#{message[:user_id]}_#{message[:block][:row]}_#{message[:block][:column]}", "clear", nil, nil, message[:stamp])
+    data = {:user_id => message[:user_id],block: message[:block], :stamp => message[:stamp], cid: "#{message[:block][:row]}_#{message[:block][:column]}"}
+    broadcast_message :clear, data
+    cid = data[:cid]
+    if cid
+      if controller_store[:user_id_file_path] && controller_store[:user_id_file_path][cid]
+        cache_action(cid, "clear", nil, nil, message[:stamp])
+      else
+        renew_one(cid, true)
+      end
+    end
   end
   
   def submit
@@ -80,11 +86,11 @@ class WritesIdiomsController < WebsocketRails::BaseController
     p message[:action]
     if message[:action] == "device_start"
       #save
-      eid = "#{message[:user_id]}_#{message[:block][:row]}_#{message[:block][:column]}"
+      eid = "#{message[:block][:row]}_#{message[:block][:column]}"
       start_cache(trigger_id, eid, controller_store[:game_id], controller_store[:stage_name])
       cache_action(eid, "create", nil, nil, message[:stamp])
     elsif message[:action] == "device_stop"
-      eid = "#{message[:user_id]}_#{message[:block][:row]}_#{message[:block][:column]}"
+      eid = "#{message[:block][:row]}_#{message[:block][:column]}"
       cache_action(eid, "end", nil, nil, message[:stamp])
       save_action(eid)
     end
@@ -101,17 +107,19 @@ class WritesIdiomsController < WebsocketRails::BaseController
   end
   
   def renew_one(cid, renew)
-    controller_store[:user_id_file_path]["#{cid}-renew"] = renew
+    if controller_store[:user_id_file_path]
+      controller_store[:user_id_file_path]["#{cid}-renew"] = renew
+    end
   end
 
   def renew_all(visitors, renew)
-    visitors.each do |x|
-      (1..8).to_a.each do |r|
-        (1..12).to_a.each do |c|
-          renew_one("#{x}_#{r}_#{c}", renew)
-        end
+    
+    (1..8).to_a.each do |r|
+      (1..12).to_a.each do |c|
+        renew_one("#{r}_#{c}", renew)
       end
     end
+    
   end
 
   def start_cache(uid, cid, game_id, stage)
@@ -124,13 +132,11 @@ class WritesIdiomsController < WebsocketRails::BaseController
     file_name = "#{visitor.name}_stage#{stage}_#{Time.now.strftime("%Y%m%d_%H%M%S")}"
 
     record_path ||= File.expand_path(File.join("record"), Rails.public_path)
-    file_path = FileUtils.mkdir_p("#{record_path}/game#{game_id}_#{game.created_at.strftime("%Y%m%d")}/#{file_name}")
+    file_path = "#{record_path}/game#{game_id}_#{game.created_at.strftime("%Y%m%d")}/#{file_name}"
     
-    if controller_store[:user_id_file_path].nil?
-      controller_store[:user_id_file_path] = {}
+    if controller_store[:user_id_file_path]
+      controller_store[:user_id_file_path][cid] = [file_path]
     end
-
-    controller_store[:user_id_file_path][cid] = file_path
   end
 
   def cache_action(cid, action, x, y, stamp)
@@ -141,7 +147,7 @@ class WritesIdiomsController < WebsocketRails::BaseController
   end
 
   def save_action(cid)
-    if controller_store[:user_id_file_path]
+    if controller_store[:user_id_file_path] && controller_store[:user_id_file_path][cid] 
       data = controller_store[:user_id_file_path][cid]
       controller_store[:user_id_file_path][cid] = nil;
       file_path = data[0]
