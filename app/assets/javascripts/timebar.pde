@@ -92,7 +92,7 @@ void setSize(float width, float height){
 }
 
 void setSecond(int s){
-  time = s || 10;
+  time = (s || 10) * 0.985;
   step = (innerWidth || 200) / (fps * time);
 }
 
