@@ -129,7 +129,7 @@ class WritesIdiomsController < WebsocketRails::BaseController
     #p message[:create_at].to_i
     #client_create_time = Time.at(message[:create_at].to_i).strftime("%Y%m%d_%H%M%S")
     #file_name = "#{@visitor.name}_stage#{message[:stage]}_#{client_create_time}"
-    file_name = "#{visitor.name}_stage#{stage}_#{Time.now.strftime("%Y%m%d_%H%M%S")}"
+    file_name = "#{visitor.name}_stage#{stage}_#{Time.now.strftime("%Y%m%d_%H%M%S_%L")}"
 
     record_path ||= File.expand_path(File.join("record"), Rails.public_path)
     file_path = "#{record_path}/game#{game_id}_#{game.created_at.strftime("%Y%m%d")}/#{file_name}"
