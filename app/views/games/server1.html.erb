@@ -323,7 +323,8 @@ progress::-webkit-progress-value {
           <% if @stage == 'A1' %>
           clearInterval(window.alarm);
           window.alarm = null;
-          resetProgressBarAndTime();
+          //resetProgressBarAndTime();
+          window.chatApp.reset({second: window.timeRemaining});
           <% end %>
         });
 
@@ -444,7 +445,8 @@ progress::-webkit-progress-value {
               window.chatApp.action(i,'stop');
             });
             <% if @stage == 'A1' %>
-            resetProgressBarAndTime();
+            //resetProgressBarAndTime();
+            window.chatApp.reset({second: window.timeRemaining});
               //window.chatApp.cancelSubmit(i);
               //receiveSubmitHandler({user_id:i});
             <% end %>
