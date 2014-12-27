@@ -1,5 +1,5 @@
 <%
-  @space_top = "120"
+  @space_top = "140"
   @space_left = "5%"
   @space_right = "4%"
   @canvas_scale = 0.171
@@ -7,6 +7,7 @@
   @font_formula = "w / 3 * 16 / 15"
   @bar_formula = "(w + 5) / 2"
   @timebar_height = "12px"
+  @video_position = "189px"
   case @visitors.length
   when 2
     @canvas_scale = 0.243
@@ -29,6 +30,7 @@
     @space_left = "10%"
     @space_right = "9%"
     @timebar_height = "14px"
+    @video_position = "130px"
   end
 %>
 <% content_for :stylesheets do %>
@@ -115,11 +117,9 @@ body,.container{
     <td width="<%= @space_right %>"></td>
   </tr>
 
-
-
   <tr>
       <td colspan="11" height="1%">
-        <video width="100%" autoplay="autoplay" loop="loop" style="padding-top:0em;">
+        <video width="100%" autoplay="autoplay" loop="loop" style="padding-top:<%= @video_position %>;">
           <source src="/assets/cycle1111ok.webm" type="video/webm"></source>
         </video>
       </td>
