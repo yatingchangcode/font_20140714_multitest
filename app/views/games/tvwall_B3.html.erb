@@ -166,6 +166,12 @@ function clearTimebar(c){
   sketchSecondIns.clearBar();
 }
 
+function continueWriteSet(c){
+  gamers.setActive(c);
+  $('#user_photo_'+c).addClass("green");
+  sketchSecondIns.doStart();
+}
+
 function startSetStyle(c) {
   $('#user_photo_'+c).addClass("green");
   sketchSecondIns.resetBar();

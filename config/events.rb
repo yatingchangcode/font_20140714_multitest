@@ -48,9 +48,10 @@ WebsocketRails::EventMap.describe do
     subscribe :submit, :to => WritesIdiomsController, :with_method => :submit
     subscribe :move_block, :to => WritesIdiomsController, :with_method => :move_block
     subscribe :send_text, :to => WritesIdiomsController, :with_method => :send_text
+    subscribe :continue_write, :to => WritesIdiomsController, :with_method => :continue_write
     # subscribe :end_round, :to => WritesIdiomsController, :with_method => :end_round
     subscribe :rewrite, :to => WritesIdiomsController, :with_method => :rewrite
-    subscribe :action,   :to => WritesIdiomsController, :with_method => :action
+    subscribe :action,   :to => WritesIdiomsController, :with_method => :action    
     subscribe :reset,   :to => WritesController, :with_method => :reset
   end
 

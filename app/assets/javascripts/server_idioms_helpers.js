@@ -212,6 +212,10 @@
     }
   };
 
+  var receiveContinueWriteHandler = function(o){
+    continueWriteSet(o.user_id);
+  };
+
   var receiveStartHandler = function(o){
     start_button(o.user_id);
   };

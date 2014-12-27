@@ -71,6 +71,15 @@ class WritesIdiomsController < WebsocketRails::BaseController
     manager_connection.send_message :end_round, data
   end
 
+  def continue_write
+      trigger_id = message[:user_id]
+      manager_connection = WebsocketRails.users[0]
+      trigger_connection  = WebsocketRails.users[trigger_id.to_i]
+      data = message
+      manager_connection.send_message :continue_write, data
+      trigger_connection.send_message :continue_write, data
+  end
+
   def rewrite
     data = {block: message[:block], :stamp => message[:stamp], ink: message[:ink]}
     broadcast_message :rewrite, data

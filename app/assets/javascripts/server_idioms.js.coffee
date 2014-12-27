@@ -21,6 +21,7 @@ class @ChatApp
     @dispatcher.bind 'end_round', @receiveEndRound
     @dispatcher.bind 'rewrite', @receiveRewrite
     @dispatcher.bind 'clear', @receiveClear
+    @dispatcher.bind 'continue_write', @receiveContinueWrite
     @dispatcher.bind 'action', @receiveAction
 
   continue_write: (uid) ->
@@ -83,6 +84,12 @@ class @ChatApp
         receiveStopHandler message
         tvwall.receiveStopHandler message
       return
+
+  receiveContinueWrite: (message) => 
+    if(receiveContinueWriteHandler && tvwall.receiveContinueWriteHandler)
+      receiveContinueWriteHandler message
+      tvwall.receiveContinueWriteHandler message
+    return
 
   receiveRewrite: (message) =>
     if(receiveRewriteHandler && tvwall.receiveRewriteHandler)
