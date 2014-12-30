@@ -173,7 +173,11 @@
   		var originId = o.callback_id;
   		var last = originId.split('/').pop();
   		var el = document.getElementById(last);
-  		$(el).html("轉檔完成");
+      if(o.msg){
+        $(el).html("發生錯誤。訊息："+o.msg);
+      }else{
+        $(el).html("轉檔完成");
+      }
   	}
     /*
     if(o.is_saved || o.log) return;
@@ -369,6 +373,10 @@
                 //var res = JSON.parse(data);
                 $(el).html("轉換檔案中...");
                 parsePoints(data);
+                // $(el).html("轉換OK");
+                // window.isIdle = true;
+                // window.currentUrl = null;
+                // window.fileSaveActionCount = 0;
               };
             })(currentUrl)
 			    ).fail((function(url){

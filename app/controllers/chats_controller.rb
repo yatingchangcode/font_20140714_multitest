@@ -70,7 +70,8 @@ class ChatsController < WebsocketRails::BaseController
       control_connection.send_message :save_record, {callback_id: message[:callback_id], is_saved: message[:is_total_end] }
     rescue Subprocess::NonZeroExit => e
       puts e.message
-      puts "Why aren't llamas one of your favorite animals?"
+      control_connection = WebsocketRails.users["record"]
+      control_connection.send_message :save_record, {callback_id: message[:callback_id], is_saved: message[:is_total_end], msg: e.message }
     end
   end
 
