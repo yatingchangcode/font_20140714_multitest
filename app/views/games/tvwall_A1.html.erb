@@ -1,3 +1,47 @@
+<%
+  @space_top = "140"
+  @space_left = "5%"
+  @space_right = "4%"
+  @canvas_scale = 0.171
+  @canvas_border = 9
+  @font_formula = "w / 3 * 16 / 15"
+  @bar_spacing = "40"
+  @bar_formula = "(w + 5) / 2"
+  @timebar_height = "16px"
+  @video_position = "189px"
+  case @visitors.length
+  when 2
+    @canvas_scale = 0.243
+    @canvas_border = 15
+    @space_top = "140"
+    @space_left = "25%"
+    @space_right = "24%"
+    @timebar_height = "22px"
+  when 3
+    @canvas_scale = 0.217
+    @canvas_border = 13
+    @space_left = "18%"
+    @space_right = "17%"
+    @timebar_height = "20px"
+  when 4
+    @font_formula = "w / 3 * 16.2 / 15"
+    @bar_formula = "(w + 3) / 2"
+    @canvas_scale = 0.191
+    @canvas_border = 11
+    @space_left = "10%"
+    @space_right = "9%"
+    @timebar_height = "18px"
+    @video_position = "130px"
+  when 6..10
+    @canvas_scale = 0.131
+    @canvas_border = 8
+    @space_top = "100"
+    @bar_spacing = "5%"
+    @font_formula = "w / 3 * 16.5 / 15"
+    @bar_formula = "(w + 1) / 2"
+    @timebar_height = "16px"
+  end
+%>
 <% content_for :stylesheets do %>
 <%= stylesheet_link_tag 'reset','tvwall' %>
 <style type="text/css">
@@ -17,20 +61,21 @@ body,.container{
 
 <table width="100%" border="0" cellspacing="0" cellpadding="0">
   <tr>
-    <td colspan="3" height="100">&nbsp;</td>
+    <td colspan="3" height="<%= @space_top %>">&nbsp;</td>
   </tr>
   <tr>
     <td width="32%">&nbsp;</td>
-    <td><div class="HP_bar" style="height:16px;"><canvas id="sketchSecond" data-processing-sources="/assets/timebar.pde"></canvas></div></div></td>
+    <td><div class="HP_bar" style="height:<%= @timebar_height %>;"><canvas id="sketchSecond" data-processing-sources="/assets/timebar.pde"></canvas></div></div></td>
     <td width="33%">&nbsp;</td>
   </tr>
   
 </table>
 
+<% if @visitors.length > 5 %>
 <div class="Content"> 
   <table width="100%" border="0" cellspacing="0" cellpadding="0">
     <tr>
-      <td colspan="11" height="5%">&nbsp;</td>
+      <td colspan="11" height="<%= @bar_spacing %>">&nbsp;</td>
     </tr>
     
     <tr>
@@ -128,15 +173,93 @@ body,.container{
           </table>
         </div>
       </td>
-      
-      
       <% end %>
-      
       <td width="10%"></td>
     </tr>
   </table>
-  
 </div>
+
+<% else %>
+
+<div class="Content"> 
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td colspan="11" height="<%= @bar_spacing %>">&nbsp;</td>
+    </tr>
+
+    <tr>
+
+      <td width="<%= @space_left %>"></td>
+
+      <% @visitors.each do |visitor| %>
+      <td>
+        <div class="box_a">
+          <div id="out_<%= visitor.number %>" class="out">
+            <img src="/assets/tvwall/out.png" width="100%"/>
+          </div>
+          <div id="black_<%= visitor.number %>" class="black"></div>
+          <table width="100%" border="0" cellspacing="0" cellpadding="0">
+            <tr>
+              <td>
+                <div class="TopBpx">
+                  <div id="user_photo_<%= visitor.number %>" class="photo">
+                    <%= render_gamer_photo(visitor,"medium",'100%','100%',"") %>
+                  </div>
+                  <div class="nameBox br_line02">
+                    <% if(visitor.title) %>
+                    <p class="name"><%= visitor.title %></p>
+                    <% else %>
+                    <p class="name">&nbsp;</p>
+                    <% end %>
+                    <p class="name"><%= visitor.name %></p>
+                  </div>
+                  <br class="CLEAR" />
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div id="grid_<%= visitor.number %>" class="Grid">
+                  <canvas id="origin_<%= visitor.number %>" width="100%" ></canvas>
+                  <div id="metal_<%= visitor.number %>" class="inner_metal"></div>
+                  <div id="glow_<%= visitor.number %>" class="inner_glow"><img src="/assets/tvwall/img_Grid_b_green.png" width="100%"/></div>
+                  <div id="yes_img_<%= visitor.number %>" class="correct"><img src="/assets/tvwall/red_ring.png" width="100%"/></div>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                 <tr>
+                  <td width="10%">&nbsp;</td>
+                  <td><div class="HP_bar" style="height:<%= @timebar_height %>;"><canvas id="sketchSecond_<%= visitor.number %>" data-processing-sources="/assets/timebar.pde"></canvas></div></td>
+                  <td width="10%">&nbsp;</td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+        </table>
+      </div>
+    </td>
+    <td width="1%"></td>
+    <% end %>
+
+    <td width="<%= @space_right %>"></td>
+  </tr>
+
+  <tr>
+      <td colspan="11" height="1%">
+        <video width="100%" autoplay="autoplay" loop="loop" style="padding-top:<%= @video_position %>;">
+          <source src="/assets/cycle1111ok.webm" type="video/webm"></source>
+        </video>
+      </td>
+
+    </tr>
+</table>
+</div>
+
+<% end %>
 
 <% content_for :javascripts do %>
 <script>
@@ -221,8 +344,8 @@ window.alarm = null;
 window.responsiveMethod = function(){
   var jqEl = $('[id^=grid_]');
 
-  var w = $(window).width()*0.131;
-  //var w = $('.container').width()*0.131;
+  var w = $(window).width() * <%= @canvas_scale %>;
+  //var w = $('.container').width() * <%= @canvas_scale %>;
   jqEl.height(w);
   jqEl.width(w);
 
@@ -232,12 +355,12 @@ window.tuneLinePosition = function(){
   var w = $('.photo').width();
   var namebox = $('.nameBox');
   var name = $('.name');
-  name.css('font-size', w / 3 * 16.5 / 15);
+  name.css('font-size', <%= @font_formula %>);
   namebox.height(w);
   // 44 means picture height
   //namebox.css('background-position-y', w / 2 - parseFloat(name.css('padding-top')) * 1.8 - w / 3 / 15 * 0.2 );
   //namebox.css('background-position-y', w / 2 - parseFloat(name.css('padding-top')) * 2 - (44 - 38) / 2 );
-  namebox.css('background-position-y', (w + 1) / 2 );
+  namebox.css('background-position-y', <%= @bar_formula %> );
   
 };
 
@@ -279,7 +402,8 @@ $(document).ready(function() {
 
   responsiveMethod();
 
-  var borderWidth = 8;
+  var borderWidth = <%= @canvas_border %>;
+  
   $('.Grid').css("background", "url("+ generateBorderBase64($('.Grid'), borderWidth, 
     ['0 #ffffff', '0.5 #aaaaaa', '1 #aaaaaa'] ) +
   ")");
