@@ -1,3 +1,43 @@
+<%
+  @space_top = "140"
+  @space_left = "25%"
+  @space_right = "24%"
+  @canvas_scale = 0.243
+  @canvas_border = 15
+  @font_formula = "w / 3 * 16.5 / 15"
+  @bar_formula = "(w + 5) / 2"
+  @video_position = "24px"
+  #@timebar_height = "16px"
+
+  case @visitors.length
+  when 3
+    @canvas_scale = 0.217
+    @canvas_border = 13
+    @space_left = "18%"
+    @space_right = "17%"
+    @canvas_border = 13
+    #@timebar_height = "15px"
+  when 4
+    @font_formula = "w / 3 * 16.2 / 15"
+    @bar_formula = "(w + 3) / 2"
+    @canvas_scale = 0.191
+    @canvas_border = 11
+    @space_left = "10%"
+    @space_right = "9%"
+    #@timebar_height = "14px"
+    @video_position = "130px"
+  when 5
+    @space_top = "140"
+    @space_left = "5%"
+    @space_right = "4%"
+    @canvas_scale = 0.171
+    @canvas_border = 9
+    @font_formula = "w / 3 * 16 / 15"
+    @bar_formula = "(w + 5) / 2"
+    #@timebar_height = "12px"
+    @video_position = "189px"
+  end
+%>
 <% content_for :stylesheets do %>
 <%= stylesheet_link_tag 'reset','tvwall' %>
 <style type="text/css">
@@ -17,11 +57,11 @@ body,.container{
 <div class="Content"> 
   <table width="100%" border="0" cellspacing="0" cellpadding="0">
     <tr>
-      <td colspan="5" height="140">&nbsp;</td>
+      <td colspan="5" height="<%= @space_top %>">&nbsp;</td>
     </tr>
     
     <tr>
-      <td width="25%"></td>
+      <td width="<%= @space_left %>"></td>
       <% @visitors.each do |visitor| %>
       <td>
         
@@ -41,7 +81,8 @@ body,.container{
                     
                     <p class="name"><%= visitor.name %></p>
                   </div>
-                  <div class="answer10" style="padding:15px 0 0 10px;"><img id="no_correct_<%= visitor.number %>" src="/assets/tvwall/answer10/answer10_1.png" width="100%" style="opacity:0;"/></div>
+                  <div class="answer10" style="padding:15px 0 0 10px;">
+                  <span id="no_correct_<%= visitor.number %>" width="100%" class="label label-primary" style="opacity:0;font-size:3em">0</span></div>
                   <br class="CLEAR" />
                 </div>
               </td>
@@ -63,13 +104,13 @@ body,.container{
       <td width="1%"></td>
       
       <% end %>
-      <td width="24%"></td>
+      <td width="<%= @space_right %>"></td>
     </tr>
     
 
     <tr>
       <td colspan="11" height="1%">
-        <video width="100%" autoplay="autoplay" loop="loop" style="padding-top:24px;">
+        <video width="100%" autoplay="autoplay" loop="loop" style="padding-top:<%= @video_position %>;">
           <source src="/assets/cycle1111ok.webm" type="video/webm"></source>
         </video>
       </td>
@@ -130,14 +171,21 @@ function resetSetStyle(s) {
   $('#second_' + key).text(s + "秒");
 }
 
+// function correctCountSetStyle(o){
+//   //$("#no_correct_" + o.user_id).show();
+//   $("#no_correct_" + o.user_id).css('opacity', 1);
+//   if(o.count <= 10){
+//     $("#no_correct_" + o.user_id).attr('src',"/assets/tvwall/answer10/answer10_"+ o.count +".png");  
+//   }
+// }
+
+var tempcount = {};
 function correctCountSetStyle(o){
-  /*
   //$("#no_correct_" + o.user_id).show();
   $("#no_correct_" + o.user_id).css('opacity', 1);
-  if(o.count <= 10){
-    $("#no_correct_" + o.user_id).attr('src',"/assets/tvwall/answer10/answer10_"+ o.count +".png");  
-  }
-*/
+  console.log(o);
+  $("#no_correct_" + o.user_id).text(o.count).css('opacity', 1).css('color', 'black');
+  tempcount[o.user_id] = o.count;
 }
 
 
@@ -156,8 +204,8 @@ window.alarm = null;
 window.responsiveMethod = function(){
   var jqEl = $('[id^=grid_]');
 
-  var w = $(window).width()*0.243;
-  //var w = $('.container').width()*0.243;
+  var w = $(window).width() * <%= @canvas_scale %>;
+  //var w = $('.container').width() * <%= @canvas_scale %>;
   jqEl.height(w);
   jqEl.width(w);
 };
@@ -166,12 +214,12 @@ window.tuneLinePosition = function(){
   var w = $('.photo').width();
   var namebox = $('.nameBox');
   var name = $('.name');
-  name.css('font-size', w / 3 * 14.7 / 15);
+  name.css('font-size', <%= @font_formula %>);
   namebox.height(w);
   // 44 means picture height
   //namebox.css('background-position-y', w / 2 - parseFloat(name.css('padding-top')) * 1.8 - w / 3 / 15 * 0.2 );
   //namebox.css('background-position-y', w / 2 - parseFloat(name.css('padding-top')) * 2 - (44 - 38) / 2 );
-  namebox.css('background-position-y', (w + 5) / 2 );
+  namebox.css('background-position-y', <%= @bar_formula %> );
   //alert(w);
 };
 
@@ -203,7 +251,7 @@ $(document).ready(function() {
 
   responsiveMethod();
 
-  var borderWidth = 15;
+  var borderWidth = <%= @canvas_border %>;
   $('.Grid').css("background", "url("+ generateBorderBase64($('.Grid'), borderWidth, 
     ['0 #ffffff', '0.5 #aaaaaa', '1 #aaaaaa'] ) +
   ")");
