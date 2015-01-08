@@ -22,9 +22,14 @@ a{ text-decoration:none; outline: none; /* for Firefox */  hlbr:expression(this.
 
 .Content .box_a .s1 .photo{ width:20%;}
   
-.Content .box_a .TopBpx .br_line01{ 
+.Content .box_a .TopBpx .br_line01{ width:47%;
 	//background:url(/assets/tvwall/name_line_01.png) right 18px no-repeat;
-	background:url(/assets/tvwall/Upper-Metal-Bar.png) -35px no-repeat;
+	background:url(/assets/tvwall/Upper-Metal-Bar.png) -5px no-repeat;
+	background-size: 100% 8%;
+}
+.Content .box_a .TopBpx .br_line01_less5{ width:42%;
+	//background:url(/assets/tvwall/name_line_01.png) right 18px no-repeat;
+	background:url(/assets/tvwall/Upper-Metal-Bar.png) -5px no-repeat;
 	background-size: 100% 8%;
 }
 .Content .box_a .TopBpx .br_line02{ 

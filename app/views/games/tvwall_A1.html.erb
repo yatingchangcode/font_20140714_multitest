@@ -9,6 +9,7 @@
   @bar_formula = "(w + 5) / 2"
   @timebar_height = "16px"
   @video_position = "189px"
+  @split_width = "3%"
   case @visitors.length
   when 2
     @canvas_scale = 0.243
@@ -37,9 +38,33 @@
     @canvas_border = 8
     @space_top = "100"
     @bar_spacing = "5%"
+    @split_width_up = "3%"
+    @split_width_down = "3%"
+    @space_left = "10%"
+    @space_right = "9%"
     @font_formula = "w / 3 * 16.5 / 15"
     @bar_formula = "(w + 1) / 2"
     @timebar_height = "16px"
+    case @visitors.length
+    when 6
+       @split_width_up = "12%" 
+       @split_width_down = "12%" 
+       @space_left = "13%"
+       @space_right = "12%"
+    when 7
+      @split_width_up = "7.5%" 
+      @split_width_down = "12%" 
+      @space_left = "11.5%"
+      @space_right = "10.5%"
+    when 8
+      @split_width_up = "7.5%" 
+      @split_width_down = "7.5%"
+      @space_left = "11.5%"
+      @space_right = "10.5%"
+    when 9
+      @split_width_up = "3%" 
+      @split_width_down = "7.5%"
+    end
   end
 %>
 <% content_for :stylesheets do %>
@@ -79,8 +104,8 @@ body,.container{
     </tr>
     
     <tr>
-      <td width="10%"></td>
-      <% @visitors[0..4].each do |visitor| %>
+      <td width="<%= @space_left %>"></td>
+      <% @visitors[0..((@visitors.length/2.0).ceil-1)].each do |visitor| %>
       <td>
         <div class="box_a">
           <div id="out_<%= visitor.number %>" class="out">
@@ -94,10 +119,18 @@ body,.container{
                   <div id="user_photo_<%= visitor.number %>" class="photo">
                     <%= render_gamer_photo(visitor,"medium",'100%','100%',"") %>
                   </div>
+                  <% if @counting == '1' %>
+                  <div class="nameBox br_line01">
+                  <% else %>
                   <div class="nameBox">
+                  <% end %>
                     <p class="name"><%= visitor.title || '　' %></p>
                     <p class="name"><%= visitor.name %></p>
                   </div>
+                  <% if @counting == '1' %>
+                  <div class="answer10" style="padding:20px 0 0 10px;">
+                  <span id="no_correct_<%= visitor.number %>" width="100%" class="label label-primary" style="opacity:0;font-size:2.5em;">0</span></div>
+                  <% end %>
                   <br class="CLEAR" />
                 </div>
               </td>
@@ -116,10 +149,10 @@ body,.container{
         </div>
       </td>
       
-      <td width="3%"></td>
+      <td width="<%= @split_width_up %>"></td>
       <% end %>
 
-      <td width="9%"></td>
+      <td width="<%= @space_right %>"></td>
     </tr>
     
     <tr>
@@ -130,10 +163,10 @@ body,.container{
 
   <table width="100%" border="0" cellspacing="0" cellpadding="0">
     <tr>
-      <td width="9%"></td>
+      <td width="<%= @space_right %>"></td>
       
-      <% @visitors[5..9].each do |visitor| %>
-      <td width="3%"></td>
+      <% @visitors[(@visitors.length/2.0).ceil..@visitors.length-1].each do |visitor| %>
+      <td width="<%= @split_width_down %>"></td>
       <td>
         <div class="box_a">
           <div id="out_<%= visitor.number %>" class="out">
@@ -147,7 +180,11 @@ body,.container{
                   <div id="user_photo_<%= visitor.number %>" class="photo">
                     <%= render_gamer_photo(visitor,"medium",'100%','100%',"") %>
                   </div>
+                  <% if @counting == '1' %>
+                  <div class="nameBox br_line01">
+                  <% else %>
                   <div class="nameBox">
+                  <% end %>
                     <% if(visitor.title) %>
                     <p class="name"><%= visitor.title %></p>
                     <% else %>
@@ -155,6 +192,10 @@ body,.container{
                     <% end %>
                     <p class="name"><%= visitor.name %></p>
                   </div>
+                  <% if @counting == '1' %>
+                  <div class="answer10" style="padding:20px 0 0 10px;">
+                  <span id="no_correct_<%= visitor.number %>" width="100%" class="label label-primary" style="opacity:0;font-size:2.5em;">0</span></div>
+                  <% end %>
                   <br class="CLEAR" />
                 </div>
               </td>
@@ -174,7 +215,7 @@ body,.container{
         </div>
       </td>
       <% end %>
-      <td width="10%"></td>
+      <td width="<%= @space_left %>"></td>
     </tr>
   </table>
 </div>
@@ -205,7 +246,13 @@ body,.container{
                   <div id="user_photo_<%= visitor.number %>" class="photo">
                     <%= render_gamer_photo(visitor,"medium",'100%','100%',"") %>
                   </div>
+
+                  <% if @counting == '1' %>
+                  <div class="nameBox br_line01_less5">
+                  <% else %>
                   <div class="nameBox br_line02">
+                  <% end %>
+
                     <% if(visitor.title) %>
                     <p class="name"><%= visitor.title %></p>
                     <% else %>
@@ -213,6 +260,10 @@ body,.container{
                     <% end %>
                     <p class="name"><%= visitor.name %></p>
                   </div>
+                  <% if @counting == '1' %>
+                  <div class="answer10" style="padding:20px 0 0 10px;">
+                  <span id="no_correct_<%= visitor.number %>" width="100%" class="label label-primary" style="opacity:0;font-size:3.5em;">0</span></div>
+                  <% end %>
                   <br class="CLEAR" />
                 </div>
               </td>
@@ -324,9 +375,53 @@ function clearSetStyle(o){
   CM('origin_'+o.user_id).clear();
 }
 
+// function correctCountSetStyle(o){
+//   $("#no_correct_" + o.user_id).text(o.count+"題");
+// }
+
+<% if @counting == '1' %>
+var tempcount = {};
+var updateCount = function(user){
+  var c = tempcount[user] || 0;
+  var jqEl = $("#no_correct_" + user);
+  jqEl.text(c);
+  if(c){
+    jqEl.css('opacity', 1).css('color', 'black');
+  }else{
+    jqEl.css('opacity', 0);
+  }
+};
+var showCorrectUsers = function(users) {
+  if(users.length){
+      users.sort(function(a,b) {
+        return parseInt(a) - parseInt(b);
+      });
+      
+      for (var i in users) { 
+        setTimeout( (function(a){
+          return function() {
+            console.log(a);
+            $("#yes_img_"+a).show();
+            updateCount(a);
+          }
+        })(users[i]), 800 * i);
+      }
+      users = null;
+  }else{
+    gamers.all().forEach(function(e){
+      updateCount(e);
+    });
+  }
+};
+
 function correctCountSetStyle(o){
-  $("#no_correct_" + o.user_id).text(o.count+"題");
-}
+  //$("#no_correct_" + o.user_id).show();
+  tempcount[o.user_id] = o.count;
+  
+  console.log(o);
+
+}                  
+<% end %>
 
 function clearAllSetStyle() {
   $('[id^=yes_img_]').hide();
@@ -421,7 +516,7 @@ $(document).ready(function() {
   ")");
   $('.Grid').css("padding", borderWidth);
   */
-
+  //alert(<%= @counting %>);
 });
 </script>
 <% end %>

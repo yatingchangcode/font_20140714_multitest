@@ -118,19 +118,21 @@
       };
 
       var showCorrectUsers = function(users) {
-            users.sort(function(a,b) {
-              return parseInt(a) - parseInt(b);
-            });
-            
-            for (var i in users) { 
-              setTimeout( (function(a){
-                return function() {
-                  console.log(a);
-                  $("#yes_img_"+a).show();
-                }
-              })(users[i]), 800 * i);
-            }
-            users = null;
+        if(users.length){
+          users.sort(function(a,b) {
+            return parseInt(a) - parseInt(b);
+          });
+          
+          for (var i in users) { 
+            setTimeout( (function(a){
+              return function() {
+                console.log(a);
+                $("#yes_img_"+a).show();
+              }
+            })(users[i]), 800 * i);
+          }
+          users = null;
+        }
       };
 
       var generateBorderBase64 = function(dependEl, px, splits){
