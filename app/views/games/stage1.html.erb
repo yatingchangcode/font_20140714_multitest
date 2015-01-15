@@ -37,7 +37,7 @@ $(document).ready(function(){
     e.preventDefault();
     var second = document.getElementById('second');
     var counting = document.getElementById('counting');
-    location.href = '/games/<%= @game.id %>/server1?stage=<%= params[:stage] %>&join_visitors_number=<%= @join_visitors_number %>&second='+second.value+'&counting='+(counting && counting.checked? '1': '0');
+    location.href = '/games/<%= @game.id %>/server1?stage=<%= params[:stage] %>&join_visitors_number=<%= @join_visitors_number %>&second='+second.value+(counting? ('&counting=' + (counting.checked? '1': '0')) : "");
   }
 });
 </script>
