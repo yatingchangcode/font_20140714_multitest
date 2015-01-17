@@ -13,7 +13,6 @@
     <% end %>
     <% if @stage == 'A1' %>
     <h3>使用者畫面上不顯示秒數</h3>
-    <h3> <input id="counting" type="checkbox" /> 計分</h3>
     <h3>限時 <input id="second" type="number"/> 秒</h3>
     <% elsif ['A3','B1','B2_v1','B2'].include? @stage %>
     <input id="second" type="hidden" value="" />
@@ -24,6 +23,9 @@
       <% if @stage == 'B2_v1' %>
       <h3>使用者個別書寫(搶答制)<h3>
       <% end %>
+    <% end %>
+    <% if ['A1','B1'].include? @stage %>
+    <h3> <input id="counting" type="checkbox" /> 計分</h3>
     <% end %>
     <%= link_to "確認","#",id: "confirm", class: "btn btn-lg btn-success"  %>
   </div>
