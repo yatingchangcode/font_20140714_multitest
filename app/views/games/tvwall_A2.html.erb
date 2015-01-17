@@ -1,5 +1,5 @@
 <%
-  @space_top = "140"
+  @space_top = "150"
   @space_left = "5%"
   @space_right = "4%"
   @canvas_scale = 0.171
@@ -7,7 +7,9 @@
   @font_formula = "w / 3 * 16 / 15"
   @bar_formula = "(w + 5) / 2"
   @timebar_height = "12px"
-  @video_position = "189px"
+  @video_position = "80px"
+  @video_position_left = "0px"
+  @video_zoom = "100%"
   case @visitors.length
   when 2
     @canvas_scale = 0.243
@@ -46,6 +48,7 @@ body,.container{
   height:100%;
   //width:1920px;
   //height:1080px;
+  overflow:hidden;
 }
 </style>
 <% end %>
@@ -118,9 +121,9 @@ body,.container{
   </tr>
 
   <tr>
-      <td colspan="11" height="1%">
-        <video width="100%" autoplay="autoplay" loop="loop" style="padding-top:<%= @video_position %>;">
-          <source src="/assets/cycle1111ok.webm" type="video/webm"></source>
+      <td colspan="12" height="1%">
+        <video width="<%= @video_zoom %>" autoplay="autoplay" loop="loop" style="padding-top:<%= @video_position %>;margin-left:<%= @video_position_left %>;">
+          <source src="/assets/cycle1111ok.mp4" type="video/mp4"></source>
         </video>
       </td>
 
