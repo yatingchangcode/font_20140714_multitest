@@ -67,6 +67,9 @@ body,.container{
 </style>
 <% end %>
 <div class="Content"> 
+  <% if @counting == '1' %>
+  counting
+  <% end %>
   <table width="100%" border="0" cellspacing="0" cellpadding="0">
     <tr>
       <td colspan="5" height="<%= @space_top %>">&nbsp;</td>
@@ -89,12 +92,17 @@ body,.container{
                   <div id="user_photo_<%= visitor.number %>" class="photo">
                     <%= render_gamer_photo(visitor,"medium",'100%','100%','') %>
                   </div>
+                  <% if @counting == '1' %>
                   <div class="nameBox br_line03">
-                    
+                  <% else %>
+                  <div class="nameBox">
+                  <% end %>
                     <p class="name"><%= visitor.name %></p>
                   </div>
+                  <% if @counting == '1' %>
                   <div class="answer10" style="padding:15px 0 0 10px;">
                   <span id="no_correct_<%= visitor.number %>" width="100%" class="label label-primary" style="opacity:0;font-size:3em">0</span></div>
+                  <% end %>
                   <br class="CLEAR" />
                 </div>
               </td>
@@ -191,15 +199,18 @@ function resetSetStyle(s) {
 //   }
 // }
 
+<% if @counting == '1' %>
 var tempcount = {};
 function correctCountSetStyle(o){
-  //$("#no_correct_" + o.user_id).show();
+  $("#no_correct_" + o.user_id).show();
   $("#no_correct_" + o.user_id).css('opacity', 1);
   console.log(o);
   $("#no_correct_" + o.user_id).text(o.count).css('opacity', 1).css('color', 'black');
   tempcount[o.user_id] = o.count;
 }
-
+<% else %>
+function correctCountSetStyle(o){}
+<% end %>
 
 function clearAllSetStyle() {
   $('[id^=yes_img_]').hide();

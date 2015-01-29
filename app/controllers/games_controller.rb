@@ -146,6 +146,7 @@ class GamesController < ApplicationController
     @range = 1..@visitors.size
 
     @second = params[:second]
+    @counting = params[:counting]
   end
 
   def tvwall_B2_v1
