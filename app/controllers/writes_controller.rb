@@ -187,10 +187,14 @@ class WritesController < WebsocketRails::BaseController
       data = controller_store[:user_id_file_path][cid]
       controller_store[:user_id_file_path][cid] = nil;
 
+      if controller_store[:user_id_file_path]["#{cid}-renew"] == nil
+        controller_store[:user_id_file_path]["#{cid}-renew"] = true
+      end
+
       file_path = data[0]
       tosave = {}
       tosave[:file_path] = data[0]
-      tosave[:renew] = controller_store[:user_id_file_path]["#{cid}-renew"] || false
+      tosave[:renew] = controller_store[:user_id_file_path]["#{cid}-renew"]
       tosave[:cid] = cid
       tosave[:data] = data[1..-1]
       #data = data[1..-1]
