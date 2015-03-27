@@ -58,5 +58,14 @@
         alert(name);
       };
 
+      var receiveContinueWriteHandler = function(data){
+        window.chatApp.dispatcher.trigger('action',{
+          user_id: data.user_id,
+          action: "device_start",
+          stamp: (new Date()).getTime()
+        });
+        alert("continue write");
+      };
+
       </script>
       <% end %>

@@ -46,7 +46,7 @@ class @ChatApp
     @dispatcher.trigger 'up_location' , user_id: @user_id
 
   clearMypad: (e) =>
-    @dispatcher.trigger 'clear' , user_id: @user_id
+    @dispatcher.trigger 'clear' , user_id: @user_id, stamp: (new Date()).getTime()
     CM('origin_'+ @user_id).clear();
 
   submitMypad: (e) =>
@@ -67,9 +67,9 @@ class @ChatApp
     #@dispatcher.trigger 'clear' , user_id: @user_id
     CM('origin_'+ @user_id).clear();
 
-  receiveContinue: () =>
-    alert("continue write");
-    console.log('hihi');
+  receiveContinue: (message) =>
+    if(receiveContinueWriteHandler)
+      receiveContinueWriteHandler message
 
   receiveReset: () =>
     CM('origin_'+ @user_id).clear();

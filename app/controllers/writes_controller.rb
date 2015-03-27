@@ -68,13 +68,16 @@ class WritesController < WebsocketRails::BaseController
   
   def continue_write
       trigger_id = message[:user_id]
-      manager_connection = WebsocketRails.users[0]
-      trigger_connection  = WebsocketRails.users[trigger_id.to_i]
-      data = message
-      manager_connection.send_message :continue_write, data
-      trigger_connection.send_message :continue_write, data
-      if trigger_id
-        renew_one(trigger_id, false)
+      has_track = message[:has_track]
+      if trigger_id and controller_store[:user_id_file_path][trigger_id] == nil
+        manager_connection = WebsocketRails.users[0]
+        trigger_connection  = WebsocketRails.users[trigger_id.to_i]
+        data = message
+        manager_connection.send_message :continue_write, data
+        trigger_connection.send_message :continue_write, data
+        if has_track
+          renew_one(trigger_id, false)
+        end
       end
   end
 
