@@ -177,7 +177,7 @@
         })();
 
         $('[id^=continue_]').click(function(){
-          window.chatApp.continue_write(this.value);
+          window.chatApp.continue_write(this.value, CM('origin_'+this.value).hasTrack());
           window.chatApp.action(this.value, 'start');
           window.chatApp.cancelSubmit(this.value);
           //$('#visitor_'+this.value).css("background-color", "");

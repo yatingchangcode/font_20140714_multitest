@@ -73,11 +73,11 @@ class WritesController < WebsocketRails::BaseController
         manager_connection = WebsocketRails.users[0]
         trigger_connection  = WebsocketRails.users[trigger_id.to_i]
         data = message
-        manager_connection.send_message :continue_write, data
-        trigger_connection.send_message :continue_write, data
         if has_track
           renew_one(trigger_id, false)
         end
+        manager_connection.send_message :continue_write, data
+        trigger_connection.send_message :continue_write, data
       end
   end
 
