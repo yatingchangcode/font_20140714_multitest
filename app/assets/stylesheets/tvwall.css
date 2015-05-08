@@ -12,7 +12,7 @@ a{ text-decoration:none; outline: none; /* for Firefox */  hlbr:expression(this.
 .Content .box_a{ width:100%; position:relative;}
 .Content .box_a .TopBpx{ width:100%;}
 .Content .box_a .TopBpx .photo{ float:left; width:28%;}
-.Content .box_a .TopBpx .green{ box-shadow:0px 0px 50px 7px #22ff22;}
+.Content .box_a .TopBpx .green{ box-shadow:0px 0px 12px 7px rgba(34,255,34,1);}
 .Content .box_a .TopBpx .nameBox{ float:left; width:67%; height:100%; overflow:hidden; 
 	background:url(/assets/tvwall/Upper-Metal-Bar.png) -25px no-repeat;
 	background-size: 100% 8%;
@@ -22,9 +22,14 @@ a{ text-decoration:none; outline: none; /* for Firefox */  hlbr:expression(this.
 
 .Content .box_a .s1 .photo{ width:20%;}
   
-.Content .box_a .TopBpx .br_line01{ 
+.Content .box_a .TopBpx .br_line01{ width:47%;
 	//background:url(/assets/tvwall/name_line_01.png) right 18px no-repeat;
-	background:url(/assets/tvwall/Upper-Metal-Bar.png) -35px no-repeat;
+	background:url(/assets/tvwall/Upper-Metal-Bar.png) -5px no-repeat;
+	background-size: 100% 8%;
+}
+.Content .box_a .TopBpx .br_line01_less5{ width:42%;
+	//background:url(/assets/tvwall/name_line_01.png) right 18px no-repeat;
+	background:url(/assets/tvwall/Upper-Metal-Bar.png) -5px no-repeat;
 	background-size: 100% 8%;
 }
 .Content .box_a .TopBpx .br_line02{ 
@@ -59,7 +64,7 @@ a{ text-decoration:none; outline: none; /* for Firefox */  hlbr:expression(this.
 .Content .box_a .bor_g{ //border:0.2vw solid #98c4a7;}
 .Content .box_a .Grid .inner_glow{ width:100%; height:100%; position:absolute; top:0px; left:0px;
 	display:none;
-	box-shadow:0px 0px 40px 25px rgba(45, 245, 138, 0.6) inset;
+	box-shadow:0px 0px 25px 20px rgba(45, 245, 138, 0.8) inset;
 }
 .Content .box_a .Grid .inner_metal{ width:100%; position:absolute; top:0px; left:0px;}
 .Content .box_a .Grid-Kino .inner_glow{
@@ -83,13 +88,13 @@ a{ text-decoration:none; outline: none; /* for Firefox */  hlbr:expression(this.
 table.Chessboard p{ color:#ddced0; text-align:center;}
 
 .Content .box_b .photo{ width:68%; margin:0 auto;}
-.Content .box_b .green{ box-shadow:0px 0px 60px 8px #22ff22;}
+.Content .box_b .green{ box-shadow:0px 0px 20px 8px rgba(34,255,34,1);}
 .Content .box_b p.name{ color:#FFF; text-align:center;}
 
 .Content table.Chessboard .Grid{ width:100%; position:relative; border:0.2vw solid #000000; margin:0 auto; background-color: rgb(60,60,60);}
 .Content table.Chessboard .Grid .write{ width:90%; position:absolute; left:2%; top:2%; z-index:40;}
 .Content table.Chessboard .Grid .inner_glow{ width:100%; position:absolute; top:0px; left:0px;display:none;
-	box-shadow:0px 0px 8px 2px rgba(45, 245, 138, 0.6) inset;
+	box-shadow:0px 0px 15px 10px rgba(55, 197, 78, 1) inset;
 }
 
 

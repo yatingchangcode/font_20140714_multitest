@@ -65,6 +65,7 @@ class GamesController < ApplicationController
     @visitors = @game.visitors.where(number: params[:join_visitors_number].split(","))
     @range = 1..@visitors.size
     @second = params[:second]
+    @counting = params[:counting]
 
     Setting.messaging['second'] = params[:second]
     Setting.messaging['game'] = params[:id]
@@ -119,6 +120,8 @@ class GamesController < ApplicationController
     @range = 1..@visitors.size
 
     @second = params[:second]
+    @counting = params[:counting]
+
   end
 
   def tvwall_A2
@@ -143,6 +146,7 @@ class GamesController < ApplicationController
     @range = 1..@visitors.size
 
     @second = params[:second]
+    @counting = params[:counting]
   end
 
   def tvwall_B2_v1

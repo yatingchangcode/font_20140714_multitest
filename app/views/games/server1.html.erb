@@ -70,7 +70,7 @@ progress::-webkit-progress-value {
                 <%= render_gamer_photo(x,"thumb",50,50) %>
                 <p><%= x.name %></p>
                 <span id="status_<%= x.number %>" class="label label-danger">OffLine</span>
-                <% if @stage != 'A1' %>
+                <% if !(['A1','B1'].include? @stage) || @counting == '1' %>
                 <span>答對:</span><span id="no_correct_<%= x.number %>" class="badge">0題</span>
                 <% end -%>
                 <!-- <span>正確:</span><span id="answer_correct_<%= x.number %>">?</span> -->
@@ -86,7 +86,9 @@ progress::-webkit-progress-value {
 
               
               <button id="remove_O_button_<%= x.number %>" style="font-size:12px;" value="<%= x.number %>" type="button" class="correct_button btn btn-default navbar-btn">清除圈圈</button>
+              <% if !(['A1','B1'].include? @stage) || @counting == '1' %>
               <button id="minus_one_button_<%= x.number %>" style="font-size:12px;" value="<%= x.number %>" type="button" class="correct_button btn btn-default navbar-btn">扣一分</button>
+              <% end -%>
               <% if @stage != 'A1' %>
               <button id="remove_writing_button_<%= x.number %>" style="font-size:12px;" value="<%= x.number %>" type="button" class="correct_button btn btn-default navbar-btn">清除筆跡</button>
               <% end -%>
@@ -192,7 +194,8 @@ progress::-webkit-progress-value {
         <% if @stage != "B2" %>
         $("#correct_button_"+o.user_id).addClass("btn-success");
         <% end -%>
-        $("#no_correct_" + o.user_id).text(no_correct[o.user_id]+"題");
+        if(no_correct)
+          $("#no_correct_" + o.user_id).text(no_correct[o.user_id]+"題");
       }
 
       function startSetStyle(c) {
@@ -278,7 +281,7 @@ progress::-webkit-progress-value {
       window.timeRemaining = parseInt(<%= @second %>);
       window.alarm = null;
       <% end %>
-      var tvwall = window.open("tvwall_<%= params[:stage] %>?join_visitors_number=<%= params[:join_visitors_number] %>&second=<%= @second %>","tvwallWindow","width=800, height=800");
+      var tvwall = window.open("tvwall_<%= params[:stage] %>?join_visitors_number=<%= params[:join_visitors_number] %>&second=<%= @second %>&counting=<%= @counting %>","tvwallWindow","width=800, height=800");
       //window.open("record?join_visitors_number=<%= params[:join_visitors_number] %>&second=<%= @second %>","recordWindow","width=800, height=800");
       //window.open("record?join_visitors_number=<%= params[:join_visitors_number] %>&second=<%= @second %>","_blank","width=800, height=800");
 
@@ -310,7 +313,7 @@ progress::-webkit-progress-value {
 
 
         $('[id^=continue_]').click(function(){
-          window.chatApp.continue_write(this.value);
+          window.chatApp.continue_write(this.value, CM('origin_'+this.value).hasTrack());
           window.chatApp.cancelSubmit(this.value);
           //$('#visitor_'+this.value).css("background-color", "");
           startSetStyle(this.value);
@@ -370,13 +373,18 @@ progress::-webkit-progress-value {
             correct_users.push(this.value);
           <% end -%> 
           
+            var current_correct_count = 0;
+          <% if !(['A1','B1'].include? @stage) || @counting == '1' %>
             if (!no_correct) no_correct = {};
             if (!no_correct[this.value]) {
               no_correct[this.value] = 1;
             } else {
               no_correct[this.value] += 1;
             }
-            window.chatApp.setCorrectCount(this.value, no_correct[this.value]);
+            current_correct_count = no_correct[this.value];
+          <% end -%>
+          
+            window.chatApp.setCorrectCount(this.value, current_correct_count);
             window.chatApp.action(this.value,'stop');
          });
 

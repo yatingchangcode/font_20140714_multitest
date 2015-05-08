@@ -157,6 +157,7 @@
 	CanvasEmptyInstance.prototype.point = function(){return this;};
 	CanvasEmptyInstance.prototype.line = function(){return this;};
 	CanvasEmptyInstance.prototype.clear = function(){return this;};
+	CanvasEmptyInstance.prototype.hasTrack = function(){return undefined;};
 	CanvasEmptyInstance.prototype.responsive = function(){return this;};
 	//CanvasEmptyInstance.prototype.prop = function(){return this;};
 	
@@ -288,7 +289,21 @@
 		}
 		return this;
 	};
+
+	/**
+	 * Return true if current canvas has track.
+	 * @return {Bool}
+	 */
+	CanvasInstance.prototype.hasTrack = function(){
+		return !!this.track_ && this.track_.length > 0;
+	};
 	
+	/**
+	 * Size/Position responsive to specified element or parent element.
+	 * @param {HTMLCanvasElement} element
+	 * @param {Function} callback
+	 * @return {CanvasInstance}
+	 */
 	CanvasInstance.prototype.responsive = function(element ,callback){
 		var ins = this;
 		var p = element || ins.el_.parentElement;

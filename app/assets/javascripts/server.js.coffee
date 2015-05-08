@@ -39,8 +39,8 @@ class @ChatApp
   removeO: (uid) =>
     @dispatcher.trigger 'removeO' , user_id: uid
 
-  continue_write: (uid) ->
-    @dispatcher.trigger 'continue_write', user_id: uid
+  continue_write: (uid, has) ->
+    @dispatcher.trigger 'continue_write', user_id: uid, has_track: has
 
   is_connected: (uid) ->
     @dispatcher.trigger 'is_connected', user_id: @user_id, check_id: uid
