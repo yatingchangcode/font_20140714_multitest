@@ -40,6 +40,11 @@
 
         var receiveMoveHandler = function(o){
           CM('origin_'+o.user_id).line({ x: o.x, y: o.y });
+          console.log("first:"+ o.stamp);
+          console.log("second:"+ o.server_receive_time);
+          console.log("third:"+ new Date().getTime());
+          console.log("client to server"+ (o.server_receive_time - o.stamp));
+          console.log("server to client"+ (new Date().getTime() - o.server_receive_time));
         };
 
         var receiveStartHandler = function(o){

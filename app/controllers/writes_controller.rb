@@ -33,7 +33,7 @@ class WritesController < WebsocketRails::BaseController
 
   def move_location
     manager_connection = WebsocketRails.users[0]
-    data = {:user_id => message[:user_id], :x => message[:x], :y => message[:y], :stamp => message[:stamp]}
+    data = {:user_id => message[:user_id], :x => message[:x], :y => message[:y], :stamp => message[:stamp], :server_receive_time => Time.now.to_i*1000 }
     manager_connection.send_message :move_location, data
     cache_action(message[:user_id], "move", message[:x], message[:y], message[:stamp])
   end
