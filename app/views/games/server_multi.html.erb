@@ -1,0 +1,475 @@
+<% content_for :stylesheets do %>
+<style type="text/css">
+
+.progress-bar {
+  transition: width 0.1s;
+}
+
+progress{
+  /*background-color: #f3f3f3;
+  border: 0;
+  width: 240px;
+  height: 20px;
+  border-radius: 10px;
+  vertical-align: middle;
+  margin: 0 8px;*/
+}
+progress::-webkit-progress-bar {  
+    /* style rules */  
+    /*background: #f3f3f3;
+    box-shadow: 0px 0px 8px #a0a0a0 inset;
+    border-radius: 10px;*/
+}  
+progress::-webkit-progress-value {  
+    /* style rules */  
+    /*background: #6666ee;
+    border-radius: 10px;*/
+} 
+
+.visitor  {
+  width: 22%;
+  height: 20%
+}
+</style>
+<% end %>
+      <div class="jumbotron">
+        <h2>一字千金 操作後台</h2>
+<!--         <h4>目前上線人數<span id="user_count">0</span>人</h4>
+ -->    
+        <h3>倒數計時 <span id="second" style="color:red"><%= @second %></span> 秒 </h3>
+        <div style="padding:5px;">
+          <input id="secondInput" value="<%= @second %>" style="width:60px;" />
+          <button id="secondUpdate">更新秒數</button>
+        </div>
+        
+      </div>
+      <div style="">
+        <div id="gamers_div" class="row">
+          <% @visitors.each_with_index do |x,index| %>
+          <div class="visitor col-md-3" id="visitor_<%= x.number %>" style="background-color:#ebf0fa; border:3px solid #f8f8f8">
+          <div class="row">
+            <%= index+1 %>
+            <div class="row-fluid" style="margin:auto; width:72%">
+                <button id="correct_button_<%= x.number %>" style="font-size:12px;" value="<%= x.number %>" type="button" class="correct_button btn btn-default navbar-btn">答對</button>
+                <button id="continue_<%= x.number %>" style="font-size:12px;" value="<%= x.number %>" type="button" class="btn btn-default navbar-btn">繼續寫</button>
+                
+                <!-- <button id="start_button_<%= x.number %>" style="font-size:12px;" value="<%= x.number %>" type="button" class="btn btn-default navbar-btn">開始</button>
+                <button id="stop_button_<%= x.number %>" style="font-size:12px;" value="<%= x.number %>" type="button" class="btn btn-default navbar-btn">停止</button> -->
+                
+            </div>
+            <!--
+            <div class="col-md-1">
+              <input type="checkbox" name="gamer" value="<%= x.number %>"/>
+
+            </div>
+            -->
+            <div class="row">
+            <div class="col-md-3">
+                <%= render_gamer_photo(x,"thumb",50,50) %>
+                <p><%= x.name %></p>
+                <span id="status_<%= x.number %>" class="label label-danger">OffLine</span>
+                <% if @counting == '1' %>
+                <span>答對:</span><span id="no_correct_<%= x.number %>" class="badge">0題</span>
+                <% end -%>
+                <!-- <span>正確:</span><span id="answer_correct_<%= x.number %>">?</span> -->
+              </div>
+              <div class="col-md-6">
+                <canvas id="origin_<%= x.number %>" class="orgincanvas" style="z-index:1"></canvas>
+                <img id="yes_img_<%= x.number %>" src="/assets/O-mark.png" height="150" style="display:none;z-index:10;position:absolute;right:-20px;bottom:8px;" ></img>
+                <img id="no_<%= x.number %>" src="/assets/X-Mark.png" height="150" style="display:none;z-index:10;position:absolute;right:-20px;bottom:8px;" ></img>
+              </div>
+            </div>
+            <div class="row-fluid" style="margin:auto; width:72%">
+              <button id="out_button_<%= x.number %>" style="font-size:12px;" value="<%= x.number %>" type="button" class="btn btn-default navbar-btn">淘汰</button>
+
+              
+              <button id="remove_O_button_<%= x.number %>" style="font-size:12px;" value="<%= x.number %>" type="button" class="correct_button btn btn-default navbar-btn">清除圈圈</button>
+              <% if @counting == '1' %>
+              <button id="minus_one_button_<%= x.number %>" style="font-size:12px;" value="<%= x.number %>" type="button" class="correct_button btn btn-default navbar-btn">扣一分</button>
+              <% end -%>
+              
+              <!-- <button id="remove_writing_button_<%= x.number %>" style="font-size:12px;" value="<%= x.number %>" type="button" class="correct_button btn btn-default navbar-btn">清除筆跡</button> -->
+              
+            </div>
+          </div>
+          </div>
+          <% end %>
+        </div>
+        <div class="row">
+          <div class="col-md-6">
+            <!--
+            <input type="checkbox" id="allGamer"/>全選
+            <button id="yes_button" style="font-size:15px;">答對</button>
+            <button id="out_button" style="font-size:15px;">淘汰</button>
+            -->
+           
+            <!-- <button id="show_correct_button" style="font-size:15px;">顯示正確使用者</button> -->
+            
+            <button id="start_button" style="font-size:15px;">全部開始</button>
+
+            <button id="stop_all_button" style="font-size:15px;">全部停止</button>
+            
+            <!-- <button id="stop_button" style="font-size:15px;">停止已選</button> -->
+          
+            <button id="clear_button" style="font-size:15px;">全部清除</button>
+            <button id="next_question_button" style="font-size:15px;">下一題</button>
+            <!-- <button id="clear_correct_button" style="font-size:15px;">清空答題記錄</button> -->
+          </div>
+          
+          <div class="col-md-4">
+            <div class="progress"> 
+              <div id="progress_bar" class="progress-bar" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%;">
+              <%= @second %>s
+              </div>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+
+      <% content_for :javascripts do %>
+      <script>
+      // cache stage name for server1-tvwall.js
+      var stageName = '<%= @stage %>';
+      // var hasCounter = stageName == 'A1';
+      var hasCounter = true;
+
+      </script>
+      <%= javascript_include_tag 'server' %>
+      <%= javascript_include_tag 'server1-tvwall' %>
+      <script>
+
+      var no_correct = null;
+      var correct_users = null;
+      
+      var receiveChangeConnectionStatusHandler = function(o){
+        for(var x in o) {
+          if (o[x] == true){
+            $('#status_'+x).attr('class','label label-success').text("OnLine");
+          }else{
+            $('#status_'+x).attr('class','label label-danger').text("OffLine");
+          }
+        }
+      }
+
+      var receiveSubmitHandler = function(o){
+        $('#visitor_'+o.user_id).css("background-color", "#ff0");
+        console.log(o);
+        
+        // gamers.all().forEach(function(e){
+        //   window.chatApp.action(e, 'stop');
+        // });
+        
+      };
+
+      var receiveIsConnectedHandler = function(o){
+        var x = o.check_id;
+        if (o.connected){
+          $('#status_'+x).attr('class','label label-success').text("OnLine");
+        }else{
+          $('#status_'+x).attr('class','label label-danger').text("OffLine");
+        }
+      };
+
+      //後台取消確認(尚未實作)
+      var receiveCancelSubmitHandler = function(o){
+        $('#origin_'+o.user_id).removeClass("canvas_box_block");
+      };
+
+      function showO(c){
+        $("#yes_img_" + c).show();
+      }
+
+      //Remove O
+      function removeO(c) {
+        console.log('removeO');
+        $('#yes_img_'+c).hide();
+      }
+
+      function correctCountSetStyle(o) {
+        console.log(o);
+        
+        $("#correct_button_"+o.user_id).addClass("btn-success");
+        
+        if(no_correct)
+          $("#no_correct_" + o.user_id).text(no_correct[o.user_id]+"題");
+      }
+
+      function startSetStyle(c) {
+        $('#visitor_'+c).css("border-color", "#4d4ddb");
+        $('#visitor_'+c).css("background-color", "#ebf0fa");
+      }
+
+      function stopSetStyle(c) {
+        $('#visitor_'+c).css("border-color", "#f8f8f8");
+      }
+
+      function clearAllSetStyle() {
+          $('[id^=yes_img_]').hide();
+          //$('[id^=answer_correct_]').text("?").css("color","");
+          
+          
+          $('#progress_bar').css("width", "100%").attr("aria-valuenow","100%")
+                            .text(window.timeRemaining+"s");
+          
+
+          gamers.all().forEach(function(e){
+            CM('origin_'+e).clear();
+            $('#visitor_'+e).css("background-color", "#ebf0fa");
+            $("#correct_button_"+e).removeClass("btn-success");
+            stopSetStyle(e);
+          });
+        }
+
+      function outSetStyle(user_id) {
+          $("#correct_button_"+user_id).attr("disabled", true);
+          $("#out_button_"+user_id).attr("disabled", true);
+          $("#start_button_"+user_id).attr("disabled", true);
+          $("#stop_button_"+user_id).attr("disabled", true);
+          $('#visitor_'+user_id).attr('style','opacity:0.2;border:3px solid #f8f8f8');
+      }
+
+      function clearSetStyle(o){
+       CM('origin_'+o.user_id).clear();
+      }
+
+      
+      function resetSetStyle(s){
+        resetProgressBarAndTime();
+      };
+      function resetProgressBarAndTime() {
+          $('#progress_bar').css("width", "100%").attr("aria-valuenow","100%")
+                            .text(window.timeRemaining+"s");
+          console.log(window.timeRemaining);
+          $('#second').text(window.timeRemaining);  
+      }
+      
+      function setProgressBarAndTime(s) {
+        var percent = 100 * (s-0.1) / window.timeRemaining;
+        $('#progress_bar').css("width", percent+"%").attr('aria-valuenow', percent)
+        .text((s-0.1).toFixed(1)+"s");
+        $('#second').text((s - 0.1).toFixed(1));
+      }
+
+
+      
+      function startCounter() {
+        if(window.alarm) return;
+        var s = parseFloat($('#second').text()).toFixed(1);
+        if (s === (0.0).toFixed(1)) resetProgressBarAndTime();
+        window.alarm = setInterval(function(){
+          var s = parseFloat($('#second').text()).toFixed(1);
+          if (s > 0){
+            setProgressBarAndTime(s);
+          } else {
+            clearInterval(window.alarm);
+            window.alarm = null;
+            gamers.all().forEach(function(e){
+              window.chatApp.action(e,'stop');
+              receiveSubmitHandler({user_id:e});
+            });
+          }
+        }, 100); 
+      }
+      
+    
+      
+      window.timeRemaining = parseInt(<%= @second %>);
+      window.alarm = null;
+      
+      var tvwall = window.open("tvwall_<%= params[:stage] %>?join_visitors_number=<%= params[:join_visitors_number] %>&second=<%= @second %>&counting=<%= @counting %>","tvwallWindow","width=800, height=800");
+      //window.open("record?join_visitors_number=<%= params[:join_visitors_number] %>&second=<%= @second %>","recordWindow","width=800, height=800");
+      //window.open("record?join_visitors_number=<%= params[:join_visitors_number] %>&second=<%= @second %>","_blank","width=800, height=800");
+
+      $(document).ready(function() {
+        CM.prop({
+          width: 500,
+          height: 500,
+          lineWidth: 15,
+          lineColor: '#333333',
+          targetZoomScale: 0.1,
+          backgroundImage: '/assets/block-524.png'
+        });
+        <% @visitors.each do |visitor| %>
+        CM.reg('origin_<%= visitor.number %>');
+        <% end %>
+      
+        window.chatApp = new ChatApp(500,500,'0');
+        window.chatApp.bindEvents();
+        window.chatApp.reset({stage:'<%= params[:stage] %>'});
+        window.chatApp.setGameInfo(<%= @game.id %>, "<%= @stage %>", "<%= params[:join_visitors_number] %>");
+          // set_gameinfo_to_socket
+        //openRecordWindow();
+
+        (function collectGamers() {
+           <% @visitors.each do |visitor| %>
+           gamers.push('<%= visitor.number %>');
+           <% end %>
+        }) ();
+
+
+        $('[id^=continue_]').click(function(){
+          window.chatApp.continue_write(this.value, CM('origin_'+this.value).hasTrack());
+          window.chatApp.cancelSubmit(this.value);
+          //$('#visitor_'+this.value).css("background-color", "");
+          startSetStyle(this.value);
+
+        });
+
+        $('#clear_button').click(function(){
+          window.chatApp.clearAll();
+          correct_users = null;
+          
+          clearInterval(window.alarm);
+          window.alarm = null;
+          //resetProgressBarAndTime();
+          window.chatApp.reset({second: window.timeRemaining});
+          
+        });
+
+        $("[id^=out_button_]").click(function(){
+            window.chatApp.userOut(this.value);
+        });
+
+        $('#start_button').click(function(){
+          gamers.all().forEach(function(e){
+            window.chatApp.action(e, 'start');
+          });
+          
+          startCounter();
+          
+        });
+  
+        $('[id^=start_button_]').click(function(){
+            window.chatApp.action(this.value,'start');
+            
+            startCounter();
+            
+        });
+
+         $('[id^=stop_button_]').click(function(){
+           
+           clearInterval(window.alarm);
+           window.alarm = null;
+           
+           window.chatApp.action(this.value,'stop');
+           stopSetStyle(this.value);
+           //receiveSubmitHandler({user_id:this.value});
+         });
+
+         $('[id^=correct_button_]').click(function(){
+          //window.chatApp.right(this.value);
+
+          
+          // window.chatApp.right(this.value);
+        
+          if (!correct_users) correct_users = [];
+          if (correct_users.indexOf(this.value) != -1) return;
+
+          correct_users.push(this.value);
+        
+        
+          var current_correct_count = 0;
+
+          <% if @counting == '1' %>
+            if (!no_correct) no_correct = {};
+            if (!no_correct[this.value]) {
+              no_correct[this.value] = 1;
+            } else {
+              no_correct[this.value] += 1;
+            }
+            current_correct_count = no_correct[this.value];
+          <% end -%>
+          
+          window.chatApp.setCorrectCount(this.value, current_correct_count);
+          window.chatApp.action(this.value,'stop');
+         });
+
+        $('[id^=remove_O_button_]').click(function(){
+          window.chatApp.removeO(this.value);
+        });
+
+        $('[id^=minus_one_button_]').click(function(){
+          if (!no_correct) no_correct = {};
+          if (!no_correct[this.value]) {
+              no_correct[this.value] = 0;
+          } else {
+              no_correct[this.value] -= 1;
+          }
+          window.chatApp.setCorrectCount(this.value, no_correct[this.value]);
+        });
+
+        $('[id^=remove_writing_button_]').click(function(){
+          window.chatApp.clear(this.value);
+        });
+
+        $('#clear_correct_button').click(function(){
+          if (!no_correct) return;
+          gamers.all().forEach(function(e) {
+            no_correct[e] = 0;
+            $("#no_correct_" + e).text(no_correct[e]+"題");
+          });
+         });
+
+        $('#show_correct_button').click(function(){
+          window.chatApp.showCorrectUsers(correct_users);
+          //showCorrectUsers(correct_users);
+        });
+        
+        $('#secondUpdate').click(function(){
+          if(!window.alarm){
+            window.timeRemaining = parseInt($('#secondInput').val()); 
+            window.chatApp.reset({second: window.timeRemaining});
+          }
+        });        
+        
+        $('#stop_all_button').click(function(){
+           
+           if (!window.alarm) return;
+           
+           gamers.all().forEach( function(i) {
+              
+              clearInterval(window.alarm);
+              window.alarm = null;
+              
+              window.chatApp.action(i,'stop');
+              //window.chatApp.cancelSubmit(i);
+              //receiveSubmitHandler({user_id:i});
+              stopSetStyle(i);
+            });
+           //var array = afterAction(this);
+
+        });
+
+        $('#next_question_button').click(function(){
+            correct_users = null;
+            window.chatApp.clearAll();
+            gamers.all().forEach( function(i) {
+              window.chatApp.action(i,'stop');
+            });
+            
+            //resetProgressBarAndTime();
+            window.chatApp.reset({second: window.timeRemaining});
+              //window.chatApp.cancelSubmit(i);
+              //receiveSubmitHandler({user_id:i});
+            
+            /*
+            <% if @stage != 'B2' %>
+            gamers.all().forEach(function(i){
+              window.chatApp.action(i,'start');
+            });
+
+            setTimeout(startCounter,100);
+            <% end %>
+            */
+
+        });
+
+        <% @visitors.each do |visitor| %>
+        window.chatApp.is_connected(<%= visitor.number %>);
+        <% end %>
+
+      });
+
+      </script>
+      <% end %>

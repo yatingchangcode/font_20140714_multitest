@@ -60,6 +60,14 @@ class GamesController < ApplicationController
     @join_visitors_number = params[:join_visitors_number]
   end
 
+  def stage_multi
+    @game = Game.find(params[:id])
+
+    @stage = params[:stage]
+
+    @join_visitors_number = params[:join_visitors_number]
+  end
+
   def server1
     @game = Game.find(params[:id])
     @visitors = @game.visitors.where(number: params[:join_visitors_number].split(","))
@@ -113,6 +121,40 @@ class GamesController < ApplicationController
     # end
   end
 
+  def server_idioms
+    @game = Game.find(params[:id])
+    @visitors = @game.visitors.where(number: params[:join_visitors_number].split(","))
+    @range = 1..@visitors.size
+
+    # for idioms stage, rule is 60 seconds
+    @second = params[:second]
+    Setting.messaging['second'] = params[:second]
+    @stage = params[:stage]
+    Setting.messaging['game'] = params[:id]
+    Setting.messaging['stage'] = params[:stage]
+    # Setting.messaging['record_url'] = "http://0.0.0.0:3000/games/#{params[:id]}/record_idioms?join_visitors_number=#{params[:join_visitors_number]}"
+    # if Setting.messaging['is_record_open'] != true
+    #   `xdg-open #{Setting.messaging['record_url']} || open #{Setting.messaging['record_url']}`
+    # end
+  end
+
+  def server_multi
+    @game = Game.find(params[:id])
+    @visitors = @game.visitors.where(number: params[:join_visitors_number].split(","))
+    @range = 1..@visitors.size
+    @second = params[:second]
+    @counting = params[:counting]
+
+    Setting.messaging['second'] = params[:second]
+    Setting.messaging['game'] = params[:id]
+    Setting.messaging['stage'] = params[:stage]
+    @stage = params[:stage]
+    #Setting.messaging['record_url'] = "http://0.0.0.0:3000/games/#{params[:id]}/record?join_visitors_number=#{params[:join_visitors_number]}"
+    #@user_unregs = [1,4]
+    # if Setting.messaging['is_record_open'] != true
+    #   `xdg-open #{Setting.messaging['record_url']} || open #{Setting.messaging['record_url']}`
+    # end
+  end
 
   def tvwall_A1
     @game = Game.find(params[:id])
@@ -173,21 +215,14 @@ class GamesController < ApplicationController
     @second = params[:second]
   end
 
-  def server_idioms
+  def tvwall_multi
     @game = Game.find(params[:id])
     @visitors = @game.visitors.where(number: params[:join_visitors_number].split(","))
     @range = 1..@visitors.size
 
-    # for idioms stage, rule is 60 seconds
     @second = params[:second]
-    Setting.messaging['second'] = params[:second]
-    @stage = params[:stage]
-    Setting.messaging['game'] = params[:id]
-    Setting.messaging['stage'] = params[:stage]
-    # Setting.messaging['record_url'] = "http://0.0.0.0:3000/games/#{params[:id]}/record_idioms?join_visitors_number=#{params[:join_visitors_number]}"
-    # if Setting.messaging['is_record_open'] != true
-    #   `xdg-open #{Setting.messaging['record_url']} || open #{Setting.messaging['record_url']}`
-    # end
+    @counting = params[:counting]
+
   end
 
   def record
