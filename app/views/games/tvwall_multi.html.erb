@@ -66,6 +66,8 @@
       @split_width_up = "3%" 
       @split_width_down = "7.5%"
     end
+  when 11..20
+
   end
 %>
 <% content_for :stylesheets do %>
@@ -100,135 +102,100 @@ body,.container{
 
 <% if @visitors.length > 5 %>
 <div class="Content"> 
-  <table width="100%" border="0" cellspacing="0" cellpadding="0">
-    <tr>
-      <td colspan="11" height="<%= @bar_spacing %>">&nbsp;</td>
-    </tr>
-    
-    <tr>
-      <td width="<%= @space_left %>"></td>
-      <% @visitors[0..((@visitors.length/2.0).ceil-1)].each do |visitor| %>
-      <td>
-        <div class="box_a">
-          <div id="out_<%= visitor.number %>" class="out">
-            <img src="/assets/tvwall/out.png" width="100%"/>
-          </div>
-          <div id="black_<%= visitor.number %>" class="black"></div>
-          <table width="100%" border="0" cellspacing="0" cellpadding="0">
-            <tr>
-              <td>
-                <div class="TopBpx">
-                  <div id="user_photo_<%= visitor.number %>" class="photo">
-                    <%= render_gamer_photo(visitor,"medium",'100%','100%',"") %>
-                  </div>
-                  <% if @counting == '1' %>
-                  <div class="nameBox br_line01">
-                  <% else %>
-                  <div class="nameBox">
-                  <% end %>
-                    <p class="name"><%= visitor.title || '　' %></p>
-                    <p class="name"><%= visitor.name %></p>
-                  </div>
-                  <% if @counting == '1' %>
-                  <div class="answer10" style="padding:20px 0 0 10px;">
-                  <span id="no_correct_<%= visitor.number %>" width="100%" class="label label-primary" style="opacity:0;font-size:2.5em;">0</span></div>
-                  <% end %>
-                  <br class="CLEAR" />
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <div id="grid_<%= visitor.number %>" class="Grid">
-                  <canvas id="origin_<%= visitor.number %>" width="100%" ></canvas>
-                  <div id="metal_<%= visitor.number %>" class="inner_metal"></div>
-                  <div id="glow_<%= visitor.number %>" class="inner_glow"><img src="/assets/tvwall/img_Grid_b_green.png" width="100%"/></div>
-                  <div id="yes_img_<%= visitor.number %>" class="correct"><img src="/assets/tvwall/red_ring.png" width="100%"/></div>
-                </div>
-              </td>
-            </tr>
-          </table>
-        </div>
-      </td>
+
+  <%
+    @seprates = ((@visitors.length - 1) / 5.0 or 1.0) + 1.0
+    for i in 1..@seprates do
+  %>
+    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td colspan="11" height="<%= @bar_spacing %>">&nbsp;</td>
+      </tr>
       
-      <td width="<%= @split_width_up %>"></td>
-      <% end %>
+      <tr>
+        <% if (i - 1) % 2 == 0 %>
+          <td width="<%= @space_left %>"></td>
+        <% else %>
+          <td width="<%= @space_right %>"></td>
+        <% end %>
+        
+        <%
+          startIndex = (i - 1) * 5
+          endIndex = i * 5 - 1
+          if i == @seprates
+            endIndex = @visitors.length - 1
+          end
+        %>
 
-      <td width="<%= @space_right %>"></td>
-    </tr>
-    
-    <tr>
-      <td colspan="11" height="1%">&nbsp;</td>
-    </tr>
-  </table>
+        <% @visitors[startIndex..endIndex].each do |visitor| %>
 
+        <% if i > 1 %>
+        <td width="<%= @split_width_down %>"></td>
+        <% end %>
 
-  <table width="100%" border="0" cellspacing="0" cellpadding="0">
-    <tr>
-      <td width="<%= @space_right %>"></td>
-      
-      <% @visitors[(@visitors.length/2.0).ceil..@visitors.length-1].each do |visitor| %>
-      <td width="<%= @split_width_down %>"></td>
-      <td>
-        <div class="box_a">
-          <div id="out_<%= visitor.number %>" class="out">
-            <img src="/assets/tvwall/out.png" width="100%"/>
-          </div>
-          <div id="black_<%= visitor.number %>" class="black"></div>
-          <table width="100%" border="0" cellspacing="0" cellpadding="0">
-            <tr>
-              <td>
-                <div class="TopBpx">
-                  <div id="user_photo_<%= visitor.number %>" class="photo">
-                    <%= render_gamer_photo(visitor,"medium",'100%','100%',"") %>
-                  </div>
-                  <% if @counting == '1' %>
-                  <div class="nameBox br_line01">
-                  <% else %>
-                  <div class="nameBox">
-                  <% end %>
-                    <% if(visitor.title) %>
-                    <p class="name"><%= visitor.title %></p>
+        <td>
+          <div class="box_a">
+            <div id="out_<%= visitor.number %>" class="out">
+              <img src="/assets/tvwall/out.png" width="100%"/>
+            </div>
+            <div id="black_<%= visitor.number %>" class="black"></div>
+            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+              <tr>
+                <td>
+                  <div class="TopBpx">
+                    <div id="user_photo_<%= visitor.number %>" class="photo">
+                      <%= render_gamer_photo(visitor,"medium",'100%','100%',"") %>
+                    </div>
+                    <% if @counting == '1' %>
+                    <div class="nameBox br_line01">
                     <% else %>
-                    <p class="name">&nbsp;</p>
+                    <div class="nameBox">
                     <% end %>
-                    <p class="name"><%= visitor.name %></p>
+                      <p class="name"><%= visitor.title || '　' %></p>
+                      <p class="name"><%= visitor.name %></p>
+                    </div>
+                    <% if @counting == '1' %>
+                    <div class="answer10" style="padding:20px 0 0 10px;">
+                    <span id="no_correct_<%= visitor.number %>" width="100%" class="label label-primary" style="opacity:0;font-size:2.5em;">0</span></div>
+                    <% end %>
+                    <br class="CLEAR" />
                   </div>
-                  <% if @counting == '1' %>
-                  <div class="answer10" style="padding:20px 0 0 10px;">
-                  <span id="no_correct_<%= visitor.number %>" width="100%" class="label label-primary" style="opacity:0;font-size:2.5em;">0</span></div>
-                  <% end %>
-                  <br class="CLEAR" />
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <div id="grid_<%= visitor.number %>" class="Grid">
-                  <canvas id="origin_<%= visitor.number %>" width="100%" ></canvas>
-                  <div id="metal_<%= visitor.number %>" class="inner_metal"></div>
-                  <div id="glow_<%= visitor.number %>" class="inner_glow"><img src="/assets/tvwall/img_Grid_b_green.png" width="100%"/></div>
-                  <div id="yes_img_<%= visitor.number %>" class="correct"><img src="/assets/tvwall/red_ring.png" width="100%"/></div>
-                  
-                </div>
-              </td>
-            </tr>
-          </table>
-        </div>
-      </td>
-      <% end %>
-      <td width="<%= @space_left %>"></td>
-    </tr>
-    <% if @visitors.length == 6 %>
-    <tr>
-      <td colspan="11" height="1%">
-        <video width="100%" autoplay="autoplay" loop="loop" style="padding-top:<%= @video_position %>;">
-          <source src="/assets/cycle1111ok.mp4" type="video/mp4"></source>
-        </video>
-      </td>
-    </tr>
-    <% end %>
-  </table>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <div id="grid_<%= visitor.number %>" class="Grid">
+                    <canvas id="origin_<%= visitor.number %>" width="100%" ></canvas>
+                    <div id="metal_<%= visitor.number %>" class="inner_metal"></div>
+                    <div id="glow_<%= visitor.number %>" class="inner_glow"><img src="/assets/tvwall/img_Grid_b_green.png" width="100%"/></div>
+                    <div id="yes_img_<%= visitor.number %>" class="correct"><img src="/assets/tvwall/red_ring.png" width="100%"/></div>
+                  </div>
+                </td>
+              </tr>
+            </table>
+          </div>
+        </td>
+        
+          <% if i <= 1 %>
+          <td width="<%= @split_width_up %>"></td>
+          <% end %>
+        
+        <% end %>
+
+        <% if (i - 1) % 2 == 0 %>
+          <td width="<%= @space_right %>"></td>
+        <% else %>
+          <td width="<%= @space_left %>"></td>
+        <% end %>
+      </tr>
+      
+      <tr>
+        <td colspan="11" height="1%">&nbsp;</td>
+      </tr>
+    </table>
+
+  <% end %>
+
 </div>
 
 <% else %>
@@ -328,9 +295,14 @@ body,.container{
 // cache stage name for server1-tvwall.js
 var hasCounter = true;
 
-</script>
-<%= javascript_include_tag 'server1-tvwall' %>
+window.activateUsers = [];
+<% @visitors.each do |visitor| %>
+activateUsers.push('<%= visitor.number %>');
+<% end %>
 
+</script>
+<%= javascript_include_tag 'server_multi' %>
+<%= javascript_include_tag 'server_multi_helpers' %>
 <script>
 
 var sketchSecondIns;
@@ -347,9 +319,26 @@ var receiveCancelSubmitHandler = function(o){
   $('#glow_'+o.user_id).hide();
 };
 
-var receiveCorrectUsersHandler = function(users){
-  showCorrectUsers(users);
-}
+var receiveChangeConnectionStatusHandler = function(o){};
+
+// var receiveCorrectUsersHandler = function(users){
+//   showCorrectUsers(users);
+// }
+
+// override
+var receiveResetHandler = function(o){
+  if (o.second != null) {
+    if(window.hasCounter){
+      // for (key in window.alarm){
+      //   clearInterval(window.alarm[key]);
+      //   window.alarm[key] = null;
+      // }  
+      resetSetStyle(o.second);
+    }
+  }else{
+    window.location.reload(true);
+  }
+};
 
 //後台送出答對
 function showO(c){
@@ -391,6 +380,7 @@ function clearSetStyle(o){
 // }
 
 <% if @counting == '1' %>
+// overrides
 var tempcount = {};
 var updateCount = function(user){
   var c = tempcount[user] || 0;
@@ -490,6 +480,11 @@ $(document).ready(function() {
 
   //window.chatApp = new ChatApp(500,500,'0');
   //window.chatApp.bindEvents();
+
+  window.chatApp = new ChatApp('0',"<%= @tv_n %>");
+  window.chatApp.bindEvents();
+  // window.chatApp.reset({stage:'<%= params[:stage] %>'});
+  // window.chatApp.setGameInfo(<%= @game.id %>, "<%= @stage %>", "<%= params[:join_visitors_number] %>");
 
   (function collectGamers() {
    <% @visitors.each do |visitor| %>
