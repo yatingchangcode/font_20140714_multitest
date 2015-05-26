@@ -166,47 +166,52 @@ class GamesController < ApplicationController
       end
     end
     
-    if @visitors.length > 10
-      # should_opens = @visitors.length / 20 + 1
-      # if @visitors.length % 20 == 0
-      #   should_opens = should_opens - 1
-      # end
-      # per_visitor = @visitors.length / should_opens
-      # @visitors[(@visitors.length/2.0).ceil..@visitors.length-1].each do |visitor|
-      visitor_per_page = @visitors.length / 2
-      if @visitors.length % 2 == 0
-        visitor_per_page = visitor_per_page - 1
-      end
+    # if @visitors.length > 10
+    #   # should_opens = @visitors.length / 20 + 1
+    #   # if @visitors.length % 20 == 0
+    #   #   should_opens = should_opens - 1
+    #   # end
+    #   # per_visitor = @visitors.length / should_opens
+    #   # @visitors[(@visitors.length/2.0).ceil..@visitors.length-1].each do |visitor|
+    #   visitor_per_page = @visitors.length / 2
+    #   if @visitors.length % 2 == 0
+    #     visitor_per_page = visitor_per_page - 1
+    #   end
 
-      #  5: 0-2, 3-4
-      # 13: 0-6, 7-12
+    #   #  5: 0-2, 3-4
+    #   # 13: 0-6, 7-12
 
-      # 14: 0-7, 8-13
+    #   # 14: 0-7, 8-13
 
-      url_1 = "http://0.0.0.0:3000/games/#{params[:id]}/tvwall_#{@stage}?join_visitors_number=#{visitors_splits[0..visitor_per_page].join(',')}&second=#{@second}&counting=#{@counting}&tv_n=tv_1"
-      url_2 = "http://0.0.0.0:3000/games/#{params[:id]}/tvwall_#{@stage}?join_visitors_number=#{visitors_splits[visitor_per_page+1..@visitors.length-1].join(',')}&second=#{@second}&counting=#{@counting}&tv_n=tv_2"
+    #   url_1 = "http://0.0.0.0:3000/games/#{params[:id]}/tvwall_#{@stage}?join_visitors_number=#{visitors_splits[0..visitor_per_page].join(',')}&second=#{@second}&counting=#{@counting}&tv_n=tv_1"
+    #   url_2 = "http://0.0.0.0:3000/games/#{params[:id]}/tvwall_#{@stage}?join_visitors_number=#{visitors_splits[visitor_per_page+1..@visitors.length-1].join(',')}&second=#{@second}&counting=#{@counting}&tv_n=tv_2"
 
-      p url_1
-      p url_2
+    #   p url_1
+    #   p url_2
 
-      if Setting.messaging['is_tv_1_open'] != true
-        `#{command_name} '#{url_1}'`
-      end
-      if Setting.messaging['is_tv_2_open'] != true
-        `#{command_name} '#{url_2}'`
-      end
+    #   if Setting.messaging['is_tv_1_open'] != true
+    #     `#{command_name} '#{url_1}'`
+    #   end
+    #   if Setting.messaging['is_tv_2_open'] != true
+    #     `#{command_name} '#{url_2}'`
+    #   end
 
       
       
 
-      # url = "http://0.0.0.0:3000/games/#{params[:id]}/record?join_visitors_number=#{params[:join_visitors_number]}"
-      # `xdg-open #{url} || open #{url}`
-    else
+    #   # url = "http://0.0.0.0:3000/games/#{params[:id]}/record?join_visitors_number=#{params[:join_visitors_number]}"
+    #   # `xdg-open #{url} || open #{url}`
+    # else
 
-      url_1 = "http://0.0.0.0:3000/games/#{params[:id]}/tvwall_#{@stage}?join_visitors_number=#{visitors_splits[0..@visitors.length-1].join(',')}&second=#{@second}&counting=#{@counting}&tv_n=tv_1"
-      if Setting.messaging['is_tv_1_open'] != true
-        `#{command_name} '#{url_1}'`
-      end
+    #   url_1 = "http://0.0.0.0:3000/games/#{params[:id]}/tvwall_#{@stage}?join_visitors_number=#{visitors_splits[0..@visitors.length-1].join(',')}&second=#{@second}&counting=#{@counting}&tv_n=tv_1"
+    #   if Setting.messaging['is_tv_1_open'] != true
+    #     `#{command_name} '#{url_1}'`
+    #   end
+    # end
+
+    url_1 = "http://0.0.0.0:3000/games/#{params[:id]}/tvwall_#{@stage}?join_visitors_number=#{visitors_splits[0..@visitors.length-1].join(',')}&second=#{@second}&counting=#{@counting}&tv_n=tv_1"
+    if Setting.messaging['is_tv_1_open'] != true
+      `#{command_name} '#{url_1}'`
     end
 
     #Setting.messaging['record_url'] = "http://0.0.0.0:3000/games/#{params[:id]}/record?join_visitors_number=#{params[:join_visitors_number]}"
