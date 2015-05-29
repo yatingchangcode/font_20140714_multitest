@@ -1,7 +1,7 @@
       var gamers = {
           gamersList : [],
           last: null,
-          
+
           next : function() {
             var newgamer = this.gamersList.shift();
             this.gamersList.push(newgamer);
@@ -13,7 +13,7 @@
           },
           push : function(i) {
             this.gamersList.push(i);
-          }, 
+          },
           remove : function(i) {
             var idx = this.gamersList.indexOf(i);
             if (idx > -1) {
@@ -38,18 +38,53 @@
           CM('origin_'+o.user_id).point({ x: o.x, y: o.y });
         };
 
-        var receiveMoveHandler = function(o){
-          CM('origin_'+o.user_id).line({ x: o.x, y: o.y });
-          console.log("first:"+ o.stamp);
-          console.log("second:"+ o.server_receive_time);
-          console.log("third:"+ new Date().getTime());
-          console.log("client to server"+ (o.server_receive_time - o.stamp));
-          console.log("server to client"+ (new Date().getTime() - o.server_receive_time));
-        };
+      var timedata1 = ['mobile_2_server',0];
+      var timedata2 = ['server_2_wall',0];
+
+      var previousState = false;
+      var isDrawing = false;
+
+      var receiveMoveHandler = function(o){
+        // console.log("first:"+ o.stamp);
+        // console.log("second:"+ o.server_receive_time);
+        // console.log("third:"+ new Date().getTime());
+        var temptime1 = (o.server_receive_time - o.stamp);
+        // console.log("client to server"+ temptime1);
+        var temptime2 = (new Date().getTime() - o.server_receive_time);
+        // console.log("server to client"+ temptime2);
+        timedata1.push(temptime1);
+        timedata2.push(temptime2);
+        previousState = false;
+        isDrawing = true;
+        // chart.load({
+        //   columns: [timedata1,timedata2]
+        // });
+        CM('origin_'+o.user_id).line({ x: o.x, y: o.y });
+
+      };
+
+
+
+      setInterval(function(){
+        if(isDrawing && previousState){
+          isDrawing = previousState = false;
+          chart.load({
+            columns: [timedata1,timedata2]
+          });
+        }else if(isDrawing && !previousState){
+          previousState = true;
+        }
+      }, 2000);
 
         var receiveStartHandler = function(o){
+          // chart.load({
+          //   columns: [
+          //     ['mobile_2_server',0],
+          //     ['server_2_wall',0]
+          //   ]
+          // });
           start_button(o.user_id);
-        };     
+        };
 
         var start_button = function(value){
           startSetStyle(value);
@@ -63,7 +98,7 @@
           //console.log(hasCounter);
           if (window.hasCounter){
             clearInterval(window.alarm);
-            window.alarm = null;  
+            window.alarm = null;
           }
           //gamers.pushStarted(value, window.resetAndStart);
           stopSetStyle(value);
@@ -108,7 +143,7 @@
               // for (key in window.alarm){
               //   clearInterval(window.alarm[key]);
               //   window.alarm[key] = null;
-              // }  
+              // }
               resetSetStyle(o.second);
             }
           }
@@ -127,8 +162,8 @@
           users.sort(function(a,b) {
             return parseInt(a) - parseInt(b);
           });
-          
-          for (var i in users) { 
+
+          for (var i in users) {
             setTimeout( (function(a){
               return function() {
                 console.log(a);
@@ -162,7 +197,7 @@
         canvasEl.width = w;
         canvasEl.height = h;
         canvasContext.lineWidth = 0;
-        
+
         for(var i = 0, len = splits.length; i < len; i++){
           var s = splits[i].split(' ');
           colorStopArray.push([parseFloat(s[0]).toFixed(1), s[1]]);
@@ -173,9 +208,9 @@
         for(var i = 0, len = gradientSizeArray.length; i < len; i++){
           grd = canvasContext.createLinearGradient.apply(canvasContext, gradientSizeArray[i]);
           for(var a = 0, alen = colorStopArray.length; a < alen; a++){
-            grd.addColorStop(colorStopArray[a][0], colorStopArray[a][1]);  
+            grd.addColorStop(colorStopArray[a][0], colorStopArray[a][1]);
           }
-          
+
           canvasContext.fillStyle = grd;
           canvasContext.beginPath();
           var positions = positionArray[i];
