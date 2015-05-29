@@ -1,0 +1,574 @@
+<%
+  @space_top = "140"
+  @space_left = "5%"
+  @space_right = "4%"
+  @canvas_scale = 0.171
+  @canvas_border = 9
+  @font_formula = "w / 3 * 16 / 15"
+  @bar_spacing = "40"
+  @bar_formula = "(w + 5) / 2"
+  @timebar_height = "16px"
+  @video_position = "189px"
+  @split_width = "3%"
+
+  @space_left_odd = "15%"
+  @space_right_odd = "15%"
+  @space_left_even = "7%"
+  @space_right_even = "7%"
+  @split_width_odd = "11%"
+  @split_width_even = "11%"
+
+  case @visitors.length
+  when 2
+    @canvas_scale = 0.243
+    @canvas_border = 15
+    @space_top = "140"
+    @space_left = "25%"
+    @space_right = "24%"
+    @timebar_height = "22px"
+  when 3
+    @canvas_scale = 0.217
+    @canvas_border = 13
+    @space_left = "18%"
+    @space_right = "17%"
+    @timebar_height = "20px"
+  when 4
+    @font_formula = "w / 3 * 16.2 / 15"
+    @bar_formula = "(w + 3) / 2"
+    @canvas_scale = 0.191
+    @canvas_border = 11
+    @space_left = "10%"
+    @space_right = "9%"
+    @timebar_height = "18px"
+    @video_position = "52px"
+  when 6..10
+    @canvas_scale = 0.131
+    @canvas_border = 8
+    @space_top = "100"
+    @bar_spacing = "5%"
+    @split_width_up = "3%"
+    @split_width_down = "3%"
+    @space_left = "10%"
+    @space_right = "9%"
+    @font_formula = "w / 3 * 16.5 / 15"
+    @bar_formula = "(w + 1) / 2"
+    @timebar_height = "16px"
+    case @visitors.length
+    when 6
+       @split_width_up = "12%" 
+       @split_width_down = "12%" 
+       @space_left = "13%"
+       @space_right = "12%"
+       @video_position = "32px"
+    when 7
+      @split_width_up = "7.5%" 
+      @split_width_down = "12%" 
+      @space_left = "11.5%"
+      @space_right = "10.5%"
+    when 8
+      @split_width_up = "7.5%" 
+      @split_width_down = "7.5%"
+      @space_left = "11.5%"
+      @space_right = "10.5%"
+    when 9
+      @split_width_up = "3%" 
+      @split_width_down = "7.5%"
+    end
+  when 11..15
+    @seprates = 2
+    @space_left = "3%"
+    @space_right = "2%"
+  when 16..22
+    @seprates = 3
+    @space_left = "10%"
+    @space_right = "8%"
+    @split_width_up = "7.5%" 
+    @split_width_down = "7.5%"
+  when 23..30
+    @seprates = 4
+    @bar_spacing = "2%"
+    @space_left_odd = "15%"
+    @space_right_odd = "15%"
+    @space_left_even = "7%"
+    @space_right_even = "7%"
+    @split_width_odd = "11%"
+    @split_width_even = "11%"
+    @canvas_scale = 0.093
+    @canvas_border = 4
+  when 31..40
+    @seprates = 5
+    @space_left = "3%"
+    @space_right = "2%"
+  end
+%>
+<% content_for :stylesheets do %>
+<%= stylesheet_link_tag 'reset','tvwall' %>
+<style type="text/css">
+p{
+  padding-top:0.5%;
+}
+
+body,.container{
+  background-color: #000000;
+  width: 100%;
+  height:100%;
+  overflow: hidden;
+  /*width:1920px;
+  height:1080px;*/
+}
+</style>
+<% end %>
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td colspan="3" height="<%= @space_top %>">&nbsp;</td>
+  </tr>
+  <tr>
+    <td width="32%">&nbsp;</td>
+    <td><div class="HP_bar" style="height:<%= @timebar_height %>;"><canvas id="sketchSecond" data-processing-sources="/assets/timebar.pde"></canvas></div></div></td>
+    <td width="33%">&nbsp;</td>
+  </tr>
+  
+</table>
+
+<% if @visitors.length > 5 %>
+<div class="Content"> 
+
+  <%
+    # @seprates = ((@visitors.length - 1) / 5.0 or 1.0) + 1.0
+    last_index = -1
+    for i in 1..@seprates do
+  %>
+
+    <%
+      nums_per_row = 7 + (i - 1) % 2
+
+      startIndex = last_index + 1
+      endIndex = startIndex + nums_per_row - 1
+      # startIndex = (i - 1) * nums_per_row + (i - 1) % 2
+      # endIndex = i * nums_per_row + (i - 1) % 2 - 1
+      if i == @seprates
+        endIndex = @visitors.length - 1
+      end
+      last_index = endIndex
+      index_irr = startIndex
+    %>
+    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td colspan="<%= nums_per_row * 2 + 2 %>" height="<%= @bar_spacing %>">&nbsp;</td>
+      </tr>
+      
+      <tr>
+        <% if (i - 1) % 2 == 0 %>
+          <td width="<%= @space_left_odd %>"></td>
+        <% else %>
+          <td width="<%= @space_left_even %>"></td>
+        <% end %>
+        
+        <%
+          if (i - 1) % 2 == 0
+            @split_width = @split_width_odd
+          else
+            @split_width = @split_width_even
+          end
+        %>
+
+        <% @visitors[startIndex..endIndex].each do |visitor| %>
+
+        <td>
+          <div class="box_a">
+            <div id="out_<%= visitor.number %>" class="out">
+              <img src="/assets/tvwall/out.png" width="100%"/>
+            </div>
+            <div id="black_<%= visitor.number %>" class="black"></div>
+            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+              <tr>
+                <td>
+                  <div class="TopBpx">
+                    <div id="user_photo_<%= visitor.number %>" class="photo">
+                      <%= render_gamer_photo(visitor,"medium",'100%','100%',"") %>
+                    </div>
+                    <% if @counting == '1' %>
+                    <div class="nameBox br_line01">
+                    <% else %>
+                    <div class="nameBox">
+                    <% end %>
+                      <p class="name"><%= visitor.title || '　' %></p>
+                      <p class="name"><%= visitor.name %></p>
+                    </div>
+                    <% if @counting == '1' %>
+                    <div class="answer10" style="padding:20px 0 0 10px;">
+                    <span id="no_correct_<%= visitor.number %>" width="100%" class="label label-primary" style="opacity:0;font-size:2.5em;">0</span></div>
+                    <% end %>
+                    <br class="CLEAR" />
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <div id="grid_<%= visitor.number %>" class="Grid">
+                    <canvas id="origin_<%= visitor.number %>" width="100%" ></canvas>
+                    <div id="metal_<%= visitor.number %>" class="inner_metal"></div>
+                    <div id="glow_<%= visitor.number %>" class="inner_glow"><img src="/assets/tvwall/img_Grid_b_green.png" width="100%"/></div>
+                    <div id="yes_img_<%= visitor.number %>" class="correct"><img src="/assets/tvwall/red_ring.png" width="100%"/></div>
+                  </div>
+                </td>
+              </tr>
+            </table>
+          </div>
+        </td>
+
+        <% if index_irr < endIndex  %>
+        <td width="<%= @split_width %>"></td>
+        <% end %>
+
+        <%
+          index_irr = index_irr + 1
+        %>
+        
+        <% end %>
+
+        <% if (i - 1) % 2 == 0 %>
+          <td width="<%= @space_right_odd %>"></td>
+        <% else %>
+          <td width="<%= @space_right_even %>"></td>
+        <% end %>
+      </tr>
+      <!-- 
+      <tr>
+        <td colspan="11" height="1%">&nbsp;</td>
+      </tr> -->
+    </table>
+
+  <% end %>
+
+</div>
+
+<% else %>
+
+<div class="Content"> 
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td colspan="11" height="<%= @bar_spacing %>">&nbsp;</td>
+    </tr>
+
+    <tr>
+
+      <td width="<%= @space_left %>"></td>
+
+      <% @visitors.each do |visitor| %>
+      <td>
+        <div class="box_a">
+          <div id="out_<%= visitor.number %>" class="out">
+            <img src="/assets/tvwall/out.png" width="100%"/>
+          </div>
+          <div id="black_<%= visitor.number %>" class="black"></div>
+          <table width="100%" border="0" cellspacing="0" cellpadding="0">
+            <tr>
+              <td>
+                <div class="TopBpx">
+                  <div id="user_photo_<%= visitor.number %>" class="photo">
+                    <%= render_gamer_photo(visitor,"medium",'100%','100%',"") %>
+                  </div>
+
+                  <% if @counting == '1' %>
+                  <div class="nameBox br_line01_less5">
+                  <% else %>
+                  <div class="nameBox br_line02">
+                  <% end %>
+
+                    <% if(visitor.title) %>
+                    <p class="name"><%= visitor.title %></p>
+                    <% else %>
+                    <p class="name">&nbsp;</p>
+                    <% end %>
+                    <p class="name"><%= visitor.name %></p>
+                  </div>
+                  <% if @counting == '1' %>
+                  <div class="answer10" style="padding:20px 0 0 10px;">
+                  <span id="no_correct_<%= visitor.number %>" width="100%" class="label label-primary" style="opacity:0;font-size:3.5em;">0</span></div>
+                  <% end %>
+                  <br class="CLEAR" />
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div id="grid_<%= visitor.number %>" class="Grid">
+                  <canvas id="origin_<%= visitor.number %>" width="100%" ></canvas>
+                  <div id="metal_<%= visitor.number %>" class="inner_metal"></div>
+                  <div id="glow_<%= visitor.number %>" class="inner_glow"><img src="/assets/tvwall/img_Grid_b_green.png" width="100%"/></div>
+                  <div id="yes_img_<%= visitor.number %>" class="correct"><img src="/assets/tvwall/red_ring.png" width="100%"/></div>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                 <tr>
+                  <td width="10%">&nbsp;</td>
+                  <td><div class="HP_bar" style="height:<%= @timebar_height %>;"><canvas id="sketchSecond_<%= visitor.number %>" data-processing-sources="/assets/timebar.pde"></canvas></div></td>
+                  <td width="10%">&nbsp;</td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+        </table>
+      </div>
+    </td>
+    <td width="1%"></td>
+    <% end %>
+
+    <td width="<%= @space_right %>"></td>
+  </tr>
+
+  <tr>
+      <td colspan="11" height="1%">
+        <video width="100%" autoplay="autoplay" loop="loop" style="padding-top:<%= @video_position %>;">
+          <source src="/assets/cycle1111ok.mp4" type="video/mp4"></source>
+        </video>
+      </td>
+
+    </tr>
+</table>
+</div>
+
+<% end %>
+
+<% content_for :javascripts do %>
+<script>
+// cache stage name for server1-tvwall.js
+var hasCounter = true;
+
+window.activateUsers = [];
+<% @visitors.each do |visitor| %>
+activateUsers.push('<%= visitor.number %>');
+<% end %>
+
+</script>
+<%= javascript_include_tag 'server_multi' %>
+<%= javascript_include_tag 'server_multi_helpers' %>
+<script>
+
+var sketchSecondIns;
+
+//使用者送出確認
+var receiveSubmitHandler = function(o){
+  $('#grid_'+o.user_id).addClass("bor_g");
+  $('#glow_'+o.user_id).show();
+};
+
+//後台取消確認
+var receiveCancelSubmitHandler = function(o){
+  $('#grid_'+o.user_id).removeClass("bor_g");
+  $('#glow_'+o.user_id).hide();
+};
+
+var receiveChangeConnectionStatusHandler = function(o){};
+
+// var receiveCorrectUsersHandler = function(users){
+//   showCorrectUsers(users);
+// }
+
+// override
+var receiveResetHandler = function(o){
+  if (o.second != null) {
+    if(window.hasCounter){
+      // for (key in window.alarm){
+      //   clearInterval(window.alarm[key]);
+      //   window.alarm[key] = null;
+      // }  
+      resetSetStyle(o.second);
+    }
+  }else{
+    window.location.reload(true);
+  }
+};
+
+//後台送出答對
+function showO(c){
+  $("#yes_img_" + c).show();
+}
+
+function removeO(c){
+  $("#yes_img_" + c).hide();
+}
+
+function startSetStyle(c) {
+  $('#user_photo_'+c).addClass("green");
+  sketchSecondIns.doStart();
+}
+
+function stopSetStyle(c) {
+  $('#user_photo_'+c).removeClass("green");
+  sketchSecondIns.doStop();
+}
+
+//Gamer out
+function outSetStyle(val) {
+  $('#out_'+val).show();
+  $('#black_'+val).show();
+}
+
+function resetSetStyle(s) {
+  //$('#second_' + key).text(s + "秒");
+  sketchSecondIns.resetBar();
+  sketchSecondIns.setSecond(parseInt(s));
+}
+
+function clearSetStyle(o){
+  CM('origin_'+o.user_id).clear();
+}
+
+// function correctCountSetStyle(o){
+//   $("#no_correct_" + o.user_id).text(o.count+"題");
+// }
+
+<% if @counting == '1' %>
+// overrides
+var tempcount = {};
+var updateCount = function(user){
+  var c = tempcount[user] || 0;
+  var jqEl = $("#no_correct_" + user);
+  jqEl.text(c);
+  if(c){
+    jqEl.css('opacity', 1).css('color', 'black');
+  }else{
+    jqEl.css('opacity', 0);
+  }
+};
+var showCorrectUsers = function(users) {
+  if(users.length){
+      users.sort(function(a,b) {
+        return parseInt(a) - parseInt(b);
+      });
+      
+      for (var i in users) { 
+        setTimeout( (function(a){
+          return function() {
+            console.log(a);
+            $("#yes_img_"+a).show();
+            updateCount(a);
+          }
+        })(users[i]), 800 * i);
+      }
+      users = null;
+  }else{
+    gamers.all().forEach(function(e){
+      updateCount(e);
+    });
+  }
+};
+
+function correctCountSetStyle(o){
+  //$("#no_correct_" + o.user_id).show();
+  tempcount[o.user_id] = o.count;
+  
+  console.log(o);
+
+}                  
+<% end %>
+
+function clearAllSetStyle() {
+  $('[id^=yes_img_]').hide();
+  //$('[id^=answer_correct_]').text("?").css("color","");
+  gamers.all().forEach(function(e){
+    CM('origin_'+e).clear();
+    receiveCancelSubmitHandler({user_id: e});
+    stopSetStyle(e);
+  });
+  sketchSecondIns.resetBar();
+}
+
+window.timeRemaining = parseInt(<%= @second %>);
+window.alarm = null;
+window.responsiveMethod = function(){
+  var jqEl = $('[id^=grid_]');
+
+  var w = $(window).width() * <%= @canvas_scale %>;
+  //var w = $('.container').width() * <%= @canvas_scale %>;
+  jqEl.height(w);
+  jqEl.width(w);
+
+};
+
+window.tuneLinePosition = function(){
+  var w = $('.photo').width();
+  var namebox = $('.nameBox');
+  var name = $('.name');
+  name.css('font-size', <%= @font_formula %>);
+  namebox.height(w);
+  // 44 means picture height
+  //namebox.css('background-position-y', w / 2 - parseFloat(name.css('padding-top')) * 1.8 - w / 3 / 15 * 0.2 );
+  //namebox.css('background-position-y', w / 2 - parseFloat(name.css('padding-top')) * 2 - (44 - 38) / 2 );
+  namebox.css('background-position-y', <%= @bar_formula %> );
+  
+};
+
+window.addEventListener('resize', window.responsiveMethod);
+
+$(document).ready(function() {
+  CM.prop({
+    width: 500,
+    height: 500,
+    lineWidth: 13,
+    lineColor: '#ececec',
+    targetZoomScale: 0.15,
+    responsiveByParent: true,
+    backgroundLine: '7px rgba(255,0,0,0.6)'
+    //backgroundImage: '/assets/tvwall/Metal-Frame.png'
+  });
+  <% @visitors.each do |visitor| %>
+  CM.reg('origin_<%= visitor.number %>');
+  <% end %>
+
+
+  //window.chatApp = new ChatApp(500,500,'0');
+  //window.chatApp.bindEvents();
+
+  window.chatApp = new ChatApp('0',"<%= @tv_n %>");
+  window.chatApp.bindEvents();
+  // window.chatApp.reset({stage:'<%= params[:stage] %>'});
+  // window.chatApp.setGameInfo(<%= @game.id %>, "<%= @stage %>", "<%= params[:join_visitors_number] %>");
+
+  (function collectGamers() {
+   <% @visitors.each do |visitor| %>
+   gamers.push('<%= visitor.number %>');
+   <% end %>
+ }) ();
+
+  setTimeout(function(){
+    if(!sketchSecondIns){
+      sketchSecondIns = Processing.getInstanceById('sketchSecond');  
+    }
+    var p = $(document.getElementById('sketchSecond').parentElement);
+    sketchSecondIns.setSize(p.width(), p.height());
+    sketchSecondIns.setSecond(<%= @second %>);
+  },300);
+
+  responsiveMethod();
+
+  var borderWidth = <%= @canvas_border %>;
+  
+  $('.Grid').css("background", "url("+ generateBorderBase64($('.Grid'), borderWidth, 
+    ['0 #ffffff', '0.5 #aaaaaa', '1 #aaaaaa'] ) +
+  ")");
+  $('.Grid').css("padding", borderWidth);
+
+  CM.doAllResponsive();
+  setTimeout(function(){
+    tuneLinePosition();    
+  }, 100);
+
+  /*
+  var borderWidth = 10;
+  $('.Grid').css("background", "url("+ generateBorderBase64($('.Grid'), borderWidth, 
+    ['0 #222222', '0.4 #999999', '0.6 #ffffff', '1 #222222'] ) +
+  ")");
+  $('.Grid').css("padding", borderWidth);
+  */
+  //alert(<%= @counting %>);
+});
+</script>
+<% end %>

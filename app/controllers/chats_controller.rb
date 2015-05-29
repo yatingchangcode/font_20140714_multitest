@@ -134,6 +134,18 @@ class ChatsController < WebsocketRails::BaseController
       p "is_record_open"
       Setting.messaging['is_record_open'] = status
     end
+
+    # for tv wall
+    if params[:tv_id] == 'tv_1'
+      p "is_tv_1_actions"
+      Setting.messaging['is_tv_1_open'] = status
+      # Setting.messaging['is_record_open'] = status
+    end 
+    if params[:tv_id] == 'tv_2'
+      p "is_tv_2_actions"
+      Setting.messaging['is_tv_2_open'] = status
+      # Setting.messaging['is_record_open'] = status
+    end    
   end
 
   def set_connection_status(params,status)

@@ -60,6 +60,14 @@ class GamesController < ApplicationController
     @join_visitors_number = params[:join_visitors_number]
   end
 
+  def stage_multi
+    @game = Game.find(params[:id])
+
+    @stage = params[:stage]
+
+    @join_visitors_number = params[:join_visitors_number]
+  end
+
   def server1
     @game = Game.find(params[:id])
     @visitors = @game.visitors.where(number: params[:join_visitors_number].split(","))
@@ -113,6 +121,105 @@ class GamesController < ApplicationController
     # end
   end
 
+  def server_idioms
+    @game = Game.find(params[:id])
+    @visitors = @game.visitors.where(number: params[:join_visitors_number].split(","))
+    @range = 1..@visitors.size
+
+    # for idioms stage, rule is 60 seconds
+    @second = params[:second]
+    Setting.messaging['second'] = params[:second]
+    @stage = params[:stage]
+    Setting.messaging['game'] = params[:id]
+    Setting.messaging['stage'] = params[:stage]
+    # Setting.messaging['record_url'] = "http://0.0.0.0:3000/games/#{params[:id]}/record_idioms?join_visitors_number=#{params[:join_visitors_number]}"
+    # if Setting.messaging['is_record_open'] != true
+    #   `xdg-open #{Setting.messaging['record_url']} || open #{Setting.messaging['record_url']}`
+    # end
+  end
+
+  def server_multi
+    @game = Game.find(params[:id])
+
+    visitors_splits = params[:join_visitors_number].split(",")
+
+    @visitors = @game.visitors.where(number: visitors_splits)
+    @range = 1..@visitors.size
+    @second = params[:second]
+    @counting = params[:counting]
+
+    Setting.messaging['second'] = params[:second]
+    Setting.messaging['game'] = params[:id]
+    # Setting.messaging['stage'] = params[:stage]
+    # To control the mobile get in A1 view, through get_game_data event
+    Setting.messaging['stage'] = 'A1'
+    @stage = params[:stage]
+
+    command_name = "echo"
+    xdg_open_test = `xdg-open`
+    open_test = `open`
+    if xdg_open_test != nil or open_test != nil
+      if xdg_open_test != nil
+        command_name = "xdg-open" 
+      else
+        command_name = "open" 
+      end
+    end
+    
+    # if @visitors.length > 10
+    #   # should_opens = @visitors.length / 20 + 1
+    #   # if @visitors.length % 20 == 0
+    #   #   should_opens = should_opens - 1
+    #   # end
+    #   # per_visitor = @visitors.length / should_opens
+    #   # @visitors[(@visitors.length/2.0).ceil..@visitors.length-1].each do |visitor|
+    #   visitor_per_page = @visitors.length / 2
+    #   if @visitors.length % 2 == 0
+    #     visitor_per_page = visitor_per_page - 1
+    #   end
+
+    #   #  5: 0-2, 3-4
+    #   # 13: 0-6, 7-12
+
+    #   # 14: 0-7, 8-13
+
+    #   url_1 = "http://0.0.0.0:3000/games/#{params[:id]}/tvwall_#{@stage}?join_visitors_number=#{visitors_splits[0..visitor_per_page].join(',')}&second=#{@second}&counting=#{@counting}&tv_n=tv_1"
+    #   url_2 = "http://0.0.0.0:3000/games/#{params[:id]}/tvwall_#{@stage}?join_visitors_number=#{visitors_splits[visitor_per_page+1..@visitors.length-1].join(',')}&second=#{@second}&counting=#{@counting}&tv_n=tv_2"
+
+    #   p url_1
+    #   p url_2
+
+    #   if Setting.messaging['is_tv_1_open'] != true
+    #     `#{command_name} '#{url_1}'`
+    #   end
+    #   if Setting.messaging['is_tv_2_open'] != true
+    #     `#{command_name} '#{url_2}'`
+    #   end
+
+      
+      
+
+    #   # url = "http://0.0.0.0:3000/games/#{params[:id]}/record?join_visitors_number=#{params[:join_visitors_number]}"
+    #   # `xdg-open #{url} || open #{url}`
+    # else
+
+    #   url_1 = "http://0.0.0.0:3000/games/#{params[:id]}/tvwall_#{@stage}?join_visitors_number=#{visitors_splits[0..@visitors.length-1].join(',')}&second=#{@second}&counting=#{@counting}&tv_n=tv_1"
+    #   if Setting.messaging['is_tv_1_open'] != true
+    #     `#{command_name} '#{url_1}'`
+    #   end
+    # end
+
+    url_1 = "http://0.0.0.0:3000/games/#{params[:id]}/tvwall_#{@stage}?join_visitors_number=#{visitors_splits[0..@visitors.length-1].join(',')}&second=#{@second}&counting=#{@counting}&tv_n=tv_1"
+    if Setting.messaging['is_tv_1_open'] != true
+      `#{command_name} '#{url_1}'`
+    end
+
+    #Setting.messaging['record_url'] = "http://0.0.0.0:3000/games/#{params[:id]}/record?join_visitors_number=#{params[:join_visitors_number]}"
+    #@user_unregs = [1,4]
+    # if Setting.messaging['is_record_open'] != true
+    #   `xdg-open #{Setting.messaging['record_url']} || open #{Setting.messaging['record_url']}`
+    # end
+  end
 
   def tvwall_A1
     @game = Game.find(params[:id])
@@ -173,21 +280,15 @@ class GamesController < ApplicationController
     @second = params[:second]
   end
 
-  def server_idioms
+  def tvwall_multi
+
     @game = Game.find(params[:id])
     @visitors = @game.visitors.where(number: params[:join_visitors_number].split(","))
     @range = 1..@visitors.size
 
-    # for idioms stage, rule is 60 seconds
     @second = params[:second]
-    Setting.messaging['second'] = params[:second]
-    @stage = params[:stage]
-    Setting.messaging['game'] = params[:id]
-    Setting.messaging['stage'] = params[:stage]
-    # Setting.messaging['record_url'] = "http://0.0.0.0:3000/games/#{params[:id]}/record_idioms?join_visitors_number=#{params[:join_visitors_number]}"
-    # if Setting.messaging['is_record_open'] != true
-    #   `xdg-open #{Setting.messaging['record_url']} || open #{Setting.messaging['record_url']}`
-    # end
+    @counting = params[:counting]
+    @tv_n = params[:tv_n]
   end
 
   def record
