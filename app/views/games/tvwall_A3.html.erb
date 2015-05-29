@@ -34,15 +34,15 @@
     @timebar_height = "18px"
     @video_position = "52px"
   when 6..10
-    @canvas_scale = 0.151
+    @canvas_scale = 0.131
     @canvas_border = 8
     @space_top = "100"
     @bar_spacing = "5%"
-    @split_width_up = "3%"
-    @split_width_down = "3%"
+    @split_width_up = "2%"
+    @split_width_down = "2%"
     @space_left = "10%"
     @space_right = "9%"
-    @font_formula = "w / 3 * 16.5 / 15"
+    @font_formula = "w / 3 * 15.5 / 15"
     @bar_formula = "(w + 1) / 2"
     @timebar_height = "16px"
     case @visitors.length
@@ -51,7 +51,7 @@
        @split_width_down = "12%" 
        @space_left = "13%"
        @space_right = "12%"
-       @video_position = "32px"
+       @video_position = "-10px"
     when 7
       @split_width_up = "7.5%" 
       @split_width_down = "12%" 
@@ -197,7 +197,7 @@ body,.container{
                   <div id="user_photo_<%= visitor.number %>" class="photo">
                     <%= render_gamer_photo(visitor,"medium",'100%','100%','') %>
                   </div>
-                  <div class="nameBox br_line03">
+                  <div class="nameBox br_line01">
                     <% if(visitor.title) %>
                     <p class="name"><%= visitor.title %></p>
                     <% else %>
@@ -256,7 +256,7 @@ body,.container{
                   <div id="user_photo_<%= visitor.number %>" class="photo">
                     <%= render_gamer_photo(visitor,"medium",'100%','100%','') %>
                   </div>
-                  <div class="nameBox br_line03">
+                  <div class="nameBox br_line01">
                     <% if(visitor.title) %>
                     <p class="name"><%= visitor.title %></p>
                     <% else %>
