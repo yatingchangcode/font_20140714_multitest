@@ -14,17 +14,17 @@ progress{
   vertical-align: middle;
   margin: 0 8px;*/
 }
-progress::-webkit-progress-bar {  
-    /* style rules */  
+progress::-webkit-progress-bar {
+    /* style rules */
     /*background: #f3f3f3;
     box-shadow: 0px 0px 8px #a0a0a0 inset;
     border-radius: 10px;*/
-}  
-progress::-webkit-progress-value {  
-    /* style rules */  
+}
+progress::-webkit-progress-value {
+    /* style rules */
     /*background: #6666ee;
     border-radius: 10px;*/
-} 
+}
 
 .visitor  {
   width: 22%;
@@ -54,7 +54,7 @@ progress::-webkit-progress-value {
             <div class="row-fluid" style="margin:auto; width:72%">
                 <button id="correct_button_<%= x.number %>" style="font-size:12px;" value="<%= x.number %>" type="button" class="correct_button btn btn-default navbar-btn">答對</button>
                 <button id="continue_<%= x.number %>" style="font-size:12px;" value="<%= x.number %>" type="button" class="btn btn-default navbar-btn">繼續寫</button>
-                <%if @stage == "B2" %>    
+                <%if @stage == "B2" %>
                 <button id="start_button_<%= x.number %>" style="font-size:12px;" value="<%= x.number %>" type="button" class="btn btn-default navbar-btn">開始</button>
                 <button id="stop_button_<%= x.number %>" style="font-size:12px;" value="<%= x.number %>" type="button" class="btn btn-default navbar-btn">停止</button>
                 <% end -%>
@@ -84,7 +84,7 @@ progress::-webkit-progress-value {
             <div class="row-fluid" style="margin:auto; width:72%">
               <button id="out_button_<%= x.number %>" style="font-size:12px;" value="<%= x.number %>" type="button" class="btn btn-default navbar-btn">淘汰</button>
 
-              
+
               <button id="remove_O_button_<%= x.number %>" style="font-size:12px;" value="<%= x.number %>" type="button" class="correct_button btn btn-default navbar-btn">清除圈圈</button>
               <% if !(['A1','B1'].include? @stage) || @counting == '1' %>
               <button id="minus_one_button_<%= x.number %>" style="font-size:12px;" value="<%= x.number %>" type="button" class="correct_button btn btn-default navbar-btn">扣一分</button>
@@ -104,24 +104,24 @@ progress::-webkit-progress-value {
             <button id="yes_button" style="font-size:15px;">答對</button>
             <button id="out_button" style="font-size:15px;">淘汰</button>
             -->
-           
-            
+
+
             <% if @stage == 'A1' %>
             <button id="show_correct_button" style="font-size:15px;">顯示正確使用者</button>
             <% end -%>
             <button id="start_button" style="font-size:15px;">全部開始</button>
 
             <button id="stop_all_button" style="font-size:15px;">全部停止</button>
-            
+
             <!-- <button id="stop_button" style="font-size:15px;">停止已選</button> -->
-          
+
             <button id="clear_button" style="font-size:15px;">全部清除</button>
             <button id="next_question_button" style="font-size:15px;">下一題</button>
             <!-- <button id="clear_correct_button" style="font-size:15px;">清空答題記錄</button> -->
           </div>
           <% if @stage == 'A1' %>
           <div class="col-md-4">
-            <div class="progress"> 
+            <div class="progress">
               <div id="progress_bar" class="progress-bar" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%;">
               <%= @second %>s
               </div>
@@ -136,15 +136,17 @@ progress::-webkit-progress-value {
       // cache stage name for server1-tvwall.js
       var stageName = '<%= @stage %>';
       var hasCounter = stageName == 'A1';
-
       </script>
+
+      <script src="http://127.0.0.1:5001/socket.io/socket.io.js"></script>
       <%= javascript_include_tag 'server' %>
+
       <%= javascript_include_tag 'server1-tvwall' %>
       <script>
 
       var no_correct = null;
       var correct_users = null;
-      
+
       var receiveChangeConnectionStatusHandler = function(o){
         for(var x in o) {
           if (o[x] == true){
@@ -210,7 +212,7 @@ progress::-webkit-progress-value {
       function clearAllSetStyle() {
           $('[id^=yes_img_]').hide();
           //$('[id^=answer_correct_]').text("?").css("color","");
-          
+
           <% if @stage == 'A1' %>
             $('#progress_bar').css("width", "100%").attr("aria-valuenow","100%")
                             .text(window.timeRemaining+"s");
@@ -244,7 +246,7 @@ progress::-webkit-progress-value {
           $('#progress_bar').css("width", "100%").attr("aria-valuenow","100%")
                             .text(window.timeRemaining+"s");
           console.log(window.timeRemaining);
-          $('#second').text(window.timeRemaining);  
+          $('#second').text(window.timeRemaining);
       }
       <% end %>
 
@@ -273,10 +275,10 @@ progress::-webkit-progress-value {
               receiveSubmitHandler({user_id:e});
             });
           }
-        }, 100); 
+        }, 100);
       }
       <% end %>
-    
+
       <% if @stage == 'A1' %>
       window.timeRemaining = parseInt(<%= @second %>);
       window.alarm = null;
@@ -297,7 +299,7 @@ progress::-webkit-progress-value {
         <% @visitors.each do |visitor| %>
         CM.reg('origin_<%= visitor.number %>');
         <% end %>
-      
+
         window.chatApp = new ChatApp(500,500,'0');
         window.chatApp.bindEvents();
         window.chatApp.reset({stage:'<%= params[:stage] %>'});
@@ -343,7 +345,7 @@ progress::-webkit-progress-value {
           startCounter();
           <% end %>
         });
-  
+
         $('[id^=start_button_]').click(function(){
             window.chatApp.action(this.value,'start');
             <% if @stage == 'A1' %>
@@ -371,8 +373,8 @@ progress::-webkit-progress-value {
             if (correct_users.indexOf(this.value) != -1) return;
 
             correct_users.push(this.value);
-          <% end -%> 
-          
+          <% end -%>
+
             var current_correct_count = 0;
           <% if !(['A1','B1'].include? @stage) || @counting == '1' %>
             if (!no_correct) no_correct = {};
@@ -383,7 +385,7 @@ progress::-webkit-progress-value {
             }
             current_correct_count = no_correct[this.value];
           <% end -%>
-          
+
             window.chatApp.setCorrectCount(this.value, current_correct_count);
             window.chatApp.action(this.value,'stop');
          });
@@ -422,10 +424,10 @@ progress::-webkit-progress-value {
         <% if @stage == 'A1' %>
         $('#secondUpdate').click(function(){
           if(!window.alarm){
-            window.timeRemaining = parseInt($('#secondInput').val()); 
+            window.timeRemaining = parseInt($('#secondInput').val());
             window.chatApp.reset({second: window.timeRemaining});
           }
-        });        
+        });
         <% end %>
 
         $('#stop_all_button').click(function(){

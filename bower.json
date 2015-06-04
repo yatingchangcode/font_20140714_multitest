@@ -16,6 +16,7 @@
   "dependencies": {
     "blueimp-canvas-to-blob": "~2.0.5",
     "FileSaver": "",
-    "c3": ""
+    "c3": "",
+    "lodash": "*"
   }
 }

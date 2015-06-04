@@ -13,10 +13,11 @@
       <canvas id="multiple" class="orgincanvas hidden"></canvas>
 
       <% content_for :javascripts do %>
+      <script src="http://127.0.0.1:5001/socket.io/socket.io.js"></script>
       <%= javascript_include_tag 'client' %>
       <script>
       var seconds;
-      
+
       $(document).ready(function() {
         CM.prop({
           width: 500,
@@ -29,6 +30,7 @@
 
         CM.reg('origin_<%= @user_id %>');
         ocan = document.getElementById('origin_<%= @user_id %>');
+
         window.chatApp = new ChatApp(ocan.offsetLeft,ocan.offsetTop,'<%= @user_id %>');
         window.chatApp.triggerEvents();
         window.chatApp.bindEvents();
@@ -46,14 +48,14 @@
             user_id: data.user_id,
             action: "device_start",
             stamp: (new Date()).getTime()
-          }); 
+          });
         }
         else if (name == "stop"){
           window.chatApp.dispatcher.trigger('action',{
             user_id: data.user_id,
             action: "device_stop",
             stamp: (new Date()).getTime()
-          }); 
+          });
         }
         alert(name);
       };
