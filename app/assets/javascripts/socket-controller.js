@@ -102,7 +102,7 @@ var socketTriggerEvents = [
       convertStr += str[0].toUpperCase() + str.slice(1,str.length);
     }
 
-    var methodName = "trigger" + convertStr;
+    var methodName = "emit" + convertStr;
     var evalString = "Controller." + methodName + " = function(d,callback){";
     evalString += "  io.emit('"+originName+"',d,callback);";
     evalString += "};";
@@ -115,6 +115,9 @@ var socketTriggerEvents = [
 
 })(window);
 
+
+// ConsoleController ??
+
 // example 
 /*
 
@@ -122,7 +125,7 @@ SocketController.onSendText(function(){
   // do....
 });
 
-SocketController.triggerClear({
+SocketController.emitClear({
   user_id: 1
 });
 
