@@ -1,0 +1,9 @@
+1. install ChromeWebdriver
+https://sites.google.com/a/chromium.org/chromedriver/getting-started
+
+1. Install selenium
+pip install selenium
+
+2. chmod +x run10.sh
+3. ./run10.sh number_of_instances 
+(for example, if you want to start four instances, type ./run10.sh 4)
