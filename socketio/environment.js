@@ -4,7 +4,7 @@ module.exports = {
 
     loadSocketIo: function loadSocketIo() {
 
-        var client_id = {};
+        GLOBAL.client_id = {};
 
 
 
@@ -18,11 +18,7 @@ module.exports = {
         var io = require('socket.io').listen(Number(port));
 
         io.on('connection', function(socket) {
-            var emitUserId = function(user_id,message_name,message){
-                for (var x in client_id[user_id]){
-                    io.to(client_id[user_id][x]).emit(message_name,message)
-                }
-            }
+
             console.log(socket.request.session);
             var currentSocketIoUserId = socket.request.session['user_id'];
 
@@ -32,7 +28,7 @@ module.exports = {
             client_id[currentSocketIoUserId].push(socket.id);
 
 
-            socket = require('./controller/write_controller')(socket,emitUserId);
+            socket = require('./controller/write_controller')(socket,io);
 
             socket.on('disconnect', function(message) {
                 console.log("which user id "+currentSocketIoUserId);
