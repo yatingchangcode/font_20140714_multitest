@@ -71,7 +71,7 @@ def clearCanvas(driver):
 def drawRobot(driver):
     while True:
         t = 5 * random()
-        drawOnCanvas(driver, 0.02)
+        drawOnCanvas(driver, 0.05)
         time.sleep(t)
         clearCanvas(driver)
 
@@ -82,7 +82,7 @@ if __name__ == "__main__":
     else:
         robot_no = argv[1]
 
-    driver = webdriver.Chrome()
+    driver = webdriver.Firefox()
     driver.implicitly_wait(30)
 
     driver.get("http://0.0.0.0:3000/welcome/write?user_id=" + str(robot_no))
