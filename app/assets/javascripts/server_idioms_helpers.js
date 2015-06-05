@@ -103,7 +103,7 @@
       //this.currentPoints.push([ { x: x, y: y } ]);
       this.currentPoints.push([ [x], [y] ]);
     },
-    addLintPoint:function(row, col, x, y){
+    addLinePoint:function(row, col, x, y){
       var self = this;
       self.checkBlock(row, col);
       //if(!self.currentPoints.length) self.currentPoints.push([ { x: x, y: y } ]);
@@ -182,7 +182,7 @@
 
   var receiveMoveHandler = function(o){
     CM('origin_'+o.block.row+'_'+o.block.column).line({ x: o.x, y: o.y });
-    trackCache.addLintPoint(o.block.row, o.block.column, o.x, o.y);
+    trackCache.addLinePoint(o.block.row, o.block.column, o.x, o.y);
   };
 
   var receiveClearHandler = function(o){
