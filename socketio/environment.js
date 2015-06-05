@@ -6,8 +6,6 @@ module.exports = {
 
         GLOBAL.client_id = {};
 
-
-
         var port = process.env.PORT || 5001;
         if (process.env.NODE_ENV != 'production') {
             port = 5001; // run on a different port when in non-production mode.

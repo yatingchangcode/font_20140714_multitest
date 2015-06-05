@@ -1,9 +1,8 @@
 
-module.exports = function(io){
-
-  this.emitUserId = function(user_id,message_name,message){
-    for (var x in client_id[user_id]){
-      io.to(client_id[user_id][x]).emit(message_name,message)
-    }
-  }
+module.exports = {
+      emitUserId: function emitUserId(user_id,callback){
+        for (var x in client_id[user_id]){
+          callback(client_id[user_id][x]);
+        }
+      }
 }

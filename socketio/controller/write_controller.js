@@ -1,18 +1,25 @@
+var helper = require('./helper');
+
 module.exports = function(socket,io){
-    var helper = new require('./helper')(io);
 
     var game_id,stage_name,visitors;
 
     socket.on('down_location',function(msg){
-        helper.emitUserId('0','down_location',msg);
+        helper.emitUserId('0',function(x){
+            io.to(x).emit('down_location',msg)
+        });
     });
 
     socket.on('move_location',function(msg){
-        helper.emitUserId('0','move_location',msg);
+        helper.emitUserId('0',function(x){
+            io.to(x).emit('move_location',msg)
+        });
     });
 
     socket.on('up_location',function(msg){
-        helper.emitUserId('0','up_location',msg);
+        helper.emitUserId('0',function(x){
+            io.to(x).emit('up_location',msg)
+        });
     });
 
     //
@@ -26,11 +33,15 @@ module.exports = function(socket,io){
     })
 
     socket.on('submit',function(msg){
-        helper.emitUserId('0','submit',msg);
+        helper.emitUserId('0',function(x){
+            io.to(x).emit('submit',msg)
+        });
     });
 
     socket.on('cancelSubmit',function(msg){
-        helper.emitUserId('0','cancelSubmit',msg);
+        helper.emitUserId('0',function(x){
+            io.to(x).emit('cancelSubmit',msg)
+        });
     });
 
     //
@@ -42,16 +53,25 @@ module.exports = function(socket,io){
 
     //
     socket.on('action',function(msg){
-        helper.emitUserId(msg.user_id,'action', msg);
-        helper.emitUserId('0','action',msg);
+
+        helper.emitUserId(msg.user_id,function(x){
+            io.to(x).emit('action',msg)
+        });
+        helper.emitUserId('0',function(x){
+            io.to(x).emit('action',msg)
+        });
     });
 
     socket.on('right',function(msg){
-        helper.emitUserId('0','right',msg.user_id);
+        helper.emitUserId('0',function(x){
+            io.to(x).emit('right',msg.user_id)
+        });
     });
 
     socket.on('removeO',function(msg){
-        helper.emitUserId('0','removeO',msg.user_id);
+        helper.emitUserId('0',function(x){
+            io.to(x).emit('removeO',msg.user_id)
+        });
     });
 
     socket.on('reset',function(msg){
@@ -60,20 +80,30 @@ module.exports = function(socket,io){
 
     //
     socket.on('continue_write',function(msg){
-        helper.emitUserId(msg.user_id,'continue_write', msg);
-        helper.emitUserId('0','continue_write',msg);
+        helper.emitUserId(msg.user_id,function(x){
+            io.to(x).emit('continue_write',msg)
+        });
+        helper.emitUserId('0',function(x){
+            io.to(x).emit('continue_write',msg)
+        });
     });
 
     socket.on('setCorrectCount',function(msg){
-        helper.emitUserId('0','setCorrectCount',msg);
+        helper.emitUserId('0',function(x){
+            io.to(x).emit('setCorrectCount',msg)
+        });
     });
 
     socket.on('showCorrectUsers',function(msg){
-        helper.emitUserId('0','showCorrectUsers',msg);
+        helper.emitUserId('0',function(x){
+            io.to(x).emit('showCorrectUsers',msg)
+        });
     });
 
     socket.on('userOut',function(msg){
-        helper.emitUserId('0','userOut',msg);
+        helper.emitUserId('0',function(x){
+            io.to(x).emit('userOut',msg)
+        });
     });
 
     return socket;
