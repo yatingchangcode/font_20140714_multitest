@@ -24,9 +24,9 @@ var socketListenEvents = [
   "send_text",
   "end_round",
   "rewrite",
-  "continue_write",
+  "continue_write"
   // "clearAll"
-  "clear_all"
+  // "clear_all"
   
 ];
 
@@ -85,6 +85,7 @@ var socketTriggerEvents = [
     var methodName = "on" + convertStr;
     var evalString = "Controller."+ methodName + " = function(callback){";
     evalString += "  if(typeof callback == 'function'){";
+    evalString += "    Controller.receive" + convertStr + "Handler = callback;";
     evalString += "    io.on('"+originName+"',callback);";
     evalString += "  }";
     evalString += "};";
@@ -102,7 +103,7 @@ var socketTriggerEvents = [
       convertStr += str[0].toUpperCase() + str.slice(1,str.length);
     }
 
-    var methodName = "emit" + convertStr;
+    var methodName = "trigger" + convertStr;
     var evalString = "Controller." + methodName + " = function(d,callback){";
     evalString += "  io.emit('"+originName+"',d,callback);";
     evalString += "};";
