@@ -99,7 +99,7 @@
               </div>
             </div>
             <div class="row-fluid" style="margin:auto">
-              <button id="out_button_<%= x.number %>" style="font-size:12px;" value="<%= x.number %>" type="button" class="btn btn-default navbar-btn">淘汰</button>
+              <!-- <button id="out_button_<%= x.number %>" style="font-size:12px;" value="<%= x.number %>" type="button" class="btn btn-default navbar-btn">淘汰</button> -->
 
               <% if @stage != 'A1' %>
               <button name="remove_all_O_button_<%= x.number %>" value="<%= x.number %>" style="font-size:12px;" value="<%= x.number %>" type="button" class="correct_button btn btn-default navbar-btn">清除圈圈</button>
@@ -259,14 +259,14 @@
           });
       }
 
-      function outSetStyle(user_id) {
+      // function outSetStyle(user_id) {
 
-          $("#correct_button_"+user_id).attr("disabled", true);
-          $("#out_button_"+user_id).attr("disabled", true);
-          $("#start_button_"+user_id).attr("disabled", true);
-          $("#stop_button_"+user_id).attr("disabled", true);
-          $('#visitor_'+user_id).attr('style','opacity:0.2;border:3px solid #f8f8f8');
-      }
+      //     $("#correct_button_"+user_id).attr("disabled", true);
+      //     $("#out_button_"+user_id).attr("disabled", true);
+      //     $("#start_button_"+user_id).attr("disabled", true);
+      //     $("#stop_button_"+user_id).attr("disabled", true);
+      //     $('#visitor_'+user_id).attr('style','opacity:0.2;border:3px solid #f8f8f8');
+      // }
 
       function clearSetStyle(o){
         CM('origin_'+o.user_id + '_' + o.block.row + '_' + o.block.column).clear();
@@ -364,9 +364,9 @@
           correct_users = null;
         });
 
-        $("[id^=out_button_]").click(function(){
-            window.chatApp.userOut(this.value);
-        });
+        // $("[id^=out_button_]").click(function(){
+        //     window.chatApp.userOut(this.value);
+        // });
 
         $('#start_button').click(function(){
           gamers.all().forEach(function(e){
