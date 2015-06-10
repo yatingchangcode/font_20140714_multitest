@@ -110,26 +110,15 @@ var socketTriggerEvents = [
     eval(evalString);
     // methodNameList.push(methodName);
   }
-  
 
   scope.SocketController = Controller;
 
 })(window);
 
-
-// ConsoleController ??
-
-// example 
-/*
-
-SocketController.onSendText(function(){
-  // do....
-});
-
-SocketController.emitClear({
-  user_id: 1
-});
-
-*/
-
+// ======= Settings Information ======
+window.Settings = {};
+Settings.stageName = window.stageName || "A1";  // valid names: A1 A2 A3 B1 B2 B2_v1 B3
+Settings.clientType = window.pageType || "console"; // valid type: console/user/tv
+Settings.hasCorrectCounting = true;
+Settings.hasTimeCounter = true;
 
