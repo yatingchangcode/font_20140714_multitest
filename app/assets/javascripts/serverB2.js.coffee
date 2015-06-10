@@ -4,36 +4,36 @@
 class @ChatApp
 
   constructor: (@left ,@top, @user_id,@currentChannel = undefined) ->
-    @stage_name = "B2"
-    @dispatcher = new WebSocketRails(window.location.host + "/websocket?client_id=" + @user_id)
+    @stage_name = "b2"
+    @dispatcher = io.connect("http://127.0.0.1:5001?_rtUserId=" + @user_id)
     @originOffset = {left: @left, top: @top}
 
   triggerEvents: ->
     #$('#clearBtn').click @clearMypad
 
   bindEvents: ->
-    @dispatcher.bind 'down_location', @receiveDown
-    @dispatcher.bind 'move_location', @receiveMove
-    @dispatcher.bind 'up_location', @receiveUp
-    @dispatcher.bind 'submit', @receiveSubmit
-    @dispatcher.bind 'move_block', @receiveMoveBlock
-    @dispatcher.bind 'send_text', @receiveSendText
-    @dispatcher.bind 'end_round', @receiveEndRound
-    @dispatcher.bind 'rewrite', @receiveRewrite
-    @dispatcher.bind 'clear', @receiveClear
-    @dispatcher.bind 'clearAll', @receiveClearAll
-    @dispatcher.bind 'action', @receiveAction
-    @dispatcher.bind 'is_connected', @receiveIsConnected
-    @dispatcher.bind 'right',       @receiveO
-    @dispatcher.bind 'remove_o', @receiveRemoveO
-    @dispatcher.bind 'showCorrectUsers', @receiveCorrectUsers
-    @dispatcher.bind 'setCorrectCount', @receiveCorrectCount
+    @dispatcher.on 'down_location', @receiveDown
+    @dispatcher.on 'move_location', @receiveMove
+    @dispatcher.on 'up_location', @receiveUp
+    @dispatcher.on 'submit', @receiveSubmit
+    @dispatcher.on 'move_block', @receiveMoveBlock
+    @dispatcher.on 'send_text', @receiveSendText
+    @dispatcher.on 'end_round', @receiveEndRound
+    @dispatcher.on 'rewrite', @receiveRewrite
+    @dispatcher.on 'clear', @receiveClear
+    @dispatcher.on 'clearAll', @receiveClearAll
+    @dispatcher.on 'action', @receiveAction
+    @dispatcher.on 'is_connected', @receiveIsConnected
+    @dispatcher.on 'right',       @receiveO
+    @dispatcher.on 'remove_o', @receiveRemoveO
+    @dispatcher.on 'showCorrectUsers', @receiveCorrectUsers
+    @dispatcher.on 'setCorrectCount', @receiveCorrectCount
 
   continue_write: (uid) ->
-    @dispatcher.trigger 'continue_write', user_id: uid
+    @dispatcher.emit 'continue_write', user_id: uid
 
-  setGameInfo: (game_id, stage_name, v) => 
-    @dispatcher.trigger @stage_name + '.set_gameinfo_to_socket', game:game_id, stage: stage_name, visitors:v
+  setGameInfo: (game_id, stage_name, v) =>
+    @dispatcher.emit @stage_name + '.set_gameinfo_to_socket', game:game_id, stage: stage_name, visitors:v
 
   receiveDown: (message) =>
     if(receiveDownHandler && tvwall.receiveDownHandler)
@@ -50,7 +50,7 @@ class @ChatApp
   receiveUp: (message) =>
     return
 
-  receiveO: (message) => 
+  receiveO: (message) =>
     if(receiveOHandler)
       receiveOHandler message
     if(tvwall.window && tvwall.receiveOHandler)
@@ -58,7 +58,7 @@ class @ChatApp
     return
 
   removeO: (uid, block) =>
-    @dispatcher.trigger @stage_name + '.remove_o' , user_id: uid, block: block
+    @dispatcher.emit @stage_name + '.remove_o' , user_id: uid, block: block
 
   receiveRemoveO: (message) =>
     if(receiveRemoveOHandler)
@@ -80,7 +80,7 @@ class @ChatApp
     if(tvwall.window && tvwall.receiveCorrectUsersHandler)
       tvwall.receiveCorrectUsersHandler users
     return
-  
+
 
   receiveSubmit: (message) =>
     if(receiveSubmitHandler && tvwall.receiveSubmitHandler)
@@ -88,13 +88,13 @@ class @ChatApp
       tvwall.receiveSubmitHandler message
     return
 
-  receiveClear: (message) => 
+  receiveClear: (message) =>
     if(receiveClearHandler && tvwall.receiveClearHandler)
       receiveClearHandler message
       tvwall.receiveClearHandler message
     return
 
-  receiveClearAll: (message) => 
+  receiveClearAll: (message) =>
     if(receiveClearAllHandler && tvwall.receiveClearAllHandler)
       receiveClearAllHandler message
       tvwall.receiveClearAllHandler message
@@ -106,10 +106,10 @@ class @ChatApp
       tvwall.receiveMoveBlockHandler message
     return
 
-  receiveSendText: (message) => 
+  receiveSendText: (message) =>
     if(receiveSendTextHandler && tvwall.receiveSendTextHandler)
       receiveSendTextHandler message
-      tvwall.receiveSendTextHandler message 
+      tvwall.receiveSendTextHandler message
     return
 
   receiveEndRound: (message) =>
@@ -142,38 +142,38 @@ class @ChatApp
     return
 
   action: (uid,action) =>
-    @dispatcher.trigger @stage_name+'.action' , user_id: uid, action: action
+    @dispatcher.emit @stage_name+'.action' , user_id: uid, action: action
 
   right: (uid, block) =>
-    @dispatcher.trigger @stage_name+'.right' , user_id: uid, block: block
+    @dispatcher.emit @stage_name+'.right' , user_id: uid, block: block
 
   setCorrectCount: (uid, block, count) ->
-    @dispatcher.trigger @stage_name+'.setCorrectCount', user_id: uid, block: block, count: count
+    @dispatcher.emit @stage_name+'.setCorrectCount', user_id: uid, block: block, count: count
 
   showCorrectUsers: (users) ->
-    @dispatcher.trigger 'showCorrectUsers', users
+    @dispatcher.emit 'showCorrectUsers', users
 
   clear: (uid, block) ->
     #如果要清空個別使用者時,送出user_id
     #清空全部的時候會送出空的object: {}
-    @dispatcher.trigger @stage_name+'.clear', user_id: uid , block: block
+    @dispatcher.emit @stage_name+'.clear', user_id: uid , block: block
 
   clearAll: () ->
-    @dispatcher.trigger @stage_name+'.clearAll' 
-    
+    @dispatcher.emit @stage_name+'.clearAll'
+
   is_connected: (uid) ->
-    @dispatcher.trigger 'is_connected', user_id: @user_id, check_id: uid
+    @dispatcher.emit 'is_connected', user_id: @user_id, check_id: uid
 
   reset: (o) =>
     if(o)
-      @dispatcher.trigger @stage_name+'.reset', second:o.second, stage:o.stage
+      @dispatcher.emit @stage_name+'.reset', second:o.second, stage:o.stage
     else
-      @dispatcher.trigger @stage_name+'.reset', {}
+      @dispatcher.emit @stage_name+'.reset', {}
 
   sendText: (text,block) =>
-    @dispatcher.trigger @stage_name+'.send_text' ,  block: block, text: text
+    @dispatcher.emit @stage_name+'.send_text' ,  block: block, text: text
 
   rewrite: (ink, block) =>
-    @dispatcher.trigger @stage_name+'.rewrite' ,  block: block, ink: ink
+    @dispatcher.emit @stage_name+'.rewrite' ,  block: block, ink: ink
 
 

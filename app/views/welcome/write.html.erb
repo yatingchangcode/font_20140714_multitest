@@ -44,14 +44,14 @@
       var receiveActionHandler = function(data){
         var name = data.action;
         if (name == "start"){
-          window.chatApp.dispatcher.trigger('action',{
+          window.chatApp.dispatcher.emit('action',{
             user_id: data.user_id,
             action: "device_start",
             stamp: (new Date()).getTime()
           });
         }
         else if (name == "stop"){
-          window.chatApp.dispatcher.trigger('action',{
+          window.chatApp.dispatcher.emit('action',{
             user_id: data.user_id,
             action: "device_stop",
             stamp: (new Date()).getTime()
@@ -61,7 +61,7 @@
       };
 
       var receiveContinueWriteHandler = function(data){
-        window.chatApp.dispatcher.trigger('action',{
+        window.chatApp.dispatcher.emit('action',{
           user_id: data.user_id,
           action: "device_start",
           stamp: (new Date()).getTime()

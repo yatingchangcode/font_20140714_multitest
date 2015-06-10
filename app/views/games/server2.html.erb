@@ -1,10 +1,10 @@
 <% content_for :stylesheets do %>
 
-<% end %>      
+<% end %>
 
       <div class="jumbotron">
         <h2>一字千金 操作後台</h2>
-<!--         <h4>目前上線人數<span id="user_count">0</span>人</h4> -->  
+<!--         <h4>目前上線人數<span id="user_count">0</span>人</h4> -->
       </div>
       <div style="">
         <div class="row-fluid">
@@ -19,7 +19,7 @@
             </div>
               <!--
               <div class="col-md-1">
-               <input type="checkbox" name="gamer" value="<%= x.number %>"/> 
+               <input type="checkbox" name="gamer" value="<%= x.number %>"/>
               </div>
               -->
             <div class="row">
@@ -59,9 +59,10 @@
       </div>
 
       <% content_for :javascripts do %>
+      <script src="http://127.0.0.1:5001/socket.io/socket.io.js"></script>
       <%= javascript_include_tag 'server2-tvwall' %>
       <%= javascript_include_tag 'server' %>
-      
+
       <script>
 
       var receiveIsConnectedHandler = function(o){
@@ -108,13 +109,13 @@
         $('#yes_img_'+c).hide();
       }
 
-      //Gamer start to write 
+      //Gamer start to write
       function startSetStyle(c) {
         $('#visitor_'+c).css("border-color", "#4d4ddb");
         $('#visitor_'+c).css("background-color", "#ebf0fa");
       }
 
-      //Gamer stop to write 
+      //Gamer stop to write
       function stopSetStyle(c) {
         $('#visitor_'+c).css("border-color", "#f8f8f8");
       }
@@ -139,7 +140,7 @@
       function correctCountSetStyle(o){
         $("#no_correct_" + o.user_id).text(o.count+"題");
       }
-      
+
       var tvwall = window.open("tvwall_<%= params[:stage] %>?join_visitors_number=<%= params[:join_visitors_number] %>&second=<%= @second %>","tvwallWindow","width=800, height=800");
       //window.open("record?join_visitors_number=<%= params[:join_visitors_number] %>&second=<%= @second %>","recordWindow","width=800, height=800");
 
@@ -194,7 +195,7 @@
         });
 
         $('[id^=correct_button_]').click(function(){
-          
+
           window.chatApp.right(this.value);
           window.chatApp.action(this.value,'stop');
           if (!no_correct) no_correct = {};
@@ -229,7 +230,7 @@
           var newgamer = gamers.next();
           // call old gamer to stop
           // call new user to clear screen
-          
+
           window.chatApp.reset({second: seconds});
           window.chatApp.removeO(newgamer);
           window.chatApp.clear(newgamer);
