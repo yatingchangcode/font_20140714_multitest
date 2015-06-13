@@ -117,8 +117,23 @@ var socketTriggerEvents = [
 
 // ======= Settings Information ======
 window.Settings = {};
-Settings.stageName = window.stageName || "A1";  // valid names: A1 A2 A3 B1 B2 B2_v1 B3
-Settings.clientType = window.pageType || "console"; // valid type: console/user/tv
-Settings.hasCorrectCounting = true;
-Settings.hasTimeCounter = true;
-
+Object.defineProperty(Settings, 'stageName', {
+  value: window.stageName || "A1",  // valid names: A1 A2 A3 B1 B2 B2_v1 B3
+  writable: false
+});
+// Object.defineProperty(Settings, 'clientType', {
+//   value: window.pageType || "console", // valid type: console/user/tv
+//   writable: false
+// });
+Object.defineProperty(Settings, 'hasCorrectCounting', {
+  value: !!window.counting || (window.stageName == "A3") || (window.stageName == "B2"), 
+  writable: false
+});
+Object.defineProperty(Settings, 'hasTimeCounter', {
+  value: Settings.stageName == 'A1',
+  writable: false
+});
+Object.defineProperty(Settings, 'genKey', {
+  value: Settings.stageName + "+" + (window.pageType || "console"),
+  writable: false
+});

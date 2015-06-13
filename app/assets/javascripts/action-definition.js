@@ -2,186 +2,240 @@
 if (typeof Settings == 'undefined'){
   console.error("socketevent-generator.js should be include first.");
 }
+if (typeof Commons == 'undefined'){
+  console.error("commons.js should be include first."); 
+}
 
 window.Action = {};
 
 // ======= Actions Information =======
-Action.onDownLocation = function(o){
+Action.onDownLocation = (function(key){
   // *** tv: all stages are no actions.
   // *** server: A1 A2 A3 B1 B2 no action
   // server: B3
-  trackCache.addPoint(o.block.row, o.block.column, o.x, o.y);
-};
-Action.onMoveLocation = function(o){
+  return {
+    "B3+console": function(o){
+      Commons.trackCache.addPoint(o.block.row, o.block.column, o.x, o.y);
+    }
+  }[key] || Commons.emptyFn;
+})(Settings.genKey);
 
-  console.log("first:"+ o.stamp);
-  console.log("second:"+ o.server_receive_time);
-  console.log("third:"+ new Date().getTime());
-  console.log("client to server"+ (o.server_receive_time - o.stamp));
-  console.log("server to client"+ (new Date().getTime() - o.server_receive_time));
-
+Action.onMoveLocation = (function(key){
   // *** tv: all stages are no actions.
   // *** server: A1 A2 A3 B1 B2 no action
   // server: B3
-  trackCache.addLinePoint(o.block.row, o.block.column, o.x, o.y);
-};
-Action.onStart = function(o){
+  return {
+    "B3+console": function(o){
+      Commons.trackCache.addLinePoint(o.block.row, o.block.column, o.x, o.y);
+    }
+  }[key] || Commons.emptyFn;
+})(Settings.genKey);
+
+Action.onStart = (function(key){
   // *** server: A1 A3 B1 B2 B2_v1 no action
-  // server: A2 B3
-  gamers.setActive(o.user_id);
-
   // *** tv: A1 B2 B2_v1 no action
-  // tv: A2
-  gamers.setActive(o.user_id);
+  key = Commons.getCommonGenKey(key, ["A2+console","B3+console","A2+tv","B3+tv"]);
+  key = Commons.getCommonGenKey(key, ["A3+tv","B1+tv"]);
+  return {
+    // server: A2 B3
+    // tv: A2 B3
+    "A2+console":function(o){
+      Commons.gamers.setActive(o.user_id);
+    },
+    // tv: A3 B1
+    "A3+tv":function(o){
+      SocketController.receiveCancelSubmitHandler(o);
+    }
+  }[key] || Commons.emptyFn;
+})(Settings.genKey);
 
-  // tv: A3 B1
-  SocketController.receiveCancelSubmitHandler(o);
-
-  // tv: B3
-  gamers.setActive(value);
-
-};
-Action.onStop = function(o){
-  // server: A1 A3 B1 B2 B2_v1
-  // tv: A1 A3 B1 B2_v1
-  if (window.hasCounter && window.alarm){
-    clearInterval(window.alarm);
-    window.alarm = null;  
-  }
-
-  // server: A2
-  clearInterval(window.alarm[o.user_id]);
-  window.alarm[o.user_id] = null;
-
-  // server: B3
-  trackCache.saveToCache();
-  clearInterval(window.alarm);
-  window.alarm = null; 
-
+Action.onStop = (function(key){
   // *** tv: A2 B2 B3 no actions
-  
-};
-Action.onSubmit = function(o){
+  key = Commons.getCommonGenKey(key, [
+    "A1+console","A3+console","B1+console","B2_v1+console","B2+console",
+    "A1+tv","A3+tv","B1+tv","B2_v1+tv"
+  ]);
+  return {
+    // server: A1 A3 B1 B2 B2_v1
+    // tv: A1 A3 B1 B2_v1
+    "A1+console":function(o){
+      if (Settings.hasTimeCounter && Commons.alarm){
+        clearInterval(Commons.alarm);
+        Commons.alarm = null;  
+      }
+    },
+    "A2+console":function(o){
+      // server: A2
+      clearInterval(Commons.alarm[o.user_id]);
+      Commons.alarm[o.user_id] = null;
+    },
+    "B3+console":function(o){
+      // server: B3
+      Commons.trackCache.saveToCache();
+      clearInterval(Commons.alarm);
+      Commons.alarm = null; 
+    }
+  }[key] || Commons.emptyFn;
+})(Settings.genKey);
+
+Action.onSubmit = (function(key){
   // *** server: A1 B1 B3 no actions
-  // server: A2
-  SocketController.triggerAction({action:'stop',user_id:o.user_id});
+  return {
+    // server: A2
+    "A2+console":function(o){
+      SocketController.triggerAction({action:'stop',user_id:o.user_id});
+    },
+    // server: A3
+    "A3+console":function(o){
+      gamers.all().forEach(function(id){
+        SocketController.triggerAction({action:'stop',user_id:id});
+      });
+    },
+    // server: B2
+    "B2+console":function(o){
+      Commons.isNotSave = true;
+    }
+  }[key] || Commons.emptyFn;
+})(Settings.genKey);
 
-  // server: A3
-  gamers.all().forEach(function(id){
-    SocketController.triggerAction({action:'stop',user_id:id});
-  });
+// server & tv: all stages are no actions
+Action.onCancelSubmit = Commons.emptyFn;
 
-  // server: B2
-  isNotSave = true;
-
-};
-Action.onCancelSubmit = function(o){
-  // server & tv: all stages are no actions
-};
-Action.onClear = function(o){
+Action.onClear = (function(key){
   // *** server: A1 A2 A3 B1 B2_v1 no actions
-  // server: B2
-  if(window.fromServerCommand || o.user_id != '0'){
-    window.fromServerCommand = false;
-  }
+  return {
+    // server: B2
+    "B2+console":function(o){
+      if(Commons.fromServerCommand || o.user_id != '0'){
+        Commons.fromServerCommand = false;
+      }
+    },
+    // server: B3
+    "B3+console":function(o){
+      if(Commons.fromServerCommand || o.user_id != '0'){
+        Commons.trackCache.clear(o.block.row, o.block.column, Commons.fromServerCommand);
+        Commons.fromServerCommand = false;
+      }
+    }
+  }[key] || Commons.emptyFn;
+})(Settings.genKey);
 
-  // server: B3
-  if(window.fromServerCommand || o.user_id != '0'){
-    trackCache.clear(o.block.row, o.block.column, window.fromServerCommand);
-    window.fromServerCommand = false;
-  }
+Action.onClearAll = Commons.emptyFn;
 
-};
-Action.onClearAll = function(o){};
-Action.onRight = function(o){
-  // *** server: all stages are no action
+// *** server: all stages are no action
+// *** tv: all stages are no action
+Action.onRight = Commons.emptyFn;
+
+// *** server: all stages are no action
   // *** tv: all stages are no action
-};
-Action.onRemoveO = function(o){
+Action.onRemoveO = Commons.emptyFn;
+
+Action.onSetCorrectCount = (function(key){
   // *** server: all stages are no action
-  // *** tv: all stages are no action
-};
-Action.onSetCorrectCount = function(o){
-  // *** server: all stages are no action
-  // tv: A1 B1
-  if (Settings.hasCorrectCounting){
-    tempcount[o.user_id] = o.count;
-  }
+  key = Commons.getCommonGenKey(key, ["A1+tv","B1+tv"]);
+  key = Commons.getCommonGenKey(key, ["A3+tv","B2+tv"]);
+  return {
+    // tv: A1 B1
+    "A1+tv":function(o){
+      if (Settings.hasCorrectCounting){
+        Commons.tempcount[o.user_id] = o.count;
+      }
+    },
+    // tv: A3 B2
+    "A3+tv":function(o){
+      Commons.tempcount[o.user_id] = o.count;
+    }
+  }[key] || Commons.emptyFn;
+})(Settings.genKey);
 
-  // tv: A3 B2
-  tempcount[o.user_id] = o.count;
+// *** server: all stages are no action
+// *** tv: all stages are no action
+Action.onShowCorrectUsers = Commons.emptyFn;
 
-};
-
-Action.onShowCorrectUsers = function(o){
-  // *** server: all stages are no action
-  // *** tv: all stages are no action
-};
-
-Action.onUserOut = function(o){
+Action.onUserOut = (function(key){
   // *** server: B2 B3 no action
   // *** tv: B2 B3 no action
-  // server: A1 A2 A3 B1 B2_v1
-  // tv: A1 A2 A3 B1 B2_v1
-  console.log(o.user_id);
-  gamers.remove(o.user_id);
-};
+  key = Commons.getCommonGenKey(key, [
+    "A1+console", "A2+console", "A3+console", "B1+console", "B2_v1+console",
+    "A1+tv", "A2+tv", "A3+tv", "B1+tv", "B2_v1+tv"
+  ]);
+  return {
+    // server: A1 A2 A3 B1 B2_v1
+    // tv: A1 A2 A3 B1 B2_v1
+    "A1+console":function(o){
+      console.log(o.user_id);
+      Commons.gamers.remove(o.user_id);
+    }
+  }[key] || Commons.emptyFn;
+})(Settings.genKey)
 
-Action.onReset = function(o){
+Action.onReset = (function(key){
   // *** tv: all stages are no action
   // *** server: A1 A3 B1 B2_v1 no action
-  // server: A2
-  if (o.second != null) {
-    for (key in window.alarm){
-      clearInterval(window.alarm[key]);
-      window.alarm[key] = null;
+  return {
+    // server: A2
+    "A2+console":function(o){
+      if (o.second != null) {
+        for (key in Commons.alarm){
+          clearInterval(Commons.alarm[key]);
+          Commons.alarm[key] = null;
+        }
+      }    
     }
-  }
-};
+  }[key] || Commons.emptyFn;
+})(Settings.genKey);
 
-Action.onIsConnected = function(o){
-  // *** server: all stages are no action
-  // *** tv: all stages are no action
-};
+// *** server: all stages are no action
+// *** tv: all stages are no action
+Action.onIsConnected = Commons.emptyFn;
 
-Action.onClientConnected = function(o){
-  // *** server: all stages are no action
-  // *** tv: all stages are no action
-};
+// *** server: all stages are no action
+// *** tv: all stages are no action
+Action.onClientConnected = Commons.emptyFn;
 
-Action.onMoveBlock = function(o){
-  // *** server: all stages are no action
-  // *** tv: all stages are no action
-};
+// *** server: all stages are no action
+// *** tv: all stages are no action
+Action.onMoveBlock = Commons.emptyFn;
 
-Action.onSendText = function(o){
+Action.onSendText = (function(key){
   // *** tv: all stages are no action
   // *** server: A1 A2 A3 B1 B2_v1 B2 no action
-  // server: B3
-  if(window.fromServerCommand){
-    trackCache.addText(o.block.row, o.block.column, o.text);
-    window.fromServerCommand = false;  
-  }
-};
+  return {
+    // server: B3
+    "B3+console":function(o){
+      if(Commons.fromServerCommand){
+        Commons.trackCache.addText(o.block.row, o.block.column, o.text);
+        Commons.fromServerCommand = false;  
+      }    
+    }
+  }[key] || Commons.emptyFn;
+})(Settings.genKey)
 
-Action.onEndRound = function(o){
+Action.onEndRound = (function(key){
   // *** tv: all stages are no action
   // *** server: A1 A2 A3 B1 B2_v1 B2 no action
-  // server: B3
-  SocketController.triggerAction({action:'stop',user_id:o.user_id});
-};
+  return {
+    // server: B3
+    "B3+console":function(o){
+      SocketController.triggerAction({action:'stop',user_id:o.user_id});
+    }
+  }[key] || Commons.emptyFn;
+})(Settings.genKey);
 
-Action.onRewrite = function(o){
-  // *** server: all stages are no action
-  // *** tv: all stages are no action
-};
+// *** server: all stages are no action
+// *** tv: all stages are no action
+Action.onRewrite = Commons.emptyFn;
 
-Action.onContinueWrite = function(o){
+Action.onContinueWrite = (function(key){
   // *** tv: A1 A2 A3 B1 B2_v1 B2 no action
   // *** server: A1 A2 A3 B1 B2_v1 B2 no action
-  // tv: B3
-  // server: B3
-  gamers.setActive(c);
-
-};
+  key = Commons.getCommonGenKey(key, ["B3+console", "B3+tv"]);
+  return {
+    // server: B3
+    // tv: B3
+    "B3+console": function(o){
+      Commons.gamers.setActive(c);
+    }
+  }[key] || Commons.emptyFn;
+})(Settings.genKey);
 
