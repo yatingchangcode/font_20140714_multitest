@@ -247,7 +247,7 @@
   scope.Commons.isEmpty = isEmpty;
   scope.Commons.generateBorderBase64 = generateBorderBase64;
   scope.Commons.getCommonGenKey = getCommonGenKey;
-
+  
   var genKey = Settings.genKey;
   
   if(genKey == "B3+console"){
@@ -255,14 +255,14 @@
   }
   
   if(Settings.hasTimeCounter || genKey == "B3+console"){
-    Commons.alarm = null;
+    scope.Commons.alarm = null;
   }else if(genKey == "A2+console"){
-    Commons.alarm = {};
+    scope.Commons.alarm = {};
   }
 
   if(~["A3+tv","B2+tv"].indexOf(genKey) || 
     (~["A1+tv","B1+tv"].indexOf(genKey) && Settings.hasCorrectCounting)){
-    Commons.tempcount = {};
+    scope.Commons.tempcount = {};
   }
 
   // switch(Settings.stageName){
