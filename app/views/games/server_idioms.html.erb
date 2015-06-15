@@ -27,7 +27,7 @@ body,.container{
   </tr>
   <tr>
     <td width="35%">&nbsp;</td>
-    <td>    <div class="progress"> 
+    <td>    <div class="progress">
       <div id="progress_bar" class="progress-bar" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%;">
         <%= @second %>s
       </div>
@@ -36,7 +36,7 @@ body,.container{
   </tr>
   <tr>
     <td>
-      
+
     </td>
     <td>
       <button id="next_button" style="font-size:20px;">下一位</button>
@@ -50,10 +50,10 @@ body,.container{
       <button id="redoButton">重做</button>
     </td>
   </tr>
-  
+
 </table>
 
-<div class="Content"> 
+<div class="Content">
   <table width="100%" border="0" cellspacing="0" cellpadding="0">
     <tr>
       <td colspan="5">&nbsp;</td>
@@ -170,13 +170,14 @@ body,.container{
 
 
 <% content_for :javascripts do %>
+<script src="http://127.0.0.1:5001/socket.io/socket.io.js"></script>
 <%= javascript_include_tag 'server_idioms' %>
 <%= javascript_include_tag 'server_idioms_helpers' %>
 <script>
 
 window.fromServerCommand = false;
 
-var updateTrackButtons = function(){  
+var updateTrackButtons = function(){
   $("#undoButton").attr("disabled", !(trackCache.hasUndo() && !window.alarm));
   $("#redoButton").attr("disabled", !(trackCache.hasRedo() && !window.alarm));
 };
@@ -217,7 +218,7 @@ function startCounter(thisvalue) {
       });
       if(tvwall && tvwall.clearTimebar) tvwall.clearTimebar();
     }
-  }, 100); 
+  }, 100);
 }
 
 function continueWriteSet(c){
@@ -299,7 +300,7 @@ $(document).ready(function() {
     //window.chatApp.cancelSubmit(this.value);
     //$('#visitor_'+this.value).css("background-color", "");
   });
-  
+
 
   $('#next_button').click(function(){
     // stop last user

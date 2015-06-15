@@ -28,6 +28,7 @@ module.exports = {
 
             socket = require('./controller/write_controller')(socket,io);
             socket = require('./controller/write_b2_controller')(socket,io);
+            socket = require('./controller/write_idiom_controller')(socket,io);
 
             socket.on('disconnect', function(message) {
                 console.log("which user id "+currentSocketIoUserId);
