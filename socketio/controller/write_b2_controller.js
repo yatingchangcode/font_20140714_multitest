@@ -60,5 +60,4 @@ module.exports = function (socket, io) {
     });
   }
 
-  return socket;
 };

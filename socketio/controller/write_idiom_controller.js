@@ -74,5 +74,4 @@ module.exports = function (socket, io) {
     socket.broadcast.emit(action, msg);
   }
 
-  return socket;
 };
