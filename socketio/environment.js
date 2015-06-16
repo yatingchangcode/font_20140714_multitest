@@ -30,15 +30,25 @@ module.exports = {
             require('./controller/write_b2_controller')(socket,io);
             require('./controller/write_idiom_controller')(socket,io);
 
+
+            io.to(client_id['0']).emit('client_connected', get_connection_status());
+
             socket.on('disconnect', function(message) {
                 console.log("which user id "+currentSocketIoUserId);
                 console.log("which socket id "+socket.id);
                 client_id[currentSocketIoUserId] = _.filter(client_id[currentSocketIoUserId],function(el){
                     return el !== socket.id;
                 })
+                io.to(client_id['0']).emit('client_connected', get_connection_status());
             });
 
         });
+
+        function get_connection_status(){
+            return _.mapValues(client_id,function(n){
+                return  (n.length > 0) ? true : false;
+            })
+        }
 
 return io;
 },

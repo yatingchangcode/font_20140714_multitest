@@ -13,7 +13,7 @@
       <canvas id="multiple" class="orgincanvas hidden"></canvas>
 
       <% content_for :javascripts do %>
-      <script src="http://127.0.0.1:5001/socket.io/socket.io.js"></script>
+      <script>document.write('<script src="//'+ location.hostname + ':5001/socket.io/socket.io.js">\x3C/script>')</script>
       <%= javascript_include_tag 'client' %>
       <script>
       var seconds;

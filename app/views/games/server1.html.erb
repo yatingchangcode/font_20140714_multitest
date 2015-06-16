@@ -138,7 +138,8 @@ progress::-webkit-progress-value {
       var hasCounter = stageName == 'A1';
       </script>
 
-      <script src="http://127.0.0.1:5001/socket.io/socket.io.js"></script>
+      <script>document.write('<script src="//'+ location.hostname + ':5001/socket.io/socket.io.js">\x3C/script>')</script>
+
       <%= javascript_include_tag 'server' %>
 
       <%= javascript_include_tag 'server1-tvwall' %>
