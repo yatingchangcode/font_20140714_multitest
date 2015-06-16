@@ -326,127 +326,136 @@ body,.container{
 <% content_for :javascripts do %>
 <script>
 // cache stage name for server1-tvwall.js
-var hasCounter = true;
+window.stageName = '<%= @stage %>';
+window.pageType = "tv";  // type: console, client, tv
+window.counting = <%= @counting == '1' %>;
+window.hasCounter = true;
+window.timeRemaining = <%= @second %>;
+
+window.borderWidth = <%= @canvas_border %>;
 
 </script>
-<%= javascript_include_tag 'server1-tvwall' %>
+
+<%= javascript_include_tag 'socketevent-generator' %>
+<%= javascript_include_tag 'commons' %>
+<%= javascript_include_tag 'action-definition' %>
+<%= javascript_include_tag 'view-definition' %>
+<%= javascript_include_tag 'socketevent-hooker' %>
 
 <script>
 
-var sketchSecondIns;
+// var sketchSecondIns;
 
-//使用者送出確認
-var receiveSubmitHandler = function(o){
-  $('#grid_'+o.user_id).addClass("bor_g");
-  $('#glow_'+o.user_id).show();
-};
+// //使用者送出確認
+// var receiveSubmitHandler = function(o){
+//   $('#grid_'+o.user_id).addClass("bor_g");
+//   $('#glow_'+o.user_id).show();
+// };
 
-//後台取消確認
-var receiveCancelSubmitHandler = function(o){
-  $('#grid_'+o.user_id).removeClass("bor_g");
-  $('#glow_'+o.user_id).hide();
-};
+// //後台取消確認
+// var receiveCancelSubmitHandler = function(o){
+//   $('#grid_'+o.user_id).removeClass("bor_g");
+//   $('#glow_'+o.user_id).hide();
+// };
 
-var receiveCorrectUsersHandler = function(users){
-  showCorrectUsers(users);
-}
+// var receiveCorrectUsersHandler = function(users){
+//   showCorrectUsers(users);
+// }
 
-//後台送出答對
-function showO(c){
-  $("#yes_img_" + c).show();
-}
+// //後台送出答對
+// function showO(c){
+//   $("#yes_img_" + c).show();
+// }
 
-function removeO(c){
-  $("#yes_img_" + c).hide();
-}
+// function removeO(c){
+//   $("#yes_img_" + c).hide();
+// }
 
-function startSetStyle(c) {
-  $('#user_photo_'+c).addClass("green");
-  sketchSecondIns.doStart();
-}
+// function startSetStyle(c) {
+//   $('#user_photo_'+c).addClass("green");
+//   sketchSecondIns.doStart();
+// }
 
-function stopSetStyle(c) {
-  $('#user_photo_'+c).removeClass("green");
-  sketchSecondIns.doStop();
-}
+// function stopSetStyle(c) {
+//   $('#user_photo_'+c).removeClass("green");
+//   sketchSecondIns.doStop();
+// }
 
-//Gamer out
-function outSetStyle(val) {
-  $('#out_'+val).show();
-  $('#black_'+val).show();
-}
+// //Gamer out
+// function outSetStyle(val) {
+//   $('#out_'+val).show();
+//   $('#black_'+val).show();
+// }
 
-function resetSetStyle(s) {
-  //$('#second_' + key).text(s + "秒");
-  sketchSecondIns.resetBar();
-  sketchSecondIns.setSecond(parseInt(s));
-}
+// function resetSetStyle(s) {
+//   //$('#second_' + key).text(s + "秒");
+//   sketchSecondIns.resetBar();
+//   sketchSecondIns.setSecond(parseInt(s));
+// }
 
-function clearSetStyle(o){
-  CM('origin_'+o.user_id).clear();
-}
+// function clearSetStyle(o){
+//   CM('origin_'+o.user_id).clear();
+// }
 
 // function correctCountSetStyle(o){
 //   $("#no_correct_" + o.user_id).text(o.count+"題");
 // }
 
-<% if @counting == '1' %>
-var tempcount = {};
-var updateCount = function(user){
-  var c = tempcount[user] || 0;
-  var jqEl = $("#no_correct_" + user);
-  jqEl.text(c);
-  if(c){
-    jqEl.css('opacity', 1).css('color', 'black');
-  }else{
-    jqEl.css('opacity', 0);
-  }
-};
-var showCorrectUsers = function(users) {
-  if(users.length){
-      users.sort(function(a,b) {
-        return parseInt(a) - parseInt(b);
-      });
+// <% if @counting == '1' %>
+// var tempcount = {};
+// var updateCount = function(user){
+//   var c = tempcount[user] || 0;
+//   var jqEl = $("#no_correct_" + user);
+//   jqEl.text(c);
+//   if(c){
+//     jqEl.css('opacity', 1).css('color', 'black');
+//   }else{
+//     jqEl.css('opacity', 0);
+//   }
+// };
+// var showCorrectUsers = function(users) {
+//   if(users.length){
+//       users.sort(function(a,b) {
+//         return parseInt(a) - parseInt(b);
+//       });
       
-      for (var i in users) { 
-        setTimeout( (function(a){
-          return function() {
-            console.log(a);
-            $("#yes_img_"+a).show();
-            updateCount(a);
-          }
-        })(users[i]), 800 * i);
-      }
-      users = null;
-  }else{
-    gamers.all().forEach(function(e){
-      updateCount(e);
-    });
-  }
-};
+//       for (var i in users) { 
+//         setTimeout( (function(a){
+//           return function() {
+//             console.log(a);
+//             $("#yes_img_"+a).show();
+//             updateCount(a);
+//           }
+//         })(users[i]), 800 * i);
+//       }
+//       users = null;
+//   }else{
+//     gamers.all().forEach(function(e){
+//       updateCount(e);
+//     });
+//   }
+// };
 
-function correctCountSetStyle(o){
-  //$("#no_correct_" + o.user_id).show();
-  tempcount[o.user_id] = o.count;
+// function correctCountSetStyle(o){
+//   //$("#no_correct_" + o.user_id).show();
+//   tempcount[o.user_id] = o.count;
   
-  console.log(o);
+//   console.log(o);
 
-}                  
-<% end %>
+// }                  
+// <% end %>
 
-function clearAllSetStyle() {
-  $('[id^=yes_img_]').hide();
-  //$('[id^=answer_correct_]').text("?").css("color","");
-  gamers.all().forEach(function(e){
-    CM('origin_'+e).clear();
-    receiveCancelSubmitHandler({user_id: e});
-    stopSetStyle(e);
-  });
-  sketchSecondIns.resetBar();
-}
+// function clearAllSetStyle() {
+//   $('[id^=yes_img_]').hide();
+//   //$('[id^=answer_correct_]').text("?").css("color","");
+//   gamers.all().forEach(function(e){
+//     CM('origin_'+e).clear();
+//     receiveCancelSubmitHandler({user_id: e});
+//     stopSetStyle(e);
+//   });
+//   sketchSecondIns.resetBar();
+// }
 
-window.timeRemaining = parseInt(<%= @second %>);
-window.alarm = null;
 window.responsiveMethod = function(){
   var jqEl = $('[id^=grid_]');
 
@@ -483,37 +492,34 @@ $(document).ready(function() {
     backgroundLine: '7px rgba(255,0,0,0.6)'
     //backgroundImage: '/assets/tvwall/Metal-Frame.png'
   });
-  <% @visitors.each do |visitor| %>
-  CM.reg('origin_<%= visitor.number %>');
-  <% end %>
-
-
+  
   //window.chatApp = new ChatApp(500,500,'0');
   //window.chatApp.bindEvents();
 
-  (function collectGamers() {
-   <% @visitors.each do |visitor| %>
-   gamers.push('<%= visitor.number %>');
-   <% end %>
- }) ();
+  var gamerList = [];
+  <% @visitors.each do |visitor| %>
+  gamerList.push('<%= visitor.number %>');
+  <% end %>
 
-  setTimeout(function(){
-    if(!sketchSecondIns){
-      sketchSecondIns = Processing.getInstanceById('sketchSecond');  
-    }
-    var p = $(document.getElementById('sketchSecond').parentElement);
-    sketchSecondIns.setSize(p.width(), p.height());
-    sketchSecondIns.setSecond(<%= @second %>);
-  },300);
+  View.registerCanvas(gamerList);
+  View.collectGamers(gamerList);
+  View.loadSketchSecond();
+
+  // setTimeout(function(){
+  //   if(!sketchSecondIns){
+  //     sketchSecondIns = Processing.getInstanceById('sketchSecond');  
+  //   }
+  //   var p = $(document.getElementById('sketchSecond').parentElement);
+  //   sketchSecondIns.setSize(p.width(), p.height());
+  //   sketchSecondIns.setSecond(window.timeRemaining);
+  // },300);
 
   responsiveMethod();
 
-  var borderWidth = <%= @canvas_border %>;
-  
-  $('.Grid').css("background", "url("+ generateBorderBase64($('.Grid'), borderWidth, 
+  $('.Grid').css("background", "url("+ Commons.generateBorderBase64($('.Grid'), window.borderWidth, 
     ['0 #ffffff', '0.5 #aaaaaa', '1 #aaaaaa'] ) +
   ")");
-  $('.Grid').css("padding", borderWidth);
+  $('.Grid').css("padding", window.borderWidth);
 
   CM.doAllResponsive();
   setTimeout(function(){

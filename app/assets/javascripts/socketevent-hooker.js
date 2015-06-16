@@ -2,8 +2,8 @@
 if (typeof SocketController == 'undefined'){
   console.error("socketevent-generator.js should included first.");
 }
-if (typeof Common == 'undefined'){
-  console.error("common-methods.js should included first.");
+if (typeof Commons == 'undefined'){
+  console.error("commons.js should included first.");
 }
 if (typeof Action == 'undefined'){
   console.error("action-definition.js should included first.");

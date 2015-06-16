@@ -359,10 +359,12 @@
           //$('#visitor_'+this.value).css("background-color", "");
         });
 
-        $('#clear_button').click(function(){
-          window.chatApp.clearAll();
-          correct_users = null;
-        });
+        // $('#clear_button').click(function(){
+        //   window.chatApp.clearAll();
+        //   correct_users = null;
+        // });
+
+        $('#clear_button').click(View.onClearAllClick);
 
         // $("[id^=out_button_]").click(function(){
         //     window.chatApp.userOut(this.value);
@@ -385,23 +387,21 @@
         });
 
          $('[id^=stop_button_]').click(function(){
-           <% if @stage == 'A1' %>
-           clearInterval(window.alarm);
-           window.alarm = null;
-           <% end %>
            window.chatApp.action(this.value,'stop');
            stopSetStyle(this.value);
            //receiveSubmitHandler({user_id:this.value});
          });
 
-         $('[name^=clear_button_]').click(function(){
-            var val = this.value.split(',');
-            var uid = val.shift();
-            var xy = val;
-            var block = { row: xy[0], column:xy[1] };
-            fromServerCommand = true;
-            window.chatApp.clear(uid,block);
-         });
+         // $('[name^=clear_button_]').click(function(){
+         //    var val = this.value.split(',');
+         //    var uid = val.shift();
+         //    var xy = val;
+         //    var block = { row: xy[0], column:xy[1] };
+         //    fromServerCommand = true;
+         //    window.chatApp.clear(uid,block);
+         // });
+
+        $('[name^=clear_button_]').click(View.onClearBlockClick);
 
          $('[name^=correct_button_]').click(function(){
           //console.log(this.value);
@@ -468,14 +468,16 @@
           window.chatApp.removeO(this.value);
         });
 
-        $('[name^=remove_writing_button_]').click(function() {
-            var uid = this.value;
-            fromServerCommand = true;
-            for (var i = 1; i <= 3; i++)
-                for (var j = 1; j <= 3; j++) {
-                  window.chatApp.clear(uid, { row: i, column: j });
-            }
-        });
+        // $('[name^=remove_writing_button_]').click(function() {
+        //     var uid = this.value;
+        //     fromServerCommand = true;
+        //     for (var i = 1; i <= 3; i++)
+        //         for (var j = 1; j <= 3; j++) {
+        //           window.chatApp.clear(uid, { row: i, column: j });
+        //     }
+        // });
+
+        $('[name^=remove_writing_button_]').click(View.onClearClick);
 
         $('[name^=minus_one_button_]').click(function(){
           console.log(no_correct);
@@ -513,14 +515,7 @@
         <% end %>
 
         $('#stop_all_button').click(function(){
-           <% if @stage == 'A1' %>
-           if (!window.alarm) return;
-           <% end %>
            gamers.all().forEach( function(i) {
-              <% if @stage == 'A1' %>
-              clearInterval(window.alarm);
-              window.alarm = null;
-              <% end %>
               window.chatApp.action(i,'stop');
               //window.chatApp.cancelSubmit(i);
               //receiveSubmitHandler({user_id:i});
@@ -551,6 +546,10 @@
             <% end %>
             */
 
+        });
+
+        $('#next_question_button').click(function(){
+          View.onClearAllClick.call(this);
         });
         
         CM.doAllResponsive();

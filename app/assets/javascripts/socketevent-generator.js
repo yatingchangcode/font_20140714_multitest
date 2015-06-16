@@ -55,20 +55,17 @@ var socketTriggerEvents = [
   "show_correct_users",
   // server_idioms.js.coffee
   "send_text",
-  "rewrite",
-
-  // serverB2.js.coffee
-  "clear_all"
+  "rewrite"
 ];
 
 (function(scope){
   var Controller = function(){};
   var io = {  // socket io object
     on:function(name, fn){
-      alert("event:" + name + " fn:"+ fn.toString());
+      console.log("event:" + name + " fn:"+ (fn || "").toString());
     },
     emit:function(name, data, fn){
-      alert("event:" + name + " data:" + JSON.stringify(data) +" fn:"+ fn.toString());
+      console.log("event:" + name + " data:" + JSON.stringify(data) +" fn:"+ (fn || "").toString());
     }
   };
 

@@ -294,11 +294,13 @@ $(document).ready(function() {
    });
 
   // Use clear block and start instead.
-  $('[id^=continue_]').click(function(){
-    window.chatApp.continue_write(this.value);
-    //window.chatApp.cancelSubmit(this.value);
-    //$('#visitor_'+this.value).css("background-color", "");
-  });
+  // $('[id^=continue_]').click(function(){
+  //   window.chatApp.continue_write(this.value);
+  //   //window.chatApp.cancelSubmit(this.value);
+  //   //$('#visitor_'+this.value).css("background-color", "");
+  // });
+  
+  $('[id^=continue_]').click(View.onContinueWriteClick);
   
 
   $('#next_button').click(function(){

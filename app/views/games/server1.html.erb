@@ -134,153 +134,154 @@ progress::-webkit-progress-value {
       <% content_for :javascripts do %>
       <script>
       // cache stage name for server1-tvwall.js
-      var stageName = '<%= @stage %>';
-      var hasCounter = stageName == 'A1';
+      window.stageName = '<%= @stage %>';
+      window.pageType = "console";  // type: console, client, tv
+      window.counting = <%= @counting == '1' %>;
+      window.hasCounter = window.stageName == 'A1';
+      window.timeRemaining = <%= @second %>;
 
       </script>
-      <%= javascript_include_tag 'server' %>
-      <%= javascript_include_tag 'server1-tvwall' %>
+
+      <%= javascript_include_tag 'socketevent-generator' %>
+      <%= javascript_include_tag 'commons' %>
+      <%= javascript_include_tag 'action-definition' %>
+      <%= javascript_include_tag 'view-definition' %>
+      <%= javascript_include_tag 'socketevent-hooker' %>
+
       <script>
 
-      var no_correct = null;
-      var correct_users = null;
-      
-      var receiveChangeConnectionStatusHandler = function(o){
-        for(var x in o) {
-          if (o[x] == true){
-            $('#status_'+x).attr('class','label label-success').text("OnLine");
-          }else{
-            $('#status_'+x).attr('class','label label-danger').text("OffLine");
-          }
-        }
-      }
+      // var receiveChangeConnectionStatusHandler = function(o){
+      //   for(var x in o) {
+      //     if (o[x] == true){
+      //       $('#status_'+x).attr('class','label label-success').text("OnLine");
+      //     }else{
+      //       $('#status_'+x).attr('class','label label-danger').text("OffLine");
+      //     }
+      //   }
+      // }
 
-      var receiveSubmitHandler = function(o){
-        $('#visitor_'+o.user_id).css("background-color", "#ff0");
-        console.log(o);
-        <% if (@stage == 'A3') %>
-        gamers.all().forEach(function(e){
-          window.chatApp.action(e, 'stop');
-        });
-        <% end -%>
-      };
+      // var receiveSubmitHandler = function(o){
+      //   $('#visitor_'+o.user_id).css("background-color", "#ff0");
+      //   console.log(o);
+      //   <% if (@stage == 'A3') %>
+      //   gamers.all().forEach(function(e){
+      //     window.chatApp.action(e, 'stop');
+      //   });
+      //   <% end -%>
+      // };
 
-      var receiveIsConnectedHandler = function(o){
-        var x = o.check_id;
-        if (o.connected){
-          $('#status_'+x).attr('class','label label-success').text("OnLine");
-        }else{
-          $('#status_'+x).attr('class','label label-danger').text("OffLine");
-        }
-      };
+      // var receiveIsConnectedHandler = function(o){
+      //   var x = o.check_id;
+      //   if (o.connected){
+      //     $('#status_'+x).attr('class','label label-success').text("OnLine");
+      //   }else{
+      //     $('#status_'+x).attr('class','label label-danger').text("OffLine");
+      //   }
+      // };
 
-      //後台取消確認(尚未實作)
-      var receiveCancelSubmitHandler = function(o){
-        $('#origin_'+o.user_id).removeClass("canvas_box_block");
-      };
+      // //後台取消確認(尚未實作)
+      // var receiveCancelSubmitHandler = function(o){
+      //   $('#origin_'+o.user_id).removeClass("canvas_box_block");
+      // };
 
-      function showO(c){
-        $("#yes_img_" + c).show();
-      }
+      // function showO(c){
+      //   $("#yes_img_" + c).show();
+      // }
 
-      //Remove O
-      function removeO(c) {
-        console.log('removeO');
-        $('#yes_img_'+c).hide();
-      }
+      // //Remove O
+      // function removeO(c) {
+      //   console.log('removeO');
+      //   $('#yes_img_'+c).hide();
+      // }
 
-      function correctCountSetStyle(o) {
-        console.log(o);
-        <% if @stage != "B2" %>
-        $("#correct_button_"+o.user_id).addClass("btn-success");
-        <% end -%>
-        if(no_correct)
-          $("#no_correct_" + o.user_id).text(no_correct[o.user_id]+"題");
-      }
+      // function correctCountSetStyle(o) {
+      //   console.log(o);
+      //   <% if @stage != "B2" %>
+      //   $("#correct_button_"+o.user_id).addClass("btn-success");
+      //   <% end -%>
+      //   if(no_correct)
+      //     $("#no_correct_" + o.user_id).text(no_correct[o.user_id]+"題");
+      // }
 
-      function startSetStyle(c) {
-        $('#visitor_'+c).css("border-color", "#4d4ddb");
-        $('#visitor_'+c).css("background-color", "#ebf0fa");
-      }
+      // function startSetStyle(c) {
+      //   $('#visitor_'+c).css("border-color", "#4d4ddb");
+      //   $('#visitor_'+c).css("background-color", "#ebf0fa");
+      // }
 
-      function stopSetStyle(c) {
-        $('#visitor_'+c).css("border-color", "#f8f8f8");
-      }
+      // function stopSetStyle(c) {
+      //   $('#visitor_'+c).css("border-color", "#f8f8f8");
+      // }
 
-      function clearAllSetStyle() {
-          $('[id^=yes_img_]').hide();
-          //$('[id^=answer_correct_]').text("?").css("color","");
+      // function clearAllSetStyle() {
+      //     $('[id^=yes_img_]').hide();
+      //     //$('[id^=answer_correct_]').text("?").css("color","");
           
-          <% if @stage == 'A1' %>
-            $('#progress_bar').css("width", "100%").attr("aria-valuenow","100%")
-                            .text(window.timeRemaining+"s");
-          <% end %>
+      //     <% if @stage == 'A1' %>
+      //       $('#progress_bar').css("width", "100%").attr("aria-valuenow","100%")
+      //                       .text(window.timeRemaining+"s");
+      //     <% end %>
 
-          gamers.all().forEach(function(e){
-            CM('origin_'+e).clear();
-            $('#visitor_'+e).css("background-color", "#ebf0fa");
-            $("#correct_button_"+e).removeClass("btn-success");
-            stopSetStyle(e);
-          });
-        }
+      //     gamers.all().forEach(function(e){
+      //       CM('origin_'+e).clear();
+      //       $('#visitor_'+e).css("background-color", "#ebf0fa");
+      //       $("#correct_button_"+e).removeClass("btn-success");
+      //       stopSetStyle(e);
+      //     });
+      //   }
 
-      function outSetStyle(user_id) {
-          $("#correct_button_"+user_id).attr("disabled", true);
-          $("#out_button_"+user_id).attr("disabled", true);
-          $("#start_button_"+user_id).attr("disabled", true);
-          $("#stop_button_"+user_id).attr("disabled", true);
-          $('#visitor_'+user_id).attr('style','opacity:0.2;border:3px solid #f8f8f8');
-      }
+      // function outSetStyle(user_id) {
+      //     $("#correct_button_"+user_id).attr("disabled", true);
+      //     $("#out_button_"+user_id).attr("disabled", true);
+      //     $("#start_button_"+user_id).attr("disabled", true);
+      //     $("#stop_button_"+user_id).attr("disabled", true);
+      //     $('#visitor_'+user_id).attr('style','opacity:0.2;border:3px solid #f8f8f8');
+      // }
 
-      function clearSetStyle(o){
-       CM('origin_'+o.user_id).clear();
-      }
+      // function clearSetStyle(o){
+      //  CM('origin_'+o.user_id).clear();
+      // }
 
-      <% if @stage == 'A1' %>
-      function resetSetStyle(s){
-        resetProgressBarAndTime();
-      };
-      function resetProgressBarAndTime() {
-          $('#progress_bar').css("width", "100%").attr("aria-valuenow","100%")
-                            .text(window.timeRemaining+"s");
-          console.log(window.timeRemaining);
-          $('#second').text(window.timeRemaining);  
-      }
-      <% end %>
+      // <% if @stage == 'A1' %>
+      // function resetSetStyle(s){
+      //   resetProgressBarAndTime();
+      // };
+      // function resetProgressBarAndTime() {
+      //     $('#progress_bar').css("width", "100%").attr("aria-valuenow","100%")
+      //                       .text(window.timeRemaining+"s");
+      //     console.log(window.timeRemaining);
+      //     $('#second').text(window.timeRemaining);  
+      // }
+      // <% end %>
 
-      function setProgressBarAndTime(s) {
-        var percent = 100 * (s-0.1) / window.timeRemaining;
-        $('#progress_bar').css("width", percent+"%").attr('aria-valuenow', percent)
-        .text((s-0.1).toFixed(1)+"s");
-        $('#second').text((s - 0.1).toFixed(1));
-      }
+      // function setProgressBarAndTime(s) {
+      //   var percent = 100 * (s-0.1) / window.timeRemaining;
+      //   $('#progress_bar').css("width", percent+"%").attr('aria-valuenow', percent)
+      //   .text((s-0.1).toFixed(1)+"s");
+      //   $('#second').text((s - 0.1).toFixed(1));
+      // }
 
 
-      <% if @stage == 'A1' %>
-      function startCounter() {
-        if(window.alarm) return;
-        var s = parseFloat($('#second').text()).toFixed(1);
-        if (s === (0.0).toFixed(1)) resetProgressBarAndTime();
-        window.alarm = setInterval(function(){
-          var s = parseFloat($('#second').text()).toFixed(1);
-          if (s > 0){
-            setProgressBarAndTime(s);
-          } else {
-            clearInterval(window.alarm);
-            window.alarm = null;
-            gamers.all().forEach(function(e){
-              window.chatApp.action(e,'stop');
-              receiveSubmitHandler({user_id:e});
-            });
-          }
-        }, 100); 
-      }
-      <% end %>
+      // <% if @stage == 'A1' %>
+      // function startCounter() {
+      //   if(window.alarm) return;
+      //   var s = parseFloat($('#second').text()).toFixed(1);
+      //   if (s === (0.0).toFixed(1)) resetProgressBarAndTime();
+      //   window.alarm = setInterval(function(){
+      //     var s = parseFloat($('#second').text()).toFixed(1);
+      //     if (s > 0){
+      //       setProgressBarAndTime(s);
+      //     } else {
+      //       clearInterval(window.alarm);
+      //       window.alarm = null;
+      //       gamers.all().forEach(function(e){
+      //         window.chatApp.action(e,'stop');
+      //         receiveSubmitHandler({user_id:e});
+      //       });
+      //     }
+      //   }, 100); 
+      // }
+      // <% end %>
     
-      <% if @stage == 'A1' %>
-      window.timeRemaining = parseInt(<%= @second %>);
-      window.alarm = null;
-      <% end %>
       var tvwall = window.open("tvwall_<%= params[:stage] %>?join_visitors_number=<%= params[:join_visitors_number] %>&second=<%= @second %>&counting=<%= @counting %>","tvwallWindow","width=800, height=800");
       //window.open("record?join_visitors_number=<%= params[:join_visitors_number] %>&second=<%= @second %>","recordWindow","width=800, height=800");
       //window.open("record?join_visitors_number=<%= params[:join_visitors_number] %>&second=<%= @second %>","_blank","width=800, height=800");
@@ -294,184 +295,213 @@ progress::-webkit-progress-value {
           targetZoomScale: 0.1,
           backgroundImage: '/assets/block-524.png'
         });
+        // <% @visitors.each do |visitor| %>
+        // CM.reg('origin_<%= visitor.number %>');
+        // <% end %>
+        var gamerList = [];
         <% @visitors.each do |visitor| %>
-        CM.reg('origin_<%= visitor.number %>');
+        gamerList.push('<%= visitor.number %>');
         <% end %>
       
-        window.chatApp = new ChatApp(500,500,'0');
-        window.chatApp.bindEvents();
-        window.chatApp.reset({stage:'<%= params[:stage] %>'});
-        window.chatApp.setGameInfo(<%= @game.id %>, "<%= @stage %>", "<%= params[:join_visitors_number] %>");
+        View.registerCanvas(gamerList);
+        View.collectGamers(gamerList);
+
+        // initialize SocketInfo
+        // window.chatApp = new ChatApp(500,500,'0');
+        // window.chatApp.bindEvents();
+
+        SocketController.triggerReset({stage:'<%= params[:stage] %>'});
+        SocketController.triggerSetGameinfoToSocket({
+          game: <%= @game.id %>,
+          stage: "<%= @stage %>",
+          visitors: "<%= params[:join_visitors_number] %>"
+        });
+    
           // set_gameinfo_to_socket
         //openRecordWindow();
 
-        (function collectGamers() {
-           <% @visitors.each do |visitor| %>
-           gamers.push('<%= visitor.number %>');
-           <% end %>
-        }) ();
+        // (function collectGamers() {
+        //    <% @visitors.each do |visitor| %>
+        //    gamers.push('<%= visitor.number %>');
+        //    <% end %>
+        // }) ();
 
+        // $('[id^=continue_]').click(function(){
+        //   window.chatApp.continue_write(this.value, CM('origin_'+this.value).hasTrack());
+        //   window.chatApp.cancelSubmit(this.value);
+        //   //$('#visitor_'+this.value).css("background-color", "");
+        //   startSetStyle(this.value);
+        // });
 
-        $('[id^=continue_]').click(function(){
-          window.chatApp.continue_write(this.value, CM('origin_'+this.value).hasTrack());
-          window.chatApp.cancelSubmit(this.value);
-          //$('#visitor_'+this.value).css("background-color", "");
-          startSetStyle(this.value);
+        $('[id^=continue_]').click(View.onContinueWriteClick);
 
-        });
+        // $('#clear_button').click(function(){
+        //   window.chatApp.clearAll();
+        //   correct_users = null;
+        //   <% if @stage == 'A1' %>
+        //   clearInterval(window.alarm);
+        //   window.alarm = null;
+        //   //resetProgressBarAndTime();
+        //   window.chatApp.reset({second: window.timeRemaining});
+        //   <% end %>
+        // });
 
-        $('#clear_button').click(function(){
-          window.chatApp.clearAll();
-          correct_users = null;
-          <% if @stage == 'A1' %>
-          clearInterval(window.alarm);
-          window.alarm = null;
-          //resetProgressBarAndTime();
-          window.chatApp.reset({second: window.timeRemaining});
-          <% end %>
-        });
+        $('#clear_button').click(View.onClearAllClick);
 
-        $("[id^=out_button_]").click(function(){
-            window.chatApp.userOut(this.value);
-        });
+        // $("[id^=out_button_]").click(function(){
+        //     window.chatApp.userOut(this.value); //onOutClick
+        // });
 
-        $('#start_button').click(function(){
-          gamers.all().forEach(function(e){
-            window.chatApp.action(e, 'start');
-          });
-          <% if @stage == 'A1' %>
-          startCounter();
-          <% end %>
-        });
+        $("[id^=out_button_]").click(View.onOutClick);
+
+        // $('#start_button').click(function(){
+        //   gamers.all().forEach(function(e){
+        //     window.chatApp.action(e, 'start');
+        //   });
+        //   <% if @stage == 'A1' %>
+        //   startCounter();
+        //   <% end %>
+        // });
+
+        $('#start_button').click(View.onStartAllClick);
   
-        $('[id^=start_button_]').click(function(){
-            window.chatApp.action(this.value,'start');
-            <% if @stage == 'A1' %>
-            startCounter();
-            <% end %>
-        });
+        // $('[id^=start_button_]').click(function(){
+        //     window.chatApp.action(this.value,'start');
+        //     <% if @stage == 'A1' %>
+        //     startCounter();
+        //     <% end %>
+        // });
 
-         $('[id^=stop_button_]').click(function(){
-           <% if @stage == 'A1' %>
-           clearInterval(window.alarm);
-           window.alarm = null;
-           <% end %>
-           window.chatApp.action(this.value,'stop');
-           stopSetStyle(this.value);
-           //receiveSubmitHandler({user_id:this.value});
-         });
 
-         $('[id^=correct_button_]').click(function(){
-          //window.chatApp.right(this.value);
+        $('[id^=start_button_]').click(View.onStartClick);
+        
 
-          <% if ['A3','B1','B2'].include? @stage %>
-            window.chatApp.right(this.value);
-          <% else %>
-            if (!correct_users) correct_users = [];
-            if (correct_users.indexOf(this.value) != -1) return;
+         // $('[id^=stop_button_]').click(function(){
+         //   <% if @stage == 'A1' %>
+         //   clearInterval(window.alarm);
+         //   window.alarm = null;
+         //   <% end %>
+         //   window.chatApp.action(this.value,'stop');
+         //   stopSetStyle(this.value);
+         //   //receiveSubmitHandler({user_id:this.value});
+         // });
+        $('[id^=stop_button_]').click(View.onStopClick);
 
-            correct_users.push(this.value);
-          <% end -%> 
+        // $('#stop_all_button').click(function(){
+        //    <% if @stage == 'A1' %>
+        //    if (!window.alarm) return;
+        //    <% end %>
+        //    gamers.all().forEach( function(i) {
+        //       <% if @stage == 'A1' %>
+        //       clearInterval(window.alarm);
+        //       window.alarm = null;
+        //       <% end %>
+        //       window.chatApp.action(i,'stop');
+        //       //window.chatApp.cancelSubmit(i);
+        //       //receiveSubmitHandler({user_id:i});
+        //       stopSetStyle(i);
+        //     });
+        //    //var array = afterAction(this);
+
+        // });
+
+        $('#stop_all_button').click(View.onStopAllClick);
+
+
+         // $('[id^=correct_button_]').click(function(){
+         //  //window.chatApp.right(this.value);
+
+         //  <% if ['A3','B1','B2'].include? @stage %>
+         //    window.chatApp.right(this.value);
+         //  <% else %>
+         //    if (!correct_users) correct_users = [];
+         //    if (correct_users.indexOf(this.value) != -1) return;
+
+         //    correct_users.push(this.value);
+         //  <% end -%> 
           
-            var current_correct_count = 0;
-          <% if !(['A1','B1'].include? @stage) || @counting == '1' %>
-            if (!no_correct) no_correct = {};
-            if (!no_correct[this.value]) {
-              no_correct[this.value] = 1;
-            } else {
-              no_correct[this.value] += 1;
-            }
-            current_correct_count = no_correct[this.value];
-          <% end -%>
+         //    var current_correct_count = 0;
+         //  <% if !(['A1','B1'].include? @stage) || @counting == '1' %>
+         //    if (!no_correct) no_correct = {};
+         //    if (!no_correct[this.value]) {
+         //      no_correct[this.value] = 1;
+         //    } else {
+         //      no_correct[this.value] += 1;
+         //    }
+         //    current_correct_count = no_correct[this.value];
+         //  <% end -%>
           
-            window.chatApp.setCorrectCount(this.value, current_correct_count);
-            window.chatApp.action(this.value,'stop');
-         });
+         //    window.chatApp.setCorrectCount(this.value, current_correct_count);
+         //    window.chatApp.action(this.value,'stop');
+         // });
+        
+        $('[id^=correct_button_]').click(View.onCorrectClick);
 
-        $('[id^=remove_O_button_]').click(function(){
-          window.chatApp.removeO(this.value);
-        });
+        // $('[id^=remove_O_button_]').click(function(){
+        //   window.chatApp.removeO(this.value);
+        // });
+        
+        $('[id^=remove_O_button_]').click(View.onRemoveOClick)
 
-        $('[id^=minus_one_button_]').click(function(){
-          if (!no_correct) no_correct = {};
-          if (!no_correct[this.value]) {
-              no_correct[this.value] = 0;
-          } else {
-              no_correct[this.value] -= 1;
-          }
-          window.chatApp.setCorrectCount(this.value, no_correct[this.value]);
-        });
+        // $('[id^=minus_one_button_]').click(function(){
+        //   if (!no_correct) no_correct = {};
+        //   if (!no_correct[this.value]) {
+        //       no_correct[this.value] = 0;
+        //   } else {
+        //       no_correct[this.value] -= 1;
+        //   }
+        //   window.chatApp.setCorrectCount(this.value, no_correct[this.value]);
+        // });
 
-        $('[id^=remove_writing_button_]').click(function(){
-          window.chatApp.clear(this.value);
-        });
+        $('[id^=minus_one_button_]').click(View.onMinusOneClick);
 
-        $('#clear_correct_button').click(function(){
-          if (!no_correct) return;
-          gamers.all().forEach(function(e) {
-            no_correct[e] = 0;
-            $("#no_correct_" + e).text(no_correct[e]+"題");
-          });
-         });
+        // $('[id^=remove_writing_button_]').click(function(){
+        //   window.chatApp.clear(this.value);
+        // });
+        $('[id^=remove_writing_button_]').click(View.onClearClick);
 
-        $('#show_correct_button').click(function(){
-          window.chatApp.showCorrectUsers(correct_users);
-          //showCorrectUsers(correct_users);
-        });
+        // *** deprecated
+        // $('#clear_correct_button').click(function(){
+        //   if (!no_correct) return;
+        //   gamers.all().forEach(function(e) {
+        //     no_correct[e] = 0;
+        //     $("#no_correct_" + e).text(no_correct[e]+"題");
+        //   });
+        //  });
 
-        <% if @stage == 'A1' %>
-        $('#secondUpdate').click(function(){
-          if(!window.alarm){
-            window.timeRemaining = parseInt($('#secondInput').val()); 
-            window.chatApp.reset({second: window.timeRemaining});
-          }
-        });        
-        <% end %>
+        // $('#show_correct_button').click(function(){
+        //   window.chatApp.showCorrectUsers(correct_users);
+        // });
+        $('#show_correct_button').click(View.onShowCorrectClick);
 
-        $('#stop_all_button').click(function(){
-           <% if @stage == 'A1' %>
-           if (!window.alarm) return;
-           <% end %>
-           gamers.all().forEach( function(i) {
-              <% if @stage == 'A1' %>
-              clearInterval(window.alarm);
-              window.alarm = null;
-              <% end %>
-              window.chatApp.action(i,'stop');
-              //window.chatApp.cancelSubmit(i);
-              //receiveSubmitHandler({user_id:i});
-              stopSetStyle(i);
-            });
-           //var array = afterAction(this);
+        // $('#secondUpdate').click(function(){
+        //   if(!window.alarm){
+        //     window.timeRemaining = parseInt($('#secondInput').val()); 
+        //     window.chatApp.reset({second: window.timeRemaining});
+        //   }
+        // });        
 
-        });
+        $('#secondUpdate').click(View.onSecondUpdateClick);
 
-        $('#next_question_button').click(function(){
-            correct_users = null;
-            window.chatApp.clearAll();
-            gamers.all().forEach( function(i) {
-              window.chatApp.action(i,'stop');
-            });
-            <% if @stage == 'A1' %>
-            //resetProgressBarAndTime();
-            window.chatApp.reset({second: window.timeRemaining});
-              //window.chatApp.cancelSubmit(i);
-              //receiveSubmitHandler({user_id:i});
-            <% end %>
-            /*
-            <% if @stage != 'B2' %>
-            gamers.all().forEach(function(i){
-              window.chatApp.action(i,'start');
-            });
+        // $('#next_question_button').click(function(){
+        //     correct_users = null;
+        //     window.chatApp.clearAll();
+        //     gamers.all().forEach( function(i) {
+        //       window.chatApp.action(i,'stop');
+        //     });
+        //     <% if @stage == 'A1' %>
+        //     //resetProgressBarAndTime();
+        //     window.chatApp.reset({second: window.timeRemaining});
+        //       //window.chatApp.cancelSubmit(i);
+        //       //receiveSubmitHandler({user_id:i});
+        //     <% end %>
+        // });
 
-            setTimeout(startCounter,100);
-            <% end %>
-            */
-
-        });
+        $('#next_question_button').click(View.onNextQuestionClick);
 
         <% @visitors.each do |visitor| %>
-        window.chatApp.is_connected(<%= visitor.number %>);
+        SocketController.triggerIsConnected({user_id:'0',check_id:<%= visitor.number %>});
+        // window.chatApp.is_connected(<%= visitor.number %>);
         <% end %>
 
       });

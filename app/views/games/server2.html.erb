@@ -59,6 +59,13 @@
       </div>
 
       <% content_for :javascripts do %>
+      
+      <script>
+      
+      window.timeRemaining = <%= @second %>;
+      
+      </script>
+      
       <%= javascript_include_tag 'server2-tvwall' %>
       <%= javascript_include_tag 'server' %>
       
@@ -145,10 +152,8 @@
 
 
       $(document).ready(function() {
-
-        var seconds = <%= @second %>;
-        window.alarm = null;
-        var no_correct = null;
+        // window.alarm = null;
+        // var no_correct = null;
 
         CM.prop({
           width: 500,
@@ -176,49 +181,57 @@
           <% end %>
         })();
 
-        $('[id^=continue_]').click(function(){
-          window.chatApp.continue_write(this.value, CM('origin_'+this.value).hasTrack());
-          window.chatApp.action(this.value, 'start');
-          window.chatApp.cancelSubmit(this.value);
-          //$('#visitor_'+this.value).css("background-color", "");
-        });
+        // $('[id^=continue_]').click(function(){
+        //   window.chatApp.continue_write(this.value, CM('origin_'+this.value).hasTrack());
+        //   window.chatApp.action(this.value, 'start');
+        //   window.chatApp.cancelSubmit(this.value);
+        //   //$('#visitor_'+this.value).css("background-color", "");
+        // });
+        
+        $('[id^=continue_]').click(View.onContinueWriteClick);
+        
+        // *** deprecated
+        // $('#allGamer').click(function(){
+        //   $('[name="gamer"]').each((function(toCheck){
+        //     return function(){
+        //       if (this.disabled == false){
+        //         this.checked = toCheck;
+        //       }
+        //     };
+        //   })(this.checked === true));
+        // });
 
-        $('#allGamer').click(function(){
-          $('[name="gamer"]').each((function(toCheck){
-            return function(){
-              if (this.disabled == false){
-                this.checked = toCheck;
-              }
-            };
-          })(this.checked === true));
-        });
+        // $('[id^=correct_button_]').click(function(){
+        //   window.chatApp.right(this.value);
+        //   window.chatApp.action(this.value,'stop');
+        //   if (!no_correct) no_correct = {};
+        //   if (!no_correct[this.value]) {
+        //     no_correct[this.value] = 1;
+        //   } else {
+        //     no_correct[this.value] += 1;
+        //   }
+        //   window.chatApp.setCorrectCount(this.value, no_correct[this.value]);
+        // });
 
-        $('[id^=correct_button_]').click(function(){
-          
-          window.chatApp.right(this.value);
-          window.chatApp.action(this.value,'stop');
-          if (!no_correct) no_correct = {};
-          if (!no_correct[this.value]) {
-            no_correct[this.value] = 1;
-          } else {
-            no_correct[this.value] += 1;
-          }
-          window.chatApp.setCorrectCount(this.value, no_correct[this.value]);
-        });
+        $('[id^=correct_button_]').click(View.onCorrectClick);
 
-        $('[id^=remove_O_button_]').click(function(){
-          window.chatApp.removeO(this.value);
-        });
+        // $('[id^=remove_O_button_]').click(function(){
+        //   window.chatApp.removeO(this.value);
+        // });
+        
+        $('[id^=remove_O_button_]').click(View.onRemoveOClick);
 
-        $('[id^=remove_writing_button_]').click(function(){
-          window.chatApp.clear(this.value);
-        });
+        // $('[id^=remove_writing_button_]').click(function(){
+        //   window.chatApp.clear(this.value);
+        // });
+        $('[id^=remove_writing_button_]').click(View.onClearClick);
 
-        $('#reset_time_button').click(function(){
-          //if(window.alarm) return;
-          window.chatApp.reset({second: seconds});
+        // $('#reset_time_button').click(function(){
+        //   //if(window.alarm) return;
+        //   window.chatApp.reset({second: seconds});
+        // });
+        $('#reset_time_button').click(View.onSecondUpdateClick);
 
-        });
 
         $('#next_button').click(function(){
           // stop last user
