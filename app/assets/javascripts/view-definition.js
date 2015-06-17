@@ -27,7 +27,7 @@ View.startCounter = (function(key){
         } else {
           clearInterval(Commons.alarm);
           Commons.alarm = null;
-          gamers.all().forEach(function(id){
+          Commons.gamers.all().forEach(function(id){
             SocketController.triggerAction({action:'stop',user_id:id});
             SocketController.receiveSubmitHandler({user_id:id});
           });
@@ -60,7 +60,7 @@ View.startCounter = (function(key){
         } else {
           clearInterval(Commons.alarm);
           Commons.alarm = null;
-          gamers.all().forEach(function(id){
+          Commons.gamers.all().forEach(function(id){
             SocketController.triggerAction({action:'stop',user_id:id});
             //receiveSubmitHandler({user_id:e});
           });
@@ -96,7 +96,7 @@ View.addCorrectCount = (function(key){
       return Commons.no_correct[id];
     }
   }[key] || Commons.emptyFn;
-})(Commons.genKey);
+})(Settings.genKey);
 
 View.collectGamers = function(list){
   for(var i in list) Commons.gamers.push(list[i]);
@@ -346,7 +346,7 @@ View.setClearAllStyle = (function(key){
     // server: A3 B1 B2_v1
     "A3+console":function(o){
       $('[id^=yes_img_]').hide();
-      gamers.all().forEach(function(id){
+      Commons.gamers.all().forEach(function(id){
         CM('origin_' + id).clear();
         $('#visitor_' + id).css("background-color", "#ebf0fa");
         $("#correct_button_" + id).removeClass("btn-success");
@@ -357,7 +357,7 @@ View.setClearAllStyle = (function(key){
     "A1+console":function(o){
       $('[id^=yes_img_]').hide();
       $('#progress_bar').css("width", "100%").attr("aria-valuenow","100%").text(Commons.timeRemaining+"s");
-      gamers.all().forEach(function(id){
+      Commons.gamers.all().forEach(function(id){
         CM('origin_' + id).clear();
         $('#visitor_' + id).css("background-color", "#ebf0fa");
         $("#correct_button_" + id).removeClass("btn-success");
@@ -366,7 +366,7 @@ View.setClearAllStyle = (function(key){
     },
     "B2+console":function(o){
       $('[id^=yes_img_]').hide();
-      gamers.all().forEach(function(id){
+      Commons.gamers.all().forEach(function(id){
         $('[name^=word_' + id +']').css("background-color", "#999");
         for (var i = 1; i <= 3; i++){
           for (var j = 1; j <= 3; j++){
@@ -379,7 +379,7 @@ View.setClearAllStyle = (function(key){
     },
     "A1+tv":function(o){
       $('[id^=yes_img_]').hide();
-      gamers.all().forEach(function(id){
+      Commons.gamers.all().forEach(function(id){
         CM('origin_' + id).clear();
         SocketController.receiveCancelSubmitHandler({user_id:id});
         SocketController.receiveActionHandler({name:'stop', user_id:id});
@@ -517,7 +517,7 @@ View.setShowCorrectUsersStyle = (function(key){
         }
       }else{
         if(Settings.hasCorrectCounting){
-          gamers.all().forEach(function(id){
+          Commons.gamers.all().forEach(function(id){
             var c = Commons.tempcount[id] || 0;
             $("#no_correct_" + id).text(c).css('opacity', (c)? 1 : 0).css('color', 'black');
           });
@@ -631,7 +631,7 @@ View.setResetStyle = (function(key){
     // tv: A2
     "A2+tv":function(o){
       if (o.second != null) {
-        gamers.all().forEach(function(id){
+        Commons.gamers.all().forEach(function(id){
           $('#second_' + id).text(o.second + "秒");
           Commons.sketchSecondIns[id].resetBar();
           Commons.sketchSecondIns[id].setSecond(parseInt(o.second));
@@ -850,7 +850,7 @@ View.onOutClick = (function(key){
       SocketController.triggerUserOut({user_id:this.value});
     }
   }[key] || Commons.emptyFn;
-})(Commons.genKey);
+})(Settings.genKey);
 
 View.onStartClick = (function(key){
   key = Commons.getCommonGenKey(key, ["A3+console","B1+console","B2_v1+console"]);
@@ -865,21 +865,21 @@ View.onStartClick = (function(key){
       SocketController.triggerAction({action:'start', user_id: this.value});
     }
   }[key] || Commons.emptyFn;
-})(Commons.genKey);
+})(Settings.genKey);
 
 View.onStartAllClick = (function(key){
   key = Commons.getCommonGenKey(key, ["A3+console","B1+console","B2_v1+console"]);
   return {
     // server: A1
     "A1+console":function(){
-      gamers.all().forEach(function(id){
+      Commons.gamers.all().forEach(function(id){
         SocketController.triggerAction({action:'start', user_id: id});
       });
       View.startCounter();
     },
     // server: A3 B1 B2_v1
     "A3+console":function(){
-      gamers.all().forEach(function(id){
+      Commons.gamers.all().forEach(function(id){
         SocketController.triggerAction({action:'start', user_id: id});
       });
     }
@@ -902,7 +902,7 @@ View.onStopClick = (function(key){
       View.setStopStyle({user_id:this.value});
     }
   }[key] || Commons.emptyFn;
-})(Commons.genKey);
+})(Settings.genKey);
 
 View.onStopAllClick = (function(key){
   key = Commons.getCommonGenKey(key, ["A3+console","B1+console","B2_v1+console"]);
@@ -912,14 +912,14 @@ View.onStopAllClick = (function(key){
       if (!Commons.alarm) return;
       clearInterval(Commons.alarm);
       Commons.alarm = null;
-      gamers.all().forEach(function(id){
+      Commons.gamers.all().forEach(function(id){
         SocketController.triggerAction({action:'stop', user_id: id});
         View.setStopStyle({user_id:id});
       });
     },
     // server A3 B1 B2_v1
     "A3+console":function(){
-      gamers.all().forEach(function(id){
+      Commons.gamers.all().forEach(function(id){
         SocketController.triggerAction({action:'stop', user_id: id});
         View.setStopStyle({user_id:id});
       });
@@ -1011,7 +1011,7 @@ View.onNextQuestionClick = (function(key){
     "A1+console":function(){
       Commons.correct_users = null;
       SocketController.triggerClearAll({});
-      gamers.all().forEach( function(id) {
+      Commons.gamers.all().forEach( function(id) {
         SocketController.triggerAction({action:'stop',user_id:id});
       });
       SocketController.triggerReset({second:Commons.timeRemaining});
@@ -1020,7 +1020,7 @@ View.onNextQuestionClick = (function(key){
     "A3+console":function(){
       Commons.correct_users = null;
       SocketController.triggerClearAll({});
-      gamers.all().forEach( function(id) {
+      Commons.gamers.all().forEach( function(id) {
         SocketController.triggerAction({action:'stop',user_id:id});
       });
     }

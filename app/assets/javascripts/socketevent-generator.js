@@ -62,10 +62,10 @@ var socketTriggerEvents = [
   var Controller = function(){};
   var io = {  // socket io object
     on:function(name, fn){
-      console.log("event:" + name + " fn:"+ (fn || "").toString());
+      console.log("bind event:" + name + " fn:"+ (fn || "").toString());
     },
     emit:function(name, data, fn){
-      console.log("event:" + name + " data:" + JSON.stringify(data) +" fn:"+ (fn || "").toString());
+      console.log("trigger event:" + name + " data:" + JSON.stringify(data) +" fn:"+ (fn || "").toString());
     }
   };
 
