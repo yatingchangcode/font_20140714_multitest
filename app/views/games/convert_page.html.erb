@@ -21,6 +21,7 @@
   </div>
 
   <% content_for :javascripts do %>
+  <%= javascript_include_tag 'websocket_rails/main' %>
   <%= javascript_include_tag 'pinhole' %>
   <script>
   var urlList = <%= @files.to_json.html_safe %>;
