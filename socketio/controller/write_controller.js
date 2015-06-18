@@ -29,9 +29,13 @@ module.exports = function (socket, io) {
   server_control_action('showCorrectUsers');
   server_control_action('userOut');
 
+  // refers to: http://stackoverflow.com/questions/10058226/send-response-to-all-clients-except-sender-socket-io
+  // broadcast emit would except sender
+  // socket.broadcast.emit('message', "this is a test");
 
   socket.on('clear', function (msg) {
-    socket.broadcast.emit('clear', msg);
+    io.sockets.emit('clear', msg);
+    // socket.broadcast.emit('clear', msg);
     var cid = msg.user_id;
     if (user_id_file_path[cid]) {
       cache_action(cid, "clear", null, null, msg.stamp);
@@ -41,7 +45,8 @@ module.exports = function (socket, io) {
   });
 
   socket.on('clearAll', function () {
-    socket.broadcast.emit('clear');
+    //socket.broadcast.emit('clear');
+    io.sockets.emit('clear', {});
     renew_all(visitors, true);
   });
 
@@ -74,7 +79,8 @@ module.exports = function (socket, io) {
 
 
   socket.on('reset', function (msg) {
-    socket.broadcast.emit('reset', msg);
+    //socket.broadcast.emit('reset', msg);
+    io.sockets.emit('reset', msg);
   });
 
   socket.on('continue_write', function (msg) {
