@@ -333,8 +333,8 @@ class GamesController < ApplicationController
   private
   def get_record_json_data(game)
     record_path ||= File.expand_path(File.join("record"), Rails.public_path)
-    file_dir = "#{record_path}/game#{game.id}_#{game.created_at.strftime("%Y%m%d")}"
-    web_url = "/record/game#{game.id}_#{game.created_at.strftime("%Y%m%d")}"
+    file_dir = "#{record_path}/game#{game.id}"
+    web_url = "/record/game#{game.id}"
     Dir.chdir(file_dir) 
     files = Dir.glob("*.json").map { |x| "#{web_url}/#{x}" } 
   end
