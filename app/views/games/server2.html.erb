@@ -167,7 +167,7 @@
         window.chatApp.bindEvents();
         window.chatApp.reset({stage:'<%= params[:stage] %>'});
         //window.chatApp.setGameInfo(<%= @game.id %>, "<%= @stage %>");
-        window.chatApp.setGameInfo(<%= @game.id %>, "<%= @stage %>", "<%= params[:join_visitors_number] %>");
+        window.chatApp.setGameInfo(<%= @game.id %>, "<%= @stage %>", "<%= @visitors.to_json %>");
 
 
 

@@ -1,7 +1,7 @@
 var helper = require('./helper');
 var path = require('path');
 var fs = require('fs');
-var mkdirp = require("mkdirp")
+var mkdirp = require("mkdirp");
 
 var game_id = 0;
 var stage_name = '';
@@ -70,7 +70,7 @@ module.exports = function (socket, io) {
       cache_action(msg.user_id, "create", null, null, msg.stamp);
     } else if (msg.action === "device_stop") {
       cache_action(msg.user_id, "end", null, null, msg.stamp);
-      save_action(msg.user_id);
+      save_action(msg.user_id, true);
     }
 
 
@@ -133,23 +133,13 @@ module.exports = function (socket, io) {
     }
   }
 
-  function renew_one(cid, renew) {
-    user_id_file_path[cid + "-renew"] = renew;
-  }
-
-  function renew_all(visitors, renew) {
-    _(visitors).forEach(function (n) {
-      renew_one(x.number, renew);
-    });
-  }
-
-  function save_action(cid) {
+  function save_action(cid, default_value) {
     var data = user_id_file_path[cid];
     if (data) {
       user_id_file_path[cid] = null;
 
       if (!user_id_file_path[cid + "-renew"]) {
-        user_id_file_path[cid + "-renew"] = true;
+        user_id_file_path[cid + "-renew"] = default_value;
       }
       var file_path = data[0];
       var tosave = { file_path: data[0], renew: user_id_file_path[cid + "-renew"], cid: cid, data: data.slice(1, data.length)};
@@ -170,6 +160,17 @@ module.exports = function (socket, io) {
 
     }
   }
+
+  function renew_one(cid, renew) {
+    user_id_file_path[cid + "-renew"] = renew;
+  }
+
+  function renew_all(visitors, renew) {
+    _(visitors).forEach(function (n) {
+      renew_one(x.number, renew);
+    });
+  }
+
 
   // (function () {
   //   var current_path = __dirname;
