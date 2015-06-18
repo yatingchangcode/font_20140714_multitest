@@ -50,7 +50,7 @@ SocketController.onCancelSubmit(function(o){
 });
 
 SocketController.onClear(function(o){
-  if (isEmpty(o)){
+  if (Commons.isEmpty(o)){
     Action.onClearAll(o);
     View.setClearAllStyle(o);
   }else{
