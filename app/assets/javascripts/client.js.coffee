@@ -3,7 +3,8 @@
 class @ChatApp
 
   constructor: (@left ,@top, @user_id,@currentChannel = undefined) ->
-    @dispatcher = new WebSocketRails(window.location.host + "/websocket?client_id=" + @user_id)
+    @dispatcher = io.connect("http://"+window.location.hostname+":5001?_rtUserId=" + @user_id)
+
     @originOffset = {left: @left, top: @top}
 
   triggerEvents: ->
@@ -14,44 +15,44 @@ class @ChatApp
     $('#submitBtn').click @submitMypad
 
   bindEvents: ->
-    @dispatcher.bind 'clear', @receiveClear
-    @dispatcher.bind 'action', @receiveAction
-    @dispatcher.bind 'reset', @receiveReset
-    @dispatcher.bind 'continue_write', @receiveContinue
+    @dispatcher.on 'clear', @receiveClear
+    @dispatcher.on 'action', @receiveAction
+    @dispatcher.on 'reset', @receiveReset
+    @dispatcher.on 'continue_write', @receiveContinue
 
   downMypad: (e) =>
     @isDrawing = true
     message = {
       user_id: @user_id,
-      x: e.clientX - @originOffset.left, 
+      x: e.clientX - @originOffset.left,
       y: e.clientY - @originOffset.top,
       stamp: (new Date()).getTime()
     }
     CM('origin_'+message.user_id).point({ x: message.x, y: message.y })
-    @dispatcher.trigger 'down_location', message
+    @dispatcher.emit 'down_location', message
 
   moveMypad: (e) =>
-    if @isDrawing 
+    if @isDrawing
       message = {
         user_id: @user_id,
-        x: e.clientX - @originOffset.left, 
+        x: e.clientX - @originOffset.left,
         y: e.clientY - @originOffset.top,
         stamp: (new Date()).getTime()
       }
       CM('origin_'+message.user_id).line({ x: message.x, y: message.y })
-      @dispatcher.trigger 'move_location', message
+      @dispatcher.emit 'move_location', message
 
   upMypad: (e) =>
     @isDrawing = false
-    @dispatcher.trigger 'up_location' , user_id: @user_id
+    @dispatcher.emit 'up_location' , user_id: @user_id
 
   clearMypad: (e) =>
-    @dispatcher.trigger 'clear' , user_id: @user_id, stamp: (new Date()).getTime()
+    @dispatcher.emit 'clear' , user_id: @user_id, stamp: (new Date()).getTime()
     CM('origin_'+ @user_id).clear();
 
   submitMypad: (e) =>
-    @dispatcher.trigger 'action' , user_id: @user_id, action: "device_stop", stamp: (new Date()).getTime()
-    @dispatcher.trigger 'submit' , user_id: @user_id
+    @dispatcher.emit 'action' , user_id: @user_id, action: "device_stop", stamp: (new Date()).getTime()
+    @dispatcher.emit 'submit' , user_id: @user_id
 
   receiveAction: (data) ->
     receiveActionHandler data
@@ -60,11 +61,9 @@ class @ChatApp
   action: (e) =>
     uid = $(e.currentTarget).attr 'uid'
     action = $(e.currentTarget).attr 'action'
-    @dispatcher.trigger 'action' , user_id: uid, action: action
+    @dispatcher.emit 'action' , user_id: uid, action: action
 
   receiveClear: () =>
-    #alert("clearAll")
-    #@dispatcher.trigger 'clear' , user_id: @user_id
     CM('origin_'+ @user_id).clear();
 
   receiveContinue: (message) =>

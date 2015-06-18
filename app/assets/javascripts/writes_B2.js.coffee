@@ -3,8 +3,8 @@
 class @ChatApp
 
   constructor: (@left ,@top, @user_id,@block = undefiend, @currentChannel = undefined) ->
-    @stage_name = "B2"
-    @dispatcher = new WebSocketRails(window.location.host + "/websocket?client_id=" + @user_id)
+    @stage_name = "b2"
+    @dispatcher = io.connect("http://127.0.0.1:5001?_rtUserId=" + @user_id)
     @originOffset = {left: @left, top: @top}
 
   triggerEvents: ->
@@ -16,51 +16,51 @@ class @ChatApp
 
   bindEvents: ->
     #@dispatcher.bind 'clear', @receiveClear
-    @dispatcher.bind 'action', @receiveAction
+    @dispatcher.on 'action', @receiveAction
 
   downMypad: (e) =>
     @isDrawing = true
     message = {
       user_id: @user_id,
-      x: e.clientX - @originOffset.left, 
+      x: e.clientX - @originOffset.left,
       y: e.clientY - @originOffset.top,
       block: @block,
       stamp: (new Date()).getTime()
     }
     CM('origin_'+message.user_id).point({ x: message.x, y: message.y })
-    @dispatcher.trigger @stage_name+'.down_location', message
+    @dispatcher.emit @stage_name+'.down_location', message
 
   moveMypad: (e) =>
-    if @isDrawing 
+    if @isDrawing
       message = {
         user_id: @user_id,
-        x: e.clientX - @originOffset.left, 
+        x: e.clientX - @originOffset.left,
         y: e.clientY - @originOffset.top,
         block: @block,
         stamp: (new Date()).getTime()
       }
       CM('origin_'+message.user_id).line({ x: message.x, y: message.y })
-      @dispatcher.trigger @stage_name+'.move_location', message
+      @dispatcher.emit @stage_name+'.move_location', message
 
   upMypad: (e) =>
     @isDrawing = false
-    @dispatcher.trigger @stage_name+'.up_location' , user_id: @user_id
+    @dispatcher.emit @stage_name+'.up_location' , user_id: @user_id
 
   clearMypad: (e) =>
-    @dispatcher.trigger @stage_name+'.clear' , user_id: @user_id, block: @block
+    @dispatcher.emit @stage_name+'.clear' , user_id: @user_id, block: @block
     console.log(@user_id)
     CM('origin_'+ @user_id).clear();
 
   submitMypad: (e) =>
-    @dispatcher.trigger @stage_name+'.action' , user_id: @user_id, action: "device_stop", stamp: (new Date()).getTime()
-    @dispatcher.trigger @stage_name+'.submit' , user_id: @user_id,block: @block
+    @dispatcher.emit @stage_name+'.action' , user_id: @user_id, action: "device_stop", stamp: (new Date()).getTime()
+    @dispatcher.emit @stage_name+'.submit' , user_id: @user_id,block: @block
 
   moveBlock: (block) =>
     @block = block
-    @dispatcher.trigger @stage_name+'.move_block' , user_id: @user_id, block: @block
+    @dispatcher.emit @stage_name+'.move_block' , user_id: @user_id, block: @block
 
   endRound: =>
-    @dispatcher.trigger @stage_name+'.end_round' , user_id: @user_id,blocks: [@block]
+    @dispatcher.emit @stage_name+'.end_round' , user_id: @user_id,blocks: [@block]
 
   receiveAction: (data) ->
     receiveActionHandler data
@@ -69,7 +69,7 @@ class @ChatApp
   action: (e) =>
     uid = $(e.currentTarget).attr 'uid'
     action = $(e.currentTarget).attr 'action'
-    @dispatcher.trigger 'action' , user_id: uid, action: action
+    @dispatcher.emit 'action' , user_id: uid, action: action
 
-  
+
 

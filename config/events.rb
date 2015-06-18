@@ -31,7 +31,7 @@ WebsocketRails::EventMap.describe do
     subscribe :right,    :to => WritesController, :with_method => :right
     subscribe :removeO,    :to => WritesController, :with_method => :removeO
     subscribe :clearAll, :to => WritesController, :with_method => :clearAll
-    subscribe :reset,    :to => WritesController, :with_method => :reset  
+    subscribe :reset,    :to => WritesController, :with_method => :reset
     subscribe :continue_write, :to => WritesController, :with_method => :continue_write
     subscribe :setCorrectCount, :to => WritesController, :with_method => :setCorrectCount
     subscribe :showCorrectUsers, :to => WritesController, :with_method => :showCorrectUsers
@@ -51,7 +51,7 @@ WebsocketRails::EventMap.describe do
     subscribe :continue_write, :to => WritesIdiomsController, :with_method => :continue_write
     # subscribe :end_round, :to => WritesIdiomsController, :with_method => :end_round
     subscribe :rewrite, :to => WritesIdiomsController, :with_method => :rewrite
-    subscribe :action,   :to => WritesIdiomsController, :with_method => :action    
+    subscribe :action,   :to => WritesIdiomsController, :with_method => :action
     subscribe :reset,   :to => WritesController, :with_method => :reset
   end
 
@@ -79,6 +79,6 @@ WebsocketRails::EventMap.describe do
   subscribe :client_connected, to: ChatsController, with_method: :client_connected
   subscribe :client_connected, :to => ChatsController, :with_method => :get_user_count
 
-  subscribe :client_disconnected, to: ChatsController, with_method: :client_disconnected  
+  subscribe :client_disconnected, to: ChatsController, with_method: :client_disconnected
   subscribe :client_disconnected, :to => ChatsController, :with_method => :get_user_count
 end

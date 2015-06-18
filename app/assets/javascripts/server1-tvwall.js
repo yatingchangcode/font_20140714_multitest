@@ -1,7 +1,7 @@
       var gamers = {
           gamersList : [],
           last: null,
-          
+
           next : function() {
             var newgamer = this.gamersList.shift();
             this.gamersList.push(newgamer);
@@ -13,7 +13,7 @@
           },
           push : function(i) {
             this.gamersList.push(i);
-          }, 
+          },
           remove : function(i) {
             var idx = this.gamersList.indexOf(i);
             if (idx > -1) {
@@ -49,7 +49,7 @@
 
         var receiveStartHandler = function(o){
           start_button(o.user_id);
-        };     
+        };
 
         var start_button = function(value){
           startSetStyle(value);
@@ -63,7 +63,7 @@
           //console.log(hasCounter);
           if (window.hasCounter){
             clearInterval(window.alarm);
-            window.alarm = null;  
+            window.alarm = null;
           }
           //gamers.pushStarted(value, window.resetAndStart);
           stopSetStyle(value);
@@ -108,7 +108,7 @@
               // for (key in window.alarm){
               //   clearInterval(window.alarm[key]);
               //   window.alarm[key] = null;
-              // }  
+              // }
               resetSetStyle(o.second);
             }
           }
@@ -127,8 +127,8 @@
           users.sort(function(a,b) {
             return parseInt(a) - parseInt(b);
           });
-          
-          for (var i in users) { 
+
+          for (var i in users) {
             setTimeout( (function(a){
               return function() {
                 console.log(a);
@@ -162,7 +162,7 @@
         canvasEl.width = w;
         canvasEl.height = h;
         canvasContext.lineWidth = 0;
-        
+
         for(var i = 0, len = splits.length; i < len; i++){
           var s = splits[i].split(' ');
           colorStopArray.push([parseFloat(s[0]).toFixed(1), s[1]]);
@@ -173,9 +173,9 @@
         for(var i = 0, len = gradientSizeArray.length; i < len; i++){
           grd = canvasContext.createLinearGradient.apply(canvasContext, gradientSizeArray[i]);
           for(var a = 0, alen = colorStopArray.length; a < alen; a++){
-            grd.addColorStop(colorStopArray[a][0], colorStopArray[a][1]);  
+            grd.addColorStop(colorStopArray[a][0], colorStopArray[a][1]);
           }
-          
+
           canvasContext.fillStyle = grd;
           canvasContext.beginPath();
           var positions = positionArray[i];
