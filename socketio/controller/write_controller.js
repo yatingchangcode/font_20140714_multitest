@@ -146,7 +146,7 @@ module.exports = function (socket, io) {
         user_id_file_path[cid + "-renew"] = true;
       }
       var file_path = data[0];
-      var tosave = { file_path: data[0], renew: user_id_file_path[cid + "-renew"], cid: cid, data: data.splice(0, 1)};
+      var tosave = { file_path: data[0], renew: user_id_file_path[cid + "-renew"], cid: cid, data: data.slice(1, data.length)};
       var content = JSON.stringify(tosave);
       console.log(content);
       mkdirp(path.dirname(file_path), function (err) {
