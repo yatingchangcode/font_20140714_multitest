@@ -385,6 +385,15 @@ View.setClearAllStyle = (function(key){
         SocketController.receiveActionHandler({name:'stop', user_id:id});
       });
       Commons.sketchSecondIns.resetBar();
+    },
+    "A3+tv":function(o){
+      $('[id^=yes_img_]').hide();
+  //$('[id^=answer_correct_]').text("?").css("color","");
+      gamers.all().forEach(function(id){
+        CM('origin_'+e).clear();
+        SocketController.receiveCancelSubmitHandler({user_id:id});
+        SocketController.receiveActionHandler({name:'stop', user_id:id});
+      });
     }
   }[key] || Commons.emptyFn;
 })(Settings.genKey);
