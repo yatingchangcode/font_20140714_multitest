@@ -29,7 +29,7 @@ SocketController.onUpLocation(function(o){
 });
 
 SocketController.onAction(function(o){
-  var name = o.name;
+  var name = o.action;
   if(name == "start"){
     Action.onStart(o);
     View.setStartStyle(o);

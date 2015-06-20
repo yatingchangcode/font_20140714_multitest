@@ -325,12 +325,16 @@ body,.container{
 
 <% content_for :javascripts do %>
 <script>
+document.write('<script src="//'+ location.hostname + ':5001/socket.io/socket.io.js">\x3C/script>');
+</script>
+<script>
 // cache stage name for server1-tvwall.js
 window.stageName = '<%= @stage %>';
 window.pageType = "tv";  // type: console, client, tv
 window.counting = <%= @counting == '1' %>;
 window.hasCounter = true;
 window.timeRemaining = <%= @second %>;
+window.socketQuery = { _rtUserId: '0' };
 
 window.borderWidth = <%= @canvas_border %>;
 
