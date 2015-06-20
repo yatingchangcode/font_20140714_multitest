@@ -133,12 +133,17 @@ progress::-webkit-progress-value {
 
       <% content_for :javascripts do %>
       <script>
+      document.write('<script src="//'+ location.hostname + ':5001/socket.io/socket.io.js">\x3C/script>');
+      </script>
+
+      <script>
       // cache stage name for server1-tvwall.js
       window.stageName = '<%= @stage %>';
       window.pageType = "console";  // type: console, client, tv
       window.counting = <%= @counting == '1' %>;
       window.hasCounter = window.stageName == 'A1';
       window.timeRemaining = <%= @second %>;
+      window.socketQuery = { _rtUserId: '0' };
 
       </script>
 
@@ -314,9 +319,9 @@ progress::-webkit-progress-value {
         SocketController.triggerSetGameinfoToSocket({
           game: <%= @game.id %>,
           stage: "<%= @stage %>",
-          visitors: "<%= params[:join_visitors_number] %>"
+          visitors: "<%= @visitors.to_json %>"
         });
-    
+
           // set_gameinfo_to_socket
         //openRecordWindow();
 

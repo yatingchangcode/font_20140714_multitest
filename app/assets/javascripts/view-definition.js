@@ -485,7 +485,7 @@ View.setShowCorrectUsersStyle = (function(key){
   return {
     // server: A1
     "A1+console":function(o){
-      if(o.length){
+      if(o && o.length){
         o.sort(function(a,b) {
           return parseInt(a) - parseInt(b);
         });
@@ -500,7 +500,7 @@ View.setShowCorrectUsersStyle = (function(key){
     },
     // tv: A1
     "A1+tv":function(o){
-      if(o.length){
+      if(o && o.length){
         o.sort(function(a,b) {
           return parseInt(a) - parseInt(b);
         });
@@ -934,7 +934,7 @@ View.onCorrectClick = (function(key){
     "B1+console":function(){
       SocketController.triggerRight({user_id:this.value});
       var current_correct_count = 0;
-      if(Commons.hasCorrectCounting){
+      if(Settings.hasCorrectCounting){
         current_correct_count = View.addCorrectCount(this.value);
       }
       SocketController.triggerSetCorrectCount({user_id:this.value,count:current_correct_count});
@@ -952,7 +952,7 @@ View.onCorrectClick = (function(key){
       if (Commons.correct_users.indexOf(this.value) != -1) return;
       Commons.correct_users.push(this.value);
       var current_correct_count = 0;
-      if (Commons.hasCorrectCounting){
+      if (Settings.hasCorrectCounting){
         current_correct_count = View.addCorrectCount(this.value);
       }
       SocketController.triggerSetCorrectCount({user_id:this.value,count:current_correct_count});
