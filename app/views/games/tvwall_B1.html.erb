@@ -139,57 +139,76 @@ body,.container{
 </div>
 
 <% content_for :javascripts do %>
+<script>
+document.write('<script src="//'+ location.hostname + ':5001/socket.io/socket.io.js">\x3C/script>');
+</script>
 
-<%= javascript_include_tag 'server1-tvwall' %>
+<script type="text/javascript">
+  
+window.stageName = "B1";
+window.pageType = "tv";  // type: console, client, tv
+window.counting = <%= @counting == '1' %>;
+window.socketQuery = { _rtUserId: '0' };
+
+window.borderWidth = <%= @canvas_border %>;
+
+</script>
+
+<%= javascript_include_tag 'socketevent-generator' %>
+<%= javascript_include_tag 'commons' %>
+<%= javascript_include_tag 'action-definition' %>
+<%= javascript_include_tag 'view-definition' %>
+<%= javascript_include_tag 'socketevent-hooker' %>
+
 <script>
 
 //使用者送出確認
-var receiveSubmitHandler = function(o){
-  $('#grid_'+o.user_id).addClass("bor_g");
-  $('#glow_'+o.user_id).show();
-};
+// var receiveSubmitHandler = function(o){
+//   $('#grid_'+o.user_id).addClass("bor_g");
+//   $('#glow_'+o.user_id).show();
+// };
 
-//後台取消確認
-var receiveCancelSubmitHandler = function(o){
-  $('#grid_'+o.user_id).removeClass("bor_g");
-  $('#glow_'+o.user_id).hide();
-};
+// //後台取消確認
+// var receiveCancelSubmitHandler = function(o){
+//   $('#grid_'+o.user_id).removeClass("bor_g");
+//   $('#glow_'+o.user_id).hide();
+// };
 
-function clearSetStyle(o){
-  CM('origin_'+o.user_id).clear();
-}
+// function clearSetStyle(o){
+//   CM('origin_'+o.user_id).clear();
+// }
 
-var receiveCorrectUsersHandler = function(users){
-  showCorrectUsers(users);
-}
+// var receiveCorrectUsersHandler = function(users){
+//   showCorrectUsers(users);
+// }
 
-//後台送出答對
-function showO(c){
-  $("#yes_img_" + c).show();
-}
+// //後台送出答對
+// function showO(c){
+//   $("#yes_img_" + c).show();
+// }
 
-function removeO(c){
-  $("#yes_img_" + c).hide();
-}
+// function removeO(c){
+//   $("#yes_img_" + c).hide();
+// }
 
-function startSetStyle(c) {
-  $('#user_photo_'+c).addClass("green");
-  receiveCancelSubmitHandler({user_id:c});
-}
+// function startSetStyle(c) {
+//   $('#user_photo_'+c).addClass("green");
+//   receiveCancelSubmitHandler({user_id:c});
+// }
 
-function stopSetStyle(c) {
-  $('#user_photo_'+c).removeClass("green");
-}
+// function stopSetStyle(c) {
+//   $('#user_photo_'+c).removeClass("green");
+// }
 
-//Gamer out
-function outSetStyle(val) {
-  $('#out_'+val).show();
-  $('#black_'+val).show();
-}
+// //Gamer out
+// function outSetStyle(val) {
+//   $('#out_'+val).show();
+//   $('#black_'+val).show();
+// }
 
-function resetSetStyle(s) {
-  $('#second_' + key).text(s + "秒");
-}
+// function resetSetStyle(s) {
+//   $('#second_' + key).text(s + "秒");
+// }
 
 // function correctCountSetStyle(o){
 //   //$("#no_correct_" + o.user_id).show();
@@ -199,30 +218,30 @@ function resetSetStyle(s) {
 //   }
 // }
 
-<% if @counting == '1' %>
-var tempcount = {};
-function correctCountSetStyle(o){
-  $("#no_correct_" + o.user_id).show();
-  $("#no_correct_" + o.user_id).css('opacity', 1);
-  console.log(o);
-  $("#no_correct_" + o.user_id).text(o.count).css('opacity', 1).css('color', 'black');
-  tempcount[o.user_id] = o.count;
-}
-<% else %>
-function correctCountSetStyle(o){}
-<% end %>
+// <% if @counting == '1' %>
+// var tempcount = {};
+// function correctCountSetStyle(o){
+//   $("#no_correct_" + o.user_id).show();
+//   $("#no_correct_" + o.user_id).css('opacity', 1);
+//   console.log(o);
+//   $("#no_correct_" + o.user_id).text(o.count).css('opacity', 1).css('color', 'black');
+//   tempcount[o.user_id] = o.count;
+// }
+// <% else %>
+// function correctCountSetStyle(o){}
+// <% end %>
 
-function clearAllSetStyle() {
-  $('[id^=yes_img_]').hide();
-  //$('[id^=answer_correct_]').text("?").css("color","");
-  gamers.all().forEach(function(e){
-    CM('origin_'+e).clear();
-    receiveCancelSubmitHandler({user_id: e});
-    stopSetStyle(e);
-  });
-}
-window.timeRemaining = parseInt(<%= @second %>);
-window.alarm = null;
+// function clearAllSetStyle() {
+//   $('[id^=yes_img_]').hide();
+//   //$('[id^=answer_correct_]').text("?").css("color","");
+//   gamers.all().forEach(function(e){
+//     CM('origin_'+e).clear();
+//     receiveCancelSubmitHandler({user_id: e});
+//     stopSetStyle(e);
+//   });
+// }
+// window.timeRemaining = parseInt(<%= @second %>);
+// window.alarm = null;
 
 window.responsiveMethod = function(){
   var jqEl = $('[id^=grid_]');
@@ -259,26 +278,22 @@ $(document).ready(function() {
     backgroundLine: '7px rgba(255,0,0,0.6)'
     //backgroundImage: '/assets/tvwall/img_Grid_b.gif'
   });
+  
+  var gamerList = [];
   <% @visitors.each do |visitor| %>
-  CM.reg('origin_<%= visitor.number %>');
+  gamerList.push('<%= visitor.number %>');
   <% end %>
 
-  //window.chatApp = new ChatApp(500,500,'0');
-  //window.chatApp.bindEvents();
-
-  (function collectGamers() {
-   <% @visitors.each do |visitor| %>
-   gamers.push('<%= visitor.number %>');
-   <% end %>
- }) ();
+  View.registerCanvas(gamerList);
+  View.collectGamers(gamerList);
+  View.loadSketchSecond();
 
   responsiveMethod();
 
-  var borderWidth = <%= @canvas_border %>;
-  $('.Grid').css("background", "url("+ generateBorderBase64($('.Grid'), borderWidth, 
+  $('.Grid').css("background", "url("+ Commons.generateBorderBase64($('.Grid'), window.borderWidth, 
     ['0 #ffffff', '0.5 #aaaaaa', '1 #aaaaaa'] ) +
   ")");
-  $('.Grid').css("padding", borderWidth);
+  $('.Grid').css("padding", window.borderWidth);
 
   CM.doAllResponsive();
   setTimeout(function(){

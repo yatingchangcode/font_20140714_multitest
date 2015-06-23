@@ -342,6 +342,7 @@ View.setClearStyle = (function(key){
 View.setClearAllStyle = (function(key){
   // *** server: A2 B3 no action
   key = Commons.getCommonGenKey(key, ["A3+console","B1+console","B2_v1+console"]);
+  key = Commons.getCommonGenKey(key, ["A3+tv","B1+tv"]);
   return {
     // server: A3 B1 B2_v1
     "A3+console":function(o){
@@ -386,11 +387,12 @@ View.setClearAllStyle = (function(key){
       });
       Commons.sketchSecondIns.resetBar();
     },
+    // tv: A3 B1
     "A3+tv":function(o){
       $('[id^=yes_img_]').hide();
   //$('[id^=answer_correct_]').text("?").css("color","");
-      gamers.all().forEach(function(id){
-        CM('origin_'+e).clear();
+      Commons.gamers.all().forEach(function(id){
+        CM('origin_'+id).clear();
         SocketController.receiveCancelSubmitHandler({user_id:id});
         SocketController.receiveActionHandler({name:'stop', user_id:id});
       });
