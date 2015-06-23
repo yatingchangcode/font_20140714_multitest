@@ -19,7 +19,7 @@ module.exports = function (socket, io) {
   socket.on('B2.move_location', function (msg) {
     msg.cid = msg_cid(msg);
     emit_to_server('move_location', msg);
-    cache_action(msg.cid, "down", msg.x, msg.y, msg.stamp);
+    cache_action(msg.cid, "move", msg.x, msg.y, msg.stamp);
   });
 
   server_control_action('up_location');
@@ -148,7 +148,7 @@ module.exports = function (socket, io) {
     _(visitors).forEach(function (n) {
       for (var r = 1; r < 3; r++){
         for (var c = 1; c < 3; c++) {
-          renew_one(x.number+'_'+r+'_'+c, renew);
+          renew_one(n.number+'_'+r+'_'+c, renew);
         };
       };
     });

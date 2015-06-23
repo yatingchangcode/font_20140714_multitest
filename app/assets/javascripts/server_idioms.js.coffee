@@ -4,7 +4,7 @@
 class @ChatApp
 
   constructor: (@left ,@top, @user_id,@currentChannel = undefined) ->
-    @stage_name = "idiom"
+    @stage_name = "idioms"
     @dispatcher = io.connect("http://127.0.0.1:5001?_rtUserId=" + @user_id)
     @originOffset = {left: @left, top: @top}
 
