@@ -10,27 +10,30 @@ var user_id_file_path = {};
 
 module.exports = function (socket, io) {
 
-  socket.on('b2.down_location', function (msg) {
+  socket.on('B2.down_location', function (msg) {
     msg.cid = msg_cid(msg);
     emit_to_server('down_location', msg);
     cache_action(msg.cid, "down", msg.x, msg.y, msg.stamp);
   });
 
-  socket.on('b2.move_location', function (msg) {
+  socket.on('B2.move_location', function (msg) {
     msg.cid = msg_cid(msg);
     emit_to_server('move_location', msg);
     cache_action(msg.cid, "down", msg.x, msg.y, msg.stamp);
   });
 
-  server_control_action('b2.up_location');
-  server_control_action('b2.submit');
-  server_control_action('b2.move_block');
-  server_control_action('b2.right');
-  server_control_action('b2.remove_o');
-  server_control_action('b2.setCorrectCount');
-  server_control_action('b2.showCorrectUsers');
+  server_control_action('up_location');
+  server_control_action('submit');
+  server_control_action('move_block');
+  server_control_action('right');
+  server_control_action('remove_o');
+  server_control_action('setCorrectCount');
 
-  socket.on('b2.clear', function (msg) {
+  socket.on('B2.showCorrectUsers', function (msg) {
+    emit_to_server('showCorrectUsers', msg);
+  });
+
+  socket.on('B2.clear', function (msg) {
     msg.cid = msg_cid(msg);
     io.sockets.emit('clear', msg);
 
@@ -42,18 +45,18 @@ module.exports = function (socket, io) {
     }
   });
 
-  socket.on('b2.clearAll', function () {
+  socket.on('B2.clearAll', function () {
     io.sockets.emit('clear', {});
     renew_all(visitors, true);
   });
 
-  socket.on('b2.set_gameinfo_to_socket', function (msg) {
+  socket.on('B2.set_gameinfo_to_socket', function (msg) {
     game_id = msg.game;
     stage_name = msg.stage;
     visitors = JSON.parse(msg.visitors.replace(/&quot;/g, '"'));
   });
 
-  socket.on('b2.action', function (msg) {
+  socket.on('B2.action', function (msg) {
 
     helper.emitUserId(msg.user_id, function (x) {
       io.to(x).emit('action', msg);
@@ -75,7 +78,8 @@ module.exports = function (socket, io) {
   });
 
   function server_control_action(action) {
-    socket.on(action, function (msg) {
+    socket.on('B2.'+action, function (msg) {
+      msg.cid = msg_cid(msg);
       emit_to_server(action, msg);
     });
   }

@@ -4,7 +4,7 @@
 class @ChatApp
 
   constructor: (@left ,@top, @user_id,@currentChannel = undefined) ->
-    @stage_name = "b2"
+    @stage_name = "B2"
     @dispatcher = io.connect("http://127.0.0.1:5001?_rtUserId=" + @user_id)
     @originOffset = {left: @left, top: @top}
 
@@ -24,7 +24,7 @@ class @ChatApp
     @dispatcher.on 'clearAll', @receiveClearAll
     @dispatcher.on 'action', @receiveAction
     @dispatcher.on 'is_connected', @receiveIsConnected
-    @dispatcher.on 'right',       @receiveO
+    @dispatcher.on 'right', @receiveO
     @dispatcher.on 'remove_o', @receiveRemoveO
     @dispatcher.on 'showCorrectUsers', @receiveCorrectUsers
     @dispatcher.on 'setCorrectCount', @receiveCorrectCount
