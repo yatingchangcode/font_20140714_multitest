@@ -108,7 +108,7 @@ View.registerCanvas = function(list, prefix){
 };
 
 View.loadSketchSecond = (function(key){
-  key = Commons.getCommonGenKey(key, ["A1+tv","A2+tv","B3+tv"]);
+  key = Commons.getCommonGenKey(key, ["A1+tv","B3+tv"]);
   return {
     "A1+tv":function(){
       setTimeout(function(){
@@ -119,6 +119,19 @@ View.loadSketchSecond = (function(key){
         Commons.sketchSecondIns.setSize(p.width(), p.height());
         Commons.sketchSecondIns.setSecond(Commons.timeRemaining);
       },300);
+    },
+    "A2+tv":function(){
+      setTimeout(function(){
+        if(!Commons.sketchSecondIns) Commons.sketchSecondIns = {};
+        Commons.gamers.all().forEach(function(id){
+          if(!Commons.sketchSecondIns[id]){
+            Commons.sketchSecondIns[id] = Processing.getInstanceById('sketchSecond_' + id);  
+          }
+          var p = $(document.getElementById('sketchSecond_' + id).parentElement);
+          Commons.sketchSecondIns[id].setSize(p.width(), p.height());
+          Commons.sketchSecondIns[id].setSecond(Commons.timeRemaining);
+        });
+      }, Commons.gamers.length * 60);
     }
   }[key] || Commons.emptyFn;
 })(Settings.genKey);
@@ -303,7 +316,8 @@ View.setCancelSubmitStyle = (function(key){
   return {
     // server: A1 A2 A3 B1 B2_v1
     "A1+console":function(o){
-      $('#origin_' + o.user_id).removeClass("canvas_box_block");
+      // $('#origin_' + o.user_id).removeClass("canvas_box_block");
+      $('#visitor_' + o.user_id).css("background-color", "");
     },
     // tv: A1 A2 A3 B1 B2_v1
     "A1+tv":function(o){
@@ -629,7 +643,7 @@ View.setResetStyle = (function(key){
     // server: A2
     "A2+console":function(o){
       if (o.second != null) {
-        for (key in window.alarm){
+        for (key in Commons.alarm){
           $('#second_' + key).text(o.second + "秒");
         }
       }    
@@ -853,10 +867,10 @@ View.onClearBlockClick = (function(key){
 
 View.onOutClick = (function(key){
   key = Commons.getCommonGenKey(key, [
-    "A1+console","A3+console","B1+console","B2_v1+console"
+    "A1+console","A2+console","A3+console","B1+console","B2_v1+console"
   ]);
   return {
-    // server: A1 A3 B1 B2_v1
+    // server: A1 A2 A3 B1 B2_v1
     "A1+console":function(){
       SocketController.triggerUserOut({user_id:this.value});
     }
@@ -864,15 +878,15 @@ View.onOutClick = (function(key){
 })(Settings.genKey);
 
 View.onStartClick = (function(key){
-  key = Commons.getCommonGenKey(key, ["A3+console","B1+console","B2_v1+console"]);
+  key = Commons.getCommonGenKey(key, ["A2+console","A3+console","B1+console","B2_v1+console"]);
   return {
     // server: A1
     "A1+console":function(){
       SocketController.triggerAction({action:'start', user_id: this.value});
       View.startCounter();
     },
-    // server: A3 B1 B2_v1
-    "A3+console":function(){
+    // server: A2 A3 B1 B2_v1
+    "A2+console":function(){
       SocketController.triggerAction({action:'start', user_id: this.value});
     }
   }[key] || Commons.emptyFn;
@@ -907,6 +921,11 @@ View.onStopClick = (function(key){
       SocketController.triggerAction({action:'stop', user_id: this.value});
       View.setStopStyle({user_id:this.value});
     },
+    // server: A2
+    "A2+console":function(){
+      SocketController.triggerAction({action:'stop', user_id: this.value});
+      SocketController.triggerCancelSubmit({user_id: this.value});
+    },
     // server A3 B1 B2_v1
     "A3+console":function(){
       SocketController.triggerAction({action:'stop', user_id: this.value});
@@ -926,6 +945,17 @@ View.onStopAllClick = (function(key){
       Commons.gamers.all().forEach(function(id){
         SocketController.triggerAction({action:'stop', user_id: id});
         View.setStopStyle({user_id:id});
+      });
+    },
+    // server: A2
+    "A2+console":function(){
+       if (!Commons.alarm) return;
+       Commons.gamers.all().forEach( function(id) {
+          clearInterval(Commons.alarm[id]);
+          Commons.alarm[id] = null;
+          SocketController.triggerAction({action:'stop', user_id: id});
+          SocketController.triggerCancelSubmit({user_id: id});
+          View.setStopStyle({user_id:id});
       });
     },
     // server A3 B1 B2_v1
@@ -1026,6 +1056,21 @@ View.onNextQuestionClick = (function(key){
         SocketController.triggerAction({action:'stop',user_id:id});
       });
       SocketController.triggerReset({second:Commons.timeRemaining});
+    },
+    "A2+console":function(){
+      // stop last user
+      if (Commons.gamers.prev() != null) {
+        var id = Commons.gamers.prev();
+        SocketController.triggerAction({action:'stop',user_id:id});
+        SocketController.triggerCancelSubmit({user_id: id});
+      }
+      var newgamer = Commons.gamers.next();
+      
+      SocketController.triggerReset({second: Commons.timeRemaining});
+      SocketController.triggerRemoveO({user_id:newgamer});
+      SocketController.triggerClear({user_id:newgamer});
+      SocketController.triggerAction({action:'start',user_id:newgamer});
+      
     },
     // server A3 B1 B2_v1
     "A3+console":function(){
