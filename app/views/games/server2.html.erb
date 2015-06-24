@@ -61,91 +61,107 @@
       <% content_for :javascripts do %>
       
       <script>
-      
-      window.timeRemaining = <%= @second %>;
-      
+      document.write('<script src="//'+ location.hostname + ':5001/socket.io/socket.io.js">\x3C/script>');
       </script>
-      
-      <%= javascript_include_tag 'server2-tvwall' %>
-      <%= javascript_include_tag 'server' %>
+
+      <script>
+      // cache stage name for server1-tvwall.js
+      window.stageName = '<%= @stage %>';
+      window.pageType = "console";  // type: console, client, tv
+      window.counting = <%= @counting == '1' %>;
+      window.hasCounter = window.stageName == 'A1';
+      <% if @second.to_i > 0 %>
+      window.timeRemaining = <%= @second %>;
+      <% end %>
+        
+      window.socketQuery = { _rtUserId: '0' };
+
+      </script>
+
+      <%= javascript_include_tag 'socketevent-generator' %>
+      <%= javascript_include_tag 'commons' %>
+      <%= javascript_include_tag 'action-definition' %>
+      <%= javascript_include_tag 'view-definition' %>
+      <%= javascript_include_tag 'socketevent-hooker' %>
+
       
       <script>
 
-      var receiveIsConnectedHandler = function(o){
-        var x = o.check_id;
-        if (o.connected){
-          $('#status_'+x).attr('class','label label-success').text("OnLine");
-        }else{
-          $('#status_'+x).attr('class','label label-danger').text("OffLine");
-        }
-      };
+      // var receiveIsConnectedHandler = function(o){
+      //   var x = o.check_id;
+      //   if (o.connected){
+      //     $('#status_'+x).attr('class','label label-success').text("OnLine");
+      //   }else{
+      //     $('#status_'+x).attr('class','label label-danger').text("OffLine");
+      //   }
+      // };
 
-      var receiveChangeConnectionStatusHandler = function(o){
-        for(var x in o) {
-          if (o[x] == true){
-            $('#status_'+x).attr('class','label label-success').text("OnLine");
-          }else{
-            $('#status_'+x).attr('class','label label-danger').text("OffLine");
-          }
-        }
-      }
+      // var receiveChangeConnectionStatusHandler = function(o){
+      //   for(var x in o) {
+      //     if (o[x] == true){
+      //       $('#status_'+x).attr('class','label label-success').text("OnLine");
+      //     }else{
+      //       $('#status_'+x).attr('class','label label-danger').text("OffLine");
+      //     }
+      //   }
+      // }
 
-      //Gamer send submit
-      var receiveSubmitHandler = function(o) {
-        console.log(o);
+      // //Gamer send submit
+      // var receiveSubmitHandler = function(o) {
+      //   console.log(o);
 
-        $('#visitor_'+o.user_id).css("background-color", "#ff0");
-        window.chatApp.action(o.user_id,'stop');
-      };
+      //   $('#visitor_'+o.user_id).css("background-color", "#ff0");
+      //   window.chatApp.action(o.user_id,'stop');
+      // };
 
-      //後台取消確認(尚未實作)
-      var receiveCancelSubmitHandler = function(o){
-        $('#origin_'+o.user_id).removeClass("canvas_box_block");
-      };
+      // //後台取消確認(尚未實作)
+      // var receiveCancelSubmitHandler = function(o){
+      //   $('#origin_'+o.user_id).removeClass("canvas_box_block");
+      // };
 
 
-      //Show O
-      function showO(c){
-        $("#yes_img_" + c).show();
-      }
+      // //Show O
+      // function showO(c){
+      //   $("#yes_img_" + c).show();
+      // }
 
-      //Remove O
-      function removeO(c) {
-        console.log('removeO');
-        $('#yes_img_'+c).hide();
-      }
+      // //Remove O
+      // function removeO(c) {
+      //   console.log('removeO');
+      //   $('#yes_img_'+c).hide();
+      // }
 
-      //Gamer start to write 
-      function startSetStyle(c) {
-        $('#visitor_'+c).css("border-color", "#4d4ddb");
-        $('#visitor_'+c).css("background-color", "#ebf0fa");
-      }
+      // //Gamer start to write 
+      // function startSetStyle(c) {
+      //   $('#visitor_'+c).css("border-color", "#4d4ddb");
+      //   $('#visitor_'+c).css("background-color", "#ebf0fa");
+      // }
 
-      //Gamer stop to write 
-      function stopSetStyle(c) {
-        $('#visitor_'+c).css("border-color", "#f8f8f8");
-      }
+      // //Gamer stop to write 
+      // function stopSetStyle(c) {
+      //   $('#visitor_'+c).css("border-color", "#f8f8f8");
+      // }
 
-      //Gamer out
-      function outSetStyle(val) {
-            $("#correct_button_"+val).attr("disabled", true);
-            $("#out_button_"+val).attr("disabled", true);
-            $("#start_button_"+val).attr("disabled", true);
-            $("#stop_button_"+val).attr("disabled", true);
-            $("#continue_"+val).attr("disabled", true);
-            $("#remove_O_button_"+val).attr("disabled", true);
-            $("#remove_writing_button_"+val).attr("disabled", true);
-            $('#visitor_'+val).attr('style','opacity:0.2;border:4px solid #f8f8f8');
-      }
+      // //Gamer out
+      // function outSetStyle(val) {
+      //       $("#correct_button_"+val).attr("disabled", true);
+      //       $("#out_button_"+val).attr("disabled", true);
+      //       $("#start_button_"+val).attr("disabled", true);
+      //       $("#stop_button_"+val).attr("disabled", true);
+      //       $("#continue_"+val).attr("disabled", true);
+      //       $("#remove_O_button_"+val).attr("disabled", true);
+      //       $("#remove_writing_button_"+val).attr("disabled", true);
+      //       $('#visitor_'+val).attr('style','opacity:0.2;border:4px solid #f8f8f8');
+      // }
 
-      //Set timer
-      function resetSetStyle(key, s) {
-        $('#second_' + key).text(s + "秒");
-      }
+      // //Set timer
+      // function resetSetStyle(key, s) {
+      //   $('#second_' + key).text(s + "秒");
+      // }
 
-      function correctCountSetStyle(o){
-        $("#no_correct_" + o.user_id).text(o.count+"題");
-      }
+      // function correctCountSetStyle(o){
+      //   $("#no_correct_" + o.user_id).text(o.count+"題");
+      // }
       
       var tvwall = window.open("tvwall_<%= params[:stage] %>?join_visitors_number=<%= params[:join_visitors_number] %>&second=<%= @second %>","tvwallWindow","width=800, height=800");
       //window.open("record?join_visitors_number=<%= params[:join_visitors_number] %>&second=<%= @second %>","recordWindow","width=800, height=800");
@@ -163,23 +179,21 @@
           targetZoomScale: 0.1,
           backgroundImage: '/assets/block-524.png'
         });
+      
+        var gamerList = [];
         <% @visitors.each do |visitor| %>
-        CM.reg('origin_<%= visitor.number %>');
+        gamerList.push('<%= visitor.number %>');
         <% end %>
+      
+        View.registerCanvas(gamerList);
+        View.collectGamers(gamerList);
 
-        window.chatApp = new ChatApp(500,500,'0');
-        window.chatApp.bindEvents();
-        window.chatApp.reset({stage:'<%= params[:stage] %>'});
-        //window.chatApp.setGameInfo(<%= @game.id %>, "<%= @stage %>");
-        window.chatApp.setGameInfo(<%= @game.id %>, "<%= @stage %>", "<%= params[:join_visitors_number] %>");
-
-
-
-        (function collectGamers() {
-          <% @visitors.each do |visitor| %>
-          gamers.push('<%= visitor.number %>');
-          <% end %>
-        })();
+        SocketController.triggerReset({stage:'<%= params[:stage] %>'});
+        SocketController.triggerSetGameinfoToSocket({
+          game: <%= @game.id %>,
+          stage: "<%= @stage %>",
+          visitors: "<%= @visitors.to_json %>"
+        });
 
         // $('[id^=continue_]').click(function(){
         //   window.chatApp.continue_write(this.value, CM('origin_'+this.value).hasTrack());
@@ -233,59 +247,66 @@
         $('#reset_time_button').click(View.onSecondUpdateClick);
 
 
-        $('#next_button').click(function(){
-          // stop last user
-          if (gamers.prev() != null) {
-            window.chatApp.action(gamers.prev(),'stop');
-            window.chatApp.cancelSubmit(gamers.prev());
-          }
-          var newgamer = gamers.next();
-          // call old gamer to stop
-          // call new user to clear screen
+        // $('#next_button').click(function(){
+        //   // stop last user
+        //   if (gamers.prev() != null) {
+        //     window.chatApp.action(gamers.prev(),'stop');
+        //     window.chatApp.cancelSubmit(gamers.prev());
+        //   }
+        //   var newgamer = gamers.next();
+        //   // call old gamer to stop
+        //   // call new user to clear screen
           
-          window.chatApp.reset({second: seconds});
-          window.chatApp.removeO(newgamer);
-          window.chatApp.clear(newgamer);
-          window.chatApp.action(newgamer,'start');
-          //there is not setActive?
-          // startSetStyle(newgamer);
-          // startCounter(newgamer);
-        });
+        //   window.chatApp.reset({second: seconds});
+        //   window.chatApp.removeO(newgamer);
+        //   window.chatApp.clear(newgamer);
+        //   window.chatApp.action(newgamer,'start');
+        //   //there is not setActive?
+        //   // startSetStyle(newgamer);
+        //   // startCounter(newgamer);
+        // });
+    
+        $('#next_button').click(View.onNextQuestionClick);
 
-        $("[id^=out_button_]").click(function(){
-            window.chatApp.userOut(this.value);
-        });
+        // $("[id^=out_button_]").click(function(){
+        //     window.chatApp.userOut(this.value);
+        // });
+        
+        $("[id^=out_button_]").click(View.onOutClick);
 
+        // $('[id^=start_button_]').click(function(){
+        //     window.chatApp.action(this.value,'start');
+        // });
+        
+        $('[id^=start_button_]').click(View.onStartClick);
 
-        $('[id^=start_button_]').click(function(){
-            window.chatApp.action(this.value,'start');
-        });
+        // $('#stop_all_button').click(function(){
+        //    if (!window.alarm) return;
+        //    console.log(gamers.all());
+        //    gamers.all().forEach( function(i) {
+        //       console.log(i);
+        //       clearInterval(window.alarm[i]);
+        //       window.alarm[i] = null;
+        //       window.chatApp.action(i,'stop');
+        //       window.chatApp.cancelSubmit(i);
+        //       //receiveSubmitHandler({user_id:i});
+        //       stopSetStyle(i);
+        //   });
+        // });
 
+        $('#stop_all_button').click(View.onStopAllClick);
 
-        $('#stop_all_button').click(function(){
-           if (!window.alarm) return;
-           console.log(gamers.all());
-           gamers.all().forEach( function(i) {
-              console.log(i);
-              clearInterval(window.alarm[i]);
-              window.alarm[i] = null;
-              window.chatApp.action(i,'stop');
-              window.chatApp.cancelSubmit(i);
-              //receiveSubmitHandler({user_id:i});
-              stopSetStyle(i);
-          });
+        // $('[id^=stop_button_]').click(function(){
 
-        });
+        //    window.chatApp.action(this.value,'stop');
+        //    window.chatApp.cancelSubmit(this.value);
+        //    //receiveSubmitHandler({user_id:this.value});
+        // });
 
-        $('[id^=stop_button_]').click(function(){
-
-           window.chatApp.action(this.value,'stop');
-           window.chatApp.cancelSubmit(this.value);
-           //receiveSubmitHandler({user_id:this.value});
-        });
+        $('[id^=stop_button_]').click(View.onStopClick);
 
         <% @visitors.each do |visitor| %>
-        window.chatApp.is_connected(<%= visitor.number %>);
+        SocketController.triggerIsConnected({user_id:'0',check_id:<%= visitor.number %>});
         <% end %>
 
       });
