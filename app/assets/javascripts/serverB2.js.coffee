@@ -171,9 +171,9 @@ class @ChatApp
 
   reset: (o) =>
     if(o)
-      @dispatcher.emit @stage_name+'.reset', second:o.second, stage:o.stage
+      @dispatcher.emit 'reset', second:o.second, stage:o.stage
     else
-      @dispatcher.emit @stage_name+'.reset', {}
+      @dispatcher.emit 'reset', {}
 
   sendText: (text,block) =>
     @dispatcher.emit @stage_name+'.send_text' ,  block: block, text: text
