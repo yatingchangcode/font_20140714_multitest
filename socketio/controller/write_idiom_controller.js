@@ -17,7 +17,7 @@ module.exports = function (socket, io) {
   });
 
   socket.on('idioms.move_location', function (msg) {
-    msg.cid = msg.block.row + "_" + msg.block.column;
+    msg.cid = msg_cid(msg);
     emit_to_everyone('move_location', msg);
     cache_action(msg.cid, "move", msg.x, msg.y, msg.stamp);
   });
