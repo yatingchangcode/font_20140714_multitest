@@ -28,6 +28,7 @@ class @ChatApp
     @dispatcher.on 'remove_o', @receiveRemoveO
     @dispatcher.on 'showCorrectUsers', @receiveCorrectUsers
     @dispatcher.on 'setCorrectCount', @receiveCorrectCount
+    @dispatcher.on 'client_connected', @receiveClientConnected
 
   continue_write: (uid) ->
     @dispatcher.emit 'continue_write', user_id: uid
@@ -139,6 +140,10 @@ class @ChatApp
 
   receiveIsConnected: (message) =>
     receiveIsConnectedHandler message
+    return
+
+  receiveClientConnected: (message) =>
+    receiveChangeConnectionStatusHandler message
     return
 
   action: (uid,action) =>
