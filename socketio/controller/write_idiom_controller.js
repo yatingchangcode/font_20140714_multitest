@@ -35,9 +35,10 @@ module.exports = function (socket, io) {
     var cid = msg.cid;
     if (user_id_file_path[cid]) {
       cache_action(cid, "clear", null, null, msg.stamp);
-    } else {
-      renew_one(cid, true);
     }
+    // else {
+    //   renew_one(cid, true);
+    // }
   });
 
 
@@ -59,12 +60,13 @@ module.exports = function (socket, io) {
     //when mobile send event, into the if else.
     if (msg.action === "device_start") {
       msg.cid = msg_cid(msg);
+      renew_one(msg.cid, !msg.hasTrack);
       start_cache(msg.user_id, msg.cid, game_id, stage_name);
       cache_action(msg.cid, "create", null, null, msg.stamp);
     } else if (msg.action === "device_stop") {
       msg.cid = msg_cid(msg);
       cache_action(msg.cid, "end", null, null, msg.stamp);
-      save_action(msg.cid, false);
+      save_action(msg.cid);
     }
   });
 
@@ -117,14 +119,14 @@ module.exports = function (socket, io) {
     }
   }
 
-  function save_action(cid, default_value) {
+  function save_action(cid) {
     var data = user_id_file_path[cid];
     if (data) {
       user_id_file_path[cid] = null;
 
-      if (!user_id_file_path[cid + "-renew"]) {
-        user_id_file_path[cid + "-renew"] = default_value;
-      }
+      // if (!user_id_file_path[cid + "-renew"]) {
+      //   user_id_file_path[cid + "-renew"] = default_value;
+      // }
       var file_path = data[0];
       var tosave = { file_path: data[0], renew: user_id_file_path[cid + "-renew"], cid: cid, data: data.slice(1, data.length)};
       var content = JSON.stringify(tosave);
@@ -140,7 +142,7 @@ module.exports = function (socket, io) {
 
           });
       });
-      renew_one(cid, false);
+      // renew_one(cid, false);
 
     }
   }

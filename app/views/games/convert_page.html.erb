@@ -70,10 +70,11 @@
   var parsePoints = function(info){
   	var file_name = info.file_path.split('/').pop();
   	//var stage = file_name.split('stage')[1].substr(0, 2);
-  	var crkey = file_name.substr(0, file_name.length - 7) + "_" + (info.cid || "");
+  	// var crkey = file_name.substr(0, file_name.length - 7) + "_" + (info.cid || "");
+    var crkey = file_name.split('stage')[1].substr(0, 2) + "_" + (info.cid || "");
   	var points = info.data;
   	CR.reg(crkey);
-  	//console.log(crkey);
+  	console.log(crkey);
 
   	for(var i = 0, len = points.length; i < len; i++){
   		var p = points[i];
@@ -89,7 +90,8 @@
   				// 	CR(crkey).prop({cacheLastFrame:true});
   				// }
   				//console.log("start");
-          CR(crkey).prop({cacheLastFrame:!info.renew});
+          console.log(info.renew);
+          CR(crkey).prop({cacheLastFrame: !info.renew});
   				CR(crkey).start(stamp);
   				break;
   			case 'down':

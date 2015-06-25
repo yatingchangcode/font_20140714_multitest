@@ -39,15 +39,16 @@ module.exports = function (socket, io) {
     var cid = msg.user_id;
     if (user_id_file_path[cid]) {
       cache_action(cid, "clear", null, null, msg.stamp);
-    } else {
-      renew_one(cid, true);
     }
+    //  else {
+    //   renew_one(cid, true);
+    // }
   });
 
   socket.on('clearAll', function () {
     //socket.broadcast.emit('clear');
     io.sockets.emit('clear', {});
-    renew_all(visitors, true);
+    // renew_all(visitors, true);
   });
 
   socket.on('set_gameinfo_to_socket', function (msg) {
@@ -66,11 +67,12 @@ module.exports = function (socket, io) {
     });
 
     if (msg.action === "device_start") {
+      renew_one(msg.user_id, !msg.hasTrack);
       start_cache(msg.user_id, msg.user_id, game_id, stage_name);
       cache_action(msg.user_id, "create", null, null, msg.stamp);
     } else if (msg.action === "device_stop") {
       cache_action(msg.user_id, "end", null, null, msg.stamp);
-      save_action(msg.user_id, true);
+      save_action(msg.user_id);
     }
 
 
@@ -87,9 +89,9 @@ module.exports = function (socket, io) {
         io.to(x).emit('continue_write', msg);
       });
 
-      if (msg.has_track) {
-        renew_one(uid, false);
-      }
+      // if (msg.has_track) {
+      //   renew_one(uid, false);
+      // }
     }
   });
 
@@ -127,14 +129,14 @@ module.exports = function (socket, io) {
     }
   }
 
-  function save_action(cid, default_value) {
+  function save_action(cid) {
     var data = user_id_file_path[cid];
     if (data) {
       user_id_file_path[cid] = null;
 
-      if (!user_id_file_path[cid + "-renew"]) {
-        user_id_file_path[cid + "-renew"] = default_value;
-      }
+      // if (!user_id_file_path[cid + "-renew"]) {
+      //   user_id_file_path[cid + "-renew"] = default_value;
+      // }
       var file_path = data[0];
       var tosave = { file_path: data[0], renew: user_id_file_path[cid + "-renew"], cid: cid, data: data.slice(1, data.length)};
       var content = JSON.stringify(tosave);
@@ -150,7 +152,7 @@ module.exports = function (socket, io) {
 
           });
       });
-      renew_one(cid, false);
+      // renew_one(cid, false);
 
     }
   }
