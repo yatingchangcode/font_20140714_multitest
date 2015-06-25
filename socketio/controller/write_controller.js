@@ -77,12 +77,6 @@ module.exports = function (socket, io) {
   });
 
 
-
-  socket.on('reset', function (msg) {
-    //socket.broadcast.emit('reset', msg);
-    io.sockets.emit('reset', msg);
-  });
-
   socket.on('continue_write', function (msg) {
     var uid = msg.user_id;
     if (uid && !user_id_file_path[uid]) {
