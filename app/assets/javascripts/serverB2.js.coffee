@@ -4,7 +4,7 @@
 class @ChatApp
 
   constructor: (@left ,@top, @user_id,@currentChannel = undefined) ->
-    @stage_name = "b2"
+    @stage_name = "B2"
     @dispatcher = io.connect("http://127.0.0.1:5001?_rtUserId=" + @user_id)
     @originOffset = {left: @left, top: @top}
 
@@ -24,10 +24,11 @@ class @ChatApp
     @dispatcher.on 'clearAll', @receiveClearAll
     @dispatcher.on 'action', @receiveAction
     @dispatcher.on 'is_connected', @receiveIsConnected
-    @dispatcher.on 'right',       @receiveO
+    @dispatcher.on 'right', @receiveO
     @dispatcher.on 'remove_o', @receiveRemoveO
     @dispatcher.on 'showCorrectUsers', @receiveCorrectUsers
     @dispatcher.on 'setCorrectCount', @receiveCorrectCount
+    @dispatcher.on 'client_connected', @receiveClientConnected
 
   continue_write: (uid) ->
     @dispatcher.emit 'continue_write', user_id: uid
@@ -141,6 +142,10 @@ class @ChatApp
     receiveIsConnectedHandler message
     return
 
+  receiveClientConnected: (message) =>
+    receiveChangeConnectionStatusHandler message
+    return
+
   action: (uid,action) =>
     @dispatcher.emit @stage_name+'.action' , user_id: uid, action: action
 
@@ -166,9 +171,9 @@ class @ChatApp
 
   reset: (o) =>
     if(o)
-      @dispatcher.emit @stage_name+'.reset', second:o.second, stage:o.stage
+      @dispatcher.emit 'reset', second:o.second, stage:o.stage
     else
-      @dispatcher.emit @stage_name+'.reset', {}
+      @dispatcher.emit 'reset', {}
 
   sendText: (text,block) =>
     @dispatcher.emit @stage_name+'.send_text' ,  block: block, text: text

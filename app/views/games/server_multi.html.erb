@@ -27,8 +27,11 @@ progress::-webkit-progress-value {
 } 
 
 .visitor  {
-  width: 22%;
+  width: 16.6%;
   height: 20%
+}
+.container{
+  width: 97% !important;
 }
 </style>
 <% end %>
@@ -138,6 +141,12 @@ progress::-webkit-progress-value {
       <% @visitors.each do |visitor| %>
       activateUsers.push('<%= visitor.number %>');
       <% end %>
+
+      </script>
+
+      <script>
+      document.write('<script src="//'+ location.hostname + ':5001/socket.io/socket.io.js">\x3C/script>');
+      </script>
 
       </script>
       <%= javascript_include_tag 'server_multi' %>
@@ -305,7 +314,7 @@ progress::-webkit-progress-value {
         // window.chatApp.reset({stage:'<%= params[:stage] %>'});
         // window.chatApp.setGameInfo(<%= @game.id %>, "<%= @stage %>", "<%= params[:join_visitors_number] %>");
         window.chatApp.reset({stage:"A1"});
-        window.chatApp.setGameInfo(<%= @game.id %>, "A1", "<%= params[:join_visitors_number] %>");
+        window.chatApp.setGameInfo(<%= @game.id %>, "A1", '<%= @visitors.to_json %>');
           // set_gameinfo_to_socket
         //openRecordWindow();
 

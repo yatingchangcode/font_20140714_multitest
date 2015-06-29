@@ -1,4 +1,5 @@
 GLOBAL._ = require('lodash');
+var helper = require('./controller/helper');
 
 module.exports = {
 
@@ -31,7 +32,9 @@ module.exports = {
             require('./controller/write_idiom_controller')(socket,io);
 
 
-            io.to(client_id['0']).emit('client_connected', get_connection_status());
+            helper.emitUserId('0', function (x) {
+              io.to(x).emit('client_connected', get_connection_status());
+            });
 
             socket.on('disconnect', function(message) {
                 console.log("which user id "+currentSocketIoUserId);
@@ -39,7 +42,9 @@ module.exports = {
                 client_id[currentSocketIoUserId] = _.filter(client_id[currentSocketIoUserId],function(el){
                     return el !== socket.id;
                 })
-                io.to(client_id['0']).emit('client_connected', get_connection_status());
+                helper.emitUserId('0', function (x) {
+                  io.to(x).emit('client_connected', get_connection_status());
+                });
             });
 
         });

@@ -1,7 +1,7 @@
 var helper = require('./helper');
 var path = require('path');
 var fs = require('fs');
-var mkdirp = require("mkdirp")
+var mkdirp = require("mkdirp");
 
 var game_id = 0;
 var stage_name = '';
@@ -39,15 +39,16 @@ module.exports = function (socket, io) {
     var cid = msg.user_id;
     if (user_id_file_path[cid]) {
       cache_action(cid, "clear", null, null, msg.stamp);
-    } else {
-      renew_one(cid, true);
     }
+    //  else {
+    //   renew_one(cid, true);
+    // }
   });
 
   socket.on('clearAll', function () {
     //socket.broadcast.emit('clear');
     io.sockets.emit('clear', {});
-    renew_all(visitors, true);
+    // renew_all(visitors, true);
   });
 
   socket.on('set_gameinfo_to_socket', function (msg) {
@@ -66,6 +67,7 @@ module.exports = function (socket, io) {
     });
 
     if (msg.action === "device_start") {
+      renew_one(msg.user_id, !msg.hasTrack);
       start_cache(msg.user_id, msg.user_id, game_id, stage_name);
       cache_action(msg.user_id, "create", null, null, msg.stamp);
     } else if (msg.action === "device_stop") {
@@ -77,12 +79,6 @@ module.exports = function (socket, io) {
   });
 
 
-
-  socket.on('reset', function (msg) {
-    //socket.broadcast.emit('reset', msg);
-    io.sockets.emit('reset', msg);
-  });
-
   socket.on('continue_write', function (msg) {
     var uid = msg.user_id;
     if (uid && !user_id_file_path[uid]) {
@@ -93,9 +89,9 @@ module.exports = function (socket, io) {
         io.to(x).emit('continue_write', msg);
       });
 
-      if (msg.has_track) {
-        renew_one(uid, false);
-      }
+      // if (msg.has_track) {
+      //   renew_one(uid, false);
+      // }
     }
   });
 
@@ -133,24 +129,14 @@ module.exports = function (socket, io) {
     }
   }
 
-  function renew_one(cid, renew) {
-    user_id_file_path[cid + "-renew"] = renew;
-  }
-
-  function renew_all(visitors, renew) {
-    _(visitors).forEach(function (n) {
-      renew_one(x.number, renew);
-    });
-  }
-
   function save_action(cid) {
     var data = user_id_file_path[cid];
     if (data) {
       user_id_file_path[cid] = null;
 
-      if (!user_id_file_path[cid + "-renew"]) {
-        user_id_file_path[cid + "-renew"] = true;
-      }
+      // if (!user_id_file_path[cid + "-renew"]) {
+      //   user_id_file_path[cid + "-renew"] = default_value;
+      // }
       var file_path = data[0];
       var tosave = { file_path: data[0], renew: user_id_file_path[cid + "-renew"], cid: cid, data: data.slice(1, data.length)};
       var content = JSON.stringify(tosave);
@@ -166,10 +152,21 @@ module.exports = function (socket, io) {
 
           });
       });
-      renew_one(cid, false);
+      // renew_one(cid, false);
 
     }
   }
+
+  function renew_one(cid, renew) {
+    user_id_file_path[cid + "-renew"] = renew;
+  }
+
+  function renew_all(visitors, renew) {
+    _(visitors).forEach(function (n) {
+      renew_one(x.number, renew);
+    });
+  }
+
 
   // (function () {
   //   var current_path = __dirname;

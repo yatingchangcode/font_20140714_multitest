@@ -4,7 +4,7 @@
 class @ChatApp
 
   constructor: (@user_id,@tv_id = undefined,@currentChannel = undefined) ->
-    @dispatcher = new WebSocketRails(window.location.host + "/websocket?client_id=" + @user_id + "&tv_id=" + @tv_id)
+    @dispatcher = io.connect("http://"+window.location.hostname+":5001?_rtUserId=" + @user_id)
 
   triggerEvents: ->
     #$('#yes_button').click @clearMypad
@@ -13,65 +13,65 @@ class @ChatApp
     $('#clear_button').click @clearAll
 
   userOut: (uid) ->
-    @dispatcher.trigger 'userOut', user_id: uid
+    @dispatcher.emit 'userOut', user_id: uid
 
   clearAll: () ->
-   @dispatcher.trigger 'clearAll' 
+   @dispatcher.emit 'clearAll' 
 
   cancelSubmit: (uid) ->
-    @dispatcher.trigger 'cancelSubmit', user_id: uid
+    @dispatcher.emit 'cancelSubmit', user_id: uid
 
   clear: (uid) ->
     #如果要清空個別使用者時,送出user_id
     #清空全部的時候會送出空的object: {}
-   @dispatcher.trigger 'clear', user_id: uid 
+   @dispatcher.emit 'clear', user_id: uid 
 
   action: (uid,action) =>
-    @dispatcher.trigger 'action' , user_id: uid, action: action
+    @dispatcher.emit 'action' , user_id: uid, action: action
 
   right: (uid) =>
-    @dispatcher.trigger 'right' , user_id: uid
+    @dispatcher.emit 'right' , user_id: uid
 
   setGameInfo: (game_id, stage_name, v) => 
-    @dispatcher.trigger 'set_gameinfo_to_socket', game:game_id, stage: stage_name, visitors:v
+    @dispatcher.emit 'set_gameinfo_to_socket', game:game_id, stage: stage_name, visitors:v
 
   removeO: (uid) =>
-    @dispatcher.trigger 'removeO' , user_id: uid
+    @dispatcher.emit 'removeO' , user_id: uid
 
   continue_write: (uid, has) ->
-    @dispatcher.trigger 'continue_write', user_id: uid, has_track: has
+    @dispatcher.emit 'continue_write', user_id: uid, has_track: has
 
   is_connected: (uid) ->
-    @dispatcher.trigger 'is_connected', user_id: @user_id, check_id: uid
+    @dispatcher.emit 'is_connected', user_id: @user_id, check_id: uid
 
   reset: (s) =>
     if(s)
-      @dispatcher.trigger 'reset', second: s.second, stage: s.stage
+      @dispatcher.emit 'reset', second: s.second, stage: s.stage
     else
-      @dispatcher.trigger 'reset', {}
+      @dispatcher.emit 'reset', {}
 
   setCorrectCount: (uid, count) ->
-    @dispatcher.trigger 'setCorrectCount', user_id: uid, count: count
+    @dispatcher.emit 'setCorrectCount', user_id: uid, count: count
 
   showCorrectUsers: (users) ->
-    @dispatcher.trigger 'showCorrectUsers', users
+    @dispatcher.emit 'showCorrectUsers', users
 
   bindEvents: ->
-    @dispatcher.bind 'down_location', @receiveDown
-    @dispatcher.bind 'move_location', @receiveMove
-    @dispatcher.bind 'up_location', @receiveUp
-    @dispatcher.bind 'submit', @receiveSubmit
-    @dispatcher.bind 'cancelSubmit', @receiveCancelSubmit
-    @dispatcher.bind 'clear', @receiveClear
-    @dispatcher.bind 'right', @receiveO
-    @dispatcher.bind 'removeO', @receiveRemoveO
-    @dispatcher.bind 'setCorrectCount', @receiveCorrectCount
-    @dispatcher.bind 'showCorrectUsers', @receiveCorrectUsers
-    @dispatcher.bind 'action', @receiveAction
-    @dispatcher.bind 'userOut', @receiveUserOut
-    @dispatcher.bind 'reset',   @receiveReset
-    @dispatcher.bind 'is_connected', @receiveIsConnected
-    @dispatcher.bind 'client_connected', @receiveClientConnected
+    @dispatcher.on 'down_location', @receiveDown
+    @dispatcher.on 'move_location', @receiveMove
+    @dispatcher.on 'up_location', @receiveUp
+    @dispatcher.on 'submit', @receiveSubmit
+    @dispatcher.on 'cancelSubmit', @receiveCancelSubmit
+    @dispatcher.on 'clear', @receiveClear
+    @dispatcher.on 'right', @receiveO
+    @dispatcher.on 'removeO', @receiveRemoveO
+    @dispatcher.on 'setCorrectCount', @receiveCorrectCount
+    @dispatcher.on 'showCorrectUsers', @receiveCorrectUsers
+    @dispatcher.on 'action', @receiveAction
+    @dispatcher.on 'userOut', @receiveUserOut
+    @dispatcher.on 'reset',   @receiveReset
+    @dispatcher.on 'is_connected', @receiveIsConnected
+    @dispatcher.on 'client_connected', @receiveClientConnected
 
   receiveDown: (message) =>
     if(receiveDownHandler)

@@ -69,7 +69,7 @@ class @ChatApp
   action: (e) =>
     uid = $(e.currentTarget).attr 'uid'
     action = $(e.currentTarget).attr 'action'
-    @dispatcher.emit 'action' , user_id: uid, action: action
+    @dispatcher.emit @stage_name+'action' , user_id: uid, action: action
 
 
 

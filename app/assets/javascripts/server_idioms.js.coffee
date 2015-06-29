@@ -4,7 +4,7 @@
 class @ChatApp
 
   constructor: (@left ,@top, @user_id,@currentChannel = undefined) ->
-    @stage_name = "idiom"
+    @stage_name = "idioms"
     @dispatcher = io.connect("http://127.0.0.1:5001?_rtUserId=" + @user_id)
     @originOffset = {left: @left, top: @top}
 
@@ -110,9 +110,9 @@ class @ChatApp
 
   reset: (o) =>
     if(o)
-      @dispatcher.emit @stage_name+'.reset', second:o.second, stage:o.stage
+      @dispatcher.emit 'reset', second:o.second, stage:o.stage
     else
-      @dispatcher.emit @stage_name+'.reset', {}
+      @dispatcher.emit 'reset', {}
 
   sendText: (text,block) =>
     @dispatcher.emit @stage_name+'.send_text' ,  block: block, text: text

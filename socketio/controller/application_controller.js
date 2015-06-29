@@ -10,4 +10,9 @@ module.exports = function (socket, io) {
     });
   });
 
+  socket.on('reset', function (msg) {
+    //socket.broadcast.emit('reset', msg);
+    io.sockets.emit('reset', msg);
+  });
+
 };
