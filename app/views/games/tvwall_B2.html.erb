@@ -129,102 +129,121 @@ body,.container{
 
 <% content_for :javascripts do %>
 
-<%= javascript_include_tag 'serverB2_helpers' %>
+<script>
+document.write('<script src="//'+ location.hostname + ':5001/socket.io/socket.io.js">\x3C/script>');
+</script>
+
+<script>
+// cache stage name for server1-tvwall.js
+window.stageName = 'B2';
+window.pageType = "tv";  // type: console, client, tv
+  
+window.socketQuery = { _rtUserId: '0' };
+
+window.borderWidth = <%= @canvas_border %>;
+
+</script>
+
+<%= javascript_include_tag 'socketevent-generator' %>
+<%= javascript_include_tag 'commons' %>
+<%= javascript_include_tag 'action-definition' %>
+<%= javascript_include_tag 'view-definition' %>
+<%= javascript_include_tag 'socketevent-hooker' %>
 
 <script>
 
-var showOstyle = function(uid,ij){
-  $("#yes_img_"+uid+"_"+ij.row+"_"+ij.column).show();
-}
+// var showOstyle = function(uid,ij){
+//   $("#yes_img_"+uid+"_"+ij.row+"_"+ij.column).show();
+// }
 
-var updateCorrectCount = function(uid) {
-  $("#no_correct_" + uid).text(tempcount[uid]).css("color", "black");
-}
+// var updateCorrectCount = function(uid) {
+//   $("#no_correct_" + uid).text(tempcount[uid]).css("color", "black");
+// }
 
-var receiveSubmitHandler = function(o){
-  //$('#grid_'+o.cid).addClass("bor_g");
-  $('#grid_'+o.cid).css("box-shadow", '0px 0px 15px 10px rgba(55, 197, 78, 1) inset');
-  $("#grid_"+o.cid).css("opacity", "0");
-  $('#grid_'+o.cid).css("opacity", "1");
-};
-
-
-var receiveCancelSubmitHandler = function(o){
-  $('#grid_'+o.cid).removeClass("bor_g");
-  $('#glow_'+o.cid).hide();
-};
-
-function clearSetStyle(o){
-  CM('origin_'+o.cid).clear();
-}
+// var receiveSubmitHandler = function(o){
+//   //$('#grid_'+o.cid).addClass("bor_g");
+//   $('#grid_'+o.cid).css("box-shadow", '0px 0px 15px 10px rgba(55, 197, 78, 1) inset');
+//   $("#grid_"+o.cid).css("opacity", "0");
+//   $('#grid_'+o.cid).css("opacity", "1");
+// };
 
 
-var receiveCorrectUsersHandler = function(users){
-  showCorrectUsers(users);
-}
+// var receiveCancelSubmitHandler = function(o){
+//   $('#grid_'+o.cid).removeClass("bor_g");
+//   $('#glow_'+o.cid).hide();
+// };
+
+// function clearSetStyle(o){
+//   CM('origin_'+o.cid).clear();
+// }
+
+
+// var receiveCorrectUsersHandler = function(users){
+//   showCorrectUsers(users);
+// }
 
 
 
-//後台送出答對
-function showO(c){
-  $("#yes_img_" + c.cid).show();
-}
+// //後台送出答對
+// function showO(c){
+//   $("#yes_img_" + c.cid).show();
+// }
 
-function removeO(c){
-  $("#yes_img_" + c.cid).hide();
-}
+// function removeO(c){
+//   $("#yes_img_" + c.cid).hide();
+// }
 
-function startSetStyle(c) {
-  $('#user_photo_'+c).addClass("green");
-}
+// function startSetStyle(c) {
+//   $('#user_photo_'+c).addClass("green");
+// }
 
-function stopSetStyle(c) {
-  $('#user_photo_'+c).removeClass("green");
-}
+// function stopSetStyle(c) {
+//   $('#user_photo_'+c).removeClass("green");
+// }
 
-//Gamer out
-function outSetStyle(val) {
-  $('#out_'+val).show();
-  $('#black_'+val).show();
-}
+// //Gamer out
+// function outSetStyle(val) {
+//   $('#out_'+val).show();
+//   $('#black_'+val).show();
+// }
 
-function resetSetStyle(s) {
-  $('#second_' + key).text(s + "秒");
-}
+// function resetSetStyle(s) {
+//   $('#second_' + key).text(s + "秒");
+// }
 
-var blockCancelOneSubmitSetStyle = function(o){
-  $('#glow_'+o.cid).hide();
-  //$('#grid_'+o.cid).css("opacity", 0);
-  $('#grid_'+o.cid).css("box-shadow", '');
-  $("#grid_"+o.cid).css("opacity", "0");
-  $('#grid_'+o.cid).css("opacity", "1");
-};
+// var blockCancelOneSubmitSetStyle = function(o){
+//   $('#glow_'+o.cid).hide();
+//   //$('#grid_'+o.cid).css("opacity", 0);
+//   $('#grid_'+o.cid).css("box-shadow", '');
+//   $("#grid_"+o.cid).css("opacity", "0");
+//   $('#grid_'+o.cid).css("opacity", "1");
+// };
 
-var tempcount = {};
-function correctCountSetStyle(o){
-  //$("#no_correct_" + o.user_id).show();
-  $("#no_correct_" + o.user_id).css('opacity', 1);
-  tempcount[o.user_id] = o.count;
-}
+// var tempcount = {};
+// function correctCountSetStyle(o){
+//   //$("#no_correct_" + o.user_id).show();
+//   $("#no_correct_" + o.user_id).css('opacity', 1);
+//   tempcount[o.user_id] = o.count;
+// }
 
 
-function clearAllSetStyle() {
-  $('[id^=yes_img_]').hide();
-  //$('[id^=answer_correct_]').text("?").css("color","");
-  gamers.all().forEach(function(e){
-    for (var i = 1; i <=3; i++){
-      for (var j = 1; j <= 3; j++){
-        CM('origin_'+e+"_"+i+"_"+j).clear();
-        blockCancelOneSubmitSetStyle({cid: e+"_"+i+"_"+j});
-      }
-    }
-    //receiveCancelSubmitHandler({user_id: e});
-    //receiveCancelSubmitHandler({cid: e+"_"+i+"_"+j});
-    stopSetStyle(e);
-  });
-}
-window.timeRemaining = parseInt(<%= @second %>);
-window.alarm = null;
+// function clearAllSetStyle() {
+//   $('[id^=yes_img_]').hide();
+//   //$('[id^=answer_correct_]').text("?").css("color","");
+//   gamers.all().forEach(function(e){
+//     for (var i = 1; i <=3; i++){
+//       for (var j = 1; j <= 3; j++){
+//         CM('origin_'+e+"_"+i+"_"+j).clear();
+//         blockCancelOneSubmitSetStyle({cid: e+"_"+i+"_"+j});
+//       }
+//     }
+//     //receiveCancelSubmitHandler({user_id: e});
+//     //receiveCancelSubmitHandler({cid: e+"_"+i+"_"+j});
+//     stopSetStyle(e);
+//   });
+// }
+// window.timeRemaining = parseInt(<%= @second %>);
+// window.alarm = null;
 
 window.responsiveMethod = function(){
   var jqEl = $('[id^=grid_]');
@@ -261,31 +280,24 @@ $(document).ready(function() {
     //backgroundLine: '7px rgba(255,0,0,0.6)'
     //backgroundImage: '/assets/tvwall/img_Grid_b.gif'
   });
-  <% @visitors.each do |visitor| %>
-  <% (1..3).to_a.each do |x| %>
-  <% (1..3).to_a.each do |y| %>
-  CM.reg('origin_<%= visitor.number %>_<%= x %>_<%= y %>');
-  <% end %>
-  <% end %>
-  <% end %>
-
+  
   //window.chatApp = new ChatApp(500,500,'0');
   //window.chatApp.bindEvents();
 
-  (function collectGamers() {
-   <% @visitors.each do |visitor| %>
-   gamers.push('<%= visitor.number %>');
-   <% end %>
- }) ();
+  var gamerList = [];
+  <% @visitors.each do |visitor| %>
+  gamerList.push('<%= visitor.number %>');
+  <% end %>
+
+  View.registerCanvas(gamerList);
+  View.collectGamers(gamerList);
 
   responsiveMethod();
 
-  var borderWidth = <%= @canvas_border %>;
-  $('.Grid_fix').css("background", "url("+ generateBorderBase64($('.Grid_fix'), borderWidth, 
+  $('.Grid_fix').css("background", "url("+ Commons.generateBorderBase64($('.Grid_fix'), window.borderWidth, 
     ['0 #ffffff', '0.5 #aaaaaa', '1 #aaaaaa'] ) +
   ")");
   // $('.Grid_fix').css("padding", borderWidth);
-
 
   CM.doAllResponsive();
   setTimeout(function(){

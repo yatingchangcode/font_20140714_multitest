@@ -26,7 +26,7 @@ module.exports = function (socket, io) {
   server_control_action('submit');
   server_control_action('move_block');
   server_control_action('right');
-  server_control_action('remove_o');
+  server_control_action('removeO');
   server_control_action('setCorrectCount');
 
   socket.on('B2.showCorrectUsers', function (msg) {

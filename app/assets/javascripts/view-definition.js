@@ -81,9 +81,9 @@ View.updateTrackButtons = (function(key){
 })(Settings.genKey);
 
 View.addCorrectCount = (function(key){
-  key = Commons.getCommonGenKey(key, ["A1+console","A3+console","B1+console","B2_v1+console"]);
+  key = Commons.getCommonGenKey(key, ["A1+console","A3+console","B1+console","B2+console","B2_v1+console"]);
   return {
-    // server: A1 A3 B1 B2_v1
+    // server: A1 A3 B1 B2 B2_v1
     "A1+console":function(id, val){
       var change = val || 1;
       var initVal = change > 0 ? 1 : 0;
@@ -102,10 +102,35 @@ View.collectGamers = function(list){
   for(var i in list) Commons.gamers.push(list[i]);
 };
 
-View.registerCanvas = function(list, prefix){
-  prefix = prefix || 'origin_';
-  for(var i in list) CM.reg(prefix + list[i]);
-};
+View.registerCanvas = (function(key){
+  key = Commons.getCommonGenKey(key, [
+    "A1+console","A2+console","A3+console","B1+console","B2_v1+console",
+    "A1+tv","A2+tv","A3+tv","B1+tv","B2_v1+tv"
+  ]);
+  key = Commons.getCommonGenKey(key, ["B2+console","B2+tv"]);
+  key = Commons.getCommonGenKey(key, ["B3+console","B3+tv"]);
+  return {
+    "A1+console":function(list, prefix){
+      prefix = prefix || 'origin_';
+      for(var i in list) CM.reg(prefix + list[i]);
+    },
+    "B2+console":function(list, prefix){
+      prefix = prefix || 'origin_';
+      var rowMax = 3;
+      var colMax = 3;
+      for(var idx in list) {
+        for(var row = 1; row <= rowMax; row++){
+          for(var col = 1; col <= colMax; col++){
+            CM.reg(prefix + list[idx] + "_" + row + "_" + col);
+          }
+        }
+      }
+    },
+    "B3+console":function(list, prefix){
+
+    }
+  }[key] || Commons.emptyFn;
+})(Settings.genKey);
 
 View.loadSketchSecond = (function(key){
   key = Commons.getCommonGenKey(key, ["A1+tv","B3+tv"]);
@@ -392,6 +417,22 @@ View.setClearAllStyle = (function(key){
         SocketController.receiveActionHandler({name:'stop', user_id:id});
       });
     },
+    "B2+tv":function(o){
+      $('[id^=yes_img_]').hide();
+      Commons.gamers.all().forEach(function(id){
+        for (var i = 1; i <=3; i++){
+          for (var j = 1; j <= 3; j++){
+            var cid = id + "_" + i + "_" + j;
+            CM('origin_' + cid).clear();
+            $('#glow_' + cid).hide();
+            $('#grid_' + cid).css("box-shadow", '');
+            $("#grid_" + cid).css("opacity", "0");
+            $('#grid_' + cid).css("opacity", "1");
+          }
+        }
+        View.setStopStyle({user_id:id});
+      });
+    },
     "A1+tv":function(o){
       $('[id^=yes_img_]').hide();
       Commons.gamers.all().forEach(function(id){
@@ -505,8 +546,9 @@ View.setCorrectCountStyle = (function(key){
 })(Settings.genKey);
 
 View.setShowCorrectUsersStyle = (function(key){
-  // *** server: A2 A3 B1 B2_v1 B2 B3 no actions.
+  // *** server: A2 A3 B1 B2_v1 B3 no actions.
   // *** tv: A2 A3 B1 B2_v1 B3 no actions.
+  key = Commons.getCommonGenKey(key, ["B2+console","B2+tv"]);
   return {
     // server: A1
     "A1+console":function(o){
@@ -549,8 +591,9 @@ View.setShowCorrectUsersStyle = (function(key){
         }
       }
     },
+    // server: B2
     // tv: B2
-    "B2+tv":function(o){
+    "B2+console":function(o){
       var toIdx = function(i, j) {
         return (i-1) * 3 + j;
       };
@@ -803,6 +846,10 @@ View.onContinueWriteClick = (function(key){
       SocketController.triggerAction({action:'start', user_id: id});
       SocketController.triggerCancelSubmit({user_id: id});
     },
+    "B2+console":function(){
+      SocketController.triggerContinueWrite({user_id: this.value},"B2.");
+      SocketController.triggerCancelSubmit({user_id: this.value},"B2.");
+    },
     "B3+console":function(){
       SocketController.triggerContinueWrite({user_id: this.value});
     }
@@ -811,7 +858,7 @@ View.onContinueWriteClick = (function(key){
 
 View.onClearClick = (function(key){
   key = Commons.getCommonGenKey(key, [
-    "A1+console","A2+console","A3+console","B1+console","B2_v1+console","B2+console"
+    "A1+console","A2+console","A3+console","B1+console","B2_v1+console"
   ]);
   return {
     // server: A1 A2 A3 B1 B2_v1
@@ -824,7 +871,7 @@ View.onClearClick = (function(key){
       Commons.fromServerCommand = true;
       for (var i = 1; i <= 3; i++){
         for (var j = 1; j <= 3; j++) {
-          SocketController.triggerClear({user_id:uid, block:{row:i, column:j } });
+          SocketController.triggerClear({user_id:uid, block:{row:i, column:j } },"B2.");
         }
       }
     }
@@ -832,7 +879,7 @@ View.onClearClick = (function(key){
 })(Settings.genKey);
 
 View.onClearAllClick = (function(key){
-  key = Commons.getCommonGenKey(key, ["A3+console","B1+console","B2_v1+console","B2+console"]);
+  key = Commons.getCommonGenKey(key, ["A3+console","B1+console","B2_v1+console"]);
   return {
     // server: A3 B1 B2_v1 B2
     "A3+console":function(){
@@ -846,6 +893,10 @@ View.onClearAllClick = (function(key){
       clearInterval(Commons.alarm);
       Commons.alarm = null;
       SocketController.triggerReset({second: Commons.timeRemaining});
+    },
+    "B2+console":function(){
+      SocketController.triggerClearAll({},"B2.");
+      Commons.correct_users = null;
     }
   }[key] || Commons.emptyFn;
 })(Settings.genKey);
@@ -860,7 +911,7 @@ View.onClearBlockClick = (function(key){
       var xy = val;
       var block = { row: xy[0], column:xy[1] };
       Commons.fromServerCommand = true;
-      SocketController.triggerClear({user_id:uid, block:block });
+      SocketController.triggerClear({user_id:uid, block:block },"B2.");
     }
   }[key] || Commons.emptyFn;
 })(Settings.genKey);
@@ -888,6 +939,9 @@ View.onStartClick = (function(key){
     // server: A2 A3 B1 B2_v1
     "A2+console":function(){
       SocketController.triggerAction({action:'start', user_id: this.value});
+    },
+    "B2+console":function(){
+      SocketController.triggerAction({action:'start', user_id: this.value},"B2.");
     }
   }[key] || Commons.emptyFn;
 })(Settings.genKey);
@@ -906,6 +960,11 @@ View.onStartAllClick = (function(key){
     "A3+console":function(){
       Commons.gamers.all().forEach(function(id){
         SocketController.triggerAction({action:'start', user_id: id});
+      });
+    },
+    "B2+console":function(){
+      Commons.gamers.all().forEach(function(id){
+        SocketController.triggerAction({action:'start', user_id: id},"B2.");
       });
     }
   }[key] || Commons.emptyFn;
@@ -929,6 +988,10 @@ View.onStopClick = (function(key){
     // server A3 B1 B2_v1
     "A3+console":function(){
       SocketController.triggerAction({action:'stop', user_id: this.value});
+      View.setStopStyle({user_id:this.value});
+    },
+    "B2+console":function(){
+      SocketController.triggerAction({action:'stop', user_id: this.value},"B2.");
       View.setStopStyle({user_id:this.value});
     }
   }[key] || Commons.emptyFn;
@@ -962,6 +1025,12 @@ View.onStopAllClick = (function(key){
     "A3+console":function(){
       Commons.gamers.all().forEach(function(id){
         SocketController.triggerAction({action:'stop', user_id: id});
+        View.setStopStyle({user_id:id});
+      });
+    },
+    "B2+console":function(){
+      Commons.gamers.all().forEach(function(id){
+        SocketController.triggerAction({action:'stop', user_id: id},"B2.");
         View.setStopStyle({user_id:id});
       });
     }
@@ -998,6 +1067,24 @@ View.onCorrectClick = (function(key){
       }
       SocketController.triggerSetCorrectCount({user_id:this.value,count:current_correct_count});
       SocketController.triggerAction({action:'stop',user_id:this.value});
+    },
+    "B2+console":function(){
+      var val = this.value.split(",");
+      var uid = val.shift();
+      var xy  = val;
+      var block = { row: xy[0], column:xy[1] };
+
+      if (!Commons.correct_users) Commons.correct_users = [];
+      if (!Commons.correct_users[uid]) Commons.correct_users[uid] = [];
+      if (Commons.inArray(Commons.correct_users[uid], block)) return;
+      
+      Commons.correct_users[uid].push(block);
+
+      SocketController.triggerSetCorrectCount({
+        user_id: uid,
+        block: block,
+        count: View.addCorrectCount(uid, 1)
+      }, "B2.");
     }
   }[key] || Commons.emptyFn;
 })(Settings.genKey);
@@ -1008,6 +1095,35 @@ View.onRemoveOClick = (function(key){
     // server: A1 A2 A3 B1 B2_v1
     "A1+console":function(){
       SocketController.triggerRemoveO({user_id:this.value});
+    },
+    "B2+console":function(){
+      var val = this.value.split(',');
+      var uid = val.shift();
+      var xy = val;
+      var block = { row: xy[0], column:xy[1] };
+      Commons.fromServerCommand = true;
+      SocketController.triggerRemoveO({user_id: uid, block: block},"B2.");
+      if (Commons.inArray(Commons.correct_users[uid], block)) {
+        Commons.correct_users[uid].splice(Commons.indexOfBlock(Commons.correct_users[uid], block), 1);
+        SocketController.triggerSetCorrectCount({
+          user_id: uid,
+          block: block,
+          count: View.addCorrectCount(uid, -1)
+        }, "B2.");
+      }
+    }
+  }[key] || Commons.emptyFn;
+})(Settings.genKey);
+
+View.onRemoveAllOClick = (function(key){
+  return {
+    "B2+console":function(){
+      var uid = this.value;
+      for (var i = 1; i <= 3; i++){
+        for (var j = 1; j <= 3; j++) {
+          SocketController.triggerRemoveO({user_id: uid, block: { row: i , column: j } },"B2.");
+        }
+      }
     }
   }[key] || Commons.emptyFn;
 })(Settings.genKey);
@@ -1018,6 +1134,13 @@ View.onMinusOneClick = (function(key){
     // server: A1 A3 B1 B2_v1
     "A1+console":function(){
       SocketController.triggerSetCorrectCount({user_id:this.value, count:View.addCorrectCount(this.value,-1)});
+    },
+    "B2+console":function(){
+      SocketController.triggerSetCorrectCount({
+        user_id: this.value,
+        block: {},
+        count: View.addCorrectCount(this.value, -1)
+      }, "B2.");
     }
   }[key] || Commons.emptyFn;
 })(Settings.genKey);
@@ -1027,6 +1150,9 @@ View.onShowCorrectClick = (function(key){
     // server: A1
     "A1+console":function(){
       SocketController.triggerShowCorrectUsers(Commons.correct_users);
+    },
+    "B2+console":function(){
+      SocketController.triggerShowCorrectUsers(Commons.correct_users,"B2.");
     }
   }[key] || Commons.emptyFn;
 })(Settings.genKey);
@@ -1079,6 +1205,11 @@ View.onNextQuestionClick = (function(key){
       Commons.gamers.all().forEach( function(id) {
         SocketController.triggerAction({action:'stop',user_id:id});
       });
+    },
+    "B2+console":function(){
+      Commons.correct_users = null;
+      SocketController.triggerClearAll({},"B2.");
+      View.onStopAllClick.call(this);
     }
   }[key] || Commons.emptyFn;
 })(Settings.genKey);

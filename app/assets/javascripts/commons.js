@@ -183,6 +183,20 @@
     }
     return true;
   };
+
+  var inArray = function(array, item){
+    return array.some(function(d) {
+      return (d.row === item.row && d.column === item.column); 
+    }); 
+  };
+
+  var indexOfBlock = function(array, item){
+    for (var i = 0; i < array.length; i++) {
+      if (array[i].row === item.row && array[i].column === item.column) return i;
+    }
+    return -1;
+  };
+  
   var generateBorderBase64 = function(dependEl, px, splits){
     var w = $(dependEl).width();
     var h = $(dependEl).height();
@@ -245,6 +259,8 @@
   scope.Commons.emptyFn = function(o){};
   scope.Commons.gamers = gamers;
   scope.Commons.isEmpty = isEmpty;
+  scope.Commons.inArray = inArray;
+  scope.Commons.indexOfBlock = indexOfBlock;
   scope.Commons.generateBorderBase64 = generateBorderBase64;
   scope.Commons.getCommonGenKey = getCommonGenKey;
   
