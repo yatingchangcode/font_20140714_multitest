@@ -73,9 +73,12 @@ View.startCounter = (function(key){
 
 View.updateTrackButtons = (function(key){
   return {
-    "B3+console":function(){
-      $("#undoButton").attr("disabled", !(Commons.trackCache.hasUndo() && !Commons.alarm));
-      $("#redoButton").attr("disabled", !(Commons.trackCache.hasRedo() && !Commons.alarm));    
+    "B3+console":function(forceAssign){
+      var force = typeof forceAssign == "boolean";
+      var undoState = force? forceAssign : !(Commons.trackCache.hasUndo() && !Commons.alarm);
+      var redoState = force? forceAssign : !(Commons.trackCache.hasRedo() && !Commons.alarm);
+      $("#undoButton").attr("disabled", undoState);
+      $("#redoButton").attr("disabled", redoState);    
     }
   }[key] || Commons.emptyFn;
 })(Settings.genKey);
@@ -127,7 +130,14 @@ View.registerCanvas = (function(key){
       }
     },
     "B3+console":function(list, prefix){
-
+      prefix = prefix || 'origin_';
+      var rowMax = 8;
+      var colMax = 12;
+      for(var row = 1; row <= rowMax; row++){
+        for(var col = 1; col <= colMax; col++){
+          CM.reg(prefix + row + "_" + col);
+        }
+      }
     }
   }[key] || Commons.emptyFn;
 })(Settings.genKey);
@@ -143,7 +153,7 @@ View.loadSketchSecond = (function(key){
         var p = $(document.getElementById('sketchSecond').parentElement);
         Commons.sketchSecondIns.setSize(p.width(), p.height());
         Commons.sketchSecondIns.setSecond(Commons.timeRemaining);
-      },300);
+      },400);
     },
     "A2+tv":function(){
       setTimeout(function(){
@@ -851,7 +861,7 @@ View.onContinueWriteClick = (function(key){
       SocketController.triggerCancelSubmit({user_id: this.value},"B2.");
     },
     "B3+console":function(){
-      SocketController.triggerContinueWrite({user_id: this.value});
+      SocketController.triggerContinueWrite({user_id: this.value},"idioms.");
     }
   }[key] || Commons.emptyFn;
 })(Settings.genKey);
@@ -901,7 +911,6 @@ View.onClearAllClick = (function(key){
   }[key] || Commons.emptyFn;
 })(Settings.genKey);
 
-// pendding
 View.onClearBlockClick = (function(key){
   return {
     // server: B2
@@ -912,6 +921,12 @@ View.onClearBlockClick = (function(key){
       var block = { row: xy[0], column:xy[1] };
       Commons.fromServerCommand = true;
       SocketController.triggerClear({user_id:uid, block:block },"B2.");
+    },
+    "B3+console":function(){
+      var xy = this.value.split(',');
+      var block = { row: xy[0], column:xy[1] };
+      Commons.fromServerCommand = true;
+      SocketController.triggerClear({user_id:'0', block:block },"idioms.");
     }
   }[key] || Commons.emptyFn;
 })(Settings.genKey);
@@ -942,6 +957,10 @@ View.onStartClick = (function(key){
     },
     "B2+console":function(){
       SocketController.triggerAction({action:'start', user_id: this.value},"B2.");
+    },
+    "B3+console":function(){
+      $('#progress_bar').css("width", "100%").attr("aria-valuenow","100%").text(Commons.timeRemaining+"s");
+      SocketController.triggerAction({action:'start', user_id: this.value},"idioms.");
     }
   }[key] || Commons.emptyFn;
 })(Settings.genKey);
@@ -993,6 +1012,9 @@ View.onStopClick = (function(key){
     "B2+console":function(){
       SocketController.triggerAction({action:'stop', user_id: this.value},"B2.");
       View.setStopStyle({user_id:this.value});
+    },
+    "B3+console":function(){
+      SocketController.triggerAction({action:'stop', user_id: this.value},"idioms.");
     }
   }[key] || Commons.emptyFn;
 })(Settings.genKey);
@@ -1210,6 +1232,95 @@ View.onNextQuestionClick = (function(key){
       Commons.correct_users = null;
       SocketController.triggerClearAll({},"B2.");
       View.onStopAllClick.call(this);
+    },
+    "B3+console":function(){
+        // stop last user
+      if (Commons.gamers.prev() != null) {
+        SocketController.triggerAction({action:'stop', user_id:Commons.gamers.prev() }, "idioms.");
+      }
+      $('#progress_bar').css("width", "100%").attr("aria-valuenow","100%").text(Commons.timeRemaining+"s");
+      SocketController.triggerAction({action:'start',user_id:Commons.gamers.next()}, "idioms.");
+    }
+  }[key] || Commons.emptyFn;
+})(Settings.genKey);
+
+View.onShowTextClick = (function(key){
+  return {
+    "B3+console":function(){
+      var row = parseInt($('#row').val());
+      var originCol = $('#column').val();
+      var col = parseInt(originCol);
+      var columnArray = ['a','b','c','d','e','f','g','h','i','j','k','l'];
+      if(isNaN(col)){
+        var idx = columnArray.indexOf(originCol.toLowerCase());
+        if(idx != -1){
+          col = (idx + 1).toString();
+        }
+      }
+      var text = $('#showText').val();
+      var block = {row: row, column: col};
+      Commons.fromServerCommand = true;
+      SocketController.triggerSendText({block: block, text: text}, "idioms.");
+    }
+  }[key] || Commons.emptyFn;
+})(Settings.genKey);
+
+View.onUndoClick = (function(key){
+  return {
+    "B3+console":function(){
+      var track = Commons.trackCache.getUndo();
+      if(track){
+        var commandName = '';
+        var passObj = { block: track.block };
+        switch(track.action){
+          case 'rewrite':
+            commandName = 'Rewrite';
+            passObj.ink = track.ink;
+            break;
+          case 'text':
+            commandName = 'SendText';
+            passObj.text = track.text;
+            break;
+          case 'clear':
+            commandName = 'Clear';
+            passObj.user_id = '0';
+            break;
+        }
+        if(commandName){
+          SocketController["trigger" + commandName](passObj, "idioms.");
+        }
+      }
+      View.updateTrackButtons();
+    }
+  }[key] || Commons.emptyFn;
+})(Settings.genKey);
+
+View.onRedoClick = (function(key){
+  return {
+    "B3+console":function(){
+      var track = Commons.trackCache.getRedo();
+      if(track){
+        var commandName = '';
+        var passObj = { block: track.block };
+        switch(track.action){
+          case 'rewrite':
+            commandName = 'Rewrite';
+            passObj.ink = track.ink;
+            break;
+          case 'text':
+            commandName = 'SendText';
+            passObj.text = track.text;
+            break;
+          case 'clear':
+            commandName = 'Clear';
+            passObj.user_id = '0';
+            break;
+        }
+        if(commandName){
+          SocketController["trigger" + commandName](passObj, "idioms.");
+        }
+      }
+      View.updateTrackButtons();
     }
   }[key] || Commons.emptyFn;
 })(Settings.genKey);

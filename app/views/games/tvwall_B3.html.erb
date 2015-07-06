@@ -126,63 +126,83 @@ body,.container{
     </table>
 </div>
 
-
-
-
 <% content_for :javascripts do %>
-<%= javascript_include_tag 'server_idioms_helpers' %>
+
+<script>
+document.write('<script src="//'+ location.hostname + ':5001/socket.io/socket.io.js">\x3C/script>');
+</script>
+
+<script>
+// cache stage name for server1-tvwall.js
+window.stageName = 'B3';
+window.pageType = "tv";  // type: console, client, tv
+
+<% if @second.to_i > 0 %>
+window.timeRemaining = <%= @second %>;
+<% end %>
+  
+window.socketQuery = { _rtUserId: '0' };
+
+</script>
+
+<%= javascript_include_tag 'socketevent-generator' %>
+<%= javascript_include_tag 'commons' %>
+<%= javascript_include_tag 'action-definition' %>
+<%= javascript_include_tag 'view-definition' %>
+<%= javascript_include_tag 'socketevent-hooker' %>
+
 <script>
 
-var sketchSecondIns;
+// var sketchSecondIns;
 
-// overrides
-var start_button = function(value){
-    gamers.setActive(value);
-    startSetStyle(value);
-};
-var stop_button = function(value){
-    stopSetStyle(value);
-};
+// // overrides
+// var start_button = function(value){
+//     gamers.setActive(value);
+//     startSetStyle(value);
+// };
+// var stop_button = function(value){
+//     stopSetStyle(value);
+// };
 
-var blockCancelOneSubmitSetStyle = function(o){
-  $('#glow_'+o.block.row+'_'+o.block.column).hide();
-};
+// var blockCancelOneSubmitSetStyle = function(o){
+//   $('#glow_'+o.block.row+'_'+o.block.column).hide();
+// };
 
-var blockSubmitSetStyle = function(o){
-  $('#glow_'+o.block.row+'_'+o.block.column).show();
-};
+// var blockSubmitSetStyle = function(o){
+//   $('#glow_'+o.block.row+'_'+o.block.column).show();
+// };
 
-//後台取消確認
-var blockCancelSubmitSetStyle = function(o){
-    for(var x=1;x<=8;x++){
-      for(var y=1;y<=12;y++){
-        var c = document.getElementById('glow_'+x+'_'+y);
-        $(c).hide();
-      }
-    }
-};
+// //後台取消確認
+// var blockCancelSubmitSetStyle = function(o){
+//     for(var x=1;x<=8;x++){
+//       for(var y=1;y<=12;y++){
+//         var c = document.getElementById('glow_'+x+'_'+y);
+//         $(c).hide();
+//       }
+//     }
+// };
 
-function clearTimebar(c){
-  sketchSecondIns.clearBar();
-}
+// function clearTimebar(c){
+//   sketchSecondIns.clearBar();
+// }
 
-function continueWriteSet(c){
-  gamers.setActive(c);
-  $('#user_photo_'+c).addClass("green");
-  sketchSecondIns.doStart();
-}
+// function continueWriteSet(c){
+//   gamers.setActive(c);
+//   $('#user_photo_'+c).addClass("green");
+//   sketchSecondIns.doStart();
+// }
 
-function startSetStyle(c) {
-  $('#user_photo_'+c).addClass("green");
-  sketchSecondIns.resetBar();
-  sketchSecondIns.doStart();
-}
+// function startSetStyle(c) {
+//   $('#user_photo_'+c).addClass("green");
+//   sketchSecondIns.resetBar();
+//   sketchSecondIns.doStart();
+// }
 
-function stopSetStyle(c) {
-  $('#user_photo_'+c).removeClass("green");
-  sketchSecondIns.doStop();
-  blockCancelSubmitSetStyle();
-}
+// function stopSetStyle(c) {
+//   $('#user_photo_'+c).removeClass("green");
+//   sketchSecondIns.doStop();
+//   blockCancelSubmitSetStyle();
+// }
 
 window.responsiveMethod = function(){
   var jqEl = $('[id^=grid_]');
@@ -221,30 +241,27 @@ $(document).ready(function() {
     responsiveByParent: true
     //backgroundImage: '/assets/tvwall/img_Grid_g.gif'
   });
-  <% (1..8).to_a.each do |x| %>
-  <% (1..12).to_a.each do |y| %>
-  CM.reg('origin_<%= x %>_<%= y %>');
-  <% end %>
+
+  var gamerList = [];
+  <% @visitors.each do |visitor| %>
+  gamerList.push('<%= visitor.number %>');
   <% end %>
 
+  View.registerCanvas(gamerList);
+  View.collectGamers(gamerList);
+  View.loadSketchSecond();
 
   //window.chatApp = new ChatApp(500,500,'0');
   //window.chatApp.bindEvents();
 
-  (function collectGamers() {
-    <% @visitors.each do |visitor| %>
-    gamers.push('<%= visitor.number %>');
-    <% end %>
-  })();
-
-  setTimeout(function(){
-    if(!sketchSecondIns){
-      sketchSecondIns = Processing.getInstanceById('sketchSecond');  
-    }
-    var p = $(document.getElementById('sketchSecond').parentElement);
-    sketchSecondIns.setSize(p.width(), p.height());
-    sketchSecondIns.setSecond(<%= @second %>);
-  },400);
+  // setTimeout(function(){
+  //   if(!sketchSecondIns){
+  //     sketchSecondIns = Processing.getInstanceById('sketchSecond');  
+  //   }
+  //   var p = $(document.getElementById('sketchSecond').parentElement);
+  //   sketchSecondIns.setSize(p.width(), p.height());
+  //   sketchSecondIns.setSecond(<%= @second %>);
+  // },400);
 
   responsiveMethod();
   CM.doAllResponsive();

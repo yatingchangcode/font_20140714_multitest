@@ -170,87 +170,108 @@ body,.container{
 
 
 <% content_for :javascripts do %>
-<%= javascript_include_tag 'server_idioms' %>
-<%= javascript_include_tag 'server_idioms_helpers' %>
+<script>
+document.write('<script src="//'+ location.hostname + ':5001/socket.io/socket.io.js">\x3C/script>');
+</script>
+
+<script>
+// cache stage name for server1-tvwall.js
+window.stageName = '<%= @stage %>';
+window.pageType = "console";  // type: console, client, tv
+
+<% if @second.to_i > 0 %>
+window.timeRemaining = <%= @second %>;
+<% end %>
+  
+window.socketQuery = { _rtUserId: '0' };
+
+</script>
+
+<%= javascript_include_tag 'socketevent-generator' %>
+<%= javascript_include_tag 'commons' %>
+<%= javascript_include_tag 'action-definition' %>
+<%= javascript_include_tag 'view-definition' %>
+<%= javascript_include_tag 'socketevent-hooker' %>
+
 <script>
 
-window.fromServerCommand = false;
+// window.fromServerCommand = false;
 
-var updateTrackButtons = function(){  
-  $("#undoButton").attr("disabled", !(trackCache.hasUndo() && !window.alarm));
-  $("#redoButton").attr("disabled", !(trackCache.hasRedo() && !window.alarm));
-};
+// var updateTrackButtons = function(){  
+//   $("#undoButton").attr("disabled", !(trackCache.hasUndo() && !window.alarm));
+//   $("#redoButton").attr("disabled", !(trackCache.hasRedo() && !window.alarm));
+// };
 
-var blockCancelOneSubmitSetStyle = function(o){
-  $('#glow_'+o.block.row+'_'+o.block.column).hide();
-};
+// var blockCancelOneSubmitSetStyle = function(o){
+//   $('#glow_'+o.block.row+'_'+o.block.column).hide();
+// };
 
-var blockSubmitSetStyle = function(o){
-  $('#glow_'+o.block.row+'_'+o.block.column).show();
-};
+// var blockSubmitSetStyle = function(o){
+//   $('#glow_'+o.block.row+'_'+o.block.column).show();
+// };
 
-//後台取消確認
-var blockCancelSubmitSetStyle = function(o){
-  for(var x=1;x<=8;x++){
-    for(var y=1;y<=12;y++){
-      var c = document.getElementById('glow_'+x+'_'+y);
-      $(c).hide();
-    }
-  }
-};
+// //後台取消確認
+// var blockCancelSubmitSetStyle = function(o){
+//   for(var x=1;x<=8;x++){
+//     for(var y=1;y<=12;y++){
+//       var c = document.getElementById('glow_'+x+'_'+y);
+//       $(c).hide();
+//     }
+//   }
+// };
 
-function startCounter(thisvalue) {
-  console.log(window.alarm);
-  if(window.alarm) return;
-  var s = parseFloat($('#progress_bar').text()).toFixed(1);
-    //if (s === (0.0).toFixed(1)) resetProgressBarAndTime();
-  window.alarm = setInterval(function(){
-    var s = parseFloat($('#progress_bar').text()).toFixed(1);
-    if (s > 0){
-      setProgressBarAndTime(s);
-    } else {
-      clearInterval(window.alarm);
-      window.alarm = null;
-      gamers.all().forEach(function(e){
-        window.chatApp.action(e,'stop');
-        //receiveSubmitHandler({user_id:e});
-      });
-      if(tvwall && tvwall.clearTimebar) tvwall.clearTimebar();
-    }
-  }, 100); 
-}
+// function startCounter(thisvalue) {
+//   console.log(window.alarm);
+//   if(window.alarm) return;
+//   var s = parseFloat($('#progress_bar').text()).toFixed(1);
+//     //if (s === (0.0).toFixed(1)) resetProgressBarAndTime();
+//   window.alarm = setInterval(function(){
+//     var s = parseFloat($('#progress_bar').text()).toFixed(1);
+//     if (s > 0){
+//       setProgressBarAndTime(s);
+//     } else {
+//       clearInterval(window.alarm);
+//       window.alarm = null;
+//       gamers.all().forEach(function(e){
+//         window.chatApp.action(e,'stop');
+//         //receiveSubmitHandler({user_id:e});
+//       });
+//       if(tvwall && tvwall.clearTimebar) tvwall.clearTimebar();
+//     }
+//   }, 100); 
+// }
 
-function continueWriteSet(c){
-  gamers.setActive(c);
-  startCounter(c);
-  $('#user_photo_'+c).addClass("green");
-}
+// function continueWriteSet(c){
+//   gamers.setActive(c);
+//   startCounter(c);
+//   $('#user_photo_'+c).addClass("green");
+// }
 
-function startSetStyle(c) {
-  $('#user_photo_'+c).addClass("green");
-}
+// function startSetStyle(c) {
+//   $('#user_photo_'+c).addClass("green");
+// }
 
-function stopSetStyle(c) {
-  $('#user_photo_'+c).removeClass("green");
-  blockCancelSubmitSetStyle();
-  updateTrackButtons();
-}
-function resetProgressBarAndTime() {
-  $('#progress_bar').css("width", "100%").attr("aria-valuenow","100%").text(window.timeRemaining+"s");
-  console.log(window.timeRemaining);
-}
+// function stopSetStyle(c) {
+//   $('#user_photo_'+c).removeClass("green");
+//   blockCancelSubmitSetStyle();
+//   updateTrackButtons();
+// }
+// function resetProgressBarAndTime() {
+//   $('#progress_bar').css("width", "100%").attr("aria-valuenow","100%").text(window.timeRemaining+"s");
+//   console.log(window.timeRemaining);
+// }
 
-function setProgressBarAndTime(s) {
-  var percent = 100 * (s-0.1) / window.timeRemaining;
-  $('#progress_bar').css("width", percent+"%").attr('aria-valuenow', percent).text((s-0.1).toFixed(1)+"s");
-}
+// function setProgressBarAndTime(s) {
+//   var percent = 100 * (s-0.1) / window.timeRemaining;
+//   $('#progress_bar').css("width", percent+"%").attr('aria-valuenow', percent).text((s-0.1).toFixed(1)+"s");
+// }
 
 //var alarm = {};
 var tvwall = window.open("tvwall_<%= params[:stage] %>?join_visitors_number=<%= params[:join_visitors_number] %>&second=<%= @second %>","tvwallWindow","width=800, height=800");
 //window.open("record_idioms?join_visitors_number=<%= params[:join_visitors_number] %>","recordWindow","width=800, height=800");
 
-window.timeRemaining = parseInt(<%= @second %>);
-window.alarm = null;
+// window.timeRemaining = parseInt(<%= @second %>);
+// window.alarm = null;
 
 $(document).ready(function() {
   CM.prop({
@@ -262,36 +283,50 @@ $(document).ready(function() {
     responsiveByParent: true,
     backgroundImage: '/assets/tvwall/img_Grid_g.gif'
   });
-  <% (1..8).to_a.each do |x| %>
-  <% (1..12).to_a.each do |y| %>
-  CM.reg('origin_<%= x %>_<%= y %>');
+  
+  var gamerList = [];
+  <% @visitors.each do |visitor| %>
+  gamerList.push('<%= visitor.number %>');
   <% end %>
-  <% end %>
-  $("#undoButton").attr("disabled", true);
-  $("#redoButton").attr("disabled", true);
 
-  window.chatApp = new ChatApp(500,500,'0');
-  window.chatApp.bindEvents();
-  window.chatApp.reset({stage:'<%= params[:stage] %>'});
-  window.chatApp.setGameInfo(<%= @game.id %>, "<%= @stage %>", "<%= @visitors.to_json %>");
+  View.registerCanvas(gamerList);
+  View.collectGamers(gamerList);
 
-  (function collectGamers() {
-    <% @visitors.each do |visitor| %>
-    gamers.push('<%= visitor.number %>');
-    <% end %>
-  })();
+  View.updateTrackButtons(true);
+
+  // window.chatApp = new ChatApp(500,500,'0');
+  // window.chatApp.bindEvents();
+  // window.chatApp.reset({stage:'<%= params[:stage] %>'});
+  // window.chatApp.setGameInfo(<%= @game.id %>, "<%= @stage %>", "<%= @visitors.to_json %>");
+
+  SocketController.triggerReset({stage:'<%= params[:stage] %>'},"idioms.");
+  SocketController.triggerSetGameinfoToSocket({
+    game: <%= @game.id %>,
+    stage: "<%= @stage %>",
+    visitors: "<%= @visitors.to_json %>"
+  },"idioms.");
+
+  // (function collectGamers() {
+  //   <% @visitors.each do |visitor| %>
+  //   gamers.push('<%= visitor.number %>');
+  //   <% end %>
+  // })();
 
 
-  $('[id^=start_button_]').click(function(){
-    resetProgressBarAndTime();
-    window.chatApp.action(this.value,'start');
-  });
+  // $('[id^=start_button_]').click(function(){
+  //   resetProgressBarAndTime();
+  //   window.chatApp.action(this.value,'start');
+  // });
 
-  $('[id^=stop_button_]').click(function(){
+  $('[id^=start_button_]').click(View.onStartClick);
 
-   window.chatApp.action(this.value,'stop');
-     //receiveSubmitHandler({user_id:this.value});
-   });
+  // $('[id^=stop_button_]').click(function(){
+
+  //  window.chatApp.action(this.value,'stop');
+  //    //receiveSubmitHandler({user_id:this.value});
+  // });
+
+  $('[id^=stop_button_]').click(View.onStopClick);
 
   // Use clear block and start instead.
   // $('[id^=continue_]').click(function(){
@@ -302,99 +337,108 @@ $(document).ready(function() {
   
   $('[id^=continue_]').click(View.onContinueWriteClick);
   
+  // $('#next_button').click(function(){
+  //   // stop last user
+  //   if (gamers.prev() != null) {
+  //     window.chatApp.action(gamers.prev(),'stop');
+  //   }
+  //   var newgamer = gamers.next();
+  //   // call old gamer to stop
+  //   // call new user to clear screen
+  //   resetProgressBarAndTime();
+  //   window.chatApp.action(newgamer,'start');
+  //   //there is not setActive?
+  //   // startSetStyle(newgamer);
+  //   // startCounter(newgamer);
+  // });
 
-  $('#next_button').click(function(){
-    // stop last user
-    if (gamers.prev() != null) {
-      window.chatApp.action(gamers.prev(),'stop');
-    }
-    var newgamer = gamers.next();
-    // call old gamer to stop
-    // call new user to clear screen
-    resetProgressBarAndTime();
-    window.chatApp.action(newgamer,'start');
-    //there is not setActive?
-    // startSetStyle(newgamer);
-    // startCounter(newgamer);
-  });
+  $('#next_button').click(View.onNextQuestionClick);
 
-  $('[name^=clear]').click(function(){
-    var xy = this.value.split(',');
-    var block = { row: xy[0], column:xy[1] };
-    fromServerCommand = true;
-    window.chatApp.clear(0,block);
-  });
+  // $('[name^=clear]').click(function(){
+  //   var xy = this.value.split(',');
+  //   var block = { row: xy[0], column:xy[1] };
+  //   fromServerCommand = true;
+  //   window.chatApp.clear(0,block);
+  // });
 
-  $('#showTextButton').click(function(){
-    var row = parseInt($('#row').val());
-    var originCol = $('#column').val();
-    var col = parseInt(originCol);
-    var columnArray = ['a','b','c','d','e','f','g','h','i','j','k','l'];
-    if(isNaN(col)){
-      var idx = columnArray.indexOf(originCol.toLowerCase());
-      if(idx != -1){
-        col = (idx + 1).toString();
-      }
-    }
-    var text = $('#showText').val();
-    var block = {row: row, column: col};
-    fromServerCommand = true;
-    window.chatApp.sendText(text, block);
-  });
+  $('[name^=clear]').click(View.onClearBlockClick);
 
-  $('#undoButton').click(function(){
-    var track = trackCache.getUndo();
-    if(track){
-      var commandName = '';
-      var first = '';
-      switch(track.action){
-        case 'rewrite':
-          commandName = 'rewrite';
-          first = track.ink;
-          break;
-        case 'text':
-          commandName = 'sendText';
-          first = track.text;
-          break;
-        case 'clear':
-          commandName = 'clear';
-          first = 0;
-          break;
-      }
-      if(commandName){
-        window.chatApp[commandName](first, track.block);
-        console.log(commandName + ': ' + JSON.stringify(track.block) + ' <' + JSON.stringify(first) + '> ');
-      }
-    }
-    updateTrackButtons();
-  });
+  // $('#showTextButton').click(function(){
+  //   var row = parseInt($('#row').val());
+  //   var originCol = $('#column').val();
+  //   var col = parseInt(originCol);
+  //   var columnArray = ['a','b','c','d','e','f','g','h','i','j','k','l'];
+  //   if(isNaN(col)){
+  //     var idx = columnArray.indexOf(originCol.toLowerCase());
+  //     if(idx != -1){
+  //       col = (idx + 1).toString();
+  //     }
+  //   }
+  //   var text = $('#showText').val();
+  //   var block = {row: row, column: col};
+  //   fromServerCommand = true;
+  //   window.chatApp.sendText(text, block);
+  // });
 
-  $('#redoButton').click(function(){
-    var track = trackCache.getRedo();
-    if(track){
-      var commandName = '';
-      var first = '';
-      switch(track.action){
-        case 'rewrite':
-          commandName = 'rewrite';
-          first = track.ink;
-          break;
-        case 'text':
-          commandName = 'sendText';
-          first = track.text;
-          break;
-        case 'clear':
-          commandName = 'clear';
-          first = 0;
-          break;
-      }
-      if(commandName){
-        window.chatApp[commandName](first, track.block);
-        console.log(commandName + ': ' + JSON.stringify(track.block) + ' <' + JSON.stringify(first) + '> ');
-      }
-    }
-    updateTrackButtons();
-  });
+  $('#showTextButton').click(View.onShowTextClick);
+
+  // $('#undoButton').click(function(){
+  //   var track = trackCache.getUndo();
+  //   if(track){
+  //     var commandName = '';
+  //     var first = '';
+  //     switch(track.action){
+  //       case 'rewrite':
+  //         commandName = 'rewrite';
+  //         first = track.ink;
+  //         break;
+  //       case 'text':
+  //         commandName = 'sendText';
+  //         first = track.text;
+  //         break;
+  //       case 'clear':
+  //         commandName = 'clear';
+  //         first = 0;
+  //         break;
+  //     }
+  //     if(commandName){
+  //       window.chatApp[commandName](first, track.block);
+  //       console.log(commandName + ': ' + JSON.stringify(track.block) + ' <' + JSON.stringify(first) + '> ');
+  //     }
+  //   }
+  //   View.updateTrackButtons();
+  // });
+
+  $('#undoButton').click(View.onUndoClick);
+
+  // $('#redoButton').click(function(){
+  //   var track = trackCache.getRedo();
+  //   if(track){
+  //     var commandName = '';
+  //     var first = '';
+  //     switch(track.action){
+  //       case 'rewrite':
+  //         commandName = 'rewrite';
+  //         first = track.ink;
+  //         break;
+  //       case 'text':
+  //         commandName = 'sendText';
+  //         first = track.text;
+  //         break;
+  //       case 'clear':
+  //         commandName = 'clear';
+  //         first = 0;
+  //         break;
+  //     }
+  //     if(commandName){
+  //       window.chatApp[commandName](first, track.block);
+  //       console.log(commandName + ': ' + JSON.stringify(track.block) + ' <' + JSON.stringify(first) + '> ');
+  //     }
+  //   }
+  //   View.updateTrackButtons();
+  // });
+
+  $('#redoButton').click(View.onRedoClick);
 
 });
 </script>
