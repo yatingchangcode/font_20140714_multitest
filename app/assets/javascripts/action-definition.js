@@ -31,6 +31,8 @@ Action.onMoveLocation = (function(key){
   }[key] || Commons.emptyFn;
 })(Settings.genKey);
 
+Action.onUpLocation = Commons.emptyFn;
+
 Action.onStart = (function(key){
   // *** server: A1 A3 B1 B2 B2_v1 no action
   // *** tv: A1 B2 B2_v1 no action

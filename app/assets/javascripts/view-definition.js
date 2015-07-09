@@ -224,6 +224,8 @@ View.setMoveLocationStyle = (function(key){
   }[key] || Commons.emptyFn;
 })(Settings.genKey);
 
+View.setUpLocationStyle = Commons.emptyFn;
+
 View.setStartStyle = (function(key){
   key = Commons.getCommonGenKey(key, ["A3+tv","B1+tv","B2_v1+tv","B2_v1+console","B2+tv"]);
   key = Commons.getCommonGenKey(key, ["A1+console","A3+console","B1+console"]);
@@ -384,6 +386,11 @@ View.setClearStyle = (function(key){
     // server: B3
     "B3+console":function(o){
       CM('origin_' + o.block.row + '_' + o.block.column).clear();
+    },
+    "A1+client":function(o){
+      if(o.user_id == Settings.clientUserId){
+        CM('origin_' + Settings.clientUserId).clear();
+      }
     }
   }[key] || Commons.emptyFn;
 })(Settings.genKey);
