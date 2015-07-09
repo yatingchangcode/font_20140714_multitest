@@ -4,7 +4,7 @@
       <div style="float:left;">
         <div style="height:30px;width:300px;padding:5px 0;">
           <button id="clearBtn" style="font-size:15px;">Clear</button>
-          <button id="prevBtn" style="font-size:15px;">Prev</button>
+          <!-- <button id="prevBtn" style="font-size:15px;">Prev</button> -->
           <button id="submitBtn" style="font-size:15px;">Submit</button>
           <p id="seconds" style="float:right;"></p>
         </div>
@@ -13,8 +13,26 @@
       <canvas id="multiple" class="orgincanvas hidden"></canvas>
 
       <% content_for :javascripts do %>
-      <script>document.write('<script src="//'+ location.hostname + ':5001/socket.io/socket.io.js">\x3C/script>')</script>
-      <%= javascript_include_tag 'client' %>
+      <script>
+      document.write('<script src="//'+ location.hostname + ':5001/socket.io/socket.io.js">\x3C/script>');
+      </script>
+
+      <script>
+      // cache stage name for server1-tvwall.js
+      window.stageName = '<%= @stage %>';
+      window.pageType = "client";  // type: console, client, tv
+      window.clientUserId = '<%= @user_id %>';
+
+      window.isDrawing = false;
+
+      </script>
+
+      <%= javascript_include_tag 'socketevent-generator' %>
+      <%= javascript_include_tag 'commons' %>
+      <%= javascript_include_tag 'action-definition' %>
+      <%= javascript_include_tag 'view-definition' %>
+      <%= javascript_include_tag 'socketevent-hooker' %>
+
       <script>
       var seconds;
 
@@ -31,43 +49,76 @@
         CM.reg('origin_<%= @user_id %>');
         ocan = document.getElementById('origin_<%= @user_id %>');
 
-        window.chatApp = new ChatApp(ocan.offsetLeft,ocan.offsetTop,'<%= @user_id %>');
-        window.chatApp.triggerEvents();
-        window.chatApp.bindEvents();
+        // window.chatApp = new ChatApp(ocan.offsetLeft,ocan.offsetTop,'<%= @user_id %>');
+        // window.chatApp.triggerEvents();
+        // window.chatApp.bindEvents();
 
+        $("#clearBtn").click(View.onClearClick);
+        $("#submitBtn").click(View.onSubmitClick);
+
+        $('#origin_' + clientUserId).mousedown(function(e){
+          isDrawing = true;
+          var message = {
+            user_id: clientUserId,
+            x: e.clientX - ocan.offsetLeft,
+            y: e.clientY - ocan.offsetTop,
+            stamp: (new Date()).getTime()
+          };
+          CM('origin_' + message.user_id).point({ x: message.x, y: message.y });
+          SocketController.triggerDownLocation(message);
+        });
+        
+        $('#origin_' + clientUserId).mousemove(function(e){
+          if (isDrawing){
+            var message = {
+              user_id: clientUserId,
+              x: e.clientX - ocan.offsetLeft,
+              y: e.clientY - ocan.offsetTop,
+              stamp: (new Date()).getTime()
+            };
+            CM('origin_' + message.user_id).line({ x: message.x, y: message.y });
+            SocketController.triggerMoveLocation(message);
+          }
+        });
+
+        $('#origin_' + clientUserId).mouseup(function(e){
+          isDrawing = false;
+          SocketController.triggerUpLocation({user_id:clientUserId});
+        });
+    
       });
 
       var resetAlarm = function() {
           $('#seconds').html(window.seconds);
       }
 
-      var receiveActionHandler = function(data){
-        var name = data.action;
-        if (name == "start"){
-          window.chatApp.dispatcher.emit('action',{
-            user_id: data.user_id,
-            action: "device_start",
-            stamp: (new Date()).getTime()
-          });
-        }
-        else if (name == "stop"){
-          window.chatApp.dispatcher.emit('action',{
-            user_id: data.user_id,
-            action: "device_stop",
-            stamp: (new Date()).getTime()
-          });
-        }
-        alert(name);
-      };
+      // var receiveActionHandler = function(data){
+      //   var name = data.action;
+      //   if (name == "start"){
+      //     window.chatApp.dispatcher.emit('action',{
+      //       user_id: data.user_id,
+      //       action: "device_start",
+      //       stamp: (new Date()).getTime()
+      //     });
+      //   }
+      //   else if (name == "stop"){
+      //     window.chatApp.dispatcher.emit('action',{
+      //       user_id: data.user_id,
+      //       action: "device_stop",
+      //       stamp: (new Date()).getTime()
+      //     });
+      //   }
+      //   alert(name);
+      // };
 
-      var receiveContinueWriteHandler = function(data){
-        window.chatApp.dispatcher.emit('action',{
-          user_id: data.user_id,
-          action: "device_start",
-          stamp: (new Date()).getTime()
-        });
-        alert("continue write");
-      };
+      // var receiveContinueWriteHandler = function(data){
+      //   window.chatApp.dispatcher.emit('action',{
+      //     user_id: data.user_id,
+      //     action: "device_start",
+      //     stamp: (new Date()).getTime()
+      //   });
+      //   alert("continue write");
+      // };
 
       </script>
       <% end %>

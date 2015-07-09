@@ -20,6 +20,14 @@ Object.defineProperty(Settings, 'genKey', {
   value: Settings.stageName + "+" + (window.pageType || "console"),
   writable: false
 });
+Object.defineProperty(Settings, 'clientUserId', {
+  value: window.clientUserId || '0',
+  writable: false
+});
+Object.defineProperty(Settings, 'consoleUserId', {
+  value: '0',
+  writable: false
+});
 Object.defineProperty(Settings, 'socketIp', {
   value: window.socketIp || window.location.hostname,
   writable: false
@@ -29,7 +37,7 @@ Object.defineProperty(Settings, 'socketPort', {
   writable: false
 });
 Object.defineProperty(Settings, 'socketQuery', {
-  value: window.socketQuery || {},
+  value: { _rtUserId: Settings.clientUserId || Settings.consoleUserId },
   writable: false
 });
 Object.defineProperty(Settings, 'socketProtocol', {
@@ -45,7 +53,7 @@ var socketListenEvents = [
   "submit",
   "cancelSubmit",
   //"cancel_submit",
-  "clear",  // {user_id:uid} or {user_id:uid, block:block}
+  "clear",  // {user_id:uid} or {user_id:uid, block:block} or {}
   "right",
   "removeO",
   //"remove_o",
@@ -79,6 +87,7 @@ var socketTriggerEvents = [
   "clear",    // {user_id:uid} or {user_id:uid, block:block}
   "down_location",
   "move_location",
+  "up_location",
   "move_block",
 
   // server.js.coffee
@@ -106,14 +115,6 @@ var socketTriggerEvents = [
 
 (function(scope){
   var Controller = function(){};
-  // var io = {  // socket io object
-  //   on:function(name, fn){
-  //     console.log("bind event:" + name + " fn:"+ (fn || "").toString());
-  //   },
-  //   emit:function(name, data, fn){
-  //     console.log("trigger event:" + name + " data:" + JSON.stringify(data) +" fn:"+ (fn || "").toString());
-  //   }
-  // };
   var parseQuery = function(list){
     var retStr = [];
     for(var i in list){

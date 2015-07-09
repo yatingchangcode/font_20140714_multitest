@@ -73,8 +73,6 @@
       <% if @second.to_i > 0 %>
       window.timeRemaining = <%= @second %>;
       <% end %>
-        
-      window.socketQuery = { _rtUserId: '0' };
 
       </script>
 
@@ -306,7 +304,7 @@
         $('[id^=stop_button_]').click(View.onStopClick);
 
         <% @visitors.each do |visitor| %>
-        SocketController.triggerIsConnected({user_id:'0',check_id:<%= visitor.number %>});
+        SocketController.triggerIsConnected({user_id:Settings.consoleUserId,check_id:<%= visitor.number %>});
         <% end %>
 
       });

@@ -155,8 +155,6 @@
       window.stageName = 'B2';
       window.pageType = "console";  // type: console, client, tv
         
-      window.socketQuery = { _rtUserId: '0' };
-
       </script>
 
       <%= javascript_include_tag 'socketevent-generator' %>
@@ -563,7 +561,7 @@
 
         CM.doAllResponsive();
         <% @visitors.each do |visitor| %>
-        SocketController.triggerIsConnected({user_id:'0',check_id:<%= visitor.number %>},"B2.");
+        SocketController.triggerIsConnected({user_id:Settings.consoleUserId,check_id:<%= visitor.number %>},"B2.");
         <% end %>
 
       });

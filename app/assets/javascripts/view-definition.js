@@ -461,6 +461,10 @@ View.setClearAllStyle = (function(key){
         SocketController.receiveCancelSubmitHandler({user_id:id});
         SocketController.receiveActionHandler({name:'stop', user_id:id});
       });
+    },
+    // client A1 A2 A3 B1
+    "A1+client":function(o){
+      CM('origin_' + Settings.clientUserId).clear();
     }
   }[key] || Commons.emptyFn;
 })(Settings.genKey);
@@ -884,6 +888,10 @@ View.onClearClick = (function(key){
           SocketController.triggerClear({user_id:uid, block:{row:i, column:j } },"B2.");
         }
       }
+    },
+    "A1+client":function(){
+      SocketController.triggerClear({user_id:Settings.clientUserId, stamp: (new Date()).getTime() });
+      CM('origin_'+ Settings.clientUserId).clear();
     }
   }[key] || Commons.emptyFn;
 })(Settings.genKey);
@@ -926,7 +934,7 @@ View.onClearBlockClick = (function(key){
       var xy = this.value.split(',');
       var block = { row: xy[0], column:xy[1] };
       Commons.fromServerCommand = true;
-      SocketController.triggerClear({user_id:'0', block:block },"idioms.");
+      SocketController.triggerClear({user_id: Settings.consoleUserId, block:block },"idioms.");
     }
   }[key] || Commons.emptyFn;
 })(Settings.genKey);
@@ -1283,7 +1291,7 @@ View.onUndoClick = (function(key){
             break;
           case 'clear':
             commandName = 'Clear';
-            passObj.user_id = '0';
+            passObj.user_id = Settings.consoleUserId;
             break;
         }
         if(commandName){
@@ -1313,7 +1321,7 @@ View.onRedoClick = (function(key){
             break;
           case 'clear':
             commandName = 'Clear';
-            passObj.user_id = '0';
+            passObj.user_id = Settings.consoleUserId;
             break;
         }
         if(commandName){
@@ -1321,6 +1329,19 @@ View.onRedoClick = (function(key){
         }
       }
       View.updateTrackButtons();
+    }
+  }[key] || Commons.emptyFn;
+})(Settings.genKey);
+
+View.onSubmitClick = (function(key){
+  return {
+    "A1+client":function(){
+      SocketController.triggerAction({
+        action: 'device_stop',
+        user_id: Settings.clientUserId,
+        stamp: (new Date()).getTime()
+      });
+      SocketController.triggerSubmit({user_id: Settings.clientUserId});
     }
   }[key] || Commons.emptyFn;
 })(Settings.genKey);

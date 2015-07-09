@@ -146,8 +146,6 @@ progress::-webkit-progress-value {
       window.timeRemaining = <%= @second %>;
       <% end %>
         
-      window.socketQuery = { _rtUserId: '0' };
-
       </script>
 
       <%= javascript_include_tag 'socketevent-generator' %>
@@ -508,7 +506,7 @@ progress::-webkit-progress-value {
         $('#next_question_button').click(View.onNextQuestionClick);
 
         <% @visitors.each do |visitor| %>
-        SocketController.triggerIsConnected({user_id:'0',check_id:<%= visitor.number %>});
+        SocketController.triggerIsConnected({user_id:Settings.consoleUserId,check_id:<%= visitor.number %>});
         // window.chatApp.is_connected(<%= visitor.number %>);
         <% end %>
 

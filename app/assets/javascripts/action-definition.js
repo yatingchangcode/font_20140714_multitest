@@ -45,6 +45,15 @@ Action.onStart = (function(key){
     // tv: A3 B1
     "A3+tv":function(o){
       SocketController.receiveCancelSubmitHandler(o);
+    },
+    // on write.html.erb
+    "A1+client":function(o){
+      SocketController.triggerAction({
+        action:'device_start',
+        user_id: o.user_id,
+        stamp: (new Date()).getTime()
+      });
+      alert("start");
     }
   }[key] || Commons.emptyFn;
 })(Settings.genKey);
@@ -74,6 +83,14 @@ Action.onStop = (function(key){
       Commons.trackCache.saveToCache();
       clearInterval(Commons.alarm);
       Commons.alarm = null; 
+    },
+    "A1+client":function(o){
+      SocketController.triggerAction({
+        action:'device_stop',
+        user_id: o.user_id,
+        stamp: (new Date()).getTime()
+      });
+      alert("stop");
     }
   }[key] || Commons.emptyFn;
 })(Settings.genKey);
@@ -106,13 +123,13 @@ Action.onClear = (function(key){
   return {
     // server: B2
     "B2+console":function(o){
-      if(Commons.fromServerCommand || o.user_id != '0'){
+      if(Commons.fromServerCommand || o.user_id != Settings.consoleUserId){
         Commons.fromServerCommand = false;
       }
     },
     // server: B3
     "B3+console":function(o){
-      if(Commons.fromServerCommand || o.user_id != '0'){
+      if(Commons.fromServerCommand || o.user_id != Settings.consoleUserId){
         Commons.trackCache.clear(o.block.row, o.block.column, Commons.fromServerCommand);
         Commons.fromServerCommand = false;
       }
@@ -235,6 +252,14 @@ Action.onContinueWrite = (function(key){
     // tv: B3
     "B3+console": function(o){
       Commons.gamers.setActive(c);
+    },
+    "A1+client":function(o){
+      SocketController.triggerAction({
+        action:'device_start',
+        user_id: o.user_id,
+        stamp: (new Date()).getTime()
+      });
+      alert("continue write");
     }
   }[key] || Commons.emptyFn;
 })(Settings.genKey);
