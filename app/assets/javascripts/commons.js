@@ -281,6 +281,11 @@
     scope.Commons.tempcount = {};
   }
 
+  if(~["B2+client"].indexOf(genKey)){
+    scope.Commons.currentRow = 1;
+    scope.Commons.currentCol = 1;
+  }
+
   // switch(Settings.stageName){
   //   case 'A3':
   //   case 'B3':
