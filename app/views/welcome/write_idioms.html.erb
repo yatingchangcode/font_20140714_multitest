@@ -4,13 +4,13 @@
       <div style="float:left;">
         <div style="height:30px;padding:5px 0;">
           <button id="clearBtn" style="font-size:15px;">Clear</button>
-          <button id="prevBtn" style="font-size:15px;">Prev</button>
+          <!-- <button id="prevBtn" style="font-size:15px;">Prev</button> -->
           <button id="submitBtn" style="font-size:15px;">Submit</button>
           <input id="row" type="number" value="1" />
           <input id="column" type="number" value="1" />
 
           <button id="moveBlock" style="font-size:15px;">指定格子</button>
-          <button id="endRound" style="font-size:15px;">結束回合</button>
+          <!-- <button id="endRound" style="font-size:15px;">結束回合</button> -->
 
         </div>
         <canvas id="origin_<%= @user_id %>" class="orgincanvas"></canvas>
@@ -18,8 +18,27 @@
       <canvas id="multiple" class="orgincanvas hidden"></canvas>
 
       <% content_for :javascripts do %>
-      <script src="http://127.0.0.1:5001/socket.io/socket.io.js"></script>
-      <%= javascript_include_tag 'writes_idioms' %>
+      
+      <script>
+      document.write('<script src="//'+ location.hostname + ':5001/socket.io/socket.io.js">\x3C/script>');
+      </script>
+
+      <script>
+      // cache stage name for server1-tvwall.js
+      window.stageName = '<%= @stage %>';
+      window.pageType = "client";  // type: console, client, tv
+      window.clientUserId = '<%= @user_id %>';
+
+      window.isDrawing = false;
+
+      </script>
+
+      <%= javascript_include_tag 'socketevent-generator' %>
+      <%= javascript_include_tag 'commons' %>
+      <%= javascript_include_tag 'action-definition' %>
+      <%= javascript_include_tag 'view-definition' %>
+      <%= javascript_include_tag 'socketevent-hooker' %>
+
       <script>
       $(document).ready(function() {
         CM.prop({
@@ -31,43 +50,102 @@
           backgroundImage: '/assets/block-524.png'
         });
 
+        // CM.reg('origin_<%= @user_id %>');
+        // ocan = document.getElementById('origin_<%= @user_id %>');
+
+        // window.chatApp = null;
+        // $('#moveBlock').click(function(){
+        //   if(!window.chatApp){
+        //     window.chatApp = new ChatApp(ocan.offsetLeft,ocan.offsetTop,'<%= @user_id %>',{row: $('#row').val(), column:$('#column').val()});
+        //     window.chatApp.triggerEvents();
+        //     window.chatApp.bindEvents();
+        //   }
+        //   window.chatApp.moveBlock({row: $('#row').val(), column:$('#column').val()});
+        // });
+
+        // $('#endRound').click(function(){
+        //   window.chatApp.endRound();
+        // });
+
         CM.reg('origin_<%= @user_id %>');
         ocan = document.getElementById('origin_<%= @user_id %>');
 
-        window.chatApp = null;
+        $("#clearBtn").click(View.onClearClick);
+        $("#submitBtn").click(View.onSubmitClick);
+
         $('#moveBlock').click(function(){
-          if(!window.chatApp){
-            window.chatApp = new ChatApp(ocan.offsetLeft,ocan.offsetTop,'<%= @user_id %>',{row: $('#row').val(), column:$('#column').val()});
-            window.chatApp.triggerEvents();
-            window.chatApp.bindEvents();
-          }
-          window.chatApp.moveBlock({row: $('#row').val(), column:$('#column').val()});
+          Commons.currentRow = parseInt($('#row').val());
+          Commons.currentCol = parseInt($('#column').val());
+          var block = { row: Commons.currentRow, column: Commons.currentCol };
+          SocketController.triggerMoveBlock({
+            user_id: Settings.clientUserId,
+            block:block
+          },"idioms.");
+          SocketController.triggerAction({
+            action: "device_start",
+            user_id: Settings.clientUserId,
+            block:block,
+            stamp: (new Date()).getTime()
+          },"idioms.");
         });
 
-        $('#endRound').click(function(){
-          window.chatApp.endRound();
+        $('#origin_' + clientUserId).mousedown(function(e){
+          isDrawing = true;
+          var block = { row: Commons.currentRow, column: Commons.currentCol };
+          var message = {
+            user_id: clientUserId,
+            x: e.clientX - ocan.offsetLeft,
+            y: e.clientY - ocan.offsetTop,
+            block:block,
+            stamp: (new Date()).getTime()
+          };
+          CM('origin_' + message.user_id).point({ x: message.x, y: message.y, block:block });
+          SocketController.triggerDownLocation(message,"idioms.");
+        });
+        
+        $('#origin_' + clientUserId).mousemove(function(e){
+          if (isDrawing){
+            var block = { row: Commons.currentRow, column: Commons.currentCol };
+            var message = {
+              user_id: clientUserId,
+              x: e.clientX - ocan.offsetLeft,
+              y: e.clientY - ocan.offsetTop,
+              block:block,
+              stamp: (new Date()).getTime()
+            };
+            CM('origin_' + message.user_id).line({ x: message.x, y: message.y, block:block });
+            SocketController.triggerMoveLocation(message,"idioms.");
+          }
+        });
+
+        $('#origin_' + clientUserId).mouseup(function(e){
+          isDrawing = false;
+          SocketController.triggerUpLocation({
+            user_id:clientUserId,
+            block: { row: Commons.currentRow, column: Commons.currentCol }
+          },"idioms.");
         });
 
       });
 
-      var receiveActionHandler = function(data){
-        var name = data.action;
-        if (name == "start"){
-          window.chatApp.dispatcher.trigger('action',{
-            user_id: data.user_id,
-            action: "device_start",
-            stamp: (new Date()).getTime()
-          });
-        }
-        else if (name == "stop"){
-          window.chatApp.dispatcher.trigger('action',{
-            user_id: data.user_id,
-            action: "device_stop",
-            stamp: (new Date()).getTime()
-          });
-        }
-        console.log(name);
-      };
+      // var receiveActionHandler = function(data){
+      //   var name = data.action;
+      //   if (name == "start"){
+      //     window.chatApp.dispatcher.trigger('action',{
+      //       user_id: data.user_id,
+      //       action: "device_start",
+      //       stamp: (new Date()).getTime()
+      //     });
+      //   }
+      //   else if (name == "stop"){
+      //     window.chatApp.dispatcher.trigger('action',{
+      //       user_id: data.user_id,
+      //       action: "device_stop",
+      //       stamp: (new Date()).getTime()
+      //     });
+      //   }
+      //   console.log(name);
+      // };
 
       </script>
       <% end %>

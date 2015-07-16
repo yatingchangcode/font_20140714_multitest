@@ -371,7 +371,7 @@ View.setClearStyle = (function(key){
   ]);
   key = Commons.getCommonGenKey(key, ["B2+console","B2+tv"]);
   key = Commons.getCommonGenKey(key, ["B3+console","B3+tv"]);
-  key = Commons.getCommonGenKey(key, ["A1+client","B2+client"]);
+  key = Commons.getCommonGenKey(key, ["A1+client","B2+client","B3+client"]);
   return {
     // server: A1 A2 A3 B1 B2_v1
     // tv: A1 A2 A3 B1 B2_v1
@@ -400,7 +400,7 @@ View.setClearAllStyle = (function(key){
   // *** server: A2 B3 no action
   key = Commons.getCommonGenKey(key, ["A3+console","B1+console","B2_v1+console"]);
   key = Commons.getCommonGenKey(key, ["A3+tv","B1+tv"]);
-  key = Commons.getCommonGenKey(key, ["A1+client","B2+client"]);
+  key = Commons.getCommonGenKey(key, ["A1+client","B2+client","B3.client"]);
   return {
     // server: A3 B1 B2_v1
     "A3+console":function(o){
@@ -912,6 +912,17 @@ View.onClearClick = (function(key){
         stamp: (new Date()).getTime()
       },"B2.");
       CM('origin_'+ Settings.clientUserId).clear();
+    },
+    "B3+client":function(){
+      SocketController.triggerClear({
+        user_id:Settings.clientUserId,
+        block:{
+          row: Commons.currentRow,
+          column: Commons.currentCol
+        },
+        stamp: (new Date()).getTime()
+      },"idioms.");
+      CM('origin_'+ Settings.clientUserId).clear();
     }
   }[key] || Commons.emptyFn;
 })(Settings.genKey);
@@ -1380,6 +1391,24 @@ View.onSubmitClick = (function(key){
           column: Commons.currentCol
         }
       },"B2.");
+    },
+    "B3+client":function(){
+      SocketController.triggerAction({
+        action: 'device_stop',
+        user_id: Settings.clientUserId,
+        block:{
+          row: Commons.currentRow,
+          column: Commons.currentCol
+        },
+        stamp: (new Date()).getTime()
+      },"idioms.");
+      SocketController.triggerSubmit({
+        user_id: Settings.clientUserId,
+        block:{
+          row: Commons.currentRow,
+          column: Commons.currentCol
+        }
+      },"idioms.");
     }
   }[key] || Commons.emptyFn;
 })(Settings.genKey);
