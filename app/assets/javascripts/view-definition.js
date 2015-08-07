@@ -84,7 +84,7 @@ View.updateTrackButtons = (function(key){
 })(Settings.genKey);
 
 View.addCorrectCount = (function(key){
-  key = Commons.getCommonGenKey(key, ["A1+console","A3+console","B1+console","B2+console","B2_v1+console"]);
+  key = Commons.getCommonGenKey(key, ["A1+console","A2+console","A3+console","B1+console","B2+console","B2_v1+console"]);
   return {
     // server: A1 A3 B1 B2 B2_v1
     "A1+console":function(id, val){
@@ -523,7 +523,7 @@ View.setRemoveOStyle = (function(key){
 })(Settings.genKey);
 
 View.setCorrectCountStyle = (function(key){
-  // *** server: A2 B3 no action
+  // *** server: B3 no action
   // *** tv: A2 B3 no action
   key = Commons.getCommonGenKey(key, ["A1+console","A3+console","B1+console"]);
   return {
@@ -533,6 +533,10 @@ View.setCorrectCountStyle = (function(key){
       if (Settings.hasCorrectCounting){
         $("#no_correct_" + o.user_id).text(o.count + "題");  
       }
+    },
+    // server: A2
+    "A2+console":function(o){
+      $("#no_correct_" + o.user_id).text(o.count + "題");
     },
     // server: B2_v1
     "B2_v1+console":function(o){

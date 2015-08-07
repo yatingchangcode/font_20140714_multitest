@@ -78,6 +78,7 @@ a{ text-decoration:none; outline: none; /* for Firefox */  hlbr:expression(this.
 .Content .box_a table tr td{ padding-bottom:10px;}
 
 .Content .box_a .out{ width:105%; position:absolute; bottom:0px; left:0px; z-index:60;display:none;}
+.Content .box_a .out img{ opacity: 0.8 }
 .Content .box_a .black{ width:105%; height:100%; background-color:#000; opacity:0.3; position:absolute; bottom:0px; left:0px; z-index:55;display:none;}
 
 .HP_bar{ border-radius:10px;overflow:hidden;}
