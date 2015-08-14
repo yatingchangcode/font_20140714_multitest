@@ -3,7 +3,7 @@ if (typeof Settings == 'undefined'){
   console.error("socketevent-generator.js should be include first.");
 }
 if (typeof Commons == 'undefined'){
-  console.error("commons.js should be include first."); 
+  console.error("commons.js should be include first.");
 }
 
 window.View = {};
@@ -32,10 +32,10 @@ View.startCounter = (function(key){
             SocketController.receiveSubmitHandler({user_id:id});
           });
         }
-      }, 100); 
+      }, 100);
     },
     "A2+console":function(thisvalue){
-      if(Commons.alarm && Commons.alarm[thisvalue]) return; 
+      if(Commons.alarm && Commons.alarm[thisvalue]) return;
       Commons.alarm[thisvalue] = setInterval(function(){
         var s = parseFloat($('#second_'+thisvalue).text()).toFixed(1);
         if (s > 0){
@@ -46,7 +46,7 @@ View.startCounter = (function(key){
           SocketController.triggerAction({action:'stop',user_id:thisvalue});
           SocketController.receiveSubmitHandler({user_id:thisvalue});
         }
-      },100); 
+      },100);
     },
     "B3+console":function(thisvalue){
       if(Commons.alarm) return;
@@ -66,7 +66,7 @@ View.startCounter = (function(key){
           });
           if(tvwall && tvwall.clearTimebar) tvwall.clearTimebar();
         }
-      }, 100); 
+      }, 100);
     }
   }[key] || Commons.emptyFn;
 })(Settings.genKey);
@@ -78,7 +78,7 @@ View.updateTrackButtons = (function(key){
       var undoState = force? forceAssign : !(Commons.trackCache.hasUndo() && !Commons.alarm);
       var redoState = force? forceAssign : !(Commons.trackCache.hasRedo() && !Commons.alarm);
       $("#undoButton").attr("disabled", undoState);
-      $("#redoButton").attr("disabled", redoState);    
+      $("#redoButton").attr("disabled", redoState);
     }
   }[key] || Commons.emptyFn;
 })(Settings.genKey);
@@ -148,7 +148,7 @@ View.loadSketchSecond = (function(key){
     "A1+tv":function(){
       setTimeout(function(){
         if(!Commons.sketchSecondIns){
-          Commons.sketchSecondIns = Processing.getInstanceById('sketchSecond');  
+          Commons.sketchSecondIns = Processing.getInstanceById('sketchSecond');
         }
         var p = $(document.getElementById('sketchSecond').parentElement);
         Commons.sketchSecondIns.setSize(p.width(), p.height());
@@ -160,13 +160,13 @@ View.loadSketchSecond = (function(key){
         if(!Commons.sketchSecondIns) Commons.sketchSecondIns = {};
         Commons.gamers.all().forEach(function(id){
           if(!Commons.sketchSecondIns[id]){
-            Commons.sketchSecondIns[id] = Processing.getInstanceById('sketchSecond_' + id);  
+            Commons.sketchSecondIns[id] = Processing.getInstanceById('sketchSecond_' + id);
           }
           var p = $(document.getElementById('sketchSecond_' + id).parentElement);
           Commons.sketchSecondIns[id].setSize(p.width(), p.height());
           Commons.sketchSecondIns[id].setSecond(Commons.timeRemaining);
         });
-      }, Commons.gamers.length * 60);
+      }, 600);
     }
   }[key] || Commons.emptyFn;
 })(Settings.genKey);
@@ -183,7 +183,7 @@ View.setDownLocationStyle = (function(key){
     // server: A1 A2 A3 B1 B2_v1
     // tv: A1 A2 A3 B1 B2_v1
     "A1+console":function(o){
-      CM('origin_'+o.user_id).point({ x: o.x, y: o.y }); 
+      CM('origin_'+o.user_id).point({ x: o.x, y: o.y });
     },
     // server: B2
     // tv: B2
@@ -255,7 +255,7 @@ View.setStartStyle = (function(key){
       View.startCounter(o.user_id);
     },
     "B3+tv":function(o){
-      $('#user_photo_' + o.user_id).addClass("green");  
+      $('#user_photo_' + o.user_id).addClass("green");
       Commons.sketchSecondIns.resetBar();
       Commons.sketchSecondIns.doStart();
     },
@@ -531,7 +531,7 @@ View.setCorrectCountStyle = (function(key){
     "A1+console":function(o){
       $("#correct_button_" + o.user_id).addClass("btn-success");
       if (Settings.hasCorrectCounting){
-        $("#no_correct_" + o.user_id).text(o.count + "題");  
+        $("#no_correct_" + o.user_id).text(o.count + "題");
       }
     },
     // server: A2
@@ -541,8 +541,8 @@ View.setCorrectCountStyle = (function(key){
     // server: B2_v1
     "B2_v1+console":function(o){
       if (Settings.hasCorrectCounting){
-        $("#no_correct_" + o.user_id).text(o.count + "題");  
-      }    
+        $("#no_correct_" + o.user_id).text(o.count + "題");
+      }
     },
     // server: B2
     "B2+console":function(o){
@@ -562,12 +562,12 @@ View.setCorrectCountStyle = (function(key){
       if (Settings.hasCorrectCounting){
         $("#no_correct_" + o.user_id).show();
         $("#no_correct_" + o.user_id).css('opacity', 1);
-        $("#no_correct_" + o.user_id).text(o.count).css('opacity', 1).css('color', 'black');  
-      }    
+        $("#no_correct_" + o.user_id).text(o.count).css('opacity', 1).css('color', 'black');
+      }
     },
     // tv: B2
     "B2+tv":function(o){
-      $("#no_correct_" + o.user_id).css('opacity', 1);    
+      $("#no_correct_" + o.user_id).css('opacity', 1);
     }
   }[key] || Commons.emptyFn;
 })(Settings.genKey);
@@ -583,7 +583,7 @@ View.setShowCorrectUsersStyle = (function(key){
         o.sort(function(a,b) {
           return parseInt(a) - parseInt(b);
         });
-        for (var i in o) { 
+        for (var i in o) {
           setTimeout( (function(id){
             return function() {
               View.setRightStyle({user_id:id});
@@ -598,7 +598,7 @@ View.setShowCorrectUsersStyle = (function(key){
         o.sort(function(a,b) {
           return parseInt(a) - parseInt(b);
         });
-        for (var i in o) { 
+        for (var i in o) {
           setTimeout( (function(id){
             return function() {
               View.setRightStyle({user_id:id});
@@ -625,7 +625,7 @@ View.setShowCorrectUsersStyle = (function(key){
         return (i-1) * 3 + j;
       };
       var total = 0;
-      for (var i in o) { 
+      for (var i in o) {
         if (o[i]) {
           o[i].sort(function(a, b) { return toIdx(a.row, a.column) - toIdx(b.row, b.column); });
           //o[i].sort(function(a, b) { return parseInt(a.row) - parseInt(b.row); });
@@ -707,7 +707,7 @@ View.setResetStyle = (function(key){
         // resetSetStyle(o.second);
         $('#progress_bar').css("width", "100%").attr("aria-valuenow","100%").text(Commons.timeRemaining+"s");
         // console.log(Commons.timeRemaining);
-        $('#second').text(Commons.timeRemaining);  
+        $('#second').text(Commons.timeRemaining);
       }
     },
     // server: A2
@@ -716,12 +716,12 @@ View.setResetStyle = (function(key){
         for (key in Commons.alarm){
           $('#second_' + key).text(o.second + "秒");
         }
-      }    
+      }
     },
     // tv: A1
     "A1+tv":function(o){
       Commons.sketchSecondIns.resetBar();
-      Commons.sketchSecondIns.setSecond(parseInt(o.second));    
+      Commons.sketchSecondIns.setSecond(parseInt(o.second));
     },
     // tv: A2
     "A2+tv":function(o){
@@ -731,7 +731,7 @@ View.setResetStyle = (function(key){
           Commons.sketchSecondIns[id].resetBar();
           Commons.sketchSecondIns[id].setSecond(parseInt(o.second));
         });
-      }  
+      }
     }
   }[key] || Commons.emptyFn;
 })(Settings.genKey);
@@ -1035,7 +1035,7 @@ View.onStartAllClick = (function(key){
 View.onStopClick = (function(key){
   key = Commons.getCommonGenKey(key, ["A3+console","B1+console","B2_v1+console"]);
   return {
-    // server: A1 
+    // server: A1
     "A1+console":function(){
       clearInterval(Commons.alarm);
       Commons.alarm = null;
@@ -1142,7 +1142,7 @@ View.onCorrectClick = (function(key){
       if (!Commons.correct_users) Commons.correct_users = [];
       if (!Commons.correct_users[uid]) Commons.correct_users[uid] = [];
       if (Commons.inArray(Commons.correct_users[uid], block)) return;
-      
+
       Commons.correct_users[uid].push(block);
 
       SocketController.triggerSetCorrectCount({
@@ -1226,7 +1226,7 @@ View.onSecondUpdateClick = (function(key){
   return {
     // server: A1
     "A1+console":function(){
-      Commons.timeRemaining = parseInt($('#secondInput').val()); 
+      Commons.timeRemaining = parseInt($('#secondInput').val());
       SocketController.triggerReset({second:Commons.timeRemaining});
     },
     // server: A2
@@ -1256,12 +1256,12 @@ View.onNextQuestionClick = (function(key){
         SocketController.triggerCancelSubmit({user_id: id});
       }
       var newgamer = Commons.gamers.next();
-      
+
       SocketController.triggerReset({second: Commons.timeRemaining});
       SocketController.triggerRemoveO({user_id:newgamer});
       SocketController.triggerClear({user_id:newgamer});
       SocketController.triggerAction({action:'start',user_id:newgamer});
-      
+
     },
     // server A3 B1 B2_v1
     "A3+console":function(){

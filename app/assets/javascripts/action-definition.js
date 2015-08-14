@@ -3,7 +3,7 @@ if (typeof Settings == 'undefined'){
   console.error("socketevent-generator.js should be include first.");
 }
 if (typeof Commons == 'undefined'){
-  console.error("commons.js should be include first."); 
+  console.error("commons.js should be include first.");
 }
 
 window.Action = {};
@@ -72,7 +72,7 @@ Action.onStop = (function(key){
     "A1+console":function(o){
       if (Settings.hasTimeCounter && Commons.alarm){
         clearInterval(Commons.alarm);
-        Commons.alarm = null;  
+        Commons.alarm = null;
       }
     },
     "A2+console":function(o){
@@ -84,7 +84,7 @@ Action.onStop = (function(key){
       // server: B3
       Commons.trackCache.saveToCache();
       clearInterval(Commons.alarm);
-      Commons.alarm = null; 
+      Commons.alarm = null;
     },
     "A1+client":function(o){
       SocketController.triggerAction({
@@ -106,7 +106,7 @@ Action.onSubmit = (function(key){
     },
     // server: A3
     "A3+console":function(o){
-      gamers.all().forEach(function(id){
+      Commons.gamers.all().forEach(function(id){
         SocketController.triggerAction({action:'stop',user_id:id});
       });
     },
@@ -199,7 +199,7 @@ Action.onReset = (function(key){
           clearInterval(Commons.alarm[key]);
           Commons.alarm[key] = null;
         }
-      }    
+      }
     }
   }[key] || Commons.emptyFn;
 })(Settings.genKey);
@@ -224,8 +224,8 @@ Action.onSendText = (function(key){
     "B3+console":function(o){
       if(Commons.fromServerCommand){
         Commons.trackCache.addText(o.block.row, o.block.column, o.text);
-        Commons.fromServerCommand = false;  
-      }    
+        Commons.fromServerCommand = false;
+      }
     }
   }[key] || Commons.emptyFn;
 })(Settings.genKey)
