@@ -297,7 +297,7 @@ $(document).ready(function() {
   // window.chatApp.reset({stage:'<%= params[:stage] %>'});
   // window.chatApp.setGameInfo(<%= @game.id %>, "<%= @stage %>", "<%= @visitors.to_json %>");
 
-  SocketController.triggerReset({stage:'<%= params[:stage] %>'},"idioms.");
+  SocketController.triggerReset({stage:'<%= params[:stage] %>'});
   SocketController.triggerSetGameinfoToSocket({
     game: <%= @game.id %>,
     stage: "<%= @stage %>",

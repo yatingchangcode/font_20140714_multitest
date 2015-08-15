@@ -12,6 +12,8 @@
   @split_width = "3%"
   case @visitors.length
   when 2
+    @font_formula = "w / 3 * 15 / 15"
+    @bar_formula = "(w + 5) / 2"
     @canvas_scale = 0.243
     @canvas_border = 15
     @space_top = "140"
@@ -19,14 +21,16 @@
     @space_right = "24%"
     @timebar_height = "22px"
   when 3
+    @font_formula = "w / 3 * 15.2 / 15"
+    @bar_formula = "(w + 3) / 2"
     @canvas_scale = 0.217
     @canvas_border = 13
     @space_left = "18%"
     @space_right = "17%"
     @timebar_height = "20px"
   when 4
-    @font_formula = "w / 3 * 16.2 / 15"
-    @bar_formula = "(w + 3) / 2"
+    @font_formula = "w / 3 * 15.2 / 15"
+    @bar_formula = "(w + 7) / 2"
     @canvas_scale = 0.191
     @canvas_border = 11
     @space_left = "10%"
@@ -47,23 +51,23 @@
     @timebar_height = "16px"
     case @visitors.length
     when 6
-       @split_width_up = "12%"
-       @split_width_down = "12%"
+       @split_width_up = "12%" 
+       @split_width_down = "12%" 
        @space_left = "13%"
        @space_right = "12%"
        @video_position = "-10px"
     when 7
-      @split_width_up = "7.5%"
-      @split_width_down = "12%"
+      @split_width_up = "7.5%" 
+      @split_width_down = "12%" 
       @space_left = "11.5%"
       @space_right = "10.5%"
     when 8
-      @split_width_up = "7.5%"
+      @split_width_up = "7.5%" 
       @split_width_down = "7.5%"
       @space_left = "11.5%"
       @space_right = "10.5%"
     when 9
-      @split_width_up = "3%"
+      @split_width_up = "3%" 
       @split_width_down = "7.5%"
     end
   end
@@ -77,11 +81,15 @@ p{
 
 body,.container{
   background-color: #000000;
+
   width: 100%;
   height:100%;
   overflow:hidden;
-  /*width:1920px;
-  height:1080px;*/
+
+/*  
+  width:1920px;
+  height:1080px;
+*/
 }
 
 .Content .box_a .Grid .inner_glow{ width:100%; height:100%; position:absolute; top:0px; left:0px;
@@ -94,17 +102,17 @@ body,.container{
 
 
 
-<!-- <div class="Content">
+<!-- <div class="Content"> 
   <table width="100%" border="0" cellspacing="0" cellpadding="0">
     <tr>
       <td colspan="5" height="140">&nbsp;</td>
     </tr>
-
+    
     <tr>
       <td width="25%"></td>
       <% @visitors.each do |visitor| %>
       <td>
-
+        
         <div class="box_a">
           <div id="out_<%= visitor.number %>" class="out">
             <img src="/assets/tvwall/out.png" width="100%"/>
@@ -144,13 +152,13 @@ body,.container{
           </table>
         </div>
       </td>
-
+      
       <td width="1%"></td>
-
+      
       <% end %>
       <td width="24%"></td>
     </tr>
-
+    
 
     <tr>
       <td colspan="11" height="1%">
@@ -172,15 +180,15 @@ body,.container{
     <td><div class="HP_bar" style="height:<%= @timebar_height %>;"><canvas id="sketchSecond" data-processing-sources="/assets/timebar.pde"></canvas></div></div></td>
     <td width="33%">&nbsp;</td> -->
   </tr>
-
+  
 </table>
 <% if @visitors.length > 5 %>
-<div class="Content">
+<div class="Content"> 
   <table width="100%" border="0" cellspacing="0" cellpadding="0">
     <tr>
       <td colspan="11" height="<%= @bar_spacing %>">&nbsp;</td>
     </tr>
-
+    
     <tr>
       <td width="<%= @space_left %>"></td>
       <% @visitors[0..((@visitors.length/2.0).ceil-1)].each do |visitor| %>
@@ -224,13 +232,13 @@ body,.container{
           </table>
         </div>
       </td>
-
+      
       <td width="<%= @split_width_up %>"></td>
       <% end %>
 
       <td width="<%= @space_right %>"></td>
     </tr>
-
+    
     <tr>
       <td colspan="11" height="1%">&nbsp;</td>
     </tr>
@@ -240,7 +248,7 @@ body,.container{
   <table width="100%" border="0" cellspacing="0" cellpadding="0">
     <tr>
       <td width="<%= @space_right %>"></td>
-
+      
       <% @visitors[(@visitors.length/2.0).ceil..@visitors.length-1].each do |visitor| %>
       <td width="<%= @split_width_down %>"></td>
       <td>
@@ -300,7 +308,7 @@ body,.container{
 
 <% else %>
 
-<div class="Content">
+<div class="Content"> 
   <table width="100%" border="0" cellspacing="0" cellpadding="0">
     <tr>
       <td colspan="11" height="<%= @bar_spacing %>">&nbsp;</td>
@@ -358,7 +366,7 @@ body,.container{
   </tr>
 
   <tr>
-      <td colspan="11" height="1%">
+      <td colspan="12" height="1%">
         <video width="100%" autoplay="autoplay" loop="loop" style="padding-top:<%= @video_position %>;">
           <source src="/assets/cycle1111ok.mp4" type="video/mp4"></source>
         </video>
@@ -376,7 +384,7 @@ document.write('<script src="//'+ location.hostname + ':5001/socket.io/socket.io
 </script>
 
 <script type="text/javascript">
-
+  
 window.stageName = 'A3';
 window.pageType = "tv";  // type: console, client, tv
 
@@ -474,7 +482,7 @@ window.responsiveMethod = function(){
 };
 
 window.tuneLinePosition = function(){
-  var w = $('.photo').width()+10;
+  var w = $('.photo').width();
   var namebox = $('.nameBox');
   var name = $('.name');
   // name.css('font-size', w / 3 * 14.7 / 15);
@@ -501,7 +509,7 @@ $(document).ready(function() {
     backgroundLine: '7px rgba(255,0,0,0.6)'
     //backgroundImage: '/assets/tvwall/img_Grid_b.gif'
   });
-
+  
   var gamerList = [];
   <% @visitors.each do |visitor| %>
   gamerList.push('<%= visitor.number %>');
@@ -516,14 +524,14 @@ $(document).ready(function() {
 
   responsiveMethod();
 
-  $('.Grid').css("background", "url("+ Commons.generateBorderBase64($('.Grid'), window.borderWidth,
+  $('.Grid').css("background", "url("+ Commons.generateBorderBase64($('.Grid'), window.borderWidth, 
     ['0 #ffffff', '0.5 #aaaaaa', '1 #aaaaaa'] ) +
   ")");
   $('.Grid').css("padding", window.borderWidth);
 
   CM.doAllResponsive();
   setTimeout(function(){
-    tuneLinePosition();
+    tuneLinePosition();    
   }, 100);
 });
 </script>

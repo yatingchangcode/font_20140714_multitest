@@ -166,7 +166,7 @@ View.loadSketchSecond = (function(key){
           Commons.sketchSecondIns[id].setSize(p.width(), p.height());
           Commons.sketchSecondIns[id].setSecond(Commons.timeRemaining);
         });
-      }, 600);
+      }, Commons.gamers.length * 70);
     }
   }[key] || Commons.emptyFn;
 })(Settings.genKey);

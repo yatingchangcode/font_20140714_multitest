@@ -3,6 +3,7 @@
   var gamers = {
     gamersList : [],
     last: null,
+    length: 0,
     next : function() {
       var newgamer = this.gamersList.shift();
       this.gamersList.push(newgamer);
@@ -14,12 +15,14 @@
     },
     push : function(i) {
       this.gamersList.push(i);
+      this.length++;
     }, 
     remove : function(i) {
       var idx = this.gamersList.indexOf(i);
       if (idx > -1) {
         this.gamersList.splice(idx, 1);
       }
+      if(this.length) this.length--;
     },
 
     all: function() {
