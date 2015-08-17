@@ -17,56 +17,62 @@ View.startCounter = (function(key){
       if(Commons.alarm) return;
       var s = parseFloat($('#second').text()).toFixed(1);
       if (s === (0.0).toFixed(1)) View.setResetStyle();
-      Commons.alarm = setInterval(function(){
-        var s = parseFloat($('#second').text()).toFixed(1);
-        if (s > 0){
-          var percent = 100 * (s-0.1) / Commons.timeRemaining;
-          $('#progress_bar').css("width", percent+"%").attr('aria-valuenow', percent)
-          .text((s-0.1).toFixed(1)+"s");
-          $('#second').text((s - 0.1).toFixed(1));
-        } else {
-          clearInterval(Commons.alarm);
-          Commons.alarm = null;
-          Commons.gamers.all().forEach(function(id){
-            SocketController.triggerAction({action:'stop',user_id:id});
-            SocketController.receiveSubmitHandler({user_id:id});
-          });
-        }
-      }, 100);
+      Commons.alarm = setInterval((function(secondJQ, progressJQ){
+        return function(){
+          var s = parseFloat(secondJQ.text()).toFixed(1);
+          if (s > 0){
+            var percent = 100 * (s-0.1) / Commons.timeRemaining;
+            progressJQ.css("width", percent+"%").attr('aria-valuenow', percent)
+            .text((s-0.1).toFixed(1)+"s");
+            secondJQ.text((s - 0.1).toFixed(1));
+          } else {
+            clearInterval(Commons.alarm);
+            Commons.alarm = null;
+            Commons.gamers.all().forEach(function(id){
+              SocketController.triggerAction({action:'stop',user_id:id});
+              SocketController.receiveSubmitHandler({user_id:id});
+            });
+          }
+        };
+      })($('#second'), $('#progress_bar')), 100);
     },
     "A2+console":function(thisvalue){
       if(Commons.alarm && Commons.alarm[thisvalue]) return;
-      Commons.alarm[thisvalue] = setInterval(function(){
-        var s = parseFloat($('#second_'+thisvalue).text()).toFixed(1);
-        if (s > 0){
-          $('#second_'+thisvalue).text((s-0.1).toFixed(1) + "秒");
-        } else {
-          clearInterval(Commons.alarm[thisvalue]);
-          Commons.alarm[thisvalue] = null;
-          SocketController.triggerAction({action:'stop',user_id:thisvalue});
-          SocketController.receiveSubmitHandler({user_id:thisvalue});
-        }
-      },100);
+      Commons.alarm[thisvalue] = setInterval((function(id, secondJQ){
+        return function(){
+          var s = parseFloat(secondJQ.text()).toFixed(1);
+          if (s > 0){
+            secondJQ.text((s-0.1).toFixed(1) + "秒");
+          } else {
+            clearInterval(Commons.alarm[id]);
+            Commons.alarm[id] = null;
+            SocketController.triggerAction({action:'stop',user_id:id});
+            SocketController.receiveSubmitHandler({user_id:id});
+          }
+        };
+      })(thisvalue, $('#second_' + thisvalue)), 100);
     },
     "B3+console":function(thisvalue){
       if(Commons.alarm) return;
       var s = parseFloat($('#progress_bar').text()).toFixed(1);
       //if (s === (0.0).toFixed(1)) resetProgressBarAndTime();
-      Commons.alarm = setInterval(function(){
-        var s = parseFloat($('#progress_bar').text()).toFixed(1);
-        if (s > 0){
-          var percent = 100 * (s-0.1) / Commons.timeRemaining;
-          $('#progress_bar').css("width", percent+"%").attr('aria-valuenow', percent).text((s-0.1).toFixed(1)+"s");
-        } else {
-          clearInterval(Commons.alarm);
-          Commons.alarm = null;
-          Commons.gamers.all().forEach(function(id){
-            SocketController.triggerAction({action:'stop',user_id:id});
-            //receiveSubmitHandler({user_id:e});
-          });
-          if(tvwall && tvwall.clearTimebar) tvwall.clearTimebar();
-        }
-      }, 100);
+      Commons.alarm = setInterval((function(progressJQ){
+        return function(){
+          var s = parseFloat(progressJQ.text()).toFixed(1);
+          if (s > 0){
+            var percent = 100 * (s-0.1) / Commons.timeRemaining;
+            progressJQ.css("width", percent+"%").attr('aria-valuenow', percent).text((s-0.1).toFixed(1)+"s");
+          } else {
+            clearInterval(Commons.alarm);
+            Commons.alarm = null;
+            Commons.gamers.all().forEach(function(id){
+              SocketController.triggerAction({action:'stop',user_id:id});
+              //receiveSubmitHandler({user_id:e});
+            });
+            if(tvwall && tvwall.clearTimebar) tvwall.clearTimebar();
+          }
+        };
+      })($('#progress_bar')),100);
     }
   }[key] || Commons.emptyFn;
 })(Settings.genKey);
@@ -145,28 +151,26 @@ View.registerCanvas = (function(key){
 View.loadSketchSecond = (function(key){
   key = Commons.getCommonGenKey(key, ["A1+tv","B3+tv"]);
   return {
-    "A1+tv":function(){
-      setTimeout(function(){
-        if(!Commons.sketchSecondIns){
-          Commons.sketchSecondIns = Processing.getInstanceById('sketchSecond');
-        }
-        var p = $(document.getElementById('sketchSecond').parentElement);
-        Commons.sketchSecondIns.setSize(p.width(), p.height());
-        Commons.sketchSecondIns.setSecond(Commons.timeRemaining);
-      },400);
+    "A1+tv":function(){    
+      if(!Commons.sketchSecondIns){
+        //Commons.sketchSecondIns = Processing.getInstanceById('sketchSecond');
+        Commons.sketchSecondIns = TimeBar.getInstanceById('sketchSecond');
+      }
+      // var p = $(document.getElementById('sketchSecond').parentElement);
+      // Commons.sketchSecondIns.setSize(p.width(), p.height());
+      Commons.sketchSecondIns.setSecond(Commons.timeRemaining);
     },
     "A2+tv":function(){
-      setTimeout(function(){
-        if(!Commons.sketchSecondIns) Commons.sketchSecondIns = {};
-        Commons.gamers.all().forEach(function(id){
-          if(!Commons.sketchSecondIns[id]){
-            Commons.sketchSecondIns[id] = Processing.getInstanceById('sketchSecond_' + id);
-          }
-          var p = $(document.getElementById('sketchSecond_' + id).parentElement);
-          Commons.sketchSecondIns[id].setSize(p.width(), p.height());
-          Commons.sketchSecondIns[id].setSecond(Commons.timeRemaining);
-        });
-      }, Commons.gamers.length * 70);
+      if(!Commons.sketchSecondIns) Commons.sketchSecondIns = {};
+      Commons.gamers.all().forEach(function(id){
+        if(!Commons.sketchSecondIns[id]){
+          //Commons.sketchSecondIns[id] = Processing.getInstanceById('sketchSecond_' + id);
+          Commons.sketchSecondIns[id] = TimeBar.getInstanceById('sketchSecond_' + id);
+        }
+        // var p = $(document.getElementById('sketchSecond_' + id).parentElement);
+        // Commons.sketchSecondIns[id].setSize(p.width(), p.height());
+        Commons.sketchSecondIns[id].setSecond(Commons.timeRemaining);
+      });
     }
   }[key] || Commons.emptyFn;
 })(Settings.genKey);

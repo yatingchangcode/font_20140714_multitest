@@ -14,5 +14,5 @@
 //= require jquery_ujs
 //= require canvas-manager
 //= require canvas-recorder
-//= require processing.min
+//= require timebar
 //= require lodash
