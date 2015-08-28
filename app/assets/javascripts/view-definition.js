@@ -326,17 +326,17 @@ View.setSubmitStyle = (function(key){
   return {
     // server: A1 A2 A3 B1 B2_v1
     "A1+console":function(o){
-      $('#visitor_' + o.user_id).css("background-color", "#ff0");
+      $(document.getElementById('visitor_' + o.user_id)).css("background-color", "#ff0");
     },
     // tv: A1 A2 A3 B1 B2_v1
     "A1+tv":function(o){
-      $('#grid_' + o.user_id).addClass("bor_g");
-      $('#glow_' + o.user_id).show();
+      $(document.getElementById('grid_' + o.user_id)).addClass("bor_g");
+      $(document.getElementById('glow_' + o.user_id)).show();
     },
     // tv: B3
     // server: B3
     "B3+console":function(o){
-      $('#glow_' + o.block.row + '_' + o.block.column).show();
+      $(document.getElementById('glow_' + o.block.row + '_' + o.block.column)).show();
     },
     "B2+console":function(o){
       $('[name=word_' + o.cid + ']').css("background-color", "#060");
