@@ -51,6 +51,7 @@ Rails.application.routes.draw do
     end
     collection do
       get 'get_game_data'
+      post 'set_game_data'
     end
   end
   # Example of regular route:

@@ -330,6 +330,17 @@ class GamesController < ApplicationController
     @files = get_record_json_data(@game)    
   end
 
+  def set_game_data
+    res = { success: false }
+    if params[:second]
+      Setting.messaging['second'] = params[:second]
+      res['success'] = true
+    end
+    respond_to do |format|
+      format.json { render :json => res }
+    end
+  end
+
   private
   def get_record_json_data(game)
     record_path ||= File.expand_path(File.join("record"), Rails.public_path)

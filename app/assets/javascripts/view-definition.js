@@ -1232,10 +1232,26 @@ View.onSecondUpdateClick = (function(key){
     "A1+console":function(){
       Commons.timeRemaining = parseInt($('#secondInput').val());
       SocketController.triggerReset({second:Commons.timeRemaining});
+      $.post('/games/set_game_data.json?second=' + Commons.timeRemaining,
+        function(data){            
+          //var res = JSON.parse(data);
+          console.log("update second:" + JSON.stringify(data));
+        }
+      ).fail(function(e){
+        console.log('error' + JSON.stringify(e));
+      });
     },
     // server: A2
     "A2+console":function(){
       SocketController.triggerReset({second:Commons.timeRemaining});
+      $.post('/games/set_game_data.json?second=' + Commons.timeRemaining,
+        function(data){            
+          //var res = JSON.parse(data);
+          console.log("update second:" + JSON.stringify(data));
+        }
+      ).fail(function(e){
+        console.log('error' + JSON.stringify(e));
+      });
     }
   }[key] || Commons.emptyFn;
 })(Settings.genKey);
