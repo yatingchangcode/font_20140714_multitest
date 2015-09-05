@@ -4,7 +4,8 @@
   @space_right = "4%"
   @canvas_scale = 0.171
   @canvas_border = 9
-  @font_formula = "w / 3 * 16 / 15"
+  @font_formula = "w / 3 * 15.2 / 15"
+  @name_padding = "6px"
   @bar_spacing = "40"
   @bar_formula = "(w + 5) / 2"
   @timebar_height = "16px"
@@ -265,7 +266,7 @@ body,.container{
                   </div>
 
                   <% if @counting == '1' %>
-                  <div class="nameBox br_line01_less5">
+                  <div class="nameBox br_line01_less5" style="padding-top: <%= @name_padding %>;">
                   <% else %>
                   <div class="nameBox br_line02">
                   <% end %>
@@ -302,10 +303,10 @@ body,.container{
                   <td width="10%">&nbsp;</td>
                   <td>
                   <!-- <div class="HP_bar" style="height:<%= @timebar_height %>;"><canvas id="sketchSecond_<%= visitor.number %>" data-processing-sources="/assets/timebar.pde"></canvas></div> -->
-                  <div class="HP_bar" style="height:<%= @timebar_height %>;"> 
+                  <!-- <div class="HP_bar" style="height:<%= @timebar_height %>;"> 
                     <div id="sketchSecond_<%= visitor.number %>" class="HP_bar_inner" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%;">
                     </div>
-                  </div>
+                  </div> -->
                   </td>
                   <td width="10%">&nbsp;</td>
                 </tr>
