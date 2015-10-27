@@ -28,6 +28,8 @@ module.exports = function (socket, io) {
   server_control_action('setCorrectCount');
   server_control_action('showCorrectUsers');
   server_control_action('userOut');
+  server_control_action('zoom');
+  server_control_action('unZoom');
 
   // refers to: http://stackoverflow.com/questions/10058226/send-response-to-all-clients-except-sender-socket-io
   // broadcast emit would except sender

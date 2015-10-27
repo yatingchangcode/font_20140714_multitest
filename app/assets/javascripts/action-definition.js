@@ -266,3 +266,6 @@ Action.onContinueWrite = (function(key){
   }[key] || Commons.emptyFn;
 })(Settings.genKey);
 
+Action.onZoom = Commons.emptyFn;
+Action.onUnZoom = Commons.emptyFn;
+

@@ -72,9 +72,11 @@ var socketListenEvents = [
   "send_text",
   "end_round",
   "rewrite",
-  "continue_write"
+  "continue_write",
   // "clearAll"
   // "clear_all"
+  "zoom",
+  "unZoom"
   
 ];
 
@@ -110,7 +112,9 @@ var socketTriggerEvents = [
   "showCorrectUsers",
   // server_idioms.js.coffee
   "send_text",
-  "rewrite"
+  "rewrite",
+  "zoom",
+  "unZoom"
 ];
 
 (function(scope){

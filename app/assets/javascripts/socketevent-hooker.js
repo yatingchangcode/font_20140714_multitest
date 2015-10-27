@@ -124,4 +124,13 @@ SocketController.onContinueWrite(function(o){
   View.setContinueWriteStyle(o);
 });
 
+SocketController.onZoom(function(o){
+  Action.onZoom(o);
+  View.setZoomStyle(o);
+});
+
+SocketController.onUnZoom(function(o){
+  Action.onUnZoom(o);
+  View.setUnZoomStyle(o);
+});
 

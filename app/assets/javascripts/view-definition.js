@@ -112,16 +112,19 @@ View.collectGamers = function(list){
 };
 
 View.registerCanvas = (function(key){
-  key = Commons.getCommonGenKey(key, [
-    "A1+console","A2+console","A3+console","B1+console","B2_v1+console",
-    "A1+tv","A2+tv","A3+tv","B1+tv","B2_v1+tv"
-  ]);
+  key = Commons.getCommonGenKey(key, ["A1+console","A2+console","A3+console","B1+console","B2_v1+console"]);
+  key = Commons.getCommonGenKey(key, ["A1+tv","A2+tv","A3+tv","B1+tv","B2_v1+tv"]);
   key = Commons.getCommonGenKey(key, ["B2+console","B2+tv"]);
   key = Commons.getCommonGenKey(key, ["B3+console","B3+tv"]);
   return {
     "A1+console":function(list, prefix){
       prefix = prefix || 'origin_';
       for(var i in list) CM.reg(prefix + list[i]);
+    },
+    "A1+tv":function(list, prefix){
+      prefix = prefix || 'origin_';
+      for(var i in list) CM.reg(prefix + list[i]);
+      CM.reg('_zoomTmp');
     },
     "B2+console":function(list, prefix){
       prefix = prefix || 'origin_';
@@ -860,6 +863,46 @@ View.setContinueWriteStyle = (function(key){
   }[key] || Commons.emptyFn;
 })(Settings.genKey);
 
+
+View.setZoomStyle = (function(key){
+  key = Commons.getCommonGenKey(key, ["A1+tv", "A2+tv", "A3+tv", "B1+tv", "B2_v1+tv"]);
+  key = Commons.getCommonGenKey(key, ["A1+console","A2+console","A3+console","B1+console","B2_v1+console"]);
+  return {
+    "A1+tv":function(o){
+      CM('origin_' + o.user_id).zoomTo('_zoomTmp');
+      $('.Zoom').fadeIn('slow').animate({
+        duration: 'slow',
+        queue: false,
+        complete: function() {}
+      });
+    },
+    "A1+console":function(o){
+      $('[id^=zoom_button_]').attr('disabled',true).css('opacity',0.3);
+      $('#zoom_button_'+o.user_id).attr('disabled',false).attr('zoom', 1).css('opacity',1).text("復原");
+    }
+  }[key] || Commons.emptyFn;
+})(Settings.genKey);
+
+View.setUnZoomStyle = (function(key){
+  key = Commons.getCommonGenKey(key, ["A1+tv", "A2+tv", "A3+tv", "B1+tv", "B2_v1+tv"]);
+  key = Commons.getCommonGenKey(key, ["A1+console","A2+console","A3+console","B1+console","B2_v1+console"]);
+  return {
+    "A1+tv":function(o){
+      $('.Zoom').fadeOut('slow').animate({
+          duration: 'slow',
+          queue: false,
+          complete: function() {
+            CM('origin_' + o.user_id).unZoom('_zoomTmp');
+          }
+      });
+    },
+    "A1+console":function(o){
+      $('[id^=zoom_button_]').attr('disabled',false).css('opacity', 1);
+      $('#zoom_button_'+o.user_id).attr('zoom', 0).text("放大");
+    }
+  }[key] || Commons.emptyFn;
+})(Settings.genKey);
+
 // ======= Event Trigger on View (JQuery click handler) =======
 View.onContinueWriteClick = (function(key){
   key = Commons.getCommonGenKey(key, ["A1+console","A3+console","B1+console","B2_v1+console"]);
@@ -1437,3 +1480,16 @@ View.onSubmitClick = (function(key){
   }[key] || Commons.emptyFn;
 })(Settings.genKey);
 
+View.onZoomClick = (function(key){
+  key = Commons.getCommonGenKey(key, ["A1+console","A2+console","A3+console","B1+console","B2_v1+console"]);
+  return {
+    "A1+console":function(){
+      if($(this).attr('zoom') == 1){
+        SocketController.triggerUnZoom({user_id: this.value});
+      }else{
+        SocketController.triggerZoom({user_id: this.value});  
+      }
+      // View.setStopStyle({user_id:this.value});
+    }
+  }[key] || Commons.emptyFn;
+})(Settings.genKey);

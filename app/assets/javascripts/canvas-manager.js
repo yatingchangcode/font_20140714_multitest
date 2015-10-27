@@ -99,7 +99,9 @@
 		var wait = 12;
 		for(var x in instanceMap_){
 			setTimeout((function(ins){
-				return function(){ ins.responsive(); };
+				return function(){
+					ins.responsive();
+				};
 			})(instanceMap_[x]), timeCount++ * timeStep + wait);
 		}
 	};
@@ -222,7 +224,8 @@
 		var con = this.context_;
 		var x = this.rootScale_ * pt.x;
 		var y = this.rootScale_ * pt.y;
-		this.track_.push([[pt.x, pt.y]]);
+		// this.track_.push([[pt.x, pt.y]]);
+		this.track_.push([pt.x, pt.y]);
 		con.beginPath();
 		con.moveTo(x - 0.1, y - 0.1);
 		con.lineTo(x, y);
@@ -248,7 +251,8 @@
 		var con = this.context_;
 		var x = this.rootScale_ * pt.x;
 		var y = this.rootScale_ * pt.y;
-		this.track_[this.track_.length-1].push([pt.x, pt.y]);
+		// this.track_[this.track_.length-1].push([pt.x, pt.y]);
+		this.track_[this.track_.length-1].push(pt.x, pt.y);
 		con.lineTo(x, y);
 		con.moveTo(x, y);
 		con.stroke();
@@ -309,8 +313,8 @@
 		var p = element || ins.el_.parentElement;
 		if(prop_.responsiveByParent === true && ins && p){
 			var styles = getComputedStyle(p);
-			var aw = p.clientWidth - (parseFloat(styles['paddingLeft']) + parseFloat(styles['paddingRight']));
-			var ah = p.clientHeight - (parseFloat(styles['paddingTop']) + parseFloat(styles['paddingBottom']));
+			var aw = (p.clientWidth || parseFloat(styles['width'])) - (parseFloat(styles['paddingLeft']) + parseFloat(styles['paddingRight']));
+			var ah = (p.clientHeight || parseFloat(styles['height'])) - (parseFloat(styles['paddingTop']) + parseFloat(styles['paddingBottom']));
 			// p.clientWidth - paddings = actual width
 			// p.clientHeight - paddings = actual height
 
@@ -338,16 +342,21 @@
 			for(var i = 0, len = ins.track_.length; i < len; i++){
 				var single = ins.track_[i];
 				var pslen = single.length;
-				var x = single[0][0] * ins.rootScale_;
-				var y = single[0][1] * ins.rootScale_;
+				// var x = single[0][0] * ins.rootScale_;
+				// var y = single[0][1] * ins.rootScale_;
+				var x = single[0] * ins.rootScale_;
+				var y = single[1] * ins.rootScale_;
 				con.beginPath();
 				con.moveTo(x - 0.1, y - 0.1);
 				con.lineTo(x, y);
 				con.moveTo(x, y);
 				con.stroke();
-				for(var ps = 1; ps < pslen; ps++){
-					x = single[ps][0] * ins.rootScale_;
-					y = single[ps][1] * ins.rootScale_;
+				// for(var ps = 1; ps < pslen; ps++){
+				// 	x = single[ps][0] * ins.rootScale_;
+				// 	y = single[ps][1] * ins.rootScale_;
+				for(var ps = 2; ps < pslen; ps+=2){
+					x = single[ps] * ins.rootScale_;
+					y = single[ps+1] * ins.rootScale_;
 					con.lineTo(x, y);
 					con.moveTo(x, y);
 					con.stroke();
@@ -364,6 +373,90 @@
 		return ins;
 	};
 
+	CanvasInstance.prototype.unZoom = function(canvasId){
+		return CM(canvasId).clear();
+	};
+
+	CanvasInstance.prototype.zoomTo = function(canvasId, callback){
+		var des = CM(canvasId);
+		des.track_ = this.track_.slice(0);
+		// _zoomTmp
+		return des.responsive(undefined, callback);
+		// var self = this;
+		// var elementReg = new RegExp("object HTML([^\\s]+)Element");
+		// var matches = Object.prototype.toString.call(element).match(elementReg);
+		// if(self.hasTrack() && matches && matches.length){
+		// 	var establish = matches[1] == 'Canvas';
+		// 	var parent = establish ? element.parentElement : element;
+		// 	element = establish ? element : document.createElement("canvas");
+		// 	if(!establish) parent.appendChild(element);
+
+		// 	// var ins = this;
+		// 	// var p = element || ins.el_.parentElement;
+		// 	var styles = getComputedStyle(parent);
+		// 	var aw = parent.clientWidth - (parseFloat(styles['paddingLeft']) + parseFloat(styles['paddingRight']));
+		// 	var ah = parent.clientHeight - (parseFloat(styles['paddingTop']) + parseFloat(styles['paddingBottom']));
+		// 	// p.clientWidth - paddings = actual width
+		// 	// p.clientHeight - paddings = actual height
+
+		// 	var squareSize = Math.min(aw, ah);
+		// 	//console.log([p.clientWidth, squareSize]);
+		// 	// ins.width_ = squareSize;
+		// 	// ins.height_ = squareSize;
+		// 	// ins.el_.width = Math.round(squareSize);
+		// 	// ins.el_.height = Math.round(squareSize);
+		// 	// ins.rootScale_ = ins.width_ / prop_.width;
+		// 	var scale = squareSize / prop_.width;
+
+		// 	element.width = Math.round(squareSize);
+		// 	element.height = Math.round(squareSize);
+
+		// 	var sourceMinWidth = Math.min(prop_.width, prop_.height);
+		// 	// var con = ins.context_;
+		// 	var con = element.getContext('2d');
+
+		// 	drawSplitLines_(ins, prop_.backgroundLine);
+
+		// 	con.lineWidth = squareSize / (sourceMinWidth / prop_.lineWidth);
+		// 	con.lineCap = prop_.lineCap;
+		// 	con.strokeStyle = prop_.lineColor;
+
+		// 	if(ins.backImgLoad_){
+		// 		ins.context_.drawImage(ins.backImg_, 0, 0, squareSize, squareSize);
+		// 	}
+		// 	// rewrite cached drawing
+		// 	for(var i = 0, len = ins.track_.length; i < len; i++){
+		// 		var single = ins.track_[i];
+		// 		var pslen = single.length;
+		// 		// var x = single[0][0] * ins.rootScale_;
+		// 		// var y = single[0][1] * ins.rootScale_;
+		// 		var x = single[0] * ins.rootScale_;
+		// 		var y = single[1] * ins.rootScale_;
+		// 		con.beginPath();
+		// 		con.moveTo(x - 0.1, y - 0.1);
+		// 		con.lineTo(x, y);
+		// 		con.moveTo(x, y);
+		// 		con.stroke();
+		// 		// for(var ps = 1; ps < pslen; ps++){
+		// 		// 	x = single[ps][0] * ins.rootScale_;
+		// 		// 	y = single[ps][1] * ins.rootScale_;
+		// 		for(var ps = 2; ps < pslen; ps+=2){
+		// 			x = single[ps] * ins.rootScale_;
+		// 			y = single[ps+1] * ins.rootScale_;
+		// 			con.lineTo(x, y);
+		// 			con.moveTo(x, y);
+		// 			con.stroke();
+		// 		}
+		// 	}
+		// 	if(typeof callback == 'function'){
+		// 		setTimeout((function(scope){
+		// 			return function(){
+		// 				callback.call(scope);
+		// 			};
+		// 		})(ins), 0);
+		// 	}
+		// }
+	};
 
 	/**
 	 * Get
