@@ -377,7 +377,11 @@ body,.container{
 </div>
 
 <% end %>
-
+<div class="Zoom">
+  <div class="Zoom-inner">
+    <canvas id="_zoomTmp" width="100%" ></canvas>
+  </div>
+</div>
 <% content_for :javascripts do %>
 <script>
 document.write('<script src="//'+ location.hostname + ':5001/socket.io/socket.io.js">\x3C/script>');
@@ -472,13 +476,26 @@ window.borderWidth = <%= @canvas_border %>;
 //   });
 // }
 
-window.responsiveMethod = function(){
-  var jqEl = $('[id^=grid_]');
 
+window.responsiveMethod = function(){
+  var jqGridEl = $('[id^=grid_]');
   var w = $(window).width() * <%= @canvas_scale %>;
-  //var w = $('.container').width() * <%= @canvas_scale %>;
-  jqEl.height(w);
-  jqEl.width(w);
+  var zoomEl = $('.Zoom');
+  var zoomInnerEl = $('.Zoom-inner');
+  var zoomSize = $(window).height() * 0.75;
+  var zoomScale = zoomSize / w;
+  jqGridEl.height(w);
+  jqGridEl.width(w);
+  zoomEl.width(zoomSize).height(zoomSize);
+  zoomInnerEl.width(zoomSize).height(zoomSize);
+
+  jqGridEl.css("background-image", ["url(",")"].join(
+    Commons.generateBorderBase64(jqGridEl, window.borderWidth, ['0 #ffffff', '0.5 #aaaaaa', '1 #aaaaaa'])
+  )).css("padding", window.borderWidth);
+
+  zoomInnerEl.css("background-image", ["url(",")"].join(
+    Commons.generateBorderBase64(zoomEl, window.borderWidth * zoomScale, ['0 #ffffff', '0.5 #aaaaaa', '1 #aaaaaa'] )
+  )).css("padding", window.borderWidth * zoomScale);
 };
 
 window.tuneLinePosition = function(){
@@ -524,10 +541,10 @@ $(document).ready(function() {
 
   responsiveMethod();
 
-  $('.Grid').css("background", "url("+ Commons.generateBorderBase64($('.Grid'), window.borderWidth, 
-    ['0 #ffffff', '0.5 #aaaaaa', '1 #aaaaaa'] ) +
-  ")");
-  $('.Grid').css("padding", window.borderWidth);
+  // $('.Grid').css("background", "url("+ Commons.generateBorderBase64($('.Grid'), window.borderWidth, 
+  //   ['0 #ffffff', '0.5 #aaaaaa', '1 #aaaaaa'] ) +
+  // ")");
+  // $('.Grid').css("padding", window.borderWidth);
 
   CM.doAllResponsive();
   setTimeout(function(){

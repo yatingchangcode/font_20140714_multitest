@@ -40,6 +40,7 @@
               <button id="out_button_<%= x.number %>" style="font-size:12px;" value="<%= x.number %>" type="button" class="btn btn-default navbar-btn">淘汰</button>
               <button id="remove_O_button_<%= x.number %>" style="font-size:12px;" value="<%= x.number %>" type="button" class="correct_button btn btn-default navbar-btn">清除圈圈</button>
               <button id="remove_writing_button_<%= x.number %>" style="font-size:12px;" value="<%= x.number %>" type="button" class="correct_button btn btn-default navbar-btn">清除筆跡</button>
+              <button id="zoom_button_<%= x.number %>" style="font-size:12px;" value="<%= x.number %>" type="button" class="correct_button btn btn-default navbar-btn">放大</button>
             </div>
 
           </div>
@@ -237,6 +238,8 @@
         //   window.chatApp.clear(this.value);
         // });
         $('[id^=remove_writing_button_]').click(View.onClearClick);
+
+        $('[id^=zoom_button_]').click(View.onZoomClick);
 
         // $('#reset_time_button').click(function(){
         //   //if(window.alarm) return;

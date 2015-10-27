@@ -58,6 +58,7 @@ progress::-webkit-progress-value {
                 <button id="start_button_<%= x.number %>" style="font-size:12px;" value="<%= x.number %>" type="button" class="btn btn-default navbar-btn">開始</button>
                 <button id="stop_button_<%= x.number %>" style="font-size:12px;" value="<%= x.number %>" type="button" class="btn btn-default navbar-btn">停止</button>
                 <% end -%>
+                <button id="zoom_button_<%= x.number %>" style="font-size:12px;" value="<%= x.number %>" type="button" class="correct_button btn btn-default navbar-btn">放大</button>
             </div>
             <!--
             <div class="col-md-1">
@@ -465,6 +466,8 @@ progress::-webkit-progress-value {
         //   window.chatApp.clear(this.value);
         // });
         $('[id^=remove_writing_button_]').click(View.onClearClick);
+
+        $('[id^=zoom_button_]').click(View.onZoomClick);
 
         // *** deprecated
         // $('#clear_correct_button').click(function(){
