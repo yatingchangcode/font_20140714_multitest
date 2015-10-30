@@ -18,6 +18,8 @@
   @split_width_odd = "11%"
   @split_width_even = "11%"
 
+  @differential_row = false
+
   case @visitors.length
   when 2
     @canvas_scale = 0.243
@@ -76,16 +78,21 @@
     end
   when 11..15
     @seprates = 2
+    @numbers_per_row = 7
     @space_left = "3%"
     @space_right = "2%"
   when 16..22
     @seprates = 3
+    @numbers_per_row = 7
+    @differential_row = true
     @space_left = "10%"
     @space_right = "8%"
     @split_width_up = "7.5%" 
     @split_width_down = "7.5%"
   when 23..30
     @seprates = 4
+    @numbers_per_row = 7
+    @differential_row = true
     @bar_spacing = "0.5%"
     @space_left_odd = "19%"
     @space_right_odd = "19%"
@@ -96,9 +103,17 @@
     @canvas_scale = 0.073
     @canvas_border = 5
   when 31..40
-    @seprates = 5
-    @space_left = "3%"
-    @space_right = "2%"
+    @seprates = 4
+    @numbers_per_row = 10
+    @bar_spacing = "0.4%"
+    @space_left_odd = "16%"
+    @space_right_odd = "16%"
+    @space_left_even = "10%"
+    @space_right_even = "10%"
+    @split_width_odd = "5%"
+    @split_width_even = "6%"
+    @canvas_scale = 0.073
+    @canvas_border = 5
   end
 %>
 <% content_for :stylesheets do %>
@@ -125,7 +140,13 @@ body,.container{
   </tr>
   <tr>
     <td width="32%">&nbsp;</td>
-    <td><div class="HP_bar" style="height:<%= @timebar_height %>;"><canvas id="sketchSecond" data-processing-sources="/assets/timebar.pde"></canvas></div></div></td>
+    <td>
+      <!-- <div class="HP_bar" style="height:<%= @timebar_height %>;"><canvas id="sketchSecond" data-processing-sources="/assets/timebar.pde"></canvas></div></div> -->
+    <div class="HP_bar" style="height:<%= @timebar_height %>;"> 
+      <div id="sketchSecond" class="HP_bar_inner" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%;">
+      </div>
+    </div>
+    </td>
     <td width="33%">&nbsp;</td>
   </tr>
   
@@ -141,7 +162,7 @@ body,.container{
   %>
 
     <%
-      nums_per_row = 7 + (i - 1) % 2
+      nums_per_row = @numbers_per_row + (i - 1) % (@differential_row? 2 : 1)
 
       startIndex = last_index + 1
       endIndex = startIndex + nums_per_row - 1
@@ -335,167 +356,189 @@ body,.container{
 </div>
 
 <% end %>
+<div class="Zoom">
+  <div class="Zoom-inner">
+    <canvas id="_zoomTmp" width="100%" ></canvas>
+  </div>
+</div>
 
 <% content_for :javascripts do %>
-<script>
-// cache stage name for server1-tvwall.js
-var hasCounter = true;
-
-window.activateUsers = [];
-<% @visitors.each do |visitor| %>
-activateUsers.push('<%= visitor.number %>');
-<% end %>
-
-</script>
 
 <script>
 document.write('<script src="//'+ location.hostname + ':5001/socket.io/socket.io.js">\x3C/script>');
 </script>
+<script>
+// cache stage name for server1-tvwall.js
+window.stageName = 'A1';
+window.pageType = "tv";  // type: console, client, tv
+window.counting = <%= @counting == '1' %>;
+window.hasCounter = true;
+window.timeRemaining = <%= @second %>;
 
-<%= javascript_include_tag 'server_multi' %>
-<%= javascript_include_tag 'server_multi_helpers' %>
+window.borderWidth = <%= @canvas_border %>;
+
+</script>
+
+<%= javascript_include_tag 'socketevent-generator' %>
+<%= javascript_include_tag 'commons' %>
+<%= javascript_include_tag 'action-definition' %>
+<%= javascript_include_tag 'view-definition' %>
+<%= javascript_include_tag 'socketevent-hooker' %>
+
 <script>
 
-var sketchSecondIns;
+// var sketchSecondIns;
 
-//使用者送出確認
-var receiveSubmitHandler = function(o){
-  $('#grid_'+o.user_id).addClass("bor_g");
-  $('#glow_'+o.user_id).show();
-};
+// //使用者送出確認
+// var receiveSubmitHandler = function(o){
+//   $('#grid_'+o.user_id).addClass("bor_g");
+//   $('#glow_'+o.user_id).show();
+// };
 
-//後台取消確認
-var receiveCancelSubmitHandler = function(o){
-  $('#grid_'+o.user_id).removeClass("bor_g");
-  $('#glow_'+o.user_id).hide();
-};
+// //後台取消確認
+// var receiveCancelSubmitHandler = function(o){
+//   $('#grid_'+o.user_id).removeClass("bor_g");
+//   $('#glow_'+o.user_id).hide();
+// };
 
-var receiveChangeConnectionStatusHandler = function(o){};
+// var receiveChangeConnectionStatusHandler = function(o){};
 
-// var receiveCorrectUsersHandler = function(users){
-//   showCorrectUsers(users);
+// // var receiveCorrectUsersHandler = function(users){
+// //   showCorrectUsers(users);
+// // }
+
+// // override
+// var receiveResetHandler = function(o){
+//   if (o.second != null) {
+//     if(window.hasCounter){
+//       // for (key in window.alarm){
+//       //   clearInterval(window.alarm[key]);
+//       //   window.alarm[key] = null;
+//       // }  
+//       resetSetStyle(o.second);
+//     }
+//   }else{
+//     window.location.reload(true);
+//   }
+// };
+
+// //後台送出答對
+// function showO(c){
+//   $("#yes_img_" + c).show();
 // }
 
-// override
-var receiveResetHandler = function(o){
-  if (o.second != null) {
-    if(window.hasCounter){
-      // for (key in window.alarm){
-      //   clearInterval(window.alarm[key]);
-      //   window.alarm[key] = null;
-      // }  
-      resetSetStyle(o.second);
-    }
-  }else{
-    window.location.reload(true);
-  }
-};
+// function removeO(c){
+//   $("#yes_img_" + c).hide();
+// }
 
-//後台送出答對
-function showO(c){
-  $("#yes_img_" + c).show();
-}
+// function startSetStyle(c) {
+//   $('#user_photo_'+c).addClass("green");
+//   sketchSecondIns.doStart();
+// }
 
-function removeO(c){
-  $("#yes_img_" + c).hide();
-}
+// function stopSetStyle(c) {
+//   $('#user_photo_'+c).removeClass("green");
+//   sketchSecondIns.doStop();
+// }
 
-function startSetStyle(c) {
-  $('#user_photo_'+c).addClass("green");
-  sketchSecondIns.doStart();
-}
+// //Gamer out
+// function outSetStyle(val) {
+//   $('#out_'+val).show();
+//   $('#black_'+val).show();
+// }
 
-function stopSetStyle(c) {
-  $('#user_photo_'+c).removeClass("green");
-  sketchSecondIns.doStop();
-}
+// function resetSetStyle(s) {
+//   //$('#second_' + key).text(s + "秒");
+//   sketchSecondIns.resetBar();
+//   sketchSecondIns.setSecond(parseInt(s));
+// }
 
-//Gamer out
-function outSetStyle(val) {
-  $('#out_'+val).show();
-  $('#black_'+val).show();
-}
+// function clearSetStyle(o){
+//   CM('origin_'+o.user_id).clear();
+// }
 
-function resetSetStyle(s) {
-  //$('#second_' + key).text(s + "秒");
-  sketchSecondIns.resetBar();
-  sketchSecondIns.setSecond(parseInt(s));
-}
+// // function correctCountSetStyle(o){
+// //   $("#no_correct_" + o.user_id).text(o.count+"題");
+// // }
 
-function clearSetStyle(o){
-  CM('origin_'+o.user_id).clear();
-}
+// <% if @counting == '1' %>
+// // overrides
+// var tempcount = {};
+// var updateCount = function(user){
+//   var c = tempcount[user] || 0;
+//   var jqEl = $("#no_correct_" + user);
+//   jqEl.text(c);
+//   if(c){
+//     jqEl.css('opacity', 1).css('color', 'black');
+//   }else{
+//     jqEl.css('opacity', 0);
+//   }
+// };
+// var showCorrectUsers = function(users) {
+//   if(users.length){
+//       users.sort(function(a,b) {
+//         return parseInt(a) - parseInt(b);
+//       });
+      
+//       for (var i in users) { 
+//         setTimeout( (function(a){
+//           return function() {
+//             console.log(a);
+//             $("#yes_img_"+a).show();
+//             updateCount(a);
+//           }
+//         })(users[i]), 800 * i);
+//       }
+//       users = null;
+//   }else{
+//     gamers.all().forEach(function(e){
+//       updateCount(e);
+//     });
+//   }
+// };
 
 // function correctCountSetStyle(o){
-//   $("#no_correct_" + o.user_id).text(o.count+"題");
+//   //$("#no_correct_" + o.user_id).show();
+//   tempcount[o.user_id] = o.count;
+  
+//   console.log(o);
+
+// }                  
+// <% end %>
+
+// function clearAllSetStyle() {
+//   $('[id^=yes_img_]').hide();
+//   //$('[id^=answer_correct_]').text("?").css("color","");
+//   gamers.all().forEach(function(e){
+//     CM('origin_'+e).clear();
+//     receiveCancelSubmitHandler({user_id: e});
+//     stopSetStyle(e);
+//   });
+//   sketchSecondIns.resetBar();
 // }
 
-<% if @counting == '1' %>
-// overrides
-var tempcount = {};
-var updateCount = function(user){
-  var c = tempcount[user] || 0;
-  var jqEl = $("#no_correct_" + user);
-  jqEl.text(c);
-  if(c){
-    jqEl.css('opacity', 1).css('color', 'black');
-  }else{
-    jqEl.css('opacity', 0);
-  }
-};
-var showCorrectUsers = function(users) {
-  if(users.length){
-      users.sort(function(a,b) {
-        return parseInt(a) - parseInt(b);
-      });
-      
-      for (var i in users) { 
-        setTimeout( (function(a){
-          return function() {
-            console.log(a);
-            $("#yes_img_"+a).show();
-            updateCount(a);
-          }
-        })(users[i]), 800 * i);
-      }
-      users = null;
-  }else{
-    gamers.all().forEach(function(e){
-      updateCount(e);
-    });
-  }
-};
+// window.timeRemaining = parseInt(<%= @second %>);
+// window.alarm = null;
 
-function correctCountSetStyle(o){
-  //$("#no_correct_" + o.user_id).show();
-  tempcount[o.user_id] = o.count;
-  
-  console.log(o);
-
-}                  
-<% end %>
-
-function clearAllSetStyle() {
-  $('[id^=yes_img_]').hide();
-  //$('[id^=answer_correct_]').text("?").css("color","");
-  gamers.all().forEach(function(e){
-    CM('origin_'+e).clear();
-    receiveCancelSubmitHandler({user_id: e});
-    stopSetStyle(e);
-  });
-  sketchSecondIns.resetBar();
-}
-
-window.timeRemaining = parseInt(<%= @second %>);
-window.alarm = null;
 window.responsiveMethod = function(){
-  var jqEl = $('[id^=grid_]');
-
+  var jqGridEl = $('[id^=grid_]');
   var w = $(window).width() * <%= @canvas_scale %>;
-  //var w = $('.container').width() * <%= @canvas_scale %>;
-  jqEl.height(w);
-  jqEl.width(w);
+  var zoomEl = $('.Zoom');
+  var zoomInnerEl = $('.Zoom-inner');
+  var zoomSize = $(window).height() * 0.75;
+  var zoomScale = zoomSize / w;
+  jqGridEl.height(w);
+  jqGridEl.width(w);
+  zoomEl.width(zoomSize).height(zoomSize);
+  zoomInnerEl.width(zoomSize).height(zoomSize);
 
+  jqGridEl.css("background-image", ["url(",")"].join(
+    Commons.generateBorderBase64(jqGridEl, window.borderWidth, ['0 #ffffff', '0.5 #aaaaaa', '1 #aaaaaa'])
+  )).css("padding", window.borderWidth);
+
+  zoomInnerEl.css("background-image", ["url(",")"].join(
+    Commons.generateBorderBase64(zoomEl, window.borderWidth * zoomScale, ['0 #ffffff', '0.5 #aaaaaa', '1 #aaaaaa'] )
+  )).css("padding", window.borderWidth * zoomScale);
 };
 
 window.tuneLinePosition = function(){
@@ -524,42 +567,29 @@ $(document).ready(function() {
     backgroundLine: '7px rgba(255,0,0,0.6)'
     //backgroundImage: '/assets/tvwall/Metal-Frame.png'
   });
-  <% @visitors.each do |visitor| %>
-  CM.reg('origin_<%= visitor.number %>');
-  <% end %>
-
 
   //window.chatApp = new ChatApp(500,500,'0');
   //window.chatApp.bindEvents();
 
-  window.chatApp = new ChatApp('0',"<%= @tv_n %>");
-  window.chatApp.bindEvents();
-  // window.chatApp.reset({stage:'<%= params[:stage] %>'});
-  // window.chatApp.setGameInfo(<%= @game.id %>, "<%= @stage %>", "<%= params[:join_visitors_number] %>");
+  var gamerList = [];
+  <% @visitors.each do |visitor| %>
+  gamerList.push('<%= visitor.number %>');
+  <% end %>
 
-  (function collectGamers() {
-   <% @visitors.each do |visitor| %>
-   gamers.push('<%= visitor.number %>');
-   <% end %>
- }) ();
+  View.registerCanvas(gamerList);
+  View.collectGamers(gamerList);
+  View.loadSketchSecond();
 
-  setTimeout(function(){
-    if(!sketchSecondIns){
-      sketchSecondIns = Processing.getInstanceById('sketchSecond');  
-    }
-    var p = $(document.getElementById('sketchSecond').parentElement);
-    sketchSecondIns.setSize(p.width(), p.height());
-    sketchSecondIns.setSecond(<%= @second %>);
-  },300);
+  // setTimeout(function(){
+  //   if(!sketchSecondIns){
+  //     sketchSecondIns = Processing.getInstanceById('sketchSecond');  
+  //   }
+  //   var p = $(document.getElementById('sketchSecond').parentElement);
+  //   sketchSecondIns.setSize(p.width(), p.height());
+  //   sketchSecondIns.setSecond(window.timeRemaining);
+  // },300);
 
   responsiveMethod();
-
-  var borderWidth = <%= @canvas_border %>;
-  
-  $('.Grid').css("background", "url("+ generateBorderBase64($('.Grid'), borderWidth, 
-    ['0 #ffffff', '0.5 #aaaaaa', '1 #aaaaaa'] ) +
-  ")");
-  $('.Grid').css("padding", borderWidth);
 
   CM.doAllResponsive();
   setTimeout(function(){
