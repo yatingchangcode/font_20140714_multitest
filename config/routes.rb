@@ -32,11 +32,13 @@ Rails.application.routes.draw do
       get 'stageB2'
       get 'stage_idioms'
       get 'stage_multi'
+      get 'stage_mix'
       get 'server1'
       get 'server2'
       get 'serverB2'
       get 'server_idioms'
       get 'server_multi'
+      get 'server_mix'
       get 'record'
       get 'record_idioms'
       get 'tvwall_A1'
@@ -47,6 +49,7 @@ Rails.application.routes.draw do
       get 'tvwall_B2'
       get 'tvwall_B3'
       get 'tvwall_multi'
+      get 'tvwall_mix'
       get 'convert_page'
     end
     collection do

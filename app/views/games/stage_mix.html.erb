@@ -1,0 +1,58 @@
+<div class="row">
+  <div class="col-md-12">
+    <%= link_to "回上一頁",game_path(@game),class: "btn btn-lg btn-warning"  %>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-12">
+    <h1>Game <%= @game.id %> > Stage <%= @stage %></h1>
+    <h2>規則</h2>
+    <h3>後台出題至十字中間格子內<h3>
+    <h3>使用者在其他格子寫出字符，並可與中間的字合併成為一個字<h3>
+    <h3> <input id="common" type="checkbox" /> 使用者可同時做答<h3>
+    <h3> <input id="locking" type="checkbox" /> 使用者確認送出之後，其他使用者皆停止書寫<h3>
+    <h3> <input id="counting" type="checkbox" /> 計分</h3>
+    <h3> 限時 <input id="second" type="number"/> 秒</h3>
+    <%= link_to "確認","#",id: "confirm", class: "btn btn-lg btn-success"  %>
+  </div>
+</div>
+
+<% content_for :javascripts do %>
+<script type="text/javascript">
+$(document).ready(function(){
+
+  var com = document.getElementById('common');
+  var lock = document.getElementById('locking');
+  var count = document.getElementById('counting');
+  var second = document.getElementById('second');
+
+  var changeState = function(){
+    if(com.checked){
+      lock.parentElement.style['opacity'] = 1;
+      lock.removeAttribute('disabled');
+    }else{
+      if(lock.checked) lock.checked = false;
+      lock.parentElement.style['opacity'] = 0.4;
+      lock.setAttribute('disabled', true);
+    }
+  };
+
+  com.addEventListener('click', function(e){ changeState(); });
+
+  document.getElementById('confirm').onclick = function(e){
+    e.preventDefault();
+    var params = [];
+    [com,lock,count,second].forEach(function(el){
+      if(el.checked || (el.value && !isNaN(el.value))){
+        params.push(el.id + "=" + (isNaN(el.value)? 1 : el.value));
+      }
+    });
+    location.href = '/games/<%= @game.id %>/server_mix?stage=<%= params[:stage] %>&join_visitors_number=<%= @join_visitors_number %>&' + params.join('&');
+  }
+
+  changeState();
+
+});
+</script>
+<% end %>

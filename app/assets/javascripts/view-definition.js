@@ -90,7 +90,7 @@ View.updateTrackButtons = (function(key){
 })(Settings.genKey);
 
 View.addCorrectCount = (function(key){
-  key = Commons.getCommonGenKey(key, ["A1+console","A2+console","A3+console","B1+console","B2+console","B2_v1+console"]);
+  key = Commons.getCommonGenKey(key, ["A1+console","A2+console","A3+console","B1+console","B2+console","B2_v1+console", "mix+console"]);
   return {
     // server: A1 A3 B1 B2 B2_v1
     "A1+console":function(id, val){
@@ -116,6 +116,7 @@ View.registerCanvas = (function(key){
   key = Commons.getCommonGenKey(key, ["A1+tv","A2+tv","A3+tv","B1+tv","B2_v1+tv"]);
   key = Commons.getCommonGenKey(key, ["B2+console","B2+tv"]);
   key = Commons.getCommonGenKey(key, ["B3+console","B3+tv"]);
+  key = Commons.getCommonGenKey(key, ["mix+console","mix+tv"]);
   return {
     "A1+console":function(list, prefix){
       prefix = prefix || 'origin_';
@@ -145,6 +146,19 @@ View.registerCanvas = (function(key){
       for(var row = 1; row <= rowMax; row++){
         for(var col = 1; col <= colMax; col++){
           CM.reg(prefix + row + "_" + col);
+        }
+      }
+    },
+    "mix+console":function(list, prefix){
+      prefix = prefix || 'origin_';
+      var rowMax = 3;
+      var colMax = 3;
+      for(var idx in list) {
+        for(var row = 1; row <= rowMax; row++){
+          for(var col = 1; col <= colMax; col++){
+            if(row == 2 || col == 2)
+              CM.reg(prefix + list[idx] + "_" + row + "_" + col);
+          }
         }
       }
     }
@@ -178,7 +192,26 @@ View.loadSketchSecond = (function(key){
   }[key] || Commons.emptyFn;
 })(Settings.genKey);
 
+View.setGameCurrentInfo = function(){
+  var params = [
+    'second=' + (Commons.timeRemaining || ""),
+    'common=' + (Settings.commonWriting? 1 : 0),
+    'locking=' + (Settings.lockOthers? 1 : 0)
+  ];
+  $.post('/games/set_game_data.json?' + params.join('&'),
+    function(data){            
+      //var res = JSON.parse(data);
+      console.log("update settings:" + JSON.stringify(data));
+    }
+  ).fail(function(e){
+    console.log('error' + JSON.stringify(e));
+  });
+};
+
+
+// =======
 // ======= View Style Changing (depends DOM object) =======
+// =======
 View.setDownLocationStyle = (function(key){
   key = Commons.getCommonGenKey(key, [
     "A1+console","A2+console","A3+console","B1+console","B2_v1+console",
@@ -926,6 +959,13 @@ View.onContinueWriteClick = (function(key){
     },
     "B3+console":function(){
       SocketController.triggerContinueWrite({user_id: this.value},"idioms.");
+    },
+    "mix+console":function(){
+      SocketController.triggerContinueWrite({user_id: this.value},"mix.");
+      SocketController.triggerCancelSubmit({user_id: this.value},"mix.");
+      if(!Settings.commonWriting){
+        SocketController.triggerAction({action:'start', user_id: id}, "mix.");
+      }
     }
   }[key] || Commons.emptyFn;
 })(Settings.genKey);
@@ -948,6 +988,9 @@ View.onClearClick = (function(key){
           SocketController.triggerClear({user_id:uid, block:{row:i, column:j } },"B2.");
         }
       }
+    },
+    "mix+console":function(){
+      SocketController.triggerClear({user_id:this.value},"mix.");
     },
     "A1+client":function(){
       SocketController.triggerClear({user_id:Settings.clientUserId, stamp: (new Date()).getTime() });
@@ -997,6 +1040,22 @@ View.onClearAllClick = (function(key){
     "B2+console":function(){
       SocketController.triggerClearAll({},"B2.");
       Commons.correct_users = null;
+    },
+    "mix+console":function(){
+      SocketController.triggerClearAll({},"mix.");
+      Commons.correct_users = null;
+      if(Settings.hasTimeCounter){
+        if(Settings.commonWriting){
+          clearInterval(Commons.alarm);
+          Commons.alarm = null;
+          SocketController.triggerReset({second: Commons.timeRemaining});
+        }else{
+          Commons.gamers.all().forEach( function(id) {
+            clearInterval(Commons.alarm[id]);
+            Commons.alarm[id] = null;
+          });
+        }
+      }
     }
   }[key] || Commons.emptyFn;
 })(Settings.genKey);
@@ -1017,13 +1076,21 @@ View.onClearBlockClick = (function(key){
       var block = { row: xy[0], column:xy[1] };
       Commons.fromServerCommand = true;
       SocketController.triggerClear({user_id: Settings.consoleUserId, block:block },"idioms.");
+    },
+    "mix+console":function(){
+      var val = this.value.split(',');
+      var uid = val.shift();
+      var xy = val;
+      var block = { row: xy[0], column:xy[1] };
+      Commons.fromServerCommand = true;
+      SocketController.triggerClear({user_id:uid, block:block },"mix.");
     }
   }[key] || Commons.emptyFn;
 })(Settings.genKey);
 
 View.onOutClick = (function(key){
   key = Commons.getCommonGenKey(key, [
-    "A1+console","A2+console","A3+console","B1+console","B2_v1+console"
+    "A1+console","A2+console","A3+console","B1+console","B2_v1+console","mix+console"
   ]);
   return {
     // server: A1 A2 A3 B1 B2_v1
@@ -1051,6 +1118,9 @@ View.onStartClick = (function(key){
     "B3+console":function(){
       $('#progress_bar').css("width", "100%").attr("aria-valuenow","100%").text(Commons.timeRemaining+"s");
       SocketController.triggerAction({action:'start', user_id: this.value},"idioms.");
+    },
+    "mix+console":function(){
+      SocketController.triggerAction({action:'start', user_id: this.value},"mix.");
     }
   }[key] || Commons.emptyFn;
 })(Settings.genKey);
@@ -1075,6 +1145,12 @@ View.onStartAllClick = (function(key){
       Commons.gamers.all().forEach(function(id){
         SocketController.triggerAction({action:'start', user_id: id},"B2.");
       });
+    },
+    "mix+console":function(){
+      Commons.gamers.all().forEach(function(id){
+        SocketController.triggerAction({action:'start', user_id: id},"mix.");
+      });
+      View.startCounter();
     }
   }[key] || Commons.emptyFn;
 })(Settings.genKey);
@@ -1105,6 +1181,10 @@ View.onStopClick = (function(key){
     },
     "B3+console":function(){
       SocketController.triggerAction({action:'stop', user_id: this.value},"idioms.");
+    },
+    "mix+console":function(){
+      SocketController.triggerAction({action:'stop', user_id: this.value},"mix.");
+      SocketController.triggerCancelSubmit({user_id: this.value},"mix.");
     }
   }[key] || Commons.emptyFn;
 })(Settings.genKey);
@@ -1144,6 +1224,15 @@ View.onStopAllClick = (function(key){
       Commons.gamers.all().forEach(function(id){
         SocketController.triggerAction({action:'stop', user_id: id},"B2.");
         View.setStopStyle({user_id:id});
+      });
+    },
+    "mix+console":function(){
+      if (!Commons.alarm) return;
+      clearInterval(Commons.alarm);
+      Commons.alarm = null;
+      Commons.gamers.all().forEach(function(id){
+        SocketController.triggerAction({action:'stop', user_id: id},"mix.");
+        View.setStopStyle({user_id:id}, "mix.");
       });
     }
   }[key] || Commons.emptyFn;
@@ -1197,12 +1286,27 @@ View.onCorrectClick = (function(key){
         block: block,
         count: View.addCorrectCount(uid, 1)
       }, "B2.");
+    },
+    "mix+console":function(){
+      var current_correct_count = 0;
+      if(Settings.hasCorrectCounting){
+        current_correct_count = View.addCorrectCount(this.value);
+      }
+      if(Settings.commonWriting){
+        if (!Commons.correct_users) Commons.correct_users = [];
+        if (Commons.correct_users.indexOf(this.value) != -1) return;
+        Commons.correct_users.push(this.value);
+      }else{
+        SocketController.triggerRight({user_id:this.value});
+      }
+      SocketController.triggerSetCorrectCount({user_id:this.value,count:current_correct_count});
+      SocketController.triggerAction({action:'stop',user_id:this.value}, "mix.");
     }
   }[key] || Commons.emptyFn;
 })(Settings.genKey);
 
 View.onRemoveOClick = (function(key){
-  key = Commons.getCommonGenKey(key, ["A1+console","A2+console","A3+console","B1+console","B2_v1+console"]);
+  key = Commons.getCommonGenKey(key, ["A1+console","A2+console","A3+console","B1+console","B2_v1+console","mix+console"]);
   return {
     // server: A1 A2 A3 B1 B2_v1
     "A1+console":function(){
@@ -1241,7 +1345,7 @@ View.onRemoveAllOClick = (function(key){
 })(Settings.genKey);
 
 View.onMinusOneClick = (function(key){
-  key = Commons.getCommonGenKey(key, ["A1+console","A3+console","B1+console","B2_v1+console"]);
+  key = Commons.getCommonGenKey(key, ["A1+console","A3+console","B1+console","B2_v1+console","mix+console"]);
   return {
     // server: A1 A3 B1 B2_v1
     "A1+console":function(){
@@ -1258,6 +1362,7 @@ View.onMinusOneClick = (function(key){
 })(Settings.genKey);
 
 View.onShowCorrectClick = (function(key){
+  key = Commons.getCommonGenKey(key, ["A1+console","mix+console"]);
   return {
     // server: A1
     "A1+console":function(){
@@ -1275,26 +1380,33 @@ View.onSecondUpdateClick = (function(key){
     "A1+console":function(){
       Commons.timeRemaining = parseInt($('#secondInput').val());
       SocketController.triggerReset({second:Commons.timeRemaining});
-      $.post('/games/set_game_data.json?second=' + Commons.timeRemaining,
-        function(data){            
-          //var res = JSON.parse(data);
-          console.log("update second:" + JSON.stringify(data));
-        }
-      ).fail(function(e){
-        console.log('error' + JSON.stringify(e));
-      });
+      // $.post('/games/set_game_data.json?second=' + Commons.timeRemaining,
+      //   function(data){            
+      //     //var res = JSON.parse(data);
+      //     console.log("update second:" + JSON.stringify(data));
+      //   }
+      // ).fail(function(e){
+      //   console.log('error' + JSON.stringify(e));
+      // });
+      View.setGameCurrentInfo();
     },
     // server: A2
     "A2+console":function(){
       SocketController.triggerReset({second:Commons.timeRemaining});
-      $.post('/games/set_game_data.json?second=' + Commons.timeRemaining,
-        function(data){            
-          //var res = JSON.parse(data);
-          console.log("update second:" + JSON.stringify(data));
-        }
-      ).fail(function(e){
-        console.log('error' + JSON.stringify(e));
-      });
+      // $.post('/games/set_game_data.json?second=' + Commons.timeRemaining,
+      //   function(data){            
+      //     //var res = JSON.parse(data);
+      //     console.log("update second:" + JSON.stringify(data));
+      //   }
+      // ).fail(function(e){
+      //   console.log('error' + JSON.stringify(e));
+      // });
+      View.setGameCurrentInfo();
+    },
+    "mix+console":function(){
+      Commons.timeRemaining = parseInt($('#secondInput').val());
+      SocketController.triggerReset({second:Commons.timeRemaining},"mix.");
+      View.setGameCurrentInfo();
     }
   }[key] || Commons.emptyFn;
 })(Settings.genKey);
@@ -1346,6 +1458,14 @@ View.onNextQuestionClick = (function(key){
       }
       $('#progress_bar').css("width", "100%").attr("aria-valuenow","100%").text(Commons.timeRemaining+"s");
       SocketController.triggerAction({action:'start',user_id:Commons.gamers.next()}, "idioms.");
+    },
+    "mix+console":function(){
+      Commons.correct_users = null;
+      SocketController.triggerClearAll({}, "mix.");
+      Commons.gamers.all().forEach( function(id) {
+        SocketController.triggerAction({action:'stop',user_id:id},"mix.");
+      });
+      SocketController.triggerReset({second:Commons.timeRemaining},"mix.");
     }
   }[key] || Commons.emptyFn;
 })(Settings.genKey);
@@ -1367,6 +1487,12 @@ View.onShowTextClick = (function(key){
       var block = {row: row, column: col};
       Commons.fromServerCommand = true;
       SocketController.triggerSendText({block: block, text: text}, "idioms.");
+    },
+    "mix+console":function(){
+      var text = $('#showText').val();
+      var block = {row: 2, column: 2};
+      Commons.fromServerCommand = true;
+      SocketController.triggerSendText({block: block, text: text}, "mix.");
     }
   }[key] || Commons.emptyFn;
 })(Settings.genKey);
@@ -1481,7 +1607,7 @@ View.onSubmitClick = (function(key){
 })(Settings.genKey);
 
 View.onZoomClick = (function(key){
-  key = Commons.getCommonGenKey(key, ["A1+console","A2+console","A3+console","B1+console","B2_v1+console"]);
+  key = Commons.getCommonGenKey(key, ["A1+console","A2+console","A3+console","B1+console","B2_v1+console","mix+console"]);
   return {
     "A1+console":function(){
       if($(this).attr('zoom') == 1){

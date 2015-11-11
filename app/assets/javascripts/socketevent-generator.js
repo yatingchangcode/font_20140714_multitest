@@ -13,7 +13,15 @@ Object.defineProperty(Settings, 'hasCorrectCounting', {
   writable: false
 });
 Object.defineProperty(Settings, 'hasTimeCounter', {
-  value: Settings.stageName == 'A1',
+  value: Settings.stageName == 'A1' || (Settings.stageName == "mix" && window.timeRemaining),
+  writable: false
+});
+Object.defineProperty(Settings, 'commonWriting', {
+  value: Settings.stageName == "mix" && window.common,
+  writable: false
+});
+Object.defineProperty(Settings, 'lockOthers', {
+  value: Settings.stageName == "mix" && window.locking,
   writable: false
 });
 Object.defineProperty(Settings, 'genKey', {

@@ -210,7 +210,7 @@ Action.onIsConnected = Commons.emptyFn;
 
 // *** server: all stages are no action
 // *** tv: all stages are no action
-Action.onClientConnected = Commons.emptyFn;
+// Action.onClientConnected = Commons.emptyFn;
 
 // *** server: all stages are no action
 // *** tv: all stages are no action

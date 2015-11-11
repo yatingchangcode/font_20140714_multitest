@@ -56,8 +56,10 @@
     <%= link_to "捉對廝殺 (8人，每次2人)","#",id: "stageB1",class: "btn btn-lg btn-info"  %>
     <%= link_to "掌握先機 (4人)","#",id: "stageB2",class: "btn btn-lg btn-info"  %>
     <%= link_to "成語連連看 (2人)","#",id: "stageB3",class: "btn btn-lg btn-info"  %>
-    <%= link_to "掌握先機(舊版) (4人)","#",id: "stageB2_v1",class: "btn btn-lg btn-warning"  %>
-    <%= link_to "多人連線 (10~40人)","#",id: "stage_multi",class: "btn btn-lg btn-warning"  %>
+    <%= link_to "多人連線 (10~40人)","#", id: "stage_multi",class: "btn btn-lg btn-warning"  %>
+    <%= link_to "東拼西湊 (1~10人)","#",id: "stage_mix",class: "btn btn-lg btn-warning"  %>
+
+    <%= link_to "掌握先機(舊版) (4人)","#",id: "stageB2_v1",class: "btn btn-lg btn-default"  %>
   </div>
 </div>
 
@@ -142,6 +144,14 @@ $(document).ready(function(){
 
     location.href = '/games/<%= @game.id %>/stage_multi?stage=multi&join_visitors_number=' + join_visitors_number;
   }
+
+  document.getElementById('stage_mix').onclick = function(e){
+
+    var join_visitors_number = getVisitorsNumberArray(e);
+
+    location.href = '/games/<%= @game.id %>/stage_mix?stage=mix&join_visitors_number=' + join_visitors_number;
+  }
+
 });
 </script>
 <% end %>

@@ -68,6 +68,14 @@ class GamesController < ApplicationController
     @join_visitors_number = params[:join_visitors_number]
   end
 
+  def stage_mix
+    @game = Game.find(params[:id])
+
+    @stage = params[:stage]
+
+    @join_visitors_number = params[:join_visitors_number]
+  end
+
   def server1
     @game = Game.find(params[:id])
     @visitors = @game.visitors.where(number: params[:join_visitors_number].split(","))
@@ -221,6 +229,26 @@ class GamesController < ApplicationController
     # end
   end
 
+  def server_mix
+    @game = Game.find(params[:id])
+    @visitors = @game.visitors.where(number: params[:join_visitors_number].split(","))
+    @range = 1..@visitors.size
+    @second = params[:second]
+    @counting = params[:counting]
+    @common = params[:common]
+    @locking = params[:locking]
+
+    Setting.messaging['second'] = params[:second]
+    Setting.messaging['game'] = params[:id]
+    Setting.messaging['stage'] = params[:stage]
+    @stage = params[:stage]
+    # Setting.messaging['record_url'] = "http://0.0.0.0:3000/games/#{params[:id]}/record?join_visitors_number=#{params[:join_visitors_number]}"
+    #@user_unregs = [1,4]
+    # if Setting.messaging['is_record_open'] != true
+    #   `xdg-open #{Setting.messaging['record_url']} || open #{Setting.messaging['record_url']}`
+    # end
+  end
+
   def tvwall_A1
     @game = Game.find(params[:id])
     @visitors = @game.visitors.where(number: params[:join_visitors_number].split(","))
@@ -291,6 +319,14 @@ class GamesController < ApplicationController
     @tv_n = params[:tv_n]
   end
 
+  def tvwall_mix
+    @game = Game.find(params[:id])
+    @visitors = @game.visitors.where(number: params[:join_visitors_number].split(","))
+    @range = 1..@visitors.size
+
+    @second = params[:second]
+  end
+
   def record
     @game = Game.find(params[:id])
     @visitors = @game.visitors.where(number: params[:join_visitors_number].split(","))
@@ -315,7 +351,13 @@ class GamesController < ApplicationController
       @visitor = @game.visitors.where(number: params[:id]).first
 
       respond_to do |format|
-        format.json { render :json => { visitor: @visitor,second: Setting.messaging['second'],game: Setting.messaging['game'], stage: Setting.messaging['stage'], recordUrl: Setting.messaging['record_url']} }
+        format.json { render :json => { visitor: @visitor,
+          second: Setting.messaging['second'],
+          common: Setting.messaging['common'],
+          locking: Setting.messaging['locking'],
+          game: Setting.messaging['game'], 
+          stage: Setting.messaging['stage'],
+          recordUrl: Setting.messaging['record_url']} }
       end
     else
       respond_to do |format|
@@ -334,6 +376,14 @@ class GamesController < ApplicationController
     res = { success: false }
     if params[:second]
       Setting.messaging['second'] = params[:second]
+      res['success'] = true
+    end
+    if params[:common]
+      Setting.messaging['common'] = params[:common]
+      res['success'] = true
+    end
+    if params[:locking]
+      Setting.messaging['locking'] = params[:locking]
       res['success'] = true
     end
     respond_to do |format|

@@ -259,7 +259,9 @@
   scope.Commons = {};
 
   // by different stages
-  scope.Commons.emptyFn = function(o){};
+  scope.Commons.emptyFn = function(o){ 
+    console.warn("Nothing happens!! Make this line as check point for debug.");
+  };
   scope.Commons.gamers = gamers;
   scope.Commons.isEmpty = isEmpty;
   scope.Commons.inArray = inArray;
