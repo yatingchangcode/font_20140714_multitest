@@ -73,6 +73,49 @@ View.startCounter = (function(key){
           }
         };
       })($('#progress_bar')),100);
+    },
+    "mix+console":function(thisvalue){
+      var timesupFn, intV, passId, secObj;
+      if(!Settings.hasTimeCounter) return;
+      if(Settings.commonWriting && Commons.alarm) return;
+      if(!Settings.commonWriting && Commons.alarm && Commons.alarm[thisvalue]) return;
+      secObj = Settings.commonWriting ? $('#second') : $('#second_' + thisvalue);
+      passId = Settings.commonWriting ? "" : thisvalue;
+      timesupFn = function(id){
+        if(id) 
+          return function(){
+            clearInterval(Commons.alarm[id]);
+            Commons.alarm[id] = null;
+            SocketController.triggerAction({action:'stop',user_id:id},"mix.");
+            SocketController.receiveSubmitHandler({user_id:id});
+          };
+        else 
+          return function(){
+            clearInterval(Commons.alarm);
+            Commons.alarm = null;
+            Commons.gamers.all().forEach(function(id){
+              SocketController.triggerAction({action:'stop',user_id:id},"mix.");
+              SocketController.receiveSubmitHandler({user_id:id});
+            });
+          };
+      };
+
+      intV = setInterval((function(secondJQ, progressJQ, tfn){
+        return function(){
+          var s = parseFloat(secondJQ.text()).toFixed(1);
+          if (s > 0){
+            var percent = 100 * (s - 0.1) / Commons.timeRemaining;
+            var sec = (s - 0.1).toFixed(1);
+            progressJQ.css("width", percent+"%").attr('aria-valuenow', percent).text(sec+"s");
+            secondJQ.text(sec);
+            //perSecJQ.text(sec + "秒");
+          } else {
+            tfn();
+          }
+        };
+      })(secObj, $('#progress_bar'), timesupFn(passId)), 100);
+      if(Settings.commonWriting) Commons.alarm = intV;
+      else Commons.alarm[thisvalue] = intV;
     }
   }[key] || Commons.emptyFn;
 })(Settings.genKey);
@@ -116,7 +159,6 @@ View.registerCanvas = (function(key){
   key = Commons.getCommonGenKey(key, ["A1+tv","A2+tv","A3+tv","B1+tv","B2_v1+tv"]);
   key = Commons.getCommonGenKey(key, ["B2+console","B2+tv"]);
   key = Commons.getCommonGenKey(key, ["B3+console","B3+tv"]);
-  key = Commons.getCommonGenKey(key, ["mix+console","mix+tv"]);
   return {
     "A1+console":function(list, prefix){
       prefix = prefix || 'origin_';
@@ -161,6 +203,25 @@ View.registerCanvas = (function(key){
           }
         }
       }
+    },
+    "mix+tv":function(list,prefix){
+      prefix = prefix || 'origin_';
+      var rowMax = 3;
+      var colMax = 3;
+      for(var idx in list) {
+        for(var row = 1; row <= rowMax; row++){
+          for(var col = 1; col <= colMax; col++){
+            if(row == 2 || col == 2)
+              CM.reg(prefix + list[idx] + "_" + row + "_" + col);
+          }
+        }
+      }
+      for(var row = 1; row <= rowMax; row++){
+        for(var col = 1; col <= colMax; col++){
+          if(row == 2 || col == 2)
+            CM.reg('_zoomTmp' + "_" + row + "_" + col);
+        }
+      }
     }
   }[key] || Commons.emptyFn;
 })(Settings.genKey);
@@ -188,6 +249,24 @@ View.loadSketchSecond = (function(key){
         // Commons.sketchSecondIns[id].setSize(p.width(), p.height());
         Commons.sketchSecondIns[id].setSecond(Commons.timeRemaining);
       });
+    },
+    "mix+tv":function(){
+      if(Settings.hasTimeCounter){
+        if(Settings.commonWriting){
+          if(!Commons.sketchSecondIns){
+            Commons.sketchSecondIns = TimeBar.getInstanceById('sketchSecond');
+          }
+          Commons.sketchSecondIns.setSecond(Commons.timeRemaining);
+        }else{
+          if(!Commons.sketchSecondIns) Commons.sketchSecondIns = {};
+          Commons.gamers.all().forEach(function(id){
+            if(!Commons.sketchSecondIns[id]){
+              Commons.sketchSecondIns[id] = TimeBar.getInstanceById('sketchSecond_' + id);
+            }
+            Commons.sketchSecondIns[id].setSecond(Commons.timeRemaining);
+          }); 
+        }
+      }
     }
   }[key] || Commons.emptyFn;
 })(Settings.genKey);
@@ -217,7 +296,7 @@ View.setDownLocationStyle = (function(key){
     "A1+console","A2+console","A3+console","B1+console","B2_v1+console",
     "A1+tv","A2+tv","A3+tv","B1+tv","B2_v1+tv"
   ]);
-  key = Commons.getCommonGenKey(key, ["B2+console","B2+tv"]);
+  key = Commons.getCommonGenKey(key, ["B2+console","B2+tv","mix+console","mix+tv"]);
   key = Commons.getCommonGenKey(key, ["B3+console","B3+tv"]);
   return {
     // server: A1 A2 A3 B1 B2_v1
@@ -243,7 +322,7 @@ View.setMoveLocationStyle = (function(key){
     "A1+console","A2+console","A3+console","B1+console","B2_v1+console",
     "A1+tv","A2+tv","A3+tv","B1+tv","B2_v1+tv"
   ]);
-  key = Commons.getCommonGenKey(key, ["B2+console","B2+tv"]);
+  key = Commons.getCommonGenKey(key, ["B2+console","B2+tv","mix+console","mix+tv"]);
   key = Commons.getCommonGenKey(key, ["B3+console","B3+tv"]);
   return {
     // server: A1 A2 A3 B1 B2_v1
@@ -269,6 +348,7 @@ View.setUpLocationStyle = Commons.emptyFn;
 View.setStartStyle = (function(key){
   key = Commons.getCommonGenKey(key, ["A3+tv","B1+tv","B2_v1+tv","B2_v1+console","B2+tv"]);
   key = Commons.getCommonGenKey(key, ["A1+console","A3+console","B1+console"]);
+  key = Commons.getCommonGenKey(key, ["A2+console","mix+console"]);
   return {
     // tv: A3 B1 B2 B2_v1
     // server: B2_v1
@@ -306,12 +386,22 @@ View.setStartStyle = (function(key){
     "A2+tv":function(o){
       $('#user_photo_' + o.user_id).addClass("green");
       Commons.sketchSecondIns[o.user_id].doStart();
+    },
+    "mix+tv":function(o){
+      $('#user_photo_' + o.user_id).addClass("green");
+      if(Settings.hasTimeCounter){
+        if(Settings.commonWriting){
+          Commons.sketchSecondIns.doStart();
+        }else{
+          Commons.sketchSecondIns[o.user_id].doStart();     
+        }
+      }
     }
   }[key] || Commons.emptyFn;
 })(Settings.genKey);
 
 View.setStopStyle = (function(key){
-  key = Commons.getCommonGenKey(key, ["A1+console","A2+console","A3+console","B1+console","B2_v1+console"]);
+  key = Commons.getCommonGenKey(key, ["A1+console","A2+console","A3+console","B1+console","B2_v1+console","mix+console"]);
   key = Commons.getCommonGenKey(key, ["A3+tv","B1+tv","B2+tv","B2_v1+tv"]);
   return {
     // server: A1 A2 A3 B1 B2_v1
@@ -351,13 +441,23 @@ View.setStopStyle = (function(key){
           $(document.getElementById('glow_' + x + '_' + y)).hide();
         }
       }
+    },
+    "mix+tv":function(o){
+      $('#user_photo_' + o.user_id).removeClass("green");
+      if(Settings.hasTimeCounter){
+        if(Settings.commonWriting){
+          Commons.sketchSecondIns.doStop();
+        }else{
+          Commons.sketchSecondIns[o.user_id].doStop();  
+        }
+      }
     }
   }[key] || Commons.emptyFn;
 })(Settings.genKey);
 
 View.setSubmitStyle = (function(key){
-  key = Commons.getCommonGenKey(key, ["A1+console","A2+console","A3+console","B1+console","B2_v1+console"]);
-  key = Commons.getCommonGenKey(key, ["A1+tv","A2+tv","A3+tv","B1+tv","B2_v1+tv"]);
+  key = Commons.getCommonGenKey(key, ["A1+console","A2+console","A3+console","B1+console","B2_v1+console","mix+console"]);
+  key = Commons.getCommonGenKey(key, ["A1+tv","A2+tv","A3+tv","B1+tv","B2_v1+tv","mix+tv"]);
   key = Commons.getCommonGenKey(key, ["B3+console","B3+tv"]);
   return {
     // server: A1 A2 A3 B1 B2_v1
@@ -388,8 +488,8 @@ View.setSubmitStyle = (function(key){
 View.setCancelSubmitStyle = (function(key){
   // *** server: B2 B3 no action
   // *** tv: B2 B3 no action
-  key = Commons.getCommonGenKey(key, ["A1+console","A2+console","A3+console","B1+console","B2_v1+console"]);
-  key = Commons.getCommonGenKey(key, ["A1+tv","A2+tv","A3+tv","B1+tv","B2_v1+tv"]);
+  key = Commons.getCommonGenKey(key, ["A1+console","A2+console","A3+console","B1+console","B2_v1+console","mix+console"]);
+  key = Commons.getCommonGenKey(key, ["A1+tv","A2+tv","A3+tv","B1+tv","B2_v1+tv","mix+tv"]);
   return {
     // server: A1 A2 A3 B1 B2_v1
     "A1+console":function(o){
@@ -431,6 +531,40 @@ View.setClearStyle = (function(key){
     "A1+client":function(o){
       if(o.user_id == Settings.clientUserId){
         CM('origin_' + Settings.clientUserId).clear();
+      }
+    },
+    "mix+console":function(o){
+      var id = o.user_id,
+          block = o.block,
+          sr = block? block.row : 1,
+          er = block? block.row : 3,
+          sc = block? block.column : 1,
+          ec = block? block.column : 3,
+          comrc = block? ["",block.row,block.column].join('_') : "";
+      for (var i = sr; i <= er; i++){
+        for (var j = sc; j <= ec; j++){
+          if(i == 2 || j == 2){
+            CM('origin_' + id + "_" + i + "_" + j).clear();
+          }
+        }
+      }
+      $("[id^=correct_button_" + id + "]").removeClass("btn-success");
+      SocketController.receiveActionHandler({name:'stop', user_id:id});
+    },
+    "mix+tv":function(o){
+      var id = o.user_id,
+          block = o.block,
+          sr = block? block.row : 1,
+          er = block? block.row : 3,
+          sc = block? block.column : 1,
+          ec = block? block.column : 3,
+          comrc = block? ["",block.row,block.column].join('_') : "";
+      for (var i = sr; i <= er; i++){
+        for (var j = sc; j <= ec; j++){
+          if(i == 2 || j == 2){
+            CM('origin_' + id + "_" + i + "_" + j).clear();
+          }
+        }
       }
     }
   }[key] || Commons.emptyFn;
@@ -476,6 +610,23 @@ View.setClearAllStyle = (function(key){
         SocketController.receiveActionHandler({name:'stop', user_id:id});
       });
     },
+    "mix+console":function(o){
+      $('[id^=yes_img_]').hide();
+      $('#progress_bar').css("width", "100%").attr("aria-valuenow","100%").text(Commons.timeRemaining+"s");
+      Commons.gamers.all().forEach(function(id){
+        $('#visitor_' + id).css("background-color", "#ebf0fa");
+        for (var i = 1; i <= 3; i++){
+          for (var j = 1; j <= 3; j++){
+            if(i == 2 || j == 2){
+              CM('origin_' + id + "_" + i + "_" + j).clear();
+              // $("[id^=correct_button_" + id + "_" + i + "_" + j + "]").removeClass("btn-success");
+            }
+          }
+        }
+        $("[id^=correct_button_" + id + "]").removeClass("btn-success");
+        SocketController.receiveActionHandler({name:'stop', user_id:id});
+      });
+    },
     "B2+tv":function(o){
       $('[id^=yes_img_]').hide();
       Commons.gamers.all().forEach(function(id){
@@ -511,6 +662,21 @@ View.setClearAllStyle = (function(key){
         SocketController.receiveActionHandler({name:'stop', user_id:id});
       });
     },
+    "mix+tv":function(o){
+      $('[id^=yes_img_]').hide();
+      Commons.gamers.all().forEach(function(id){
+        for (var i = 1; i <= 3; i++){
+          for (var j = 1; j <= 3; j++){
+            if(i == 2 || j == 2){
+              CM('origin_' + id + "_" + i + "_" + j).clear();
+              SocketController.receiveCancelSubmitHandler({user_id:id});
+              SocketController.receiveActionHandler({name:'stop', user_id:id});
+            }
+          }
+        }
+      });
+      SocketController.receiveResetHandler({second:window.timeRemaining});
+    },
     // client A1 A2 A3 B1 B2
     "A1+client":function(o){
       CM('origin_' + Settings.clientUserId).clear();
@@ -522,8 +688,8 @@ View.setRightStyle = (function(key){
   // *** server: B3 no action
   // *** tv: B3 no action
   key = Commons.getCommonGenKey(key, [
-    "A1+console","A2+console","A3+console","B1+console","B2_v1+console",
-    "A1+tv","A2+tv","A3+tv","B1+tv","B2_v1+tv"
+    "A1+console","A2+console","A3+console","B1+console","B2_v1+console","mix+console",
+    "A1+tv","A2+tv","A3+tv","B1+tv","B2_v1+tv","mix+tv"
   ]);
   key = Commons.getCommonGenKey(key, ["B2+console","B2+tv"]);
   return {
@@ -544,8 +710,8 @@ View.setRemoveOStyle = (function(key){
   // *** server: B3 no action
   // *** tv: B3 no action
   key = Commons.getCommonGenKey(key, [
-    "A1+console","A2+console","A3+console","B1+console","B2_v1+console",
-    "A1+tv","A2+tv","A3+tv","B1+tv","B2_v1+tv"
+    "A1+console","A2+console","A3+console","B1+console","B2_v1+console","mix+console",
+    "A1+tv","A2+tv","A3+tv","B1+tv","B2_v1+tv","mix+tv"
   ]);
   key = Commons.getCommonGenKey(key, ["B2+console","B2+tv"]);
   return {
@@ -592,6 +758,17 @@ View.setCorrectCountStyle = (function(key){
       else $("[name^=correct_button_" + o.cid + "]").addClass("btn-success");
       $("#no_correct_" + o.user_id).text(o.count + "題");
     },
+    "mix+console":function(o){
+      var current = o.count;
+      if(Settings.commonWriting){
+        if(!Settings.hasCorrectCounting || current > parseInt($("#no_correct_" + o.user_id).text())){
+          $("#correct_button_" + o.user_id).addClass("btn-success");
+        } 
+      }
+      if (Settings.hasCorrectCounting){
+        $("#no_correct_" + o.user_id).text(o.count + "題");
+      }
+    },
     // tv: A3
     "A3+tv":function(o){
       $("#no_correct_" + o.user_id).css('opacity', 1);
@@ -608,6 +785,13 @@ View.setCorrectCountStyle = (function(key){
     // tv: B2
     "B2+tv":function(o){
       $("#no_correct_" + o.user_id).css('opacity', 1);
+    },
+    "mix+tv":function(o){
+      if (Settings.hasCorrectCounting){
+        $("#no_correct_" + o.user_id).show();
+        $("#no_correct_" + o.user_id).css('opacity', 1);
+        $("#no_correct_" + o.user_id).text(o.count).css('opacity', 1).css('color', 'black');
+      }
     }
   }[key] || Commons.emptyFn;
 })(Settings.genKey);
@@ -615,7 +799,9 @@ View.setCorrectCountStyle = (function(key){
 View.setShowCorrectUsersStyle = (function(key){
   // *** server: A2 A3 B1 B2_v1 B3 no actions.
   // *** tv: A2 A3 B1 B2_v1 B3 no actions.
+  key = Commons.getCommonGenKey(key, ["A1+console","mix+console"]);
   key = Commons.getCommonGenKey(key, ["B2+console","B2+tv"]);
+  key = Commons.getCommonGenKey(key, ["A1+tv","mix+tv"]);
   return {
     // server: A1
     "A1+console":function(o){
@@ -708,7 +894,9 @@ View.setUserOutStyle = (function(key){
       $("#out_button_" + user_id).attr("disabled", true);
       $("#start_button_" + user_id).attr("disabled", true);
       $("#stop_button_" + user_id).attr("disabled", true);
+      $("#zoom_button_" + user_id).attr("disabled", true);
       $('#visitor_' + user_id).attr('style','opacity:0.2;border:3px solid #f8f8f8');
+      
     },
     // tv: A1 A3 B1 B2_v1
     "A1+tv":function(o){
@@ -723,16 +911,42 @@ View.setUserOutStyle = (function(key){
       $("#out_button_" + user_id).attr("disabled", true);
       $("#start_button_" + user_id).attr("disabled", true);
       $("#stop_button_" + user_id).attr("disabled", true);
+      $("#zoom_button_" + user_id).attr("disabled", true);
       $("#continue_" + user_id).attr("disabled", true);
       $("#remove_O_button_" + user_id).attr("disabled", true);
       $("#remove_writing_button_" + user_id).attr("disabled", true);
       $('#visitor_' + user_id).attr('style','opacity:0.2;border:4px solid #f8f8f8');
+    },
+    "mix+console":function(o){
+      var user_id = o.user_id;
+      for (var i = 1; i <= 3; i++){
+        for (var j = 1; j <= 3; j++){
+          if(i == 2 || j == 2){
+            CM.unreg('origin_' + user_id + "_" + i + "_" + j);
+          }
+        }
+      }
+      $("#correct_button_" + user_id).attr("disabled", true);
+      $("#out_button_" + user_id).attr("disabled", true);
+      $("#start_button_" + user_id).attr("disabled", true);
+      $("#stop_button_" + user_id).attr("disabled", true);
+      $("#zoom_button_" + user_id).attr("disabled", true);
+      $("#continue_" + user_id).attr("disabled", true);
+      $("#remove_O_button_" + user_id).attr("disabled", true);
+      $("#remove_writing_button_" + user_id).attr("disabled", true);
+      $('#visitor_' + user_id).attr('style','opacity:0.2;border:3px solid #f8f8f8');
     },
     // tv: A2
     "A2+tv":function(o){
       $('#out_' + o.user_id).show();
       $('#black_' + o.user_id).show();
       Commons.sketchSecondIns[o.user_id].clearBar();
+    },
+    "mix+tv":function(o){
+      $('#out_' + o.user_id).show();
+      $('#black_' + o.user_id).show();
+      if(Settings.hasTimeCounter && !Settings.commonWriting)
+        Commons.sketchSecondIns[o.user_id].clearBar();
     }
   }[key] || Commons.emptyFn;
 })(Settings.genKey);
@@ -758,6 +972,18 @@ View.setResetStyle = (function(key){
         }
       }
     },
+    "mix+console":function(o){
+      if(o.second){
+        if(Settings.commonWriting){
+          $('#progress_bar').css("width", "100%").attr("aria-valuenow","100%").text(Commons.timeRemaining+"s");
+          $('#second').text(Commons.timeRemaining);
+        }else{
+          for (key in Commons.alarm){
+            $('#second_' + key).text(o.second + "秒");
+          }
+        }
+      }
+    },
     // tv: A1
     "A1+tv":function(o){
       Commons.sketchSecondIns.resetBar();
@@ -767,10 +993,23 @@ View.setResetStyle = (function(key){
     "A2+tv":function(o){
       if (o.second != null) {
         Commons.gamers.all().forEach(function(id){
-          $('#second_' + id).text(o.second + "秒");
+          // $('#second_' + id).text(o.second + "秒");
           Commons.sketchSecondIns[id].resetBar();
           Commons.sketchSecondIns[id].setSecond(parseInt(o.second));
         });
+      }
+    },
+    "mix+tv":function(o){
+      if(o.second){
+        if(Settings.commonWriting){
+          Commons.sketchSecondIns.resetBar();
+          Commons.sketchSecondIns.setSecond(parseInt(o.second));
+        }else{ 
+          Commons.gamers.all().forEach(function(id){
+            Commons.sketchSecondIns[id].resetBar();
+            Commons.sketchSecondIns[id].setSecond(parseInt(o.second));
+          });
+        }
       }
     }
   }[key] || Commons.emptyFn;
@@ -780,7 +1019,7 @@ View.setIsConnectedStyle = (function(key){
   // *** tv: all stages no action
   // *** server: B3 no action
   key = Commons.getCommonGenKey(key, [
-    "A1+console","A2+console","A3+console","B1+console","B2_v1+console","B2+console"
+    "A1+console","A2+console","A3+console","B1+console","B2_v1+console","B2+console","mix+console"
   ]);
   return {
     // server: A1 A2 A3 B1 B2_v1 B2
@@ -799,7 +1038,7 @@ View.setClientConnectedStyle = (function(key){
   // *** tv: all stages no action
   // *** server: B3 no action
   key = Commons.getCommonGenKey(key, [
-    "A1+console","A2+console","A3+console","B1+console","B2_v1+console","B2+console"
+    "A1+console","A2+console","A3+console","B1+console","B2_v1+console","B2+console","mix+console"
   ]);
   return {
     // server: A1 A2 A3 B1 B2_v1 B2
@@ -835,6 +1074,7 @@ View.setSendTextStyle = (function(key){
   // *** tv: A1 A2 A3 B1 B2_v1 B2 no action
   // *** server: A1 A2 A3 B1 B2_v1 B2 no action
   key = Commons.getCommonGenKey(key, ["B3+console","B3+tv"]);
+  key = Commons.getCommonGenKey(key, ["mix+console","mix+tv"]);
   return {
     // server: B3
     // tv: B3
@@ -846,6 +1086,13 @@ View.setSendTextStyle = (function(key){
       //context.font = "bold " + (w * 13 / 15) + "px 標楷體";
       context.font = (w * 13 / 15) + "px Sans-serif";
       context.fillText(o.text, w / 15, w * 12 / 15);
+    },
+    "mix+console":function(o){
+      var r = o.block.row,
+          c = o.block.column;
+      Commons.gamers.all().forEach(function(id){
+        CM(['origin',id, r, c].join('_')).text(o.text);
+      });
     }
   }[key] || Commons.emptyFn;
 })(Settings.genKey);
@@ -899,7 +1146,7 @@ View.setContinueWriteStyle = (function(key){
 
 View.setZoomStyle = (function(key){
   key = Commons.getCommonGenKey(key, ["A1+tv", "A2+tv", "A3+tv", "B1+tv", "B2_v1+tv"]);
-  key = Commons.getCommonGenKey(key, ["A1+console","A2+console","A3+console","B1+console","B2_v1+console"]);
+  key = Commons.getCommonGenKey(key, ["A1+console","A2+console","A3+console","B1+console","B2_v1+console","mix+console"]);
   return {
     "A1+tv":function(o){
       CM('origin_' + o.user_id).zoomTo('_zoomTmp');
@@ -912,13 +1159,26 @@ View.setZoomStyle = (function(key){
     "A1+console":function(o){
       $('[id^=zoom_button_]').attr('disabled',true).css('opacity',0.3);
       $('#zoom_button_'+o.user_id).attr('disabled',false).attr('zoom', 1).css('opacity',1).text("復原");
+    },
+    "mix+tv":function(o){
+      for (var i = 1; i <= 3; i++){
+        for (var j = 1; j <= 3; j++) {
+          if(i == 2 || j == 2)
+            CM('origin_' + o.user_id + "_" + i + "_" + j).zoomTo('_zoomTmp' + "_" + i + "_" + j);
+        }
+      }
+      $('.Zoom').fadeIn('slow').animate({
+        duration: 'slow',
+        queue: false,
+        complete: function() {}
+      });
     }
   }[key] || Commons.emptyFn;
 })(Settings.genKey);
 
 View.setUnZoomStyle = (function(key){
   key = Commons.getCommonGenKey(key, ["A1+tv", "A2+tv", "A3+tv", "B1+tv", "B2_v1+tv"]);
-  key = Commons.getCommonGenKey(key, ["A1+console","A2+console","A3+console","B1+console","B2_v1+console"]);
+  key = Commons.getCommonGenKey(key, ["A1+console","A2+console","A3+console","B1+console","B2_v1+console","mix+console"]);
   return {
     "A1+tv":function(o){
       $('.Zoom').fadeOut('slow').animate({
@@ -932,6 +1192,20 @@ View.setUnZoomStyle = (function(key){
     "A1+console":function(o){
       $('[id^=zoom_button_]').attr('disabled',false).css('opacity', 1);
       $('#zoom_button_'+o.user_id).attr('zoom', 0).text("放大");
+    },
+    "mix+tv":function(o){
+      $('.Zoom').fadeOut('slow').animate({
+          duration: 'slow',
+          queue: false,
+          complete: function() {
+            for (var i = 1; i <= 3; i++){
+              for (var j = 1; j <= 3; j++) {
+                if(i == 2 || j == 2)
+                  CM('origin_' + o.user_id + "_" + i + "_" + j).unZoom('_zoomTmp' + "_" + i + "_" + j);
+              }
+            }
+          }
+      });
     }
   }[key] || Commons.emptyFn;
 })(Settings.genKey);
@@ -961,11 +1235,11 @@ View.onContinueWriteClick = (function(key){
       SocketController.triggerContinueWrite({user_id: this.value},"idioms.");
     },
     "mix+console":function(){
-      SocketController.triggerContinueWrite({user_id: this.value},"mix.");
-      SocketController.triggerCancelSubmit({user_id: this.value},"mix.");
-      if(!Settings.commonWriting){
-        SocketController.triggerAction({action:'start', user_id: id}, "mix.");
-      }
+      var id = this.value;
+      SocketController.triggerContinueWrite({user_id: id},"mix.");
+      SocketController.triggerCancelSubmit({user_id: id});
+      if(Settings.commonWriting) View.setStartStyle({user_id: id});
+      else SocketController.triggerAction({action:'start', user_id: id}, "mix.");
     }
   }[key] || Commons.emptyFn;
 })(Settings.genKey);
@@ -1042,19 +1316,19 @@ View.onClearAllClick = (function(key){
       Commons.correct_users = null;
     },
     "mix+console":function(){
-      SocketController.triggerClearAll({},"mix.");
+      SocketController.triggerClearAll({});
       Commons.correct_users = null;
       if(Settings.hasTimeCounter){
         if(Settings.commonWriting){
           clearInterval(Commons.alarm);
           Commons.alarm = null;
-          SocketController.triggerReset({second: Commons.timeRemaining});
         }else{
           Commons.gamers.all().forEach( function(id) {
             clearInterval(Commons.alarm[id]);
             Commons.alarm[id] = null;
           });
         }
+        SocketController.triggerReset({second: Commons.timeRemaining});
       }
     }
   }[key] || Commons.emptyFn;
@@ -1160,10 +1434,11 @@ View.onStopClick = (function(key){
   return {
     // server: A1
     "A1+console":function(){
-      clearInterval(Commons.alarm);
-      Commons.alarm = null;
+      // clearInterval(Commons.alarm);
+      // Commons.alarm = null;
       SocketController.triggerAction({action:'stop', user_id: this.value});
-      View.setStopStyle({user_id:this.value});
+      // View.setStopStyle({user_id:this.value});
+      SocketController.triggerCancelSubmit({user_id: this.value});
     },
     // server: A2
     "A2+console":function(){
@@ -1184,7 +1459,7 @@ View.onStopClick = (function(key){
     },
     "mix+console":function(){
       SocketController.triggerAction({action:'stop', user_id: this.value},"mix.");
-      SocketController.triggerCancelSubmit({user_id: this.value},"mix.");
+      SocketController.triggerCancelSubmit({user_id: this.value});
     }
   }[key] || Commons.emptyFn;
 })(Settings.genKey);
@@ -1227,12 +1502,14 @@ View.onStopAllClick = (function(key){
       });
     },
     "mix+console":function(){
-      if (!Commons.alarm) return;
-      clearInterval(Commons.alarm);
-      Commons.alarm = null;
+      if(Settings.hasTimeCounter){
+        if (!Commons.alarm) return;
+        clearInterval(Commons.alarm);
+        Commons.alarm = null;
+      }
       Commons.gamers.all().forEach(function(id){
         SocketController.triggerAction({action:'stop', user_id: id},"mix.");
-        View.setStopStyle({user_id:id}, "mix.");
+        View.setStopStyle({user_id:id});
       });
     }
   }[key] || Commons.emptyFn;
@@ -1289,15 +1566,18 @@ View.onCorrectClick = (function(key){
     },
     "mix+console":function(){
       var current_correct_count = 0;
-      if(Settings.hasCorrectCounting){
-        current_correct_count = View.addCorrectCount(this.value);
-      }
+      // if(Settings.hasCorrectCounting){
+      //   current_correct_count = View.addCorrectCount(this.value);
+      // }
       if(Settings.commonWriting){
         if (!Commons.correct_users) Commons.correct_users = [];
         if (Commons.correct_users.indexOf(this.value) != -1) return;
         Commons.correct_users.push(this.value);
       }else{
         SocketController.triggerRight({user_id:this.value});
+      }
+      if(Settings.hasCorrectCounting){
+        current_correct_count = View.addCorrectCount(this.value);
       }
       SocketController.triggerSetCorrectCount({user_id:this.value,count:current_correct_count});
       SocketController.triggerAction({action:'stop',user_id:this.value}, "mix.");
@@ -1375,6 +1655,7 @@ View.onShowCorrectClick = (function(key){
 })(Settings.genKey);
 
 View.onSecondUpdateClick = (function(key){
+  key = Commons.getCommonGenKey(key, ["A1+console","mix+console"]);
   return {
     // server: A1
     "A1+console":function(){
@@ -1401,11 +1682,6 @@ View.onSecondUpdateClick = (function(key){
       // ).fail(function(e){
       //   console.log('error' + JSON.stringify(e));
       // });
-      View.setGameCurrentInfo();
-    },
-    "mix+console":function(){
-      Commons.timeRemaining = parseInt($('#secondInput').val());
-      SocketController.triggerReset({second:Commons.timeRemaining},"mix.");
       View.setGameCurrentInfo();
     }
   }[key] || Commons.emptyFn;
@@ -1438,6 +1714,27 @@ View.onNextQuestionClick = (function(key){
       SocketController.triggerAction({action:'start',user_id:newgamer});
 
     },
+    "mix+console":function(){
+      if(Settings.commonWriting){
+        Commons.correct_users = null;
+        SocketController.triggerClearAll({});
+        Commons.gamers.all().forEach( function(id) {
+          SocketController.triggerAction({action:'stop',user_id:id},"mix.");
+        });
+        SocketController.triggerReset({second:Commons.timeRemaining});
+      }else{
+        if (Commons.gamers.prev() != null) {
+          var id = Commons.gamers.prev();
+          SocketController.triggerAction({action:'stop',user_id:id},"mix.");
+          SocketController.triggerCancelSubmit({user_id: id});
+        }
+        var newgamer = Commons.gamers.next();
+        SocketController.triggerReset({second: Commons.timeRemaining});
+        SocketController.triggerRemoveO({user_id:newgamer});
+        SocketController.triggerClear({user_id:newgamer}, "mix.");
+        SocketController.triggerAction({action:'start',user_id:newgamer},"mix.");
+      }
+    },
     // server A3 B1 B2_v1
     "A3+console":function(){
       Commons.correct_users = null;
@@ -1458,14 +1755,6 @@ View.onNextQuestionClick = (function(key){
       }
       $('#progress_bar').css("width", "100%").attr("aria-valuenow","100%").text(Commons.timeRemaining+"s");
       SocketController.triggerAction({action:'start',user_id:Commons.gamers.next()}, "idioms.");
-    },
-    "mix+console":function(){
-      Commons.correct_users = null;
-      SocketController.triggerClearAll({}, "mix.");
-      Commons.gamers.all().forEach( function(id) {
-        SocketController.triggerAction({action:'stop',user_id:id},"mix.");
-      });
-      SocketController.triggerReset({second:Commons.timeRemaining},"mix.");
     }
   }[key] || Commons.emptyFn;
 })(Settings.genKey);

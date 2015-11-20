@@ -275,7 +275,10 @@
     scope.Commons.trackCache = trackCache;
   }
   
-  if(Settings.hasTimeCounter || genKey == "B3+console"){
+  if(genKey == "mix+console"){
+    if(Settings.commonWriting) scope.Commons.alarm = null;
+    else scope.Commons.alarm = {};
+  }else if(Settings.hasTimeCounter || genKey == "B3+console"){
     scope.Commons.alarm = null;
   }else if(genKey == "A2+console"){
     scope.Commons.alarm = {};

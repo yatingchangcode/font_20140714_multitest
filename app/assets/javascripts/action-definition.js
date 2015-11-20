@@ -44,6 +44,11 @@ Action.onStart = (function(key){
     "A2+console":function(o){
       Commons.gamers.setActive(o.user_id);
     },
+    "mix+console":function(o){
+      if(!Settings.commonWriting){
+        Commons.gamers.setActive(o.user_id);  
+      }
+    },
     // tv: A3 B1
     "A3+tv":function(o){
       SocketController.receiveCancelSubmitHandler(o);
@@ -86,6 +91,15 @@ Action.onStop = (function(key){
       clearInterval(Commons.alarm);
       Commons.alarm = null;
     },
+    "mix+console":function(o){
+      if (Settings.hasTimeCounter && Settings.commonWriting && Commons.alarm){
+        clearInterval(Commons.alarm);
+        Commons.alarm = null;
+      }else if(!Settings.commonWriting && Commons.alarm && Commons.alarm[o.user_id]){
+        clearInterval(Commons.alarm[o.user_id]);
+        Commons.alarm[o.user_id] = null;
+      }
+    },
     "A1+client":function(o){
       SocketController.triggerAction({
         action:'device_stop',
@@ -109,6 +123,13 @@ Action.onSubmit = (function(key){
       Commons.gamers.all().forEach(function(id){
         SocketController.triggerAction({action:'stop',user_id:id});
       });
+    },
+    "mix+console":function(o){
+      if(Settings.lockOthers){
+        Commons.gamers.all().forEach(function(id){
+          SocketController.triggerAction({action:'stop',user_id:id},"mix.");
+        });  
+      }
     },
     // server: B2
     "B2+console":function(o){
@@ -175,8 +196,8 @@ Action.onUserOut = (function(key){
   // *** server: B2 B3 no action
   // *** tv: B2 B3 no action
   key = Commons.getCommonGenKey(key, [
-    "A1+console", "A2+console", "A3+console", "B1+console", "B2_v1+console",
-    "A1+tv", "A2+tv", "A3+tv", "B1+tv", "B2_v1+tv"
+    "A1+console", "A2+console", "A3+console", "B1+console", "B2_v1+console","mix+console",
+    "A1+tv", "A2+tv", "A3+tv", "B1+tv", "B2_v1+tv","mix+tv"
   ]);
   return {
     // server: A1 A2 A3 B1 B2_v1

@@ -324,7 +324,11 @@ class GamesController < ApplicationController
     @visitors = @game.visitors.where(number: params[:join_visitors_number].split(","))
     @range = 1..@visitors.size
 
+    @stage = params[:stage]
     @second = params[:second]
+    @counting = params[:counting]
+    @common = params[:common]
+    @locking = params[:locking]
   end
 
   def record

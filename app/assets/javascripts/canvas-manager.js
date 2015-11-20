@@ -98,6 +98,7 @@
 		var timeStep = 2;
 		var wait = 12;
 		for(var x in instanceMap_){
+			if(!instanceMap_[x]) continue;
 			setTimeout((function(ins){
 				return function(){
 					ins.responsive();
@@ -158,6 +159,7 @@
 	function CanvasEmptyInstance(){}
 	CanvasEmptyInstance.prototype.point = function(){return this;};
 	CanvasEmptyInstance.prototype.line = function(){return this;};
+	CanvasEmptyInstance.prototype.text = function(){return this;};
 	CanvasEmptyInstance.prototype.clear = function(){return this;};
 	CanvasEmptyInstance.prototype.hasTrack = function(){return undefined;};
 	CanvasEmptyInstance.prototype.responsive = function(){return this;};
@@ -174,7 +176,8 @@
 		this.el_ = getEl_(id);
 		this.id_ = getId_(this.el_);
 		this.track_ = [];
-		
+		this.textStr_ = null;
+
 		this.rootScale_ = Math.pow(prop_.targetZoomScale, 1/2);
 		var w = this.width_ = prop_.width * this.rootScale_ ;
 		var h = this.height_ = prop_.height * this.rootScale_ ;
@@ -265,6 +268,30 @@
 		}
 		return this;
 	};
+
+	/**
+	 * Draw a text on specified canvas.
+	 * @param {String} str A String.
+	 * @param {Function|null} callback
+	 * @return {CanvasInstance}
+	 */
+	CanvasInstance.prototype.text = function(str, callback){
+		str = str || "";
+		var w = this.width_;
+		var context = this.context_;
+		context.fillStyle = "#ececec";
+		context.font = (w * 13 / 15) + "px Sans-serif";
+		context.fillText(str, w / 15, w * 12 / 15);
+		this.textStr_ = str;
+		if(typeof callback == 'function'){
+			setTimeout((function(scope, s){
+				return function(){
+					callback.call(scope, s);
+				};
+			})(this, str), 0);
+		}
+		return this;
+	};
 	
 	/**
 	 * Clear the canvas to blank or background image if its exist.
@@ -284,6 +311,7 @@
 			this.context_.restore();
 		}
 		this.track_ = [];
+		this.textStr_ = null;
 		if(typeof callback == 'function'){
 			setTimeout((function(scope){
 				return function(){
@@ -322,6 +350,7 @@
 			//console.log([p.clientWidth, squareSize]);
 			ins.width_ = squareSize;
 			ins.height_ = squareSize;
+			// reassign size would clear canvas automatically.
 			ins.el_.width = Math.round(squareSize);
 			ins.el_.height = Math.round(squareSize);
 			ins.rootScale_ = ins.width_ / prop_.width;
@@ -329,15 +358,22 @@
 			var sourceMinWidth = Math.min(prop_.width, prop_.height);
 			var con = ins.context_;
 
+			if(ins.backImgLoad_){
+				ins.context_.drawImage(ins.backImg_, 0, 0, squareSize, squareSize);
+			}
+
 			drawSplitLines_(ins, prop_.backgroundLine);
+
+			if(ins.textStr_){
+				con.fillStyle = "#ececec";
+				con.font = (squareSize * 13 / 15) + "px Sans-serif";
+				con.fillText(ins.textStr_, squareSize / 15, squareSize * 12 / 15);
+			}
 
 			con.lineWidth = squareSize / (sourceMinWidth / prop_.lineWidth);
 			con.lineCap = prop_.lineCap;
 			con.strokeStyle = prop_.lineColor;
 
-			if(ins.backImgLoad_){
-				ins.context_.drawImage(ins.backImg_, 0, 0, squareSize, squareSize);
-			}
 			// rewrite cached drawing
 			for(var i = 0, len = ins.track_.length; i < len; i++){
 				var single = ins.track_[i];
@@ -380,6 +416,7 @@
 	CanvasInstance.prototype.zoomTo = function(canvasId, callback){
 		var des = CM(canvasId);
 		des.track_ = this.track_.slice(0);
+		des.textStr_ = this.textStr_;
 		// _zoomTmp
 		return des.responsive(undefined, callback);
 		// var self = this;

@@ -27,7 +27,9 @@
         <h2>一字千金 操作後台</h2>
 <!--         <h4>目前上線人數<span id="user_count">0</span>人</h4>
  -->    <% if @second.to_i > 0 %>
+          <% if @common == '1' %>
           <h3>倒數計時 <span id="second" style="color:red"><%= @second %></span> 秒 </h3>
+          <% end %>
           <div style="padding:5px;">
             <input id="secondInput" value="<%= @second %>" style="width:60px;" />
             <button id="secondUpdate">更新秒數</button>
@@ -74,7 +76,7 @@
                   <div class="col-md-4">
                     <span>剩餘:</span>
                     <span id="second_<%= x.number %>" style="color:red font-size:12px;" class="badge">
-                      <%= @second %>秒
+                      <%= @second %>
                     </span>
                   </div>
                   <% end %>
@@ -111,7 +113,7 @@
                       <% end %>
                  </div>
                 <% end %>
-                
+                <img id="yes_img_<%= x.number %>" src="/assets/O-mark.png" height="150" style="display:none;z-index:10;position:absolute;right:20px;bottom:0px;" ></img>
               </div>
             </div>
             <div class="row-fluid" style="margin:auto">
@@ -146,7 +148,13 @@
             <!-- <button id="stop_button" style="font-size:15px;">停止已選</button> -->
           
             <button id="clear_button" style="font-size:15px;">全部清除</button>
-            <button id="next_question_button" style="font-size:15px;">下一題</button>
+            <button id="next_question_button" style="font-size:15px;">
+            <% if @common == '1' %>
+            下一題
+            <% else %>
+            下一位
+            <% end %>
+            </button>
             <!-- <button id="clear_correct_button" style="font-size:15px;">清空答題記錄</button> -->
           </div>
           <% if @second.to_i > 0 and @common == '1' %>
@@ -219,7 +227,7 @@
         // window.chatApp.setGameInfo(<%= @game.id %>, "<%= @stage %>", "<%= @visitors.to_json %>");
         //openRecordWindow();
 
-        SocketController.triggerReset({stage:'<%= params[:stage] %>'},"mix.");
+        SocketController.triggerReset({stage:'<%= params[:stage] %>'});
         SocketController.triggerSetGameinfoToSocket({
           game: <%= @game.id %>,
           stage: "<%= @stage %>",
@@ -229,13 +237,12 @@
         /*
 
         // trigger has prefix
-        continue_write
-        cancel_submit
+        continue_write        
         action
         clear
-        reset
         send_text
         clear_all
+        
 
 
         // trigger no prefix
@@ -246,6 +253,10 @@
         right
         remove_o
         show_correct_users
+        cancel_submit
+        submit
+        reset
+        is_connected
 
         */
 
@@ -272,7 +283,8 @@
 
         $('[id^=minus_one_button_]').click(View.onMinusOneClick);
 
-        $('#reset_time_button').click(View.onSecondUpdateClick);
+        // $('#reset_time_button').click(View.onSecondUpdateClick);
+        $('#secondUpdate').click(View.onSecondUpdateClick);
 
         $('#showTextButton').click(View.onShowTextClick);
 
@@ -289,7 +301,7 @@
 
         CM.doAllResponsive();
         <% @visitors.each do |visitor| %>
-        SocketController.triggerIsConnected({user_id:Settings.consoleUserId,check_id:<%= visitor.number %>},"mix.");
+        SocketController.triggerIsConnected({user_id:Settings.consoleUserId,check_id:<%= visitor.number %>});
         <% end %>
 
       });
