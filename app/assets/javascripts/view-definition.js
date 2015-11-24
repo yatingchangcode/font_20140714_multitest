@@ -967,9 +967,9 @@ View.setResetStyle = (function(key){
     // server: A2
     "A2+console":function(o){
       if (o.second != null) {
-        for (key in Commons.alarm){
-          $('#second_' + key).text(o.second + "秒");
-        }
+        Commons.gamers.all().forEach(function(id){
+          $('#second_' + id).text(o.second + "秒");
+        });
       }
     },
     "mix+console":function(o){
@@ -978,9 +978,9 @@ View.setResetStyle = (function(key){
           $('#progress_bar').css("width", "100%").attr("aria-valuenow","100%").text(Commons.timeRemaining+"s");
           $('#second').text(Commons.timeRemaining);
         }else{
-          for (key in Commons.alarm){
-            $('#second_' + key).text(o.second + "秒");
-          }
+          Commons.gamers.all().forEach(function(id){
+            $('#second_' + id).text(o.second + "秒");
+          });
         }
       }
     },

@@ -126,9 +126,12 @@ Action.onSubmit = (function(key){
     },
     "mix+console":function(o){
       if(Settings.lockOthers){
-        Commons.gamers.all().forEach(function(id){
-          SocketController.triggerAction({action:'stop',user_id:id},"mix.");
-        });  
+        View.onStopAllClick();
+        // Commons.gamers.all().forEach(function(id){
+        //   SocketController.triggerAction({action:'stop',user_id:id},"mix.");
+        // });  
+      }else if(!Settings.commonWriting){
+        SocketController.triggerAction({action:'stop',user_id:o.user_id});
       }
     },
     // server: B2
@@ -231,7 +234,7 @@ Action.onIsConnected = Commons.emptyFn;
 
 // *** server: all stages are no action
 // *** tv: all stages are no action
-// Action.onClientConnected = Commons.emptyFn;
+Action.onClientConnected = Commons.emptyFn;
 
 // *** server: all stages are no action
 // *** tv: all stages are no action

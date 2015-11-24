@@ -94,10 +94,10 @@ SocketController.onIsConnected(function(o){
   View.setIsConnectedStyle(o);
 });
 
-// SocketController.onClientConnected(function(o){
-//   Action.onClientConnected(o);
-//   View.setClientConnectedStyle(o);
-// });
+SocketController.onClientConnected(function(o){
+  Action.onClientConnected(o);
+  View.setClientConnectedStyle(o);
+});
 
 SocketController.onMoveBlock(function(o){
   Action.onMoveBlock(o);
