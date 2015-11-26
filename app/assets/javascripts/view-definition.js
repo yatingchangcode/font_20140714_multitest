@@ -1779,7 +1779,8 @@ View.onShowTextClick = (function(key){
     },
     "mix+console":function(){
       var text = $('#showText').val();
-      var block = {row: 2, column: 2};
+      var pos = $('#textPosition').val().split(',');
+      var block = {row: pos[0], column: pos[1]};
       Commons.fromServerCommand = true;
       SocketController.triggerSendText({block: block, text: text}, "mix.");
     }
