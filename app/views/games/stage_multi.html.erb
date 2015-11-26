@@ -10,9 +10,26 @@
     <h2>規則</h2>
     <h3>使用者可同時做答<h3>
     <h3>使用者畫面上不顯示秒數</h3>
-    <h3>限時 <input id="second" type="number"/> 秒</h3>
+    <h3>限時 <input id="second" type="number" value="30" /> 秒</h3>
     <input id="second" type="hidden" value="" />
     <h3> <input id="counting" type="checkbox" /> 計分</h3>
+    <h3> 編排方式</h3>
+    <h4>
+      <!-- <label class="radio-inline">
+        <input type="radio" name="typeOptions" id="type1" value="1"> 5/5/5/5
+      </label>
+      <label class="radio-inline">
+        <input type="radio" name="typeOptions" id="type2" value="2"> (3/4/3)(3/4/3)
+      </label>
+      <label class="radio-inline">
+        <input type="radio" name="typeOptions" id="type3" value="3"> (3/4/3)(3/4/3)船形
+      </label> -->
+      <select id="typeOptions" class="form-control" style="width: 20%;min-width: 200px;">
+        <option value="1">5/5/5/5</option>
+        <option value="2">(3/4/3)(3/4/3)</option>
+        <option value="3">(3/4/3)(3/4/3)船形</option>
+      </select>
+    </h4>
     <%= link_to "確認","#",id: "confirm", class: "btn btn-lg btn-success"  %>
   </div>
 </div>
@@ -25,7 +42,8 @@ $(document).ready(function(){
     e.preventDefault();
     var second = document.getElementById('second');
     var counting = document.getElementById('counting');
-    location.href = '/games/<%= @game.id %>/server_multi?stage=<%= params[:stage] %>&join_visitors_number=<%= @join_visitors_number %>&second='+second.value+(counting? ('&counting=' + (counting.checked? '1': '0')) : "");
+    location.href = '/games/<%= @game.id %>/server_multi?stage=<%= params[:stage] %>&join_visitors_number=<%= @join_visitors_number %>&second='+second.value+(counting? ('&counting=' + (counting.checked? '1': '0')) : "")+
+      '&order_type=' + $('#typeOptions').val();
   }
 });
 </script>

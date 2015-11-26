@@ -217,7 +217,7 @@ class GamesController < ApplicationController
     #   end
     # end
 
-    url_1 = "http://0.0.0.0:3000/games/#{params[:id]}/tvwall_#{@stage}?join_visitors_number=#{visitors_splits[0..@visitors.length-1].join(',')}&second=#{@second}&counting=#{@counting}&tv_n=tv_1"
+    url_1 = "http://0.0.0.0:3000/games/#{params[:id]}/tvwall_#{@stage}?join_visitors_number=#{visitors_splits[0..@visitors.length-1].join(',')}&second=#{@second}&counting=#{@counting}&tv_n=tv_1&order_type=#{params[:order_type]}"
     if Setting.messaging['is_tv_1_open'] != true
       `#{command_name} '#{url_1}'`
     end
@@ -317,6 +317,7 @@ class GamesController < ApplicationController
     @second = params[:second]
     @counting = params[:counting]
     @tv_n = params[:tv_n]
+    @order_type = params[:order_type]
   end
 
   def tvwall_mix
