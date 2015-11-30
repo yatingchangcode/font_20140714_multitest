@@ -787,10 +787,12 @@ View.setCorrectCountStyle = (function(key){
       $("#no_correct_" + o.user_id).css('opacity', 1);
     },
     "mix+tv":function(o){
-      if (Settings.hasCorrectCounting){
-        $("#no_correct_" + o.user_id).show();
-        $("#no_correct_" + o.user_id).css('opacity', 1);
-        $("#no_correct_" + o.user_id).text(o.count).css('opacity', 1).css('color', 'black');
+      if(!Settings.commonWriting){
+        if(Settings.hasCorrectCounting){
+          $("#no_correct_" + o.user_id).show();
+          $("#no_correct_" + o.user_id).css('opacity', 1);
+          $("#no_correct_" + o.user_id).text(o.count).css('opacity', 1).css('color', 'black');
+        }
       }
     }
   }[key] || Commons.emptyFn;

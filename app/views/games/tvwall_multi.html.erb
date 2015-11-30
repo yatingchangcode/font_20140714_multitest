@@ -153,11 +153,11 @@ p{
 
 body,.container{
   background-color: #000000;
-  /*width: 100%;
-  height:100%;*/
-  /*overflow: hidden;*/
-  width:1920px;
-  height:1080px;
+  width: 100%;
+  height:100%;
+  overflow: hidden;
+  /*width:1920px;
+  height:1080px;*/
 }
 </style>
 <% end %>
@@ -366,10 +366,14 @@ body,.container{
             <%
               startIndex = endIndex + 1
             %>
+            <tr>
+              <td colspan="2" height="<%= @bar_spacing %>">&nbsp;</td>
+            </tr>
           <% end %>
           <!-- <tr></tr>
           <tr></tr>
           <tr></tr> -->
+
         </table>
       </td>
       <!-- <td width="<%= @split_width %>"></td> -->
