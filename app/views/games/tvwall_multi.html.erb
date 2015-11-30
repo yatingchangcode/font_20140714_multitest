@@ -10,7 +10,7 @@
   @timebar_height = "16px"
   @video_position = "189px"
   @split_width = "3%"
-
+  @correct_font = "2.5em"
   @space_left_odd = "15%"
   @space_right_odd = "15%"
   @space_left_even = "7%"
@@ -91,22 +91,28 @@
     @split_width_down = "7.5%"
     case @visitors.length
     when 20
+      @correct_font = "20px"
+      @answer_padding = "17px 0 0 5px"
       if @order_type == '1'
+        @bar_spacing = "20"
+        @space_top = "90"
         @seprates = 4
         @space_left_odd = "7%"
         @space_right_odd = "15%"
         @space_left_even = "15%"
         @space_right_even = "7%"
-        @split_width = "3%"
-        @canvas_scale = 0.131
-        @canvas_border = 9
+        @split_width = "8%"
+        @canvas_scale = 0.081
+        @canvas_border = 5
+        @correct_font = "24px"
+        @answer_padding = "18px 0 0 5px"
       elsif @order_type == '2' or @order_type == '3'
         @seprates = 4
         @space_left_odd = "7%"
         @space_right_odd = "15%"
         @space_left_even = "15%"
         @space_right_even = "7%"
-        @split_width = "3%"
+        @split_width = "5%"
         @canvas_scale = 0.081
         @canvas_border = 5
       end
@@ -147,11 +153,11 @@ p{
 
 body,.container{
   background-color: #000000;
-  width: 100%;
-  height:100%;
-  overflow: hidden;
-  /*width:1920px;
-  height:1080px;*/
+  /*width: 100%;
+  height:100%;*/
+  /*overflow: hidden;*/
+  width:1920px;
+  height:1080px;
 }
 </style>
 <% end %>
@@ -185,9 +191,11 @@ body,.container{
       index_irr = startIndex
   %>
       <table width="100%" border="0" cellspacing="0" cellpadding="0">
+        <% if i == 1 %>
         <tr>
           <td colspan="12" height="<%= @bar_spacing %>">&nbsp;</td>
         </tr>
+        <% end %>
         <tr>
           <% if (i - 1) % 2 == 0 %>
             <td width="<%= @space_left_odd %>"></td>
@@ -213,12 +221,16 @@ body,.container{
                       <% else %>
                       <div class="nameBox">
                       <% end %>
-                        <p class="name"><%= visitor.title || '　' %></p>
+                        <% if visitor.title.to_s != '' %>
+                        <p class="name"><%= visitor.title %></p>
+                        <% else %>
+                        <p class="name">&nbsp;</p>
+                        <% end %>
                         <p class="name"><%= visitor.name %></p>
                       </div>
                       <% if @counting == '1' %>
-                      <div class="answer10" style="padding:20px 0 0 10px;">
-                      <span id="no_correct_<%= visitor.number %>" width="100%" class="label label-primary" style="opacity:0;font-size:2.5em;">0</span></div>
+                      <div class="answer10" style="padding:<%= @answer_padding %>;">
+                      <span id="no_correct_<%= visitor.number %>" width="100%" class="label label-primary" style="opacity:0;font-size:<%= @correct_font %>;">0</span></div>
                       <% end %>
                       <br class="CLEAR" />
                     </div>
@@ -304,12 +316,16 @@ body,.container{
                             <% else %>
                             <div class="nameBox">
                             <% end %>
-                              <p class="name"><%= visitor.title || '　' %></p>
+                              <% if visitor.title.to_s != '' %>
+                              <p class="name"><%= visitor.title %></p>
+                              <% else %>
+                              <p class="name">&nbsp;</p>
+                              <% end %>
                               <p class="name"><%= visitor.name %></p>
                             </div>
                             <% if @counting == '1' %>
-                            <div class="answer10" style="padding:20px 0 0 10px;">
-                            <span id="no_correct_<%= visitor.number %>" width="100%" class="label label-primary" style="opacity:0;font-size:2.5em;">0</span></div>
+                            <div class="answer10" style="padding:<%= @answer_padding %>;">
+                            <span id="no_correct_<%= visitor.number %>" width="100%" class="label label-primary" style="opacity:0;font-size:<%= @correct_font %>;">0</span></div>
                             <% end %>
                             <br class="CLEAR" />
                           </div>
@@ -425,12 +441,16 @@ body,.container{
                     <% else %>
                     <div class="nameBox">
                     <% end %>
-                      <p class="name"><%= visitor.title || '　' %></p>
+                      <% if visitor.title.to_s != '' %>
+                      <p class="name"><%= visitor.title %></p>
+                      <% else %>
+                      <p class="name">&nbsp;</p>
+                      <% end %>
                       <p class="name"><%= visitor.name %></p>
                     </div>
                     <% if @counting == '1' %>
                     <div class="answer10" style="padding:20px 0 0 10px;">
-                    <span id="no_correct_<%= visitor.number %>" width="100%" class="label label-primary" style="opacity:0;font-size:2.5em;">0</span></div>
+                    <span id="no_correct_<%= visitor.number %>" width="100%" class="label label-primary" style="opacity:0;font-size:<%= @correct_font %>;">0</span></div>
                     <% end %>
                     <br class="CLEAR" />
                   </div>
