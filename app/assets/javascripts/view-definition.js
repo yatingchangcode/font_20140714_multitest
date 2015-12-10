@@ -1152,11 +1152,14 @@ View.setZoomStyle = (function(key){
   return {
     "A1+tv":function(o){
       CM('origin_' + o.user_id).zoomTo('_zoomTmp');
+      /*
       $('.Zoom').fadeIn('slow').animate({
         duration: 'slow',
         queue: false,
         complete: function() {}
       });
+      */
+      $('.Zoom').show();
     },
     "A1+console":function(o){
       $('[id^=zoom_button_]').attr('disabled',true).css('opacity',0.3);
@@ -1169,11 +1172,14 @@ View.setZoomStyle = (function(key){
             CM('origin_' + o.user_id + "_" + i + "_" + j).zoomTo('_zoomTmp' + "_" + i + "_" + j);
         }
       }
+      /*
       $('.Zoom').fadeIn('slow').animate({
         duration: 'slow',
         queue: false,
         complete: function() {}
       });
+      */
+      $('.Zoom').show();
     }
   }[key] || Commons.emptyFn;
 })(Settings.genKey);
@@ -1183,6 +1189,9 @@ View.setUnZoomStyle = (function(key){
   key = Commons.getCommonGenKey(key, ["A1+console","A2+console","A3+console","B1+console","B2_v1+console","mix+console"]);
   return {
     "A1+tv":function(o){
+      $('.Zoom').hide();
+       CM('origin_' + o.user_id).unZoom('_zoomTmp');
+      /*
       $('.Zoom').fadeOut('slow').animate({
           duration: 'slow',
           queue: false,
@@ -1190,12 +1199,21 @@ View.setUnZoomStyle = (function(key){
             CM('origin_' + o.user_id).unZoom('_zoomTmp');
           }
       });
+      */
     },
     "A1+console":function(o){
       $('[id^=zoom_button_]').attr('disabled',false).css('opacity', 1);
       $('#zoom_button_'+o.user_id).attr('zoom', 0).text("放大");
     },
     "mix+tv":function(o){
+      $('.Zoom').hide();
+      for (var i = 1; i <= 3; i++){
+              for (var j = 1; j <= 3; j++) {
+                if(i == 2 || j == 2)
+                  CM('origin_' + o.user_id + "_" + i + "_" + j).unZoom('_zoomTmp' + "_" + i + "_" + j);
+              }
+            }
+      /*
       $('.Zoom').fadeOut('slow').animate({
           duration: 'slow',
           queue: false,
@@ -1208,6 +1226,7 @@ View.setUnZoomStyle = (function(key){
             }
           }
       });
+      */
     }
   }[key] || Commons.emptyFn;
 })(Settings.genKey);
@@ -1546,7 +1565,7 @@ View.onCorrectClick = (function(key){
         current_correct_count = View.addCorrectCount(this.value);
       }
       SocketController.triggerSetCorrectCount({user_id:this.value,count:current_correct_count});
-      SocketController.triggerAction({action:'stop',user_id:this.value});
+      //SocketController.triggerAction({action:'stop',user_id:this.value});
     },
     "B2+console":function(){
       var val = this.value.split(",");
@@ -1582,7 +1601,7 @@ View.onCorrectClick = (function(key){
         current_correct_count = View.addCorrectCount(this.value);
       }
       SocketController.triggerSetCorrectCount({user_id:this.value,count:current_correct_count});
-      SocketController.triggerAction({action:'stop',user_id:this.value}, "mix.");
+      //SocketController.triggerAction({action:'stop',user_id:this.value}, "mix.");
     }
   }[key] || Commons.emptyFn;
 })(Settings.genKey);

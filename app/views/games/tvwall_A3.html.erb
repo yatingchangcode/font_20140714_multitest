@@ -69,6 +69,12 @@
     when 9
       @split_width_up = "3%" 
       @split_width_down = "7.5%"
+    when 10
+      @canvas_scale = 0.131
+      @space_left = "16%"
+      @space_right = "9%"
+      @split_width_down = "11%" 
+      @split_width_up = "4%"
     end
   end
 %>
@@ -182,7 +188,130 @@ body,.container{
   </tr>
   
 </table>
-<% if @visitors.length > 5 %>
+<% if @visitors.length == 10 %>
+<div class="Content"> 
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td colspan="11" height="<%= @bar_spacing %>">&nbsp;</td>
+    </tr>
+    
+    <tr>
+      <td width="<%= @space_left %>"></td>
+      <% @visitors[0..5].each do |visitor| %>
+      <td>
+        <div class="box_a">
+          <div id="out_<%= visitor.number %>" class="out">
+            <img src="/assets/tvwall/out.png" width="100%"/>
+          </div>
+          <div id="black_<%= visitor.number %>" class="black"></div>
+          <table width="100%" border="0" cellspacing="0" cellpadding="0">
+            <tr>
+              <td>
+                <div class="TopBpx">
+                  <div id="user_photo_<%= visitor.number %>" class="photo">
+                    <%= render_gamer_photo(visitor,"medium",'100%','100%','') %>
+                  </div>
+                  <div class="nameBox br_line01">
+                    <% if(visitor.title) %>
+                    <p class="name"><%= visitor.title %></p>
+                    <% else %>
+                    <p class="name">&nbsp;</p>
+                    <% end %>
+                    <p class="name"><%= visitor.name %></p>
+                  </div>
+                  <div class="answer10" style="padding:15px 0 0 10px;">
+                  <span id="no_correct_<%= visitor.number %>" width="100%" class="label label-primary" style="opacity:0;font-size:3em">0</span></div>
+                  <br class="CLEAR" />
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div id="grid_<%= visitor.number %>" class="Grid">
+                  <canvas id="origin_<%= visitor.number %>" width="100%" ></canvas>
+                  <div id="metal_<%= visitor.number %>" class="inner_metal"></div>
+                  <div id="glow_<%= visitor.number %>" class="inner_glow"><img src="/assets/tvwall/img_Grid_b_green.png" width="100%"/></div>
+                  <div id="yes_img_<%= visitor.number %>" class="correct"><img src="/assets/tvwall/red_ring.png" width="100%"/></div>
+                </div>
+              </td>
+            </tr>
+          </table>
+        </div>
+      </td>
+      
+      <td width="<%= @split_width_up %>"></td>
+      <% end %>
+
+      <td width="<%= @space_right %>"></td>
+    </tr>
+    
+    <tr>
+      <td colspan="11" height="1%">&nbsp;</td>
+    </tr>
+  </table>
+
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td width="<%= @space_right %>"></td>
+      
+      <% @visitors[6..9].each do |visitor| %>
+      <td width="<%= @split_width_down %>"></td>
+      <td>
+        <div class="box_a">
+          <div id="out_<%= visitor.number %>" class="out">
+            <img src="/assets/tvwall/out.png" width="100%"/>
+          </div>
+          <div id="black_<%= visitor.number %>" class="black"></div>
+          <table width="100%" border="0" cellspacing="0" cellpadding="0">
+            <tr>
+              <td>
+                <div class="TopBpx">
+                  <div id="user_photo_<%= visitor.number %>" class="photo">
+                    <%= render_gamer_photo(visitor,"medium",'100%','100%','') %>
+                  </div>
+                  <div class="nameBox br_line01">
+                    <% if(visitor.title) %>
+                    <p class="name"><%= visitor.title %></p>
+                    <% else %>
+                    <p class="name">&nbsp;</p>
+                    <% end %>
+                    <p class="name"><%= visitor.name %></p>
+                  </div>
+                  <div class="answer10" style="padding:15px 0 0 10px;">
+                  <span id="no_correct_<%= visitor.number %>" width="100%" class="label label-primary" style="opacity:0;font-size:3em">0</span></div>
+                  <br class="CLEAR" />
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div id="grid_<%= visitor.number %>" class="Grid">
+                  <canvas id="origin_<%= visitor.number %>" width="100%" ></canvas>
+                  <div id="metal_<%= visitor.number %>" class="inner_metal"></div>
+                  <div id="glow_<%= visitor.number %>" class="inner_glow"><img src="/assets/tvwall/img_Grid_b_green.png" width="100%"/></div>
+                  <div id="yes_img_<%= visitor.number %>" class="correct"><img src="/assets/tvwall/red_ring.png" width="100%"/></div>
+                </div>
+              </td>
+            </tr>
+          </table>
+        </div>
+      </td>
+      <% end %>
+      <td width="<%= @space_left %>"></td>
+    </tr>
+    <% if @visitors.length == 6 %>
+    <tr>
+      <td colspan="11" height="1%">
+        <video width="100%" autoplay="autoplay" loop="loop" style="padding-top:<%= @video_position %>;">
+          <source src="/assets/cycle1111ok.mp4" type="video/mp4"></source>
+        </video>
+      </td>
+    </tr>
+    <% end %>
+  </table>
+</div>
+<% elsif @visitors.length > 5 %>
 <div class="Content"> 
   <table width="100%" border="0" cellspacing="0" cellpadding="0">
     <tr>
