@@ -108,12 +108,14 @@
         @answer_padding = "18px 0 0 5px"
       elsif @order_type == '2' or @order_type == '3'
         @seprates = 4
+	@space_top = "80"
 	@space_left = "10%"
 	@space_right = "10%"
-	@font_formula = "w / 3 * 17.5 / 15"
-        @split_width = "2%"
-	
-        @canvas_scale = 0.081
+	@bar_formula = "(w + 2) / 2"
+	@font_formula = "w / 3 * 19.5 / 15"
+        @split_width = "3%"
+	@bar_spacing = "15"
+        @canvas_scale = 0.091
         @canvas_border = 5
       end
     end
@@ -148,7 +150,8 @@
 <%= stylesheet_link_tag 'reset','tvwall' %>
 <style type="text/css">
 p{
-  padding-top:0.5%;
+margin-top:-2.5px;
+  /*padding-top:0.5%;*/
 }
 
 body,.container{
