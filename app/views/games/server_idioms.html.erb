@@ -83,6 +83,10 @@ body,.container{
                 <button id="start_button_<%= @visitors[0].number %>" style="font-size:12px;" value="<%= @visitors[0].number %>" type="button" class="btn btn-default navbar-btn">Start</button>
                 <button id="stop_button_<%= @visitors[0].number %>" style="font-size:12px;" value="<%= @visitors[0].number %>" type="button" class="btn btn-default navbar-btn">Stop</button>
                 <button id="continue_<%= @visitors[0].number %>" style="font-size:12px;" value="<%= @visitors[0].number %>" type="button" class="btn btn-default navbar-btn">繼續寫</button>
+                
+                <div class="color-selector color-selector-border" style="background-color:#ececec;" value="<%= @visitors[0].number %>"></div>
+                <div class="color-selector" style="background-color:#aa2222;" value="<%= @visitors[0].number %>"></div>
+                <div class="color-selector" style="background-color:#2222aa;" value="<%= @visitors[0].number %>"></div>
               </td>
             </tr>
 
@@ -155,6 +159,10 @@ body,.container{
                 <button id="start_button_<%= @visitors[1].number %>" style="font-size:12px;" value="<%= @visitors[1].number %>" type="button" class="btn btn-default navbar-btn">Start</button>
                 <button id="stop_button_<%= @visitors[1].number %>" style="font-size:12px;" value="<%= @visitors[1].number %>" type="button" class="btn btn-default navbar-btn">Stop</button>
                 <button id="continue_<%= @visitors[1].number %>" style="font-size:12px;" value="<%= @visitors[1].number %>" type="button" class="btn btn-default navbar-btn">繼續寫</button>
+
+                <div class="color-selector color-selector-border" style="background-color:#ececec;" value="<%= @visitors[1].number %>"></div>
+                <div class="color-selector" style="background-color:#991111;" value="<%= @visitors[1].number %>"></div>
+                <div class="color-selector" style="background-color:#2222aa;" value="<%= @visitors[1].number %>"></div>
               </td>
             </tr>
           </table>
@@ -360,6 +368,9 @@ $(document).ready(function() {
   // });
 
   $('[name^=clear]').click(View.onClearBlockClick);
+
+  $('.color-selector').click(View.onColorSelectorClick);
+
 
   // $('#showTextButton').click(function(){
   //   var row = parseInt($('#row').val());

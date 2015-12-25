@@ -159,6 +159,7 @@
 	function CanvasEmptyInstance(){}
 	CanvasEmptyInstance.prototype.point = function(){return this;};
 	CanvasEmptyInstance.prototype.line = function(){return this;};
+	CanvasEmptyInstance.prototype.color = function(c){return this;};
 	CanvasEmptyInstance.prototype.text = function(){return this;};
 	CanvasEmptyInstance.prototype.clear = function(){return this;};
 	CanvasEmptyInstance.prototype.hasTrack = function(){return undefined;};
@@ -267,6 +268,19 @@
 			})(this, pt), 0);
 		}
 		return this;
+	};
+
+	/**
+	 * Get or set the canvas stroke color.
+	 * @param {String} c Color code in hex.
+	 * @return {CanvasInstance|String}
+	 */
+	CanvasInstance.prototype.color = function(c){
+		if(c){
+			this.context_.strokeStyle = c;
+			return this;
+		}
+		return this.context_.strokeStyle;
 	};
 
 	/**

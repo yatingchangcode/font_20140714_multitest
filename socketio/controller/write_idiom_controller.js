@@ -70,7 +70,13 @@ module.exports = function (socket, io) {
     }
   });
 
-  socket.on('continue_write', function (msg) {
+  socket.on('idioms.change_color', function(msg){
+    helper.emitUserId(msg.user_id, function(x){
+      io.to(x).emit('change_color', msg);
+    });
+  });
+
+  socket.on('idioms.continue_write', function (msg) {
     helper.emitUserId(msg.user_id, function (x) {
       io.to(x).emit('continue_write', msg);
     });
