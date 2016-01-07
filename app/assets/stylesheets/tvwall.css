@@ -75,15 +75,18 @@ a{ text-decoration:none; outline: none; /* for Firefox */  hlbr:expression(this.
 
 .Content .box_a .GridMix .Grid{
 	width:100%; position:relative;
-	margin: 0.2em;
+	/*margin: 0.2em;*/
 	/*border:0.2em solid rgba(0,0,0,0);*/
-	background-color: rgb(60,60,60);
+	/*background-color: rgb(60,60,60);*/
 }
 
 .Zoom .GridMix .Grid{
 	width:100%; position:relative;
-	border:solid rgba(0,0,0,1);
-	background-color: rgb(60,60,60);	
+	/*border:solid rgba(0,0,0,1);
+	background-color: rgb(60,60,60);	*/
+}
+.Zoom .GridMix{
+	background-color: black;
 }
 
 .Content .box_a .GridMix .inner_metal,

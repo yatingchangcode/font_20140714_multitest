@@ -548,6 +548,7 @@ View.setClearStyle = (function(key){
           }
         }
       }
+      $('[id^=word_' + id + ']').css('opacity', 1);
       $("[id^=correct_button_" + id + "]").removeClass("btn-success");
       SocketController.receiveActionHandler({name:'stop', user_id:id});
     },
@@ -566,6 +567,7 @@ View.setClearStyle = (function(key){
           }
         }
       }
+      $('[id^=grid_' + id + ']').css('opacity', 1);
     }
   }[key] || Commons.emptyFn;
 })(Settings.genKey);
@@ -623,6 +625,7 @@ View.setClearAllStyle = (function(key){
             }
           }
         }
+        $('[id^=word_' + id + ']').css('opacity', 1);
         $("[id^=correct_button_" + id + "]").removeClass("btn-success");
         SocketController.receiveActionHandler({name:'stop', user_id:id});
       });
@@ -664,6 +667,7 @@ View.setClearAllStyle = (function(key){
     },
     "mix+tv":function(o){
       $('[id^=yes_img_]').hide();
+      $('[id^=grid_]').css('opacity', 1);
       Commons.gamers.all().forEach(function(id){
         for (var i = 1; i <= 3; i++){
           for (var j = 1; j <= 3; j++){
@@ -671,9 +675,11 @@ View.setClearAllStyle = (function(key){
               CM('origin_' + id + "_" + i + "_" + j).clear();
               SocketController.receiveCancelSubmitHandler({user_id:id});
               SocketController.receiveActionHandler({name:'stop', user_id:id});
+
             }
           }
         }
+        $('[id^=_zoomTmp_' + id + ']').parent().css('opacity', 1);
       });
       SocketController.receiveResetHandler({second:window.timeRemaining});
     },
@@ -1093,7 +1099,14 @@ View.setSendTextStyle = (function(key){
       var r = o.block.row,
           c = o.block.column;
       Commons.gamers.all().forEach(function(id){
-        CM(['origin',id, r, c].join('_')).text(o.text);
+        if(o.text.toLowerCase() == 'x'){
+          $('[id^=word_' + [id, r, c].join('_') + ']').css('opacity', 0);
+          $('[id^=grid_' + [id, r, c].join('_') + ']').css('opacity', 0);
+          $('[id^=_zoomTmp_' + [r, c].join('_') + ']').parent().css('opacity', 0);
+          // hide()
+        }else{
+          CM(['origin',id, r, c].join('_')).text(o.text);
+        }
       });
     }
   }[key] || Commons.emptyFn;
