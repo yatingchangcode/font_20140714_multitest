@@ -287,6 +287,8 @@
   if(~["A3+tv","B2+tv"].indexOf(genKey) || 
     (~["A1+tv","B1+tv"].indexOf(genKey) && Settings.hasCorrectCounting)){
     scope.Commons.tempcount = {};
+  }else if(~["mix+tv"].indexOf(genKey) && Settings.hasCorrectCounting){
+    scope.Commons.tempcount = {};
   }
 
   if(~["B2+client"].indexOf(genKey)){
