@@ -545,10 +545,10 @@ View.setClearStyle = (function(key){
         for (var j = sc; j <= ec; j++){
           if(i == 2 || j == 2){
             CM('origin_' + id + "_" + i + "_" + j).clear();
+            $('[id^=word_' + id + "_" + i + "_" + j + ']').css('opacity', 1);
           }
         }
       }
-      $('[id^=word_' + id + ']').css('opacity', 1);
       $("[id^=correct_button_" + id + "]").removeClass("btn-success");
       SocketController.receiveActionHandler({name:'stop', user_id:id});
     },
@@ -564,10 +564,10 @@ View.setClearStyle = (function(key){
         for (var j = sc; j <= ec; j++){
           if(i == 2 || j == 2){
             CM('origin_' + id + "_" + i + "_" + j).clear();
+            $('[id^=grid_' + id + "_" + i + "_" + j + ']').css('opacity', 1);
           }
         }
       }
-      $('[id^=grid_' + id + ']').css('opacity', 1);
     }
   }[key] || Commons.emptyFn;
 })(Settings.genKey);
@@ -1193,6 +1193,7 @@ View.setZoomStyle = (function(key){
       });
       */
       $('.Zoom').show();
+      $('.Content').css('-webkit-filter', 'blur(8px)');
     }
   }[key] || Commons.emptyFn;
 })(Settings.genKey);
@@ -1220,6 +1221,7 @@ View.setUnZoomStyle = (function(key){
     },
     "mix+tv":function(o){
       $('.Zoom').hide();
+      $('.Content').css('-webkit-filter', '');
       for (var i = 1; i <= 3; i++){
               for (var j = 1; j <= 3; j++) {
                 if(i == 2 || j == 2)

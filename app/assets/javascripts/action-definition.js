@@ -37,7 +37,7 @@ Action.onStart = (function(key){
   // *** server: A1 A3 B1 B2 B2_v1 no action
   // *** tv: A1 B2 B2_v1 no action
   key = Commons.getCommonGenKey(key, ["A2+console","B3+console","A2+tv","B3+tv"]);
-  key = Commons.getCommonGenKey(key, ["A3+tv","B1+tv"]);
+  key = Commons.getCommonGenKey(key, ["A3+tv","B1+tv","mix+tv"]);
   return {
     // server: A2 B3
     // tv: A2 B3

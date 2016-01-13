@@ -246,6 +246,16 @@
       canvasContext.fill();
     }
 
+    var innerBackgroundPosition = [[px, px], [px, h - px], [w - px, px], [w - px, h - px]];
+    canvasContext.fillStyle = '#000000';
+    canvasContext.beginPath();
+    // canvasContext.moveTo.apply(canvasContext, innerBackgroundPosition[0]);
+    // canvasContext.lineTo.apply(canvasContext, innerBackgroundPosition[1]);
+    // canvasContext.lineTo.apply(canvasContext, innerBackgroundPosition[2]);
+    // canvasContext.lineTo.apply(canvasContext, innerBackgroundPosition[3]);
+    canvasContext.fillRect(px, px, w - px - px, h - px - px);
+    // canvasContext.fill();
+
     return canvasEl.toDataURL();
   };
 
