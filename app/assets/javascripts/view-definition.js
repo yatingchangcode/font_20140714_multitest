@@ -1193,6 +1193,7 @@ View.setZoomStyle = (function(key){
       });
       */
       $('.Zoom').show();
+      $('.container > table').css('-webkit-filter', 'blur(8px)');
       $('.Content').css('-webkit-filter', 'blur(8px)');
     }
   }[key] || Commons.emptyFn;
@@ -1221,6 +1222,7 @@ View.setUnZoomStyle = (function(key){
     },
     "mix+tv":function(o){
       $('.Zoom').hide();
+      $('.container > table').css('-webkit-filter', '');
       $('.Content').css('-webkit-filter', '');
       for (var i = 1; i <= 3; i++){
               for (var j = 1; j <= 3; j++) {
