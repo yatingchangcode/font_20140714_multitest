@@ -1814,7 +1814,7 @@ View.onShowTextClick = (function(key){
       SocketController.triggerSendText({block: block, text: text}, "idioms.");
     },
     "mix+console":function(){
-      var text = $('#showText').val();
+      var text = $('#showText').val() || $('.choose-word').text();
       var pos = $('#textPosition').val().split(',');
       var hpos = $('#hidePosition').val().split(',');
       var block = {row: pos[0], column: pos[1]};

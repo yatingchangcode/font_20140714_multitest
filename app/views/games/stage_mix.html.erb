@@ -14,6 +14,7 @@
     <h3> <input id="locking" type="checkbox" /> 使用者確認送出之後，其他使用者皆停止書寫<h3>
     <h3> <input id="counting" type="checkbox" /> 計分</h3>
     <h3> 限時 <input id="second" type="number"/> 秒</h3>
+    <h3> 題目預備 <input id="qs" type="text" style="width:80%"/></h3>
     <%= link_to "確認","#",id: "confirm", class: "btn btn-lg btn-success"  %>
   </div>
 </div>
@@ -26,6 +27,7 @@ $(document).ready(function(){
   var lock = document.getElementById('locking');
   var count = document.getElementById('counting');
   var second = document.getElementById('second');
+  var qs = document.getElementById('qs');
 
   var changeState = function(){
     if(com.checked){
@@ -48,6 +50,7 @@ $(document).ready(function(){
         params.push(el.id + "=" + (isNaN(el.value)? 1 : el.value));
       }
     });
+    if(qs.value) params.push(qs.id + "=" + qs.value);
     location.href = '/games/<%= @game.id %>/server_mix?stage=<%= params[:stage] %>&join_visitors_number=<%= @join_visitors_number %>&' + params.join('&');
   }
 

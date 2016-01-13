@@ -21,6 +21,19 @@
   background-color: #fff;
 }
 
+.prepare-word{
+  width: 20px;
+  height: 20px;
+  font-size: 16px;
+  padding:2px;
+  background-color: #ffffff; 
+  cursor: pointer;
+}
+
+.choose-word{
+  background-color: #3EDEEF;
+}
+
 </style>
 <% end %>
       <div class="jumbotron">
@@ -43,6 +56,11 @@
             <option value="2,3">右</option>
             <option value="3,2">下</option>
           </select>
+          <% if params[:qs] %> 
+            <% params[:qs].split("").each do |i| %>
+              <span class="prepare-word"><%= i %></span>
+            <% end %>
+          <% end %>
           <input id="showText" type="text" value="" style="width:8%;" />
           隱藏位置
           <select id="hidePosition">
@@ -225,6 +243,11 @@
           responsiveByParent: true
           //backgroundImage: '/assets/block-524.png'
 
+        });
+        
+        $('.prepare-word').click(function(){
+          $('.prepare-word').removeClass('choose-word');
+          $(this).addClass('choose-word');
         });
 
         var gamerList = [];
