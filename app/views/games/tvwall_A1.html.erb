@@ -2,6 +2,8 @@
   @space_top = "140"
   @space_left = "5%"
   @space_right = "4%"
+  @space_left_down = "4%"
+  @space_right_down = "5%"
   @canvas_scale = 0.171
   @canvas_border = 9
   @font_formula = "w / 3 * 15.2 / 15"
@@ -18,12 +20,16 @@
     @space_top = "140"
     @space_left = "25%"
     @space_right = "24%"
+    @space_left_down = "24%"
+    @space_right_down = "25%"
     @timebar_height = "22px"
   when 3
     @canvas_scale = 0.217
     @canvas_border = 13
     @space_left = "18%"
     @space_right = "17%"
+    @space_left_down = "17%"
+    @space_right_down = "18%"
     @timebar_height = "20px"
   when 4
     @font_formula = "w / 3 * 16.2 / 15"
@@ -32,6 +38,8 @@
     @canvas_border = 11
     @space_left = "10%"
     @space_right = "9%"
+    @space_left_down = "9%"
+    @space_right_down = "10%"
     @timebar_height = "18px"
     @video_position = "52px"
   when 6..10
@@ -43,6 +51,8 @@
     @split_width_down = "3%"
     @space_left = "10%"
     @space_right = "9%"
+    @space_left_down = "9%"
+    @space_right_down = "10%"
     @font_formula = "w / 3 * 16.5 / 15"
     @bar_formula = "(w + 1) / 2"
     @timebar_height = "16px"
@@ -52,20 +62,30 @@
        @split_width_down = "12%" 
        @space_left = "13%"
        @space_right = "12%"
+       @space_left_down = "12%"
+       @space_right_down = "13%"
        @video_position = "32px"
     when 7
       @split_width_up = "7.5%" 
       @split_width_down = "12%" 
       @space_left = "11.5%"
       @space_right = "10.5%"
+      @space_left_down = "10.5%"
+      @space_right_down = "11.5%"
     when 8
       @split_width_up = "7.5%" 
       @split_width_down = "7.5%"
       @space_left = "11.5%"
       @space_right = "10.5%"
+      @space_left_down = "10.5%"
+      @space_right_down = "11.5%"
     when 9
       @split_width_up = "3%" 
-      @split_width_down = "7.5%"
+      @split_width_down = "3%"
+      @space_left = "10%"
+      @space_right = "9%"
+      @space_left_down = "14%"
+      @space_right_down = "19%"
     end
   end
 %>
@@ -172,7 +192,7 @@ body,.container{
 
   <table width="100%" border="0" cellspacing="0" cellpadding="0">
     <tr>
-      <td width="<%= @space_right %>"></td>
+      <td width="<%= @space_left_down %>"></td>
       
       <% @visitors[(@visitors.length/2.0).ceil..@visitors.length-1].each do |visitor| %>
       <td width="<%= @split_width_down %>"></td>
@@ -224,7 +244,7 @@ body,.container{
         </div>
       </td>
       <% end %>
-      <td width="<%= @space_left %>"></td>
+      <td width="<%= @space_right_down %>"></td>
     </tr>
     <% if @visitors.length == 6 %>
     <tr>

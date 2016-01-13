@@ -86,7 +86,7 @@ body,.container{
   height:100%;
   overflow:hidden;
 
-/*  
+  /*
   width:1920px;
   height:1080px;
 */
@@ -480,6 +480,7 @@ window.borderWidth = <%= @canvas_border %>;
 window.responsiveMethod = function(){
   var jqGridEl = $('[id^=grid_]');
   var w = $(window).width() * <%= @canvas_scale %>;
+  // var w = $(".container").width() * <%= @canvas_scale %>;
   var zoomEl = $('.Zoom');
   var zoomInnerEl = $('.Zoom-inner');
   var zoomSize = $(window).height() * 0.75;
