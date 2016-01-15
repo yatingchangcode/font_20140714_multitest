@@ -23,12 +23,12 @@ module.exports = function (socket, io) {
   });
 
   server_control_action('up_location');
-  // server_control_action('submit');
+  server_control_action('submit');
   server_control_action('move_block');
   // server_control_action('cancelSubmit');
   // server_control_action('right');
-  // server_control_action('removeO');
-  // server_control_action('setCorrectCount');
+  server_control_action('removeO');
+  server_control_action('setCorrectCount');
   // server_control_action('showCorrectUsers');
   // server_control_action('userOut');
   // server_control_action('zoom');

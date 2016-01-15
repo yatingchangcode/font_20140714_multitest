@@ -456,8 +456,8 @@ View.setStopStyle = (function(key){
 })(Settings.genKey);
 
 View.setSubmitStyle = (function(key){
-  key = Commons.getCommonGenKey(key, ["A1+console","A2+console","A3+console","B1+console","B2_v1+console","mix+console"]);
-  key = Commons.getCommonGenKey(key, ["A1+tv","A2+tv","A3+tv","B1+tv","B2_v1+tv","mix+tv"]);
+  key = Commons.getCommonGenKey(key, ["A1+console","A2+console","A3+console","B1+console","B2_v1+console"]);
+  key = Commons.getCommonGenKey(key, ["A1+tv","A2+tv","A3+tv","B1+tv","B2_v1+tv"]);
   key = Commons.getCommonGenKey(key, ["B3+console","B3+tv"]);
   return {
     // server: A1 A2 A3 B1 B2_v1
@@ -481,6 +481,28 @@ View.setSubmitStyle = (function(key){
       $('#grid_' + o.cid).css("box-shadow", '0px 0px 15px 10px rgba(55, 197, 78, 1) inset');
       $("#grid_" + o.cid).css("opacity", "0");
       $('#grid_' + o.cid).css("opacity", "1");
+    },
+    "mix+console":function(o){
+      if(o.cid){
+        $('[id=word_' + o.cid + ']').css("background-color", "#060");
+      }else{
+        // $(document.getElementById('visitor_' + o.user_id)).css("background-color", "#ff0");
+        $('[id=word_' + o.user_id + '_2_2' + ']').css("background-color", "#060");
+      }
+    },
+    "mix+tv":function(o){
+      if(o.cid){
+        $('#grid_' + o.cid).css("box-shadow", '0px 0px 15px 10px rgba(55, 197, 78, 1) inset');
+        $("#grid_" + o.cid).css("opacity", "0");
+        $('#grid_' + o.cid).css("opacity", "1");
+      }else{
+        var cid = [o.user_id, 2, 2].join('_');
+        $('#grid_' + cid).css("box-shadow", '0px 0px 15px 10px rgba(55, 197, 78, 1) inset');
+        $("#grid_" + cid).css("opacity", "0");
+        $('#grid_' + cid).css("opacity", "1");
+        // $(document.getElementById('grid_' + o.user_id)).addClass("bor_g");
+        // $(document.getElementById('glow_' + o.user_id)).show();
+      }
     }
   }[key] || Commons.emptyFn;
 })(Settings.genKey);
@@ -488,8 +510,8 @@ View.setSubmitStyle = (function(key){
 View.setCancelSubmitStyle = (function(key){
   // *** server: B2 B3 no action
   // *** tv: B2 B3 no action
-  key = Commons.getCommonGenKey(key, ["A1+console","A2+console","A3+console","B1+console","B2_v1+console","mix+console"]);
-  key = Commons.getCommonGenKey(key, ["A1+tv","A2+tv","A3+tv","B1+tv","B2_v1+tv","mix+tv"]);
+  key = Commons.getCommonGenKey(key, ["A1+console","A2+console","A3+console","B1+console","B2_v1+console"]);
+  key = Commons.getCommonGenKey(key, ["A1+tv","A2+tv","A3+tv","B1+tv","B2_v1+tv"]);
   return {
     // server: A1 A2 A3 B1 B2_v1
     "A1+console":function(o){
@@ -500,6 +522,27 @@ View.setCancelSubmitStyle = (function(key){
     "A1+tv":function(o){
       $('#grid_' + o.user_id).removeClass("bor_g");
       $('#glow_' + o.user_id).hide();
+    },
+    "B2+console":function(o){
+      $('[name=word_' + o.cid + ']').css("background-color", "");
+    },
+    "B2+tv":function(o){
+      $('#grid_' + o.cid).css("box-shadow", '');
+      $("#grid_" + o.cid).css("opacity", "0");
+      $('#grid_' + o.cid).css("opacity", "1");
+    },
+    "mix+console":function(o){
+      var cid = o.cid || (o.user_id + '_2_2');
+      $('[id=word_' + cid + ']').css("background-color", "#999");
+      // $(document.getElementById('visitor_' + o.user_id)).css("background-color", "#ff0");
+    },
+    "mix+tv":function(o){
+      var cid = o.cid || [o.user_id, 2, 2].join('_');
+      $('#grid_' + cid).css("box-shadow", '');
+      $("#grid_" + cid).css("opacity", "0");
+      $('#grid_' + cid).css("opacity", "1");
+      // $(document.getElementById('grid_' + o.user_id)).addClass("bor_g");
+      // $(document.getElementById('glow_' + o.user_id)).show();
     }
   }[key] || Commons.emptyFn;
 })(Settings.genKey);
@@ -549,7 +592,8 @@ View.setClearStyle = (function(key){
           }
         }
       }
-      $("[id^=correct_button_" + id + "]").removeClass("btn-success");
+      // $("[id^=correct_button_" + id + "]").removeClass("btn-success");
+      $("[name^=correct_button_" + id + "]").removeClass("btn-success");
       SocketController.receiveActionHandler({name:'stop', user_id:id});
     },
     "mix+tv":function(o){
@@ -621,12 +665,14 @@ View.setClearAllStyle = (function(key){
           for (var j = 1; j <= 3; j++){
             if(i == 2 || j == 2){
               CM('origin_' + id + "_" + i + "_" + j).clear();
+              SocketController.receiveCancelSubmitHandler({user_id:id, cid:id + "_" + i + "_" + j});
               // $("[id^=correct_button_" + id + "_" + i + "_" + j + "]").removeClass("btn-success");
             }
           }
         }
         $('[id^=word_' + id + ']').css('opacity', 1);
-        $("[id^=correct_button_" + id + "]").removeClass("btn-success");
+        $("[name^=correct_button_" + id + "]").removeClass("btn-success");
+        // $("[id^=correct_button_" + id + "]").removeClass("btn-success");
         SocketController.receiveActionHandler({name:'stop', user_id:id});
       });
     },
@@ -673,7 +719,7 @@ View.setClearAllStyle = (function(key){
           for (var j = 1; j <= 3; j++){
             if(i == 2 || j == 2){
               CM('origin_' + id + "_" + i + "_" + j).clear();
-              SocketController.receiveCancelSubmitHandler({user_id:id});
+              SocketController.receiveCancelSubmitHandler({user_id:id, cid:id + "_" + i + "_" + j});
               SocketController.receiveActionHandler({name:'stop', user_id:id});
 
             }
@@ -694,10 +740,10 @@ View.setRightStyle = (function(key){
   // *** server: B3 no action
   // *** tv: B3 no action
   key = Commons.getCommonGenKey(key, [
-    "A1+console","A2+console","A3+console","B1+console","B2_v1+console","mix+console",
-    "A1+tv","A2+tv","A3+tv","B1+tv","B2_v1+tv","mix+tv"
+    "A1+console","A2+console","A3+console","B1+console","B2_v1+console",
+    "A1+tv","A2+tv","A3+tv","B1+tv","B2_v1+tv"
   ]);
-  key = Commons.getCommonGenKey(key, ["B2+console","B2+tv"]);
+  key = Commons.getCommonGenKey(key, ["B2+console","B2+tv","mix+console","mix+tv" ]);
   return {
     // server: A1 A2 A3 B1 B2_v1
     // tv: A1 A2 A3 B1 B2_v1
@@ -716,10 +762,10 @@ View.setRemoveOStyle = (function(key){
   // *** server: B3 no action
   // *** tv: B3 no action
   key = Commons.getCommonGenKey(key, [
-    "A1+console","A2+console","A3+console","B1+console","B2_v1+console","mix+console",
-    "A1+tv","A2+tv","A3+tv","B1+tv","B2_v1+tv","mix+tv"
+    "A1+console","A2+console","A3+console","B1+console","B2_v1+console",
+    "A1+tv","A2+tv","A3+tv","B1+tv","B2_v1+tv"
   ]);
-  key = Commons.getCommonGenKey(key, ["B2+console","B2+tv"]);
+  key = Commons.getCommonGenKey(key, ["B2+console","B2+tv","mix+console","mix+tv"]);
   return {
     // server: A1 A2 A3 B1 B2_v1
     // tv: A1 A2 A3 B1 B2_v1
@@ -772,7 +818,12 @@ View.setCorrectCountStyle = (function(key){
         } 
       }
       if (Settings.hasCorrectCounting){
+        if ($("[name^=correct_button_" + o.cid + "]").hasClass("btn-success")) {
+          $("[name^=correct_button_" + o.cid + "]").removeClass("btn-success");
+        }
+        else $("[name^=correct_button_" + o.cid + "]").addClass("btn-success");
         $("#no_correct_" + o.user_id).text(o.count + "題");
+        // $("#no_correct_" + o.user_id).text(o.count + "題");
       }
     },
     // tv: A3
@@ -807,9 +858,9 @@ View.setCorrectCountStyle = (function(key){
 View.setShowCorrectUsersStyle = (function(key){
   // *** server: A2 A3 B1 B2_v1 B3 no actions.
   // *** tv: A2 A3 B1 B2_v1 B3 no actions.
-  key = Commons.getCommonGenKey(key, ["A1+console","mix+console"]);
-  key = Commons.getCommonGenKey(key, ["B2+console","B2+tv"]);
-  key = Commons.getCommonGenKey(key, ["A1+tv","mix+tv"]);
+  key = Commons.getCommonGenKey(key, ["A1+console"]);
+  key = Commons.getCommonGenKey(key, ["B2+console","B2+tv","mix+console","mix+tv"]);
+  key = Commons.getCommonGenKey(key, ["A1+tv"]);
   return {
     // server: A1
     "A1+console":function(o){
@@ -1071,6 +1122,14 @@ View.setMoveBlockStyle = (function(key){
     // tv: B2
     "B2+tv":function(o){
       $('#glow_' + o.cid).hide();
+      $('#grid_' + o.cid).css("box-shadow", '');
+      $("#grid_" + o.cid).css("opacity", "0");
+      $('#grid_' + o.cid).css("opacity", "1");
+    },
+    "mix+console":function(o){
+      $('[id=word_' + o.cid + ']').css("background-color", "#999");
+    },
+    "mix+tv":function(o){
       $('#grid_' + o.cid).css("box-shadow", '');
       $("#grid_" + o.cid).css("opacity", "0");
       $('#grid_' + o.cid).css("opacity", "1");
@@ -1607,24 +1666,37 @@ View.onCorrectClick = (function(key){
       // if(Settings.hasCorrectCounting){
       //   current_correct_count = View.addCorrectCount(this.value);
       // }
+      var val = this.value.split(",");
+      var uid = val.shift();
+      var xy  = val;
+      var block = { row: xy[0], column:xy[1] };
+
       if(Settings.commonWriting){
         if (!Commons.correct_users) Commons.correct_users = [];
-        if (Commons.correct_users.indexOf(this.value) != -1) return;
-        Commons.correct_users.push(this.value);
+        if (!Commons.correct_users[uid]) Commons.correct_users[uid] = [];
+        if (Commons.inArray(Commons.correct_users[uid], block)) return;
+        // if (Commons.correct_users.indexOf(this.value) != -1) return;
+        // Commons.correct_users.push(this.value);
+        Commons.correct_users[uid].push(block);
       }else{
         SocketController.triggerRight({user_id:this.value});
       }
       if(Settings.hasCorrectCounting){
-        current_correct_count = View.addCorrectCount(this.value);
+        current_correct_count = View.addCorrectCount(uid);
+        SocketController.triggerSetCorrectCount({
+          user_id: uid,
+          block: block,
+          count: current_correct_count
+        }, "mix.");
       }
-      SocketController.triggerSetCorrectCount({user_id:this.value,count:current_correct_count});
+      // SocketController.triggerSetCorrectCount({user_id:this.value,count:current_correct_count});
       //SocketController.triggerAction({action:'stop',user_id:this.value}, "mix.");
     }
   }[key] || Commons.emptyFn;
 })(Settings.genKey);
 
 View.onRemoveOClick = (function(key){
-  key = Commons.getCommonGenKey(key, ["A1+console","A2+console","A3+console","B1+console","B2_v1+console","mix+console"]);
+  key = Commons.getCommonGenKey(key, ["A1+console","A2+console","A3+console","B1+console","B2_v1+console"]);
   return {
     // server: A1 A2 A3 B1 B2_v1
     "A1+console":function(){
@@ -1644,6 +1716,22 @@ View.onRemoveOClick = (function(key){
           block: block,
           count: View.addCorrectCount(uid, -1)
         }, "B2.");
+      }
+    },
+    "mix+console":function(){
+      var val = this.value.split(',');
+      var uid = val.shift();
+      var xy = val;
+      var block = { row: xy[0], column:xy[1] };
+      Commons.fromServerCommand = true;
+      SocketController.triggerRemoveO({user_id: uid, block: block},"mix.");
+      if (Commons.inArray(Commons.correct_users[uid], block)) {
+        Commons.correct_users[uid].splice(Commons.indexOfBlock(Commons.correct_users[uid], block), 1);
+        SocketController.triggerSetCorrectCount({
+          user_id: uid,
+          block: block,
+          count: View.addCorrectCount(uid, -1)
+        }, "mix.");
       }
     }
   }[key] || Commons.emptyFn;

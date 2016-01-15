@@ -80,7 +80,7 @@
           <div class="row">
             <%= index+1 %>
             <div class="row-fluid">
-                <button id="correct_button_<%= x.number %>" style="font-size:12px;" value="<%= x.number %>" type="button" class="correct_button btn btn-default navbar-btn">答對</button>
+                <!-- <button id="correct_button_<%= x.number %>" style="font-size:12px;" value="<%= x.number %>" type="button" class="correct_button btn btn-default navbar-btn">答對</button> -->
                 <button id="continue_<%= x.number %>" style="font-size:12px;" value="<%= x.number %>" type="button" class="btn btn-default navbar-btn">繼續寫</button>
 
                 <% if @common != '1' %>
@@ -132,8 +132,8 @@
                       <% if i == 2 or j == 2 then %>
                         <div id="word_<%= x.number %>_<%= i %>_<%= j %>" class="col-md-4 nopadding" style="background-color:#999;border:3px solid rgba(0,0,0,.4)">
                         <button id="clear_button_<%= x.number %>_<%= i %>_<%= j %>" value="<%= x.number %>,<%= i %>,<%= j %>" type="button" class="btn btn-xs btn-default" style="position:absolute;top:0px;left:0px;opacity:0.6;z-index:2;text-decoration:line-through;">✎</button>
-                      <!-- <button name="correct_button_<%= x.number %>_<%= i %>_<%= j %>" value="<%= x.number %>,<%= i %>,<%= j %>" type="button" class="btn btn-xs btn-default" style="position:absolute;top:0px;left:21px;opacity:0.6;z-index:2">◯</button> -->
-                      <!-- <button name="remove_O_button_<%= x.number %>_<%= i %>_<%= j %>" value="<%= x.number %>,<%= i %>,<%= j %>" type="button" class="btn btn-xs btn-default" style="position:absolute;top:0px;left:42px;opacity:0.6;z-index:2;text-decoration:line-through;">◯</button> -->
+                        <button name="correct_button_<%= x.number %>_<%= i %>_<%= j %>" value="<%= x.number %>,<%= i %>,<%= j %>" type="button" class="btn btn-xs btn-default" style="position:absolute;top:0px;left:21px;opacity:0.6;z-index:2">◯</button>
+                        <button name="remove_O_button_<%= x.number %>_<%= i %>_<%= j %>" value="<%= x.number %>,<%= i %>,<%= j %>" type="button" class="btn btn-xs btn-default" style="position:absolute;top:0px;left:42px;opacity:0.6;z-index:2;text-decoration:line-through;">◯</button>
                         <canvas id="origin_<%= x.number %>_<%= i %>_<%= j %>" class="orgincanvas" style="z-index:1"></canvas>
                       
                       <!-- <img id="yes_img_<%= x.number %>_<%= i %>_<%= j %>" src="/assets/O-mark.png" height="30" style="display:none;z-index:10;position:absolute;right:0px;bottom:0px;" ></img> -->
@@ -157,7 +157,7 @@
               <% if @counting == '1' %>
               <button id="minus_one_button_<%= x.number %>" value="<%= x.number %>" style="font-size:12px;" value="<%= x.number %>" type="button" class="correct_button btn btn-default navbar-btn">扣一分</button>
               <% end %>
-              <button id="remove_O_button_<%= x.number %>" style="font-size:12px;" value="<%= x.number %>" type="button" class="correct_button btn btn-default navbar-btn">清除圈圈</button>
+              <!-- <button id="remove_O_button_<%= x.number %>" style="font-size:12px;" value="<%= x.number %>" type="button" class="correct_button btn btn-default navbar-btn">清除圈圈</button> -->
               <button id="remove_writing_button_<%= x.number %>" value="<%= x.number %>" style="font-size:12px;" value="<%= x.number %>" type="button" class="correct_button btn btn-default navbar-btn">清除筆跡</button>
               <button id="zoom_button_<%= x.number %>" style="font-size:12px;" value="<%= x.number %>" type="button" class="correct_button btn btn-default navbar-btn">放大</button>
             </div>
@@ -309,12 +309,14 @@
 
         $('[id^=stop_button_]').click(View.onStopClick);
 
-        $('[id^=correct_button_]').click(View.onCorrectClick);
+        // $('[id^=correct_button_]').click(View.onCorrectClick);
+        $('[name^=correct_button_]').click(View.onCorrectClick);
 
         // clear block
         $('[id^=clear_button_]').click(View.onClearBlockClick);
 
-        $('[id^=remove_O_button_]').click(View.onRemoveOClick);
+        $('[name^=remove_O_button_]').click(View.onRemoveOClick);
+        // $('[id^=remove_O_button_]').click(View.onRemoveOClick);
 
         // clear person
         $('[id^=remove_writing_button_]').click(View.onClearClick);

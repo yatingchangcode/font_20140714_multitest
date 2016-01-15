@@ -125,13 +125,17 @@ Action.onSubmit = (function(key){
       });
     },
     "mix+console":function(o){
-      if(Settings.lockOthers){
-        View.onStopAllClick();
-        // Commons.gamers.all().forEach(function(id){
-        //   SocketController.triggerAction({action:'stop',user_id:id},"mix.");
-        // });  
-      }else if(!Settings.commonWriting){
-        SocketController.triggerAction({action:'stop',user_id:o.user_id});
+      if(o.cid){
+
+      }else{
+        if(Settings.lockOthers){
+          View.onStopAllClick();
+          // Commons.gamers.all().forEach(function(id){
+          //   SocketController.triggerAction({action:'stop',user_id:id},"mix.");
+          // });  
+        }else if(!Settings.commonWriting){
+          SocketController.triggerAction({action:'stop',user_id:o.user_id});
+        }
       }
     },
     // server: B2
