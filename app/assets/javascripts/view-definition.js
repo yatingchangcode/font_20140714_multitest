@@ -1152,7 +1152,14 @@ View.setSendTextStyle = (function(key){
       context.fillStyle = "#ececec";
       //context.font = "bold " + (w * 13 / 15) + "px 標楷體";
       context.font = (w * 13 / 15) + "px Sans-serif";
-      context.fillText(o.text, w / 15, w * 12 / 15);
+      // context.fillText(o.text, w / 15, w * 12 / 15);
+      if(typeof Simplized != "undefined"){
+        context.fillText(Simplized(o.text), w / 15, w * 12 / 15);  
+      }else{
+        context.fillText(o.text, w / 15, w * 12 / 15);
+      }
+      
+      
     },
     "mix+console":function(o){
       var r = o.block.row,

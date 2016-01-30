@@ -375,6 +375,7 @@ window.borderWidth = <%= @canvas_border %>;
 
 </script>
 
+<%= javascript_include_tag 'tw_cn' %>
 <%= javascript_include_tag 'socketevent-generator' %>
 <%= javascript_include_tag 'commons' %>
 <%= javascript_include_tag 'action-definition' %>
@@ -576,7 +577,9 @@ $(document).ready(function() {
   setTimeout(function(){
     tuneLinePosition();    
   }, 100);
-
+  
+  translatePage();
+  
   /*
   var borderWidth = 10;
   $('.Grid').css("background", "url("+ generateBorderBase64($('.Grid'), borderWidth, 
