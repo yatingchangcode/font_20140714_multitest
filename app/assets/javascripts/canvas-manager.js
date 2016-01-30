@@ -300,6 +300,7 @@
 	 */
 	CanvasInstance.prototype.clear = function(callback){
 		if(this.backImg_){
+			this.context_.clearRect(0, 0, this.width_, this.height_);
 			this.context_.save();
 			drawSplitLines_(this, prop_.backgroundLine);
 			this.context_.restore();
