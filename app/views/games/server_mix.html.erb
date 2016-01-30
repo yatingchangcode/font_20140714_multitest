@@ -222,6 +222,9 @@
 
       </script>
 
+      <% if params[:rice] == '1' %>
+      <%= javascript_include_tag 'tw_cn' %>
+      <% end %>
       <%= javascript_include_tag 'socketevent-generator' %>
       <%= javascript_include_tag 'commons' %>
       <%= javascript_include_tag 'action-definition' %>

@@ -185,6 +185,9 @@ window.timeRemaining = <%= @second %>;
 
 </script>
 
+<% if params[:rice] == '1' %>
+<%= javascript_include_tag 'tw_cn' %>
+<% end %>
 <%= javascript_include_tag 'socketevent-generator' %>
 <%= javascript_include_tag 'commons' %>
 <%= javascript_include_tag 'action-definition' %>
@@ -265,7 +268,7 @@ window.timeRemaining = <%= @second %>;
 // }
 
 //var alarm = {};
-var tvwall = window.open("tvwall_<%= params[:stage] %>?join_visitors_number=<%= params[:join_visitors_number] %>&second=<%= @second %>","tvwallWindow","width=800, height=800");
+var tvwall = window.open("tvwall_<%= params[:stage] %>?join_visitors_number=<%= params[:join_visitors_number] %>&second=<%= @second %>&rice=<%= params[:rice] %>","tvwallWindow","width=800, height=800");
 //window.open("record_idioms?join_visitors_number=<%= params[:join_visitors_number] %>","recordWindow","width=800, height=800");
 
 // window.timeRemaining = parseInt(<%= @second %>);

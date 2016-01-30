@@ -727,7 +727,9 @@ window.borderWidth = <%= @canvas_border %>;
 
 </script>
 
+<% if params[:rice] == '1' %>
 <%= javascript_include_tag 'tw_cn' %>
+<% end %>
 <%= javascript_include_tag 'StyleDropper' %>
 <%= javascript_include_tag 'socketevent-generator' %>
 <%= javascript_include_tag 'commons' %>
@@ -755,13 +757,13 @@ window.responsiveMethod = function(){
   zoomInnerEl.width(zoomSize).height(zoomSize);
 
   
-    jqGridEl.css("background-image", ["url(",")"].join(
-      Commons.generateBorderBase64(jqGridEl, window.borderWidth, ['0 #ffffff', '0.5 #aaaaaa', '1 #aaaaaa'])
-    )).css("padding", window.borderWidth);
+  jqGridEl.css("background-image", ["url(",")"].join(
+    Commons.generateBorderBase64(jqGridEl, window.borderWidth, ['0 #ffffff', '0.5 #aaaaaa', '1 #aaaaaa'])
+  )).css("padding", window.borderWidth);
 
-    zoomInnerEl.css("background-image", ["url(",")"].join(
-      Commons.generateBorderBase64(zoomEl, window.borderWidth * zoomScale, ['0 #ffffff', '0.5 #aaaaaa', '1 #aaaaaa'] )
-    )).css("padding", window.borderWidth * zoomScale);
+  zoomInnerEl.css("background-image", ["url(",")"].join(
+    Commons.generateBorderBase64(zoomEl, window.borderWidth * zoomScale, ['0 #ffffff', '0.5 #aaaaaa', '1 #aaaaaa'] )
+  )).css("padding", window.borderWidth * zoomScale);
   
 };
 
@@ -890,9 +892,9 @@ $(document).ready(function() {
     // StyleDropper.drop('{"mapKey":"se-id","query":"[se-id]","data":{"9":{"position":"absolute","left":"0px","top":"0px","width":"243.936px"},"10":{"position":"absolute","left":"0px","top":"0px","width":"243.936px"},"11":{"position":"absolute","left":"0px","top":"0px","width":"243.936px"},"12":{"position":"absolute","left":"0px","top":"0px","width":"243.936px"},"13":{"position":"absolute","left":"0px","top":"0px","width":"243.936px"},"14":{"position":"absolute","left":"0px","top":"0px","width":"243.936px"},"15":{"position":"absolute","left":"0px","top":"0px","width":"243.936px"},"16":{"position":"absolute","left":"0px","top":"0px","width":"243.936px"},"17":{"position":"absolute","left":"0px","top":"0px","width":"243.936px"},"18":{"position":"absolute","left":"0px","top":"0px","width":"243.936px"},"19":{"position":"absolute","left":"0px","top":"0px","width":"243.936px"},"20":{"position":"absolute","left":"624px","top":"36px","width":"243.936px","box-shadow":"rgb(34, 238, 34) 0px 0px 8px 3px"}}}');
   }
 
-  
-
-  translatePage();
+  <% if params[:rice] == '1' %>
+    translatePage();
+  <% end %>
 
 });
 </script>
