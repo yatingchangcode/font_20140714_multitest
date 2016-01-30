@@ -603,11 +603,16 @@ $(document).ready(function() {
     lineWidth: 13,
     lineColor: '#ececec',
     targetZoomScale: 0.15,
-    responsiveByParent: true,
-    backgroundLine: '7px rgba(255,0,0,0.6)'
+    responsiveByParent: true
+    // backgroundLine: '7px rgba(255,0,0,0.6)'
     //backgroundImage: '/assets/tvwall/Metal-Frame.png'
   });
   
+  if(<%= params[:rice] == '1' %>){
+    CM.prop({ backgroundImage: '/assets/tvwall/rice-block.png'  });
+  }else{
+    CM.prop({ backgroundLine: '7px rgba(255,0,0,0.6)'});
+  }
   //window.chatApp = new ChatApp(500,500,'0');
   //window.chatApp.bindEvents();
 
