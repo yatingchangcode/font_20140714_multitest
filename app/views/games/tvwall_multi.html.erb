@@ -81,6 +81,17 @@
     @numbers_per_row = 7
     @space_left = "3%"
     @space_right = "2%"
+    @canvas_border = 7
+    case @visitors.length
+    when 12
+      @canvas_scale = 0.121
+      @bar_formula = "(w + 2) / 2"
+      @font_formula = "w / 3 * 18.5 / 15"
+    when 14
+      @canvas_scale = 0.111
+      @bar_formula = "(w + 2) / 2"
+      @font_formula = "w / 3 * 19 / 15"
+    end
   when 16..22
     @seprates = 3
     @numbers_per_row = 7
@@ -89,10 +100,22 @@
     @space_right = "8%"
     @split_width_up = "7.5%" 
     @split_width_down = "7.5%"
+    @answer_padding = "17px 0 0 5px"
+    @bar_formula = "(w + 2) / 2"
+    @font_formula = "w / 3 * 19.5 / 15"
+    @canvas_border = 6
     case @visitors.length
+    when 16
+      @canvas_scale = 0.101
+      @font_formula = "w / 3 * 19 / 15"
+      @canvas_border = 6
+    when 18
+      @canvas_scale = 0.091
+      @canvas_border = 5
     when 20
       @correct_font = "20px"
-      @answer_padding = "17px 0 0 5px"
+      @canvas_scale = 0.081
+      @bar_formula = "(w + 1) / 2"
       if @order_type == '1'
         @bar_spacing = "20"
         @space_top = "90"
@@ -108,13 +131,13 @@
         @answer_padding = "18px 0 0 5px"
       elsif @order_type == '2' or @order_type == '3'
         @seprates = 4
-	@space_top = "80"
-	@space_left = "10%"
-	@space_right = "10%"
-	@bar_formula = "(w + 2) / 2"
-	@font_formula = "w / 3 * 19.5 / 15"
+      	@space_top = "80"
+      	@space_left = "10%"
+      	@space_right = "10%"
+      	@bar_formula = "(w + 2) / 2"
+      	@font_formula = "w / 3 * 19.5 / 15"
         @split_width = "3%"
-	@bar_spacing = "15"
+	      @bar_spacing = "15"
         @canvas_scale = 0.091
         @canvas_border = 5
       end
@@ -162,6 +185,15 @@ body,.container{
   /*width:1920px;
   height:1080px;*/
 }
+.noselect {
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none;   /* Chrome/Safari/Opera */
+  -khtml-user-select: none;    /* Konqueror */
+  -moz-user-select: none;      /* Firefox */
+  -ms-user-select: none;       /* IE/Edge */
+  user-select: none;           /* non-prefixed version, currently not supported by any browser */
+}
+
 </style>
 <% end %>
 
@@ -182,8 +214,57 @@ body,.container{
   </tr>
   
 </table>
-
-<% if @visitors.length == 20 %>
+<% if params[:auto] == '1' %>
+<div class="Content" style="position: relative;"> 
+  <% @visitors[0..@visitors.length].each do |visitor| %>
+  
+    <div class="box_a noselect" style="position: absolute;left:0px;top:0px;" se-id="<%= visitor.number %>">
+      <div id="out_<%= visitor.number %>" class="out">
+        <img src="/assets/tvwall/out.png" width="100%"/>
+      </div>
+      <div id="black_<%= visitor.number %>" class="black"></div>
+      <table width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tr>
+          <td>
+            <div class="TopBpx">
+              <div id="user_photo_<%= visitor.number %>" class="photo">
+                <%= render_gamer_photo(visitor,"medium",'100%','100%',"") %>
+              </div>
+              <% if @counting == '1' %>
+              <div class="nameBox br_line01">
+              <% else %>
+              <div class="nameBox">
+              <% end %>
+                <% if visitor.title.to_s != '' %>
+                <p class="name"><%= visitor.title %></p>
+                <% else %>
+                <p class="name">&nbsp;</p>
+                <% end %>
+                <p class="name"><%= visitor.name %></p>
+              </div>
+              <% if @counting == '1' %>
+              <div class="answer10" style="padding:<%= @answer_padding %>;">
+              <span id="no_correct_<%= visitor.number %>" width="100%" class="label label-primary" style="opacity:0;font-size:<%= @correct_font %>;">0</span></div>
+              <% end %>
+              <br class="CLEAR" />
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <div id="grid_<%= visitor.number %>" class="Grid">
+              <canvas id="origin_<%= visitor.number %>" width="100%" ></canvas>
+              <div id="metal_<%= visitor.number %>" class="inner_metal"></div>
+              <div id="glow_<%= visitor.number %>" class="inner_glow"><img src="/assets/tvwall/img_Grid_b_green.png" width="100%"/></div>
+              <div id="yes_img_<%= visitor.number %>" class="correct"><img src="/assets/tvwall/red_ring.png" width="100%"/></div>
+            </div>
+          </td>
+        </tr>
+      </table>
+    </div>
+  <% end %>
+</div>
+<% elsif @visitors.length == 20 %>
 <div class="Content"> 
   <% if @order_type == '1' %>
   <%
@@ -287,9 +368,9 @@ body,.container{
           <%
             # nums_per_row = @visitors.length / @seprates
             # nums_per_row = [3,4,3]
-	    nums_per_row = [6,8,6]
+	          nums_per_row = [6,8,6]
             # startIndex = (row - 1) * 10
-	    startIndex = 0
+	          startIndex = 0
             for i in 1..3 do
               endIndex = startIndex + nums_per_row[i-1] - 1
               index_irr = startIndex
@@ -303,15 +384,15 @@ body,.container{
                # else
                #   left_colspan = 1
                # end
-		if row == 1 and @order_type == '3' and i == 3
-		   left_colspan = 3
-		else
-		   left_colspan = 1
-		end
-		split_add = @split_width
-		if i == 1 and row == 1
-		split_add = @space_left
-		end 
+          		if row == 1 and @order_type == '3' and i == 3
+          		   left_colspan = 3
+          		else
+          		   left_colspan = 1
+          		end
+          		split_add = @split_width
+          		if i == 1 and row == 1
+          		split_add = @space_left
+          		end 
               %>
               <td width="<%= split_add %>" colspan="<%= left_colspan %>"></td>
               <% @visitors[startIndex..endIndex].each do |visitor| %>
@@ -646,6 +727,7 @@ window.borderWidth = <%= @canvas_border %>;
 
 </script>
 
+<%= javascript_include_tag 'StyleDropper' %>
 <%= javascript_include_tag 'socketevent-generator' %>
 <%= javascript_include_tag 'commons' %>
 <%= javascript_include_tag 'action-definition' %>
@@ -657,6 +739,10 @@ window.borderWidth = <%= @canvas_border %>;
 window.responsiveMethod = function(){
   var jqGridEl = $('[id^=grid_]');
   var w = $(window).width() * <%= @canvas_scale %>;
+  // var w = $(".container").width() * <%= @canvas_scale %>;
+  if(<%= params[:auto] == '1' %>){
+    $(".box_a").width(w * 1.05);
+  }
   //var w = $('.container').width() * <%= @canvas_scale %>;
   var zoomEl = $('.Zoom');
   var zoomInnerEl = $('.Zoom-inner');
@@ -667,13 +753,15 @@ window.responsiveMethod = function(){
   zoomEl.width(zoomSize).height(zoomSize);
   zoomInnerEl.width(zoomSize).height(zoomSize);
 
-  jqGridEl.css("background-image", ["url(",")"].join(
-    Commons.generateBorderBase64(jqGridEl, window.borderWidth, ['0 #ffffff', '0.5 #aaaaaa', '1 #aaaaaa'])
-  )).css("padding", window.borderWidth);
+  
+    jqGridEl.css("background-image", ["url(",")"].join(
+      Commons.generateBorderBase64(jqGridEl, window.borderWidth, ['0 #ffffff', '0.5 #aaaaaa', '1 #aaaaaa'])
+    )).css("padding", window.borderWidth);
 
-  zoomInnerEl.css("background-image", ["url(",")"].join(
-    Commons.generateBorderBase64(zoomEl, window.borderWidth * zoomScale, ['0 #ffffff', '0.5 #aaaaaa', '1 #aaaaaa'] )
-  )).css("padding", window.borderWidth * zoomScale);
+    zoomInnerEl.css("background-image", ["url(",")"].join(
+      Commons.generateBorderBase64(zoomEl, window.borderWidth * zoomScale, ['0 #ffffff', '0.5 #aaaaaa', '1 #aaaaaa'] )
+    )).css("padding", window.borderWidth * zoomScale);
+  
 };
 
 window.tuneLinePosition = function(){
@@ -698,10 +786,16 @@ $(document).ready(function() {
     lineWidth: 13,
     lineColor: '#ececec',
     targetZoomScale: 0.15,
-    responsiveByParent: true,
-    backgroundLine: '7px rgba(255,0,0,0.6)'
+    responsiveByParent: true
+    // backgroundLine: '7px rgba(255,0,0,0.6)'
     //backgroundImage: '/assets/tvwall/Metal-Frame.png'
   });
+
+  if(<%= params[:rice] == '1' %>){
+    CM.prop({ backgroundImage: '/assets/tvwall/rice-block.png'  });
+  }else{
+    CM.prop({backgroundLine: '7px rgba(255,0,0,0.6)'});
+  }
 
   var gamerList = [];
   <% @visitors.each do |visitor| %>
@@ -718,6 +812,86 @@ $(document).ready(function() {
   setTimeout(function(){
     tuneLinePosition();    
   }, 100);
+
+  if(<%= params[:auto] == '1' %>){
+    window.currentMovingDom = null;
+    window.currentSelectDom = null;
+    var block = $(".box_a");
+    block.on('mousedown', function(e){
+      this.isDrag = true;
+      var position = $(this).position();
+      this.initX = position.left;
+      this.initY = position.top;
+      this.startPageX = e.pageX;
+      this.startPageY = e.pageY;
+      currentMovingDom = this;
+    });
+    // block.on('mousemove', function(e){
+    //   if(this.isDrag){
+    //     $(this).css('left', (e.pageX - this.startPageX) + this.initX)
+    //     .css('top', (e.pageY - this.startPageY) + this.initY);
+    //   }
+    // });
+    $(document.body).on('mousemove', function(e){
+      var scope = currentMovingDom;
+      if(scope && scope.isDrag){
+        $(scope).css('left', (e.pageX - scope.startPageX) + scope.initX)
+        .css('top', (e.pageY - scope.startPageY) + scope.initY);
+      }
+    });
+    block.on('mouseup', function(e){
+      this.isDrag = false;
+      currentMovingDom = null;
+    });
+
+    block.on('click', function(){
+      if(this == currentSelectDom){
+        $(currentSelectDom).css('box-shadow', '');
+        currentSelectDom = null;
+      }else{
+        if(currentSelectDom){
+          $(currentSelectDom).css('box-shadow', '');
+        }
+        $(this).css('box-shadow', '0px 0px 8px 3px #22ee22');
+        currentSelectDom = this;
+      }
+    });
+
+    document.addEventListener('keydown', function(e){
+      var change = 1;
+      var direction = '';
+      if(e.shiftKey){
+        change += 9;
+      }
+      switch(e.keyCode){
+        case 37:
+          direction = 'left';
+          change = -(change);
+          break;
+        case 38:
+          direction = 'top';
+          change = -(change);
+          break;
+        case 39:
+          direction = 'left';
+          break;
+        case 40:
+          direction = 'top';
+          break;
+      }
+
+      if(direction && currentSelectDom){
+        var current = $(currentSelectDom).position()[direction];
+        $(currentSelectDom).css(direction, current + change);
+      }
+      // console.log(e.keyCode);
+    });
+    // StyleDropper.drop('{"mapKey":"se-id","query":"[se-id]","data":{"9":{"position":"absolute","left":"0px","top":"0px","width":"243.936px"},"10":{"position":"absolute","left":"0px","top":"0px","width":"243.936px"},"11":{"position":"absolute","left":"0px","top":"0px","width":"243.936px"},"12":{"position":"absolute","left":"0px","top":"0px","width":"243.936px"},"13":{"position":"absolute","left":"0px","top":"0px","width":"243.936px"},"14":{"position":"absolute","left":"0px","top":"0px","width":"243.936px"},"15":{"position":"absolute","left":"0px","top":"0px","width":"243.936px"},"16":{"position":"absolute","left":"0px","top":"0px","width":"243.936px"},"17":{"position":"absolute","left":"0px","top":"0px","width":"243.936px"},"18":{"position":"absolute","left":"0px","top":"0px","width":"243.936px"},"19":{"position":"absolute","left":"0px","top":"0px","width":"243.936px"},"20":{"position":"absolute","left":"624px","top":"36px","width":"243.936px","box-shadow":"rgb(34, 238, 34) 0px 0px 8px 3px"}}}');
+  }
+
+  
+
+  
 
 });
 </script>

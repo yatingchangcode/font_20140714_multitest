@@ -26,6 +26,7 @@
     <% end %>
     <% if ['A1','B1'].include? @stage %>
     <h3> <input id="counting" type="checkbox" /> 計分</h3>
+    <h3> <input id="rice" type="checkbox" /> 米字格 </h3>
     <% end %>
     <%= link_to "確認","#",id: "confirm", class: "btn btn-lg btn-success"  %>
   </div>
@@ -39,7 +40,9 @@ $(document).ready(function(){
     e.preventDefault();
     var second = document.getElementById('second');
     var counting = document.getElementById('counting');
-    location.href = '/games/<%= @game.id %>/server1?stage=<%= params[:stage] %>&join_visitors_number=<%= @join_visitors_number %>&second='+second.value+(counting? ('&counting=' + (counting.checked? '1': '0')) : "");
+    var rice = document.getElementById('rice');
+    location.href = '/games/<%= @game.id %>/server1?stage=<%= params[:stage] %>&join_visitors_number=<%= @join_visitors_number %>&second='+second.value+(counting? ('&counting=' + (counting.checked? '1': '0')) : "")+
+      '&rice='+(rice.checked?'1':'0');
   }
 });
 </script>
