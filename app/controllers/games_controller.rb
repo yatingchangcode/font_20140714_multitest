@@ -153,6 +153,7 @@ class GamesController < ApplicationController
 
     @visitors = @game.visitors.where(number: visitors_splits)
     @range = 1..@visitors.size
+    @auto = params[:auto]
     @second = params[:second]
     @counting = params[:counting]
 
@@ -217,7 +218,7 @@ class GamesController < ApplicationController
     #   end
     # end
 
-    url_1 = "http://0.0.0.0:3000/games/#{params[:id]}/tvwall_#{@stage}?join_visitors_number=#{visitors_splits[0..@visitors.length-1].join(',')}&second=#{@second}&counting=#{@counting}&tv_n=tv_1&order_type=#{params[:order_type]}"
+    url_1 = "http://0.0.0.0:3000/games/#{params[:id]}/tvwall_#{@stage}?join_visitors_number=#{visitors_splits[0..@visitors.length-1].join(',')}&second=#{@second}&counting=#{@counting}&tv_n=tv_1&order_type=#{params[:order_type]}&auto=#{params[:auto]}&rice=#{params[:rice]}"
     if Setting.messaging['is_tv_1_open'] != true
       `#{command_name} '#{url_1}'`
     end
@@ -314,6 +315,7 @@ class GamesController < ApplicationController
     @visitors = @game.visitors.where(number: params[:join_visitors_number].split(","))
     @range = 1..@visitors.size
 
+    @auto = params[:auto];
     @second = params[:second]
     @counting = params[:counting]
     @tv_n = params[:tv_n]
