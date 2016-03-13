@@ -242,7 +242,16 @@ Action.onClientConnected = Commons.emptyFn;
 
 // *** server: all stages are no action
 // *** tv: all stages are no action
-Action.onMoveBlock = Commons.emptyFn;
+Action.onMoveBlock = (function(key){
+  // *** tv: all stages are no actions.
+  // *** server: A1 A2 A3 B1 B2 no action
+  // server: B3
+  return {
+    "B3+console": function(o){
+      Commons.trackCache.moveToBlock(o.block.row, o.block.column, o.color);
+    }
+  }[key] || Commons.emptyFn;
+})(Settings.genKey);
 
 Action.onSendText = (function(key){
   // *** tv: all stages are no action
@@ -251,7 +260,7 @@ Action.onSendText = (function(key){
     // server: B3
     "B3+console":function(o){
       if(Commons.fromServerCommand){
-        Commons.trackCache.addText(o.block.row, o.block.column, o.text);
+        Commons.trackCache.addText(o.block.row, o.block.column, o.text, o.color);
         Commons.fromServerCommand = false;
       }
     }

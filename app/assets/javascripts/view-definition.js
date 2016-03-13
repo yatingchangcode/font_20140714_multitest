@@ -1118,6 +1118,8 @@ View.setMoveBlockStyle = (function(key){
     // tv: B3
     "B3+console":function(o){
       $('#glow_' + o.block.row + '_' + o.block.column).hide();
+      // set color
+      CM('origin_' + o.block.row + '_' + o.block.column).color(o.color);
     },
     // tv: B2
     "B2+tv":function(o){
@@ -1149,7 +1151,7 @@ View.setSendTextStyle = (function(key){
       var testCan = document.getElementById('origin_'+ o.block.row +'_' + o.block.column);
       var w = $(testCan).width();
       var context = testCan.getContext("2d");
-      context.fillStyle = "#ececec";
+      context.fillStyle = o.color || "#ececec";
       //context.font = "bold " + (w * 13 / 15) + "px 標楷體";
       context.font = (w * 13 / 15) + "px Sans-serif";
       context.fillText(o.text, w / 15, w * 12 / 15);
@@ -1885,6 +1887,28 @@ View.onNextQuestionClick = (function(key){
   }[key] || Commons.emptyFn;
 })(Settings.genKey);
 
+View.onColorSelectorClick = (function(key){
+  return {
+    "B3+console":function(){
+      var user_id = this.getAttribute('value'),
+          color = $(this).css('background-color'),
+          rgbaReg = new RegExp("(rgb|rgba)\\((.*)\\)");
+      
+      $('.color-selector[value="' + user_id + '"]').removeClass('color-selector-border');
+      $(this).addClass('color-selector-border');
+
+      if(rgbaReg.test(color)){
+        var matches = color.match(rgbaReg);
+        var type = matches[1];  // rgb rbga
+        var colors = matches[2].split(',').map(function(val){return parseInt(val.trim());});
+        color = "#" + colors[0].toString(16) + colors[1].toString(16) + colors[2].toString(16);
+      }
+
+      SocketController.triggerChangeColor({user_id:user_id, color: color}, "idioms.");
+    }
+  }[key] || Commons.emptyFn;
+})(Settings.genKey);
+
 View.onShowTextClick = (function(key){
   return {
     "B3+console":function(){
@@ -1930,7 +1954,7 @@ View.onUndoClick = (function(key){
       var track = Commons.trackCache.getUndo();
       if(track){
         var commandName = '';
-        var passObj = { block: track.block };
+        var passObj = { block: track.block, color: track.color };
         switch(track.action){
           case 'rewrite':
             commandName = 'Rewrite';
@@ -1960,7 +1984,7 @@ View.onRedoClick = (function(key){
       var track = Commons.trackCache.getRedo();
       if(track){
         var commandName = '';
-        var passObj = { block: track.block };
+        var passObj = { block: track.block, color: track.color };
         switch(track.action){
           case 'rewrite':
             commandName = 'Rewrite';

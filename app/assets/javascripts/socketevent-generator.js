@@ -78,6 +78,10 @@ var socketListenEvents = [
   
   "move_block",
   "send_text",
+
+  // B3
+  // "change_color",
+
   "end_round",
   "rewrite",
   "continue_write",
@@ -120,6 +124,10 @@ var socketTriggerEvents = [
   "showCorrectUsers",
   // server_idioms.js.coffee
   "send_text",
+
+  // B3
+  "change_color",
+
   "rewrite",
   "zoom",
   "unZoom"

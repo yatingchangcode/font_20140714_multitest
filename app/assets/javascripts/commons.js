@@ -41,6 +41,8 @@
     tracks:[],
     currentBlock:{},
     currentPoints:[],
+    currentColor:null,
+    hasDirty:false,
     statusIndex:0,
     checkBlock:function(row, col){
       var self = this;
@@ -66,62 +68,80 @@
     },
     saveToCache:function(){
       var self = this;
-      if(self.currentBlock.row && self.currentBlock.column){
+      if(self.currentBlock.row && self.currentBlock.column && self.hasDirty){
         var track = {
           block:{
             row: self.currentBlock.row,
             column: self.currentBlock.column
           },
-          ink: self.currentPoints.slice(0)
+          ink: self.currentPoints.slice(0),
+          color: self.currentColor
         };
         self.currentPoints = [];
         self.currentBlock = {};
+        self.currentColor = null;
+        self.hasDirty = false;
         //self.push(track);
         self.tracks.splice(self.statusIndex, self.tracks.length - self.statusIndex);
         self.tracks.push(track);
         self.statusIndex++;
       }
     },
-    moveToBlock:function(row, col){
-      this.saveToCache();
-      this.currentBlock.row = row;
-      this.currentBlock.column = col;
-    },
-    addText:function(row, col, text){
+    moveToBlock:function(row, col, color){
+      // this.saveToCache();
+      // this.currentBlock.row = row;
+      // this.currentBlock.column = col;
+      // this.currentColor = color;
       var self = this;
-      self.checkBlock(row, col);
+      if(self.currentBlock.row != row || self.currentBlock.column != col){
+        self.saveToCache();
+        self.currentBlock.row = row;
+        self.currentBlock.column = col;
+        self.currentColor = color;
+      }
+    },
+    addText:function(row, col, text, color){
+      var self = this;
+      // self.checkBlock(row, col);
+      // force to move there
+      self.moveToBlock(row, col, color);
       self.tracks.splice(self.statusIndex, self.tracks.length - self.statusIndex);
       self.tracks.push({
         block:{
           row: self.currentBlock.row,
           column: self.currentBlock.column
         },
-        text:text
+        text: text,
+        color: color
       });
       self.currentPoints = [];
       self.currentBlock = {};
+      self.currentColor = null;
       self.statusIndex++;
     },
     addPoint:function(row, col, x, y){
-      this.checkBlock(row, col);
+      // this.checkBlock(row, col);
       //this.currentPoints.push([ { x: x, y: y } ]);
+      this.hasDirty = true;
       this.currentPoints.push([ [x], [y] ]);
     },
     addLinePoint:function(row, col, x, y){
       var self = this;
-      self.checkBlock(row, col);
+      // self.checkBlock(row, col);
       //if(!self.currentPoints.length) self.currentPoints.push([ { x: x, y: y } ]);
       //self.currentPoints[self.currentPoints.length - 1].push({ x: x, y: y });
+      self.hasDirty = true;
       if(!self.currentPoints.length) self.currentPoints.push([ [x], [y] ]);
       var p = self.currentPoints[self.currentPoints.length - 1];
       p[0].push(x);
       p[1].push(y);
     },
     clear:function(row, col, addToCache){
-      this.checkBlock(row, col);
+      // this.checkBlock(row, col);
       var isInCurrentClear = this.currentPoints.length > 0;
       this.currentPoints = [];
-      if(!this.isEmptyTrack(this.findPrev(row, col)) && !isInCurrentClear){
+      if(addToCache || (!this.isEmptyTrack(this.findPrev(row, col)) && !isInCurrentClear)){
+        this.hasDirty = true;
         this.saveToCache();
       }
     },
@@ -154,9 +174,9 @@
 
         // to recover 
         if(track.text){
-          return { action: 'text', block: track.block, text: track.text };
+          return { action: 'text', block: track.block, text: track.text, color: track.color };
         }else if(track.ink && track.ink.length > 0){
-          return { action: 'rewrite', block: track.block, ink: track.ink };
+          return { action: 'rewrite', block: track.block, ink: track.ink, color: track.color };
         }else{
           return { action: 'clear', block: track.block };
         }
@@ -170,9 +190,9 @@
       if(!this.hasRedo()) return null;
       var track = this.tracks[this.statusIndex++];
       if(track.ink && track.ink.length > 0){
-        return { action: 'rewrite', block: track.block, ink: track.ink };
+        return { action: 'rewrite', block: track.block, ink: track.ink, color: track.color };
       }else if(track.text){
-        return { action: 'text', block: track.block, text: track.text };
+        return { action: 'text', block: track.block, text: track.text, color: track.color };
       }else{
         return { action: 'clear', block: track.block };
       }
