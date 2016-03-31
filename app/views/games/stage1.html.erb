@@ -42,7 +42,7 @@ $(document).ready(function(){
     var counting = document.getElementById('counting');
     var rice = document.getElementById('rice');
     location.href = '/games/<%= @game.id %>/server1?stage=<%= params[:stage] %>&join_visitors_number=<%= @join_visitors_number %>&second='+second.value+(counting? ('&counting=' + (counting.checked? '1': '0')) : "")+
-      '&rice='+(rice.checked?'1':'0');
+      '&rice='+((rice && rice.checked)?'1':'0');
   }
 });
 </script>
