@@ -13,6 +13,7 @@
   @timebar_height = "16px"
   @video_position = "189px"
   @split_width = "3%"
+  @td_colspan = "11"
   case @visitors.length
   when 2
     @canvas_scale = 0.243
@@ -58,6 +59,14 @@
     @timebar_height = "16px"
     case @visitors.length
     when 6
+       # @split_width_up = "12%" 
+       # @split_width_down = "12%" 
+       # @space_left = "13%"
+       # @space_right = "12%"
+       # @space_left_down = "12%"
+       # @space_right_down = "13%"
+       # @video_position = "32px"
+       @bar_spacing = "80"
        @split_width_up = "12%" 
        @split_width_down = "12%" 
        @space_left = "13%"
@@ -65,6 +74,7 @@
        @space_left_down = "12%"
        @space_right_down = "13%"
        @video_position = "32px"
+       @td_colspan = "15"
     when 7
       @split_width_up = "7.5%" 
       @split_width_down = "12%" 
@@ -125,11 +135,11 @@ body,.container{
   
 </table>
 
-<% if @visitors.length > 5 %>
+<% if @visitors.length > 6 %>
 <div class="Content"> 
   <table width="100%" border="0" cellspacing="0" cellpadding="0">
     <tr>
-      <td colspan="11" height="<%= @bar_spacing %>">&nbsp;</td>
+      <td colspan="<%= @td_colspan %>" height="<%= @bar_spacing %>">&nbsp;</td>
     </tr>
     
     <tr>
@@ -185,7 +195,7 @@ body,.container{
     </tr>
     
     <tr>
-      <td colspan="11" height="1%">&nbsp;</td>
+      <td colspan="<%= @td_colspan %>" height="1%">&nbsp;</td>
     </tr>
   </table>
 
@@ -248,7 +258,7 @@ body,.container{
     </tr>
     <% if @visitors.length == 6 %>
     <tr>
-      <td colspan="11" height="1%">
+      <td colspan="<%= @td_colspan %>" height="1%">
         <video width="100%" autoplay="autoplay" loop="loop" style="padding-top:<%= @video_position %>;">
           <source src="/assets/cycle1111ok.mp4" type="video/mp4"></source>
         </video>
@@ -263,7 +273,7 @@ body,.container{
 <div class="Content"> 
   <table width="100%" border="0" cellspacing="0" cellpadding="0">
     <tr>
-      <td colspan="11" height="<%= @bar_spacing %>">&nbsp;</td>
+      <td colspan="<%= @td_colspan %>" height="<%= @bar_spacing %>">&nbsp;</td>
     </tr>
 
     <tr>
@@ -337,14 +347,14 @@ body,.container{
         </table>
       </div>
     </td>
-    <td width="1%"></td>
+    <td width="<%= @split_width %>"></td>
     <% end %>
 
     <td width="<%= @space_right %>"></td>
   </tr>
 
   <tr>
-      <td colspan="11" height="1%">
+      <td colspan="<%= @td_colspan %>" height="1%">
         <video width="100%" autoplay="autoplay" loop="loop" style="padding-top:<%= @video_position %>;">
           <source src="/assets/cycle1111ok.mp4" type="video/mp4"></source>
         </video>
