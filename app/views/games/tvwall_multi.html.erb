@@ -135,7 +135,7 @@
       	@space_left = "10%"
       	@space_right = "10%"
       	@bar_formula = "(w + 2) / 2"
-      	@font_formula = "w / 3 * 19.5 / 15"
+      	@font_formula = "w / 3 * 17 / 15"
         @split_width = "3%"
 	      @bar_spacing = "15"
         @canvas_scale = 0.091
@@ -415,9 +415,10 @@ body,.container{
                             <div class="nameBox">
                             <% end %>
                               <% if visitor.title.to_s != '' %>
-                              <p class="name"><%= visitor.title %></p>
+                              <p class="name" style="height:31px;"><%= visitor.title %></p>
                               <% else %>
                               <p class="name">&nbsp;</p>
+			      
                               <% end %>
                               <p class="name"><%= visitor.name %></p>
                             </div>

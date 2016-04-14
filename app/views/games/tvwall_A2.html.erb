@@ -2,6 +2,7 @@
   @space_top = "150"
   @space_left = "5%"
   @space_right = "4%"
+  @split_width = "1%"
   @canvas_scale = 0.171
   @canvas_border = 9
   @font_formula = "w / 3 * 16 / 15"
@@ -14,6 +15,7 @@
   when 2
     @canvas_scale = 0.243
     @canvas_border = 15
+    @split_width = "10%"
     @space_top = "140"
     @space_left = "25%"
     @space_right = "24%"
@@ -31,6 +33,16 @@
     @canvas_border = 11
     @space_left = "10%"
     @space_right = "9%"
+    @timebar_height = "14px"
+    @video_position = "130px"
+  when 6
+    @font_formula = "w / 3 * 16 / 15"
+    @bar_formula = "(w + 3) / 2"
+    @canvas_scale = 0.141
+    @canvas_border = 7
+    @space_left = "9%"
+    @space_right = "8%"
+    @split_width = "3%"
     @timebar_height = "14px"
     @video_position = "130px"
   end
@@ -122,14 +134,14 @@ body,.container{
         </table>
       </div>
     </td>
-    <td width="1%"></td>
+    <td width="<%= @split_width %>"></td>
     <% end %>
 
     <td width="<%= @space_right %>"></td>
   </tr>
 
   <tr>
-      <td colspan="12" height="1%">
+      <td colspan="15" height="1%">
         <video width="<%= @video_zoom %>" autoplay="autoplay" loop="loop" style="padding-top:<%= @video_position %>;margin-left:<%= @video_position_left %>;">
           <source src="/assets/cycle1111ok.mp4" type="video/mp4"></source>
         </video>

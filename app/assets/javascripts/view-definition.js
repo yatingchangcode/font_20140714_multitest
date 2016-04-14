@@ -1636,8 +1636,8 @@ View.onCorrectClick = (function(key){
     // server: A1
     "A1+console":function(){
       if (!Commons.correct_users) Commons.correct_users = [];
-      if (Commons.correct_users.indexOf(this.value) != -1) return;
-      Commons.correct_users.push(this.value);
+      if (Commons.correct_users.indexOf(this.value) == -1)
+	 Commons.correct_users.push(this.value);
       var current_correct_count = 0;
       if (Settings.hasCorrectCounting){
         current_correct_count = View.addCorrectCount(this.value);
