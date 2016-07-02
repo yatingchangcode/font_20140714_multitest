@@ -1681,7 +1681,7 @@ View.onCorrectClick = (function(key){
         // Commons.correct_users.push(this.value);
         Commons.correct_users[uid].push(block);
       }else{
-        SocketController.triggerRight({user_id:this.value});
+        SocketController.triggerRight({user_id:uid,block:block});
       }
       if(Settings.hasCorrectCounting){
         current_correct_count = View.addCorrectCount(uid);
