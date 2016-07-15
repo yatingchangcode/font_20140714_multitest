@@ -14,6 +14,7 @@
   @video_position = "189px"
   @split_width = "3%"
   @td_colspan = "11"
+  @td_split_height = "1%"
   case @visitors.length
   when 2
     @canvas_scale = 0.243
@@ -102,6 +103,22 @@
       @space_left_down = "14%"
       @space_right_down = "19%"
     end
+  when 12
+    @canvas_scale = 0.101
+    @canvas_border = 8
+    @space_top = "100"
+    @bar_spacing = "6%"
+    @split_width_up = "5%"
+    @split_width_down = "6%"
+    @td_colspan = "14"
+    @space_left = "9%"
+    @space_right = "8%"
+    @space_left_down = "8%"
+    @space_right_down = "9%"
+    @font_formula = "w / 3 * 16.5 / 15"
+    @bar_formula = "(w + 1) / 2"
+    @timebar_height = "16px"
+    @td_split_height = "30"
   end
 %>
 <% content_for :stylesheets do %>
@@ -200,7 +217,7 @@ body,.container{
     </tr>
     
     <tr>
-      <td colspan="<%= @td_colspan %>" height="1%">&nbsp;</td>
+      <td colspan="<%= @td_colspan %>" height="<%= @td_split_height %>">&nbsp;</td>
     </tr>
   </table>
 
