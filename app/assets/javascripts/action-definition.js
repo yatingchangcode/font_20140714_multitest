@@ -290,7 +290,7 @@ Action.onContinueWrite = (function(key){
     // server: B3
     // tv: B3
     "B3+console": function(o){
-      Commons.gamers.setActive(c);
+      Commons.gamers.setActive(o.user_id);
     },
     "A1+client":function(o){
       SocketController.triggerAction({

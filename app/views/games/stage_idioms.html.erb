@@ -10,7 +10,10 @@
     <h2>規則</h2>
     <h3>使用者各別選擇格子及書寫</h3>
     <h3>每回合限時 <input id="second" type="number" value="60" /> 秒</h3>
+    <% if @stage == 'C-idioms' %>
+    <% else %>
     <h3> <input id="rice" type="checkbox" /> 米字格 </h3>
+    <% end %>
     <%= link_to "確認","#",id: "confirm", class: "btn btn-lg btn-success"  %>
   </div>
 </div>
@@ -21,9 +24,22 @@ $(document).ready(function(){
 
   document.getElementById('confirm').onclick = function(e){
     e.preventDefault();
-    var second = document.getElementById('second');
-    var rice = document.getElementById('rice');
-    location.href = '/games/<%= @game.id %>/server_idioms?stage=<%= params[:stage] %>&join_visitors_number=<%= @join_visitors_number %>&second='+second.value+'&rice='+(rice.checked? '1':'0');
+    var params = [];
+    ['second', 'rice'].forEach(function(item){
+      var o = document.getElementById(item);
+      if(o){
+        switch(o.type){
+          case 'number':
+            params.push(item + '=' + o.value);
+            break;
+          case 'checkbox':
+            params.push(item + '=' + (o.checked? '1' : '0'));
+            break;
+        }
+      }
+    });
+    
+    location.href = '/games/<%= @game.id %>/server_idioms?stage=<%= params[:stage] %>&join_visitors_number=<%= @join_visitors_number %>&' + params.join('&');
   }
 });
 </script>

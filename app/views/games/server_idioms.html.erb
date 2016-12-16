@@ -137,6 +137,7 @@ body,.container{
       <td width="2%">&nbsp;</td>
 
       <td valign="top" width="9%">
+        <% if @visitors[1] %>
         <div class="box_b">
           <table width="100%" border="0" cellspacing="0" cellpadding="0">
             <tr class="nameTop">
@@ -167,6 +168,7 @@ body,.container{
             </tr>
           </table>
         </div>
+        <% end %>
       </td>
 
       <td width="13%"></td>
@@ -276,7 +278,12 @@ window.timeRemaining = <%= @second %>;
 // }
 
 //var alarm = {};
+<% if params[:stage] == 'C-idioms' %>
+var tvwall = window.open("tvwall_c_idioms?join_visitors_number=<%= params[:join_visitors_number] %>&second=<%= @second %>","tvwallWindow","width=800, height=800");
+<% else %>
 var tvwall = window.open("tvwall_<%= params[:stage] %>?join_visitors_number=<%= params[:join_visitors_number] %>&second=<%= @second %>&rice=<%= params[:rice] %>","tvwallWindow","width=800, height=800");
+<% end %>
+
 //window.open("record_idioms?join_visitors_number=<%= params[:join_visitors_number] %>","recordWindow","width=800, height=800");
 
 // window.timeRemaining = parseInt(<%= @second %>);
@@ -308,7 +315,7 @@ $(document).ready(function() {
   // window.chatApp.reset({stage:'<%= params[:stage] %>'});
   // window.chatApp.setGameInfo(<%= @game.id %>, "<%= @stage %>", "<%= @visitors.to_json %>");
 
-  SocketController.triggerReset({stage:'<%= params[:stage] %>'});
+  SocketController.triggerReset({stage:"<%= @stage %>"});
   SocketController.triggerSetGameinfoToSocket({
     game: <%= @game.id %>,
     stage: "<%= @stage %>",

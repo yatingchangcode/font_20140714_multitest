@@ -135,11 +135,14 @@ class GamesController < ApplicationController
     @range = 1..@visitors.size
 
     # for idioms stage, rule is 60 seconds
-    @second = params[:second]
-    Setting.messaging['second'] = params[:second]
     @stage = params[:stage]
+    @second = params[:second]
+    if @stage == 'C-idioms'
+      @stage = "B3"
+    end
+    Setting.messaging['second'] = @second
     Setting.messaging['game'] = params[:id]
-    Setting.messaging['stage'] = params[:stage]
+    Setting.messaging['stage'] = @stage
     # Setting.messaging['record_url'] = "http://0.0.0.0:3000/games/#{params[:id]}/record_idioms?join_visitors_number=#{params[:join_visitors_number]}"
     # if Setting.messaging['is_record_open'] != true
     #   `xdg-open #{Setting.messaging['record_url']} || open #{Setting.messaging['record_url']}`
@@ -302,6 +305,14 @@ class GamesController < ApplicationController
   end
 
   def tvwall_B3
+    @game = Game.find(params[:id])
+    @visitors = @game.visitors.where(number: params[:join_visitors_number].split(","))
+    @range = 1..@visitors.size
+
+    @second = params[:second]
+  end
+
+  def tvwall_c_idioms
     @game = Game.find(params[:id])
     @visitors = @game.visitors.where(number: params[:join_visitors_number].split(","))
     @range = 1..@visitors.size

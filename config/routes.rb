@@ -50,6 +50,7 @@ Rails.application.routes.draw do
       get 'tvwall_B3'
       get 'tvwall_multi'
       get 'tvwall_mix'
+      get 'tvwall_c_idioms'
       get 'convert_page'
     end
     collection do

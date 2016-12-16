@@ -58,8 +58,10 @@
     <%= link_to "成語連連看 (2人)","#",id: "stageB3",class: "btn btn-lg btn-info"  %>
     <%= link_to "多人連線 (10~40人)","#", id: "stage_multi",class: "btn btn-lg btn-warning"  %>
     <%= link_to "東拼西湊 (1~10人)","#",id: "stage_mix",class: "btn btn-lg btn-warning"  %>
-
     <%= link_to "掌握先機(舊版) (4人)","#",id: "stageB2_v1",class: "btn btn-lg btn-default"  %>
+
+    <br/><br/>
+    <%= link_to "來賓挑戰賽：隻字片語","#",id: "stageCidioms",class: "btn btn-lg btn-primary"  %>
   </div>
 </div>
 
@@ -150,6 +152,14 @@ $(document).ready(function(){
     var join_visitors_number = getVisitorsNumberArray(e);
 
     location.href = '/games/<%= @game.id %>/stage_mix?stage=mix&join_visitors_number=' + join_visitors_number;
+  }
+
+  // news
+  document.getElementById('stageCidioms').onclick = function(e){
+
+    var join_visitors_number = getVisitorsNumberArray(e);
+
+    location.href = '/games/<%= @game.id %>/stage_idioms?stage=C-idioms&join_visitors_number=' + join_visitors_number;
   }
 
 });

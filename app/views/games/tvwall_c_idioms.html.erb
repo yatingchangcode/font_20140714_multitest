@@ -1,0 +1,218 @@
+<% content_for :stylesheets do %>
+<%= stylesheet_link_tag 'reset','tvwall' %>
+<style type="text/css">
+p.name{
+  padding-bottom:6%;
+}
+
+body,.container{
+  background-color: #000000;
+  width: 100%;
+  height:100%;
+  //width: 1600px;
+  //height:1000px;
+}
+</style>
+<% end %>
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td colspan="3" height="100">&nbsp;</td>
+  </tr>
+  <tr>
+    <td width="32%">&nbsp;</td>
+    <td>
+      <!-- <div class="HP_bar" style="height:20px;">
+        <canvas id="sketchSecond" data-processing-sources="/assets/timebar.pde"></canvas>
+      </div> -->
+      <div class="HP_bar" style="height:20px;"> 
+        <div id="sketchSecond" class="HP_bar_inner" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%;">
+        </div>
+      </div>
+    </td>
+    <td width="33%">&nbsp;</td>
+  </tr>
+  
+</table>
+
+<div class="Content"> 
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td colspan="5">&nbsp;</td>
+      </tr>
+      
+      <tr>
+        <td width="9%"></td>
+        <% if @visitors[0] %>
+        <td valign="top" width="9%" style="display: none;">
+        <div class="box_b">
+            <table width="100%" height="100%" border="0" cellspacing="0" cellpadding="0">
+              <tr class="nameTop">
+                <td>&nbsp;</td>
+              </tr>
+              <tr>
+                <td><p class="name"><%= @visitors[0].name %></p></td>
+              </tr>
+              <tr>
+                <td>
+                <div id="user_photo_<%= @visitors[0].number %>" class="photo">
+                    <%= render_gamer_photo(@visitors[0],"medium",'100%','100%','') %>
+                </div>
+                </td>
+              </tr>
+              
+            </table>
+        </div>
+        </td>
+        <% end %>
+
+        <td width="2%">&nbsp;</td>
+        
+        <td width="56%">
+          <table class="Chessboard" width="100%" border="0" cellspacing="0" cellpadding="0">
+              <tr>
+                <td>&nbsp;</td>
+                <td width="8%"><p>A</p></td>
+                <td width="8%"><p>B</p></td>
+                <td width="8%"><p>C</p></td>
+                <td width="8%"><p>D</p></td>
+                <td width="8%"><p>E</p></td>
+                <td width="8%"><p>F</p></td>
+                <td width="8%"><p>G</p></td>
+                <td width="8%"><p>H</p></td>
+                <td width="8%"><p>I</p></td>
+                <td width="8%"><p>J</p></td>
+                <td width="8%"><p>K</p></td>
+                <td width="8%"><p>L</p></td>
+              </tr>
+              
+    <% (1..8).to_a.each do |x| %>
+    <tr>
+      <td>
+        <p><%= x %></p>
+      </td>
+      <% (1..12).to_a.each do |y| %>
+      <td>
+        <div id="grid_<%= x %>_<%= y %>" class="Grid bor_g">
+          <div id="glow_<%= x %>_<%= y %>" class="inner_glow"><img src="/assets/tvwall/img_Grid_g_green.png" width="100%"/></div>
+        <canvas id="origin_<%= x %>_<%= y %>" width="100%" ></canvas>
+        </div>
+      </td>
+      <% end %>
+    </tr>
+    <% end %>
+              
+            </table>
+        </td>
+        
+        <td width="2%">&nbsp;</td>
+        <% if @visitors[1] %>
+        <td valign="top" width="9%" style="display: none;">
+        <div class="box_b">
+            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+              <tr class="nameTop">
+                <td>&nbsp;</td>
+              </tr>
+              <tr>
+                <td><p class="name"><%= @visitors[1].name %></p></td>
+              </tr>
+              <tr>
+                <td>
+                <div class="TopBpx">
+                    <div id="user_photo_<%= @visitors[1].number %>" class="photo">
+                        <%= render_gamer_photo(@visitors[1],"medium",'100%','100%','') %>
+                    </div>
+                </div>
+                </td>
+              </tr>
+            </table>
+        </div>
+        </td>
+        <% end %>
+        <td width="13%"></td>
+      </tr>
+     
+    </table>
+</div>
+
+<% content_for :javascripts do %>
+
+<script>
+document.write('<script src="//'+ location.hostname + ':5001/socket.io/socket.io.js">\x3C/script>');
+</script>
+
+<script>
+// cache stage name for server1-tvwall.js
+window.stageName = 'B3';
+window.pageType = "tv";  // type: console, client, tv
+
+<% if @second.to_i > 0 %>
+window.timeRemaining = <%= @second %>;
+<% end %>
+
+</script>
+
+<%= javascript_include_tag 'socketevent-generator' %>
+<%= javascript_include_tag 'commons' %>
+<%= javascript_include_tag 'action-definition' %>
+<%= javascript_include_tag 'view-definition' %>
+<%= javascript_include_tag 'socketevent-hooker' %>
+
+<script>
+
+window.responsiveMethod = function(){
+  var jqEl = $('[id^=grid_]');
+
+  var w = $(window).width()*0.04;
+  //var w = $('.container').width()*0.04;
+  jqEl.height(w);
+  jqEl.width(w);
+};
+
+window.tunePosition = function(){
+  var w = $('.photo').width();
+  //var namebox = $('.nameBox');
+  var name = $('.name');
+  name.css('font-size', w / 3 * 17.5 / 15);
+
+  var board = $('.Chessboard');
+  $('.nameTop').height(board.height() / 4);
+
+  var jqEl = $('[id^=grid_]');
+
+  $('table.Chessboard p').css('font-weight', 'bold');
+  $('table.Chessboard p').css('font-size', jqEl.height() / 3 * 1.3);
+
+};
+
+window.addEventListener('resize', window.responsiveMethod);
+
+$(document).ready(function() {
+  CM.prop({
+    width: 500,
+    height: 500,
+    lineWidth: 16,
+    lineColor: '#ececec',
+    targetZoomScale: 0.015,
+    responsiveByParent: true
+    //backgroundImage: '/assets/tvwall/img_Grid_g.gif'
+  });
+
+  var gamerList = [];
+  <% @visitors.each do |visitor| %>
+  gamerList.push('<%= visitor.number %>');
+  <% end %>
+
+  View.registerCanvas(gamerList);
+  View.collectGamers(gamerList);
+  View.loadSketchSecond();
+
+  responsiveMethod();
+  CM.doAllResponsive();
+  setTimeout(function(){
+    tunePosition();    
+  }, 100);
+  
+});
+</script>
+<% end %>
