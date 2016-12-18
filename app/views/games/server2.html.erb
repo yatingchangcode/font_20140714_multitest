@@ -187,7 +187,7 @@
         View.registerCanvas(gamerList);
         View.collectGamers(gamerList);
 
-        SocketController.triggerReset({stage:'<%= params[:stage] %>'});
+        SocketController.triggerReset({stage: "<%= @stage %>"});
         SocketController.triggerSetGameinfoToSocket({
           game: <%= @game.id %>,
           stage: "<%= @stage %>",

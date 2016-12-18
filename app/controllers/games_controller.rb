@@ -100,12 +100,15 @@ class GamesController < ApplicationController
     @range = 1..@visitors.size
 
     @second = params[:second]
-    Setting.messaging['second'] = params[:second]
-
-    Setting.messaging['game'] = params[:id]
-    Setting.messaging['stage'] = params[:stage]
-    #@user_unregs = [1,4]
     @stage = params[:stage]
+    if ['C1','C2','C3'].include? @stage
+      @stage = "A2"
+    end
+
+    Setting.messaging['second'] = @second
+    Setting.messaging['game'] = params[:id]
+    Setting.messaging['stage'] = @stage
+    #@user_unregs = [1,4]
     # Setting.messaging['record_url'] = "http://0.0.0.0:3000/games/#{params[:id]}/record?join_visitors_number=#{params[:join_visitors_number]}"
     # if Setting.messaging['is_record_open'] != true
     #   `xdg-open #{Setting.messaging['record_url']} || open #{Setting.messaging['record_url']}`
@@ -305,6 +308,14 @@ class GamesController < ApplicationController
   end
 
   def tvwall_B3
+    @game = Game.find(params[:id])
+    @visitors = @game.visitors.where(number: params[:join_visitors_number].split(","))
+    @range = 1..@visitors.size
+
+    @second = params[:second]
+  end
+
+  def tvwall_C1
     @game = Game.find(params[:id])
     @visitors = @game.visitors.where(number: params[:join_visitors_number].split(","))
     @range = 1..@visitors.size

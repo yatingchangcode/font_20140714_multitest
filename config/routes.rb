@@ -48,9 +48,12 @@ Rails.application.routes.draw do
       get 'tvwall_B2_v1'
       get 'tvwall_B2'
       get 'tvwall_B3'
+      get 'tvwall_C1'
+      get 'tvwall_C2'
+      get 'tvwall_C3'
+      get 'tvwall_c_idioms'
       get 'tvwall_multi'
       get 'tvwall_mix'
-      get 'tvwall_c_idioms'
       get 'convert_page'
     end
     collection do
