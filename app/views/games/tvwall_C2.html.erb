@@ -1,0 +1,251 @@
+<%
+  @space_top = "150"
+  @space_left = "5%"
+  @space_right = "4%"
+  @split_width = "1%"
+  @canvas_scale = 0.171
+  @canvas_border = 9
+  @font_formula = "w / 3 * 16 / 15"
+  @bar_formula = "(w + 5) / 2"
+  @timebar_height = "12px"
+  @video_position = "80px"
+  @video_position_left = "0px"
+  @video_zoom = "100%"
+  case @visitors.length
+  when 2
+    @canvas_scale = 0.243
+    @canvas_border = 15
+    @split_width = "10%"
+    @space_top = "140"
+    @space_left = "25%"
+    @space_right = "24%"
+    @timebar_height = "16px"
+  when 3
+    @canvas_scale = 0.217
+    @canvas_border = 13
+    @space_left = "18%"
+    @space_right = "17%"
+    @timebar_height = "15px"
+  when 4
+    @font_formula = "w / 3 * 16.2 / 15"
+    @bar_formula = "(w + 3) / 2"
+    @canvas_scale = 0.191
+    @canvas_border = 11
+    @space_left = "10%"
+    @space_right = "9%"
+    @timebar_height = "14px"
+    @video_position = "130px"
+  when 6
+    @font_formula = "w / 3 * 16 / 15"
+    @bar_formula = "(w + 3) / 2"
+    @canvas_scale = 0.141
+    @canvas_border = 7
+    @space_left = "9%"
+    @space_right = "8%"
+    @split_width = "3%"
+    @timebar_height = "14px"
+    @video_position = "130px"
+  end
+%>
+<% content_for :stylesheets do %>
+<%= stylesheet_link_tag 'reset','tvwall' %>
+<style type="text/css">
+p{
+  padding-top:1.25%;
+}
+
+body,.container{
+  background-color: #000000;
+  width: 100%;
+  height:100%;
+  //width:1920px;
+  //height:1080px;
+  overflow:hidden;
+}
+</style>
+<% end %>
+
+<div class="Content"> 
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td colspan="11" height="<%= @space_top %>">&nbsp;</td>
+    </tr>
+
+    <tr>
+
+      <td width="<%= @space_left %>"></td>
+
+      <% @visitors.each do |visitor| %>
+      <td>
+        <div class="box_a">
+          <div id="out_<%= visitor.number %>" class="out">
+            <img src="/assets/tvwall/out.png" width="100%"/>
+          </div>
+          <div id="black_<%= visitor.number %>" class="black"></div>
+          <table width="100%" border="0" cellspacing="0" cellpadding="0">
+            <tr>
+              <td>
+                <div class="TopBpx">
+                  <div id="user_photo_<%= visitor.number %>" class="photo">
+                    <%= render_gamer_photo(visitor,"medium",'100%','100%',"") %>
+                  </div>
+                  <div class="nameBox br_line02">
+                    <% if(visitor.title) %>
+                    <p class="name"><%= visitor.title %></p>
+                    <% else %>
+                    <p class="name">&nbsp;</p>
+                    <% end %>
+                    <p class="name"><%= visitor.name %></p>
+                  </div>
+                  <br class="CLEAR" />
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div id="grid_<%= visitor.number %>" class="Grid">
+                  <canvas id="origin_<%= visitor.number %>" width="100%" ></canvas>
+                  <div id="metal_<%= visitor.number %>" class="inner_metal"></div>
+                  <div id="glow_<%= visitor.number %>" class="inner_glow"><img src="/assets/tvwall/img_Grid_b_green.png" width="100%"/></div>
+                  <div id="yes_img_<%= visitor.number %>" class="correct"><img src="/assets/tvwall/red_ring.png" width="100%"/></div>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                 <tr>
+                  <td width="10%">&nbsp;</td>
+                  <td>
+                    <!-- <div class="HP_bar" style="height:<%= @timebar_height %>;">
+                      <canvas id="sketchSecond_<%= visitor.number %>" data-processing-sources="/assets/timebar.pde"></canvas>
+                    </div> -->
+                    <div class="HP_bar" style="height:<%= @timebar_height %>;"> 
+                      <div id="sketchSecond_<%= visitor.number %>" class="HP_bar_inner" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%;">
+                      </div>
+                    </div>
+                  </td>
+                  <td width="10%">&nbsp;</td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+        </table>
+      </div>
+    </td>
+    <td width="<%= @split_width %>"></td>
+    <% end %>
+
+    <td width="<%= @space_right %>"></td>
+  </tr>
+
+  <tr>
+      <td colspan="15" height="1%">
+        <video width="<%= @video_zoom %>" autoplay="autoplay" loop="loop" style="padding-top:<%= @video_position %>;margin-left:<%= @video_position_left %>;">
+          <source src="/assets/cycle1111ok.mp4" type="video/mp4"></source>
+        </video>
+      </td>
+
+    </tr>
+</table>
+</div>
+<div class="Zoom">
+  <div class="Zoom-inner">
+    <canvas id="_zoomTmp" width="100%" ></canvas>
+  </div>
+</div>
+
+<% content_for :javascripts do %>
+
+<script>
+document.write('<script src="//'+ location.hostname + ':5001/socket.io/socket.io.js">\x3C/script>');
+</script>
+<script>
+// cache stage name for server1-tvwall.js
+window.stageName = 'A2';
+window.pageType = "tv";  // type: console, client, tv
+window.hasCounter = true;
+window.timeRemaining = <%= @second %>;
+
+window.borderWidth = <%= @canvas_border %>;
+
+</script>
+
+<%= javascript_include_tag 'socketevent-generator' %>
+<%= javascript_include_tag 'commons' %>
+<%= javascript_include_tag 'action-definition' %>
+<%= javascript_include_tag 'view-definition' %>
+<%= javascript_include_tag 'socketevent-hooker' %>
+
+
+<script>
+
+window.responsiveMethod = function(){
+  var jqGridEl = $('[id^=grid_]');
+  var w = $(window).width() * <%= @canvas_scale %>;
+  var zoomEl = $('.Zoom');
+  var zoomInnerEl = $('.Zoom-inner');
+  var zoomSize = $(window).height() * 0.75;
+  var zoomScale = zoomSize / w;
+  jqGridEl.height(w);
+  jqGridEl.width(w);
+  zoomEl.width(zoomSize).height(zoomSize);
+  zoomInnerEl.width(zoomSize).height(zoomSize);
+
+  jqGridEl.css("background-image", ["url(",")"].join(
+    Commons.generateBorderBase64(jqGridEl, window.borderWidth, ['0 #ffffff', '0.5 #aaaaaa', '1 #aaaaaa'])
+  )).css("padding", window.borderWidth);
+
+  zoomInnerEl.css("background-image", ["url(",")"].join(
+    Commons.generateBorderBase64(zoomEl, window.borderWidth * zoomScale, ['0 #ffffff', '0.5 #aaaaaa', '1 #aaaaaa'] )
+  )).css("padding", window.borderWidth * zoomScale);
+};
+
+window.tuneLinePosition = function(){
+  var w = $('.photo').width();
+  var namebox = $('.nameBox');
+  var name = $('.name');
+  name.css('font-size', <%= @font_formula %>);
+  namebox.height(w);
+  // 44 means picture height
+  //namebox.css('background-position-y', w / 2 - parseFloat(name.css('padding-top')) * 1.8 - w / 3 / 15 * 0.2 );
+  //namebox.css('background-position-y', w / 2 - parseFloat(name.css('padding-top')) * 2 - (44 - 38) / 2 );
+  namebox.css('background-position-y', <%= @bar_formula %> );
+  //alert(w);
+};
+
+window.addEventListener('resize', window.responsiveMethod);
+
+$(document).ready(function() {
+
+  CM.prop({
+    width: 500,
+    height: 500,
+    lineWidth: 13,
+    lineColor: '#ececec',
+    targetZoomScale: 0.2,
+    responsiveByParent: true,
+    backgroundLine: '7px rgba(255,0,0,0.6)'
+    //backgroundImage: '/assets/tvwall/img_Grid_b.gif'
+  });
+
+  var gamerList = [];
+  <% @visitors.each do |visitor| %>
+  gamerList.push('<%= visitor.number %>');
+  <% end %>
+
+  View.registerCanvas(gamerList);
+  View.collectGamers(gamerList);
+  View.loadSketchSecond();
+
+  responsiveMethod();
+
+  CM.doAllResponsive();
+  setTimeout(function(){
+    tuneLinePosition();    
+  }, 100);
+
+});
+</script>
+<% end %>
