@@ -89,7 +89,11 @@ body,.container{
                   <div id="user_photo_<%= visitor.number %>" class="photo">
                     <%= render_gamer_photo(visitor,"medium",'100%','100%',"") %>
                   </div>
+                  <% if @counting == '1' %>
+                  <div class="nameBox br_line01">
+                  <% else %>
                   <div class="nameBox br_line02">
+                  <% end %>
                     <% if(visitor.title) %>
                     <p class="name"><%= visitor.title %></p>
                     <% else %>
@@ -97,6 +101,10 @@ body,.container{
                     <% end %>
                     <p class="name"><%= visitor.name %></p>
                   </div>
+                  <% if @counting == '1' %>
+                  <div class="answer10" style="padding:20px 0 0 10px;">
+                  <span id="no_correct_<%= visitor.number %>" width="100%" class="label label-primary" style="opacity:0;font-size:2.5em;">0</span></div>
+                  <% end %>
                   <br class="CLEAR" />
                 </div>
               </td>
@@ -165,6 +173,7 @@ document.write('<script src="//'+ location.hostname + ':5001/socket.io/socket.io
 // cache stage name for server1-tvwall.js
 window.stageName = 'A2';
 window.pageType = "tv";  // type: console, client, tv
+window.counting = <%= @counting == '1' %>;
 window.hasCounter = true;
 window.timeRemaining = <%= @second %>;
 

@@ -9,6 +9,13 @@ window.TimeBar = (function(){
     return color;
   };
 
+  var _defaults = {
+    changeBegin: (1 / 3) * 100,
+    changeEnd: (1 / 15) * 100,
+    startColor: "#ffff00",
+    endColor: "#ff0000"
+  };
+
   function colorMgr(from, to){
     var strFromColor = _converToSix(from.substr(1));
     var strToColor = _converToSix(to.substr(1));
@@ -40,16 +47,21 @@ window.TimeBar = (function(){
   };
 
   
-  var timebarInstance = function(id){
+  var timebarInstance = function(id, opts){
+    // apply default
+    opts = opts || {};
+    for(var i in _defaults){
+      if(!opts[i]) opts[i] = _defaults[i];
+    }
     this._jqel = $('#'+id);
     this._int = null;
     this._curs = 10.0;
     this._sec = 10.0;
-    this._changeBegin = (1 / 3) * 100;
-    this._changeEnd = (1 / 15) * 100;
+    this._changeBegin = opts.changeBegin;
+    this._changeEnd = opts.changeEnd;
     this._changeInt = this._changeBegin - this._changeEnd;
-    this._startColor = "#ffff00";
-    this._endColor = "#ff0000";
+    this._startColor = opts.startColor;
+    this._endColor = opts.endColor;
     this._colorMgr = new colorMgr(this._startColor, this._endColor);
   };
 
@@ -123,9 +135,9 @@ window.TimeBar = (function(){
     this._colorMgr = new colorMgr(this._startColor, this._endColor);
   };
 
-  var _getIns = function(id){
+  var _getIns = function(id, opts){
     if(!_instances[id]){
-      _instances[id] = new timebarInstance(id);
+      _instances[id] = new timebarInstance(id, opts);
     }
     return _instances[id];
   };

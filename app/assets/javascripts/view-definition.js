@@ -784,6 +784,7 @@ View.setCorrectCountStyle = (function(key){
   // *** server: B3 no action
   // *** tv: A2 B3 no action
   key = Commons.getCommonGenKey(key, ["A1+console","A3+console","B1+console"]);
+  key = Commons.getCommonGenKey(key, ["A2+tv","A3+tv"]);
   return {
     // server: A1 A3 B1
     "A1+console":function(o){
@@ -826,8 +827,8 @@ View.setCorrectCountStyle = (function(key){
         // $("#no_correct_" + o.user_id).text(o.count + "題");
       }
     },
-    // tv: A3
-    "A3+tv":function(o){
+    // tv: A2 A3
+    "A2+tv":function(o){
       $("#no_correct_" + o.user_id).css('opacity', 1);
       $("#no_correct_" + o.user_id).text(o.count).css('opacity', 1).css('color', 'black');
     },
@@ -1637,7 +1638,7 @@ View.onCorrectClick = (function(key){
     "A1+console":function(){
       if (!Commons.correct_users) Commons.correct_users = [];
       if (Commons.correct_users.indexOf(this.value) == -1)
-	 Commons.correct_users.push(this.value);
+        Commons.correct_users.push(this.value);
       var current_correct_count = 0;
       if (Settings.hasCorrectCounting){
         current_correct_count = View.addCorrectCount(this.value);

@@ -11,6 +11,7 @@
     <h3>使用者畫面上顯示秒數</h3>
     <h3>使用者個別書寫</h3>
     <h3>限時 <input id="second" type="number"/> 秒</h3>
+    <h3> <input id="counting" type="checkbox" /> 計分</h3>
     <%= link_to "確認","#",id: "confirm", class: "btn btn-lg btn-success"  %>
   </div>
 </div>
@@ -22,7 +23,8 @@ $(document).ready(function(){
   document.getElementById('confirm').onclick = function(e){
     e.preventDefault();
     var second = document.getElementById('second');
-    location.href = '/games/<%= @game.id %>/server2?stage=<%= params[:stage] %>&join_visitors_number=<%= @join_visitors_number %>&second='+second.value;
+    var counting = document.getElementById('counting');
+    location.href = '/games/<%= @game.id %>/server2?stage=<%= params[:stage] %>&join_visitors_number=<%= @join_visitors_number %>&second='+second.value+('&counting=' + (counting.checked? '1': '0'));
   }
 });
 </script>

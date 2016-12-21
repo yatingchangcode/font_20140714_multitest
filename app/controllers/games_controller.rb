@@ -100,6 +100,7 @@ class GamesController < ApplicationController
     @range = 1..@visitors.size
 
     @second = params[:second]
+    @counting = params[:counting]
     @stage = params[:stage]
     if ['C1','C2','C3'].include? @stage
       @stage = "A2"
@@ -272,6 +273,7 @@ class GamesController < ApplicationController
     @range = 1..@visitors.size
 
     @second = params[:second]
+    @counting = params[:counting]
   end
 
   def tvwall_A3
