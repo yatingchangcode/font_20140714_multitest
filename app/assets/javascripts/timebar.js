@@ -101,14 +101,14 @@ window.TimeBar = (function(){
             var percent = 100 * scope._curs / scope._sec;
             scope._jqel.css("width", percent+"%").attr('aria-valuenow', percent);
             if(percent >= scope._changeBegin){
-              scope._jqel.css("background-color", this._startColor);
+              scope._jqel.css("background-color", scope._startColor);
             }else if(percent > scope._changeEnd && percent < scope._changeBegin){
               var currentPercent = (percent - scope._changeEnd) / scope._changeInt; // from 0.9x -> 0.01x
               // var percentInGreen = parseInt(currentPercent * 255);
               // scope._jqel.css("background-color", '#ff'+ percentInGreen.toString(16) +'00');
               scope._jqel.css("background-color", scope._colorMgr.getColor(currentPercent));
             }else{
-              scope._jqel.css("background-color", this._endColor);
+              scope._jqel.css("background-color", scope._endColor);
             }
           } else {
             scope.doStop();

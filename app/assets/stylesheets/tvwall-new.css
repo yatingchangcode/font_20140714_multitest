@@ -1,0 +1,199 @@
+@charset "utf-8";
+/* CSS Document */
+/*===================共用=================*/
+h1, h2, h3, h4, h5, h6, p {
+	color:#000000;
+	letter-spacing:1px;
+	//font-family:Helvetica,"Heiti TC","微軟正黑體","Microsoft Sans Serif","Microsoft Sans Serif","Helvetica","Geneva","sans-serif";
+}
+p{ white-space: nowrap; }
+a{ text-decoration:none; outline: none; /* for Firefox */  hlbr:expression(this.onFocus=this.blur()); /* for IE */}
+
+body{
+	background: url(/assets/br_new.jpg) center top no-repeat #000;
+	background-size: cover;
+}
+
+.Content{ width:100%;}
+.Content .box_a{ width:100%; position:relative;}
+.Content .box_a .TopBpx{ width:100%;}
+.Content .box_a .TopBpx .photo{ float:left; width:28%; border-radius: 50%; overflow: hidden; box-shadow:0px 0px 5px 1px black;}
+.Content .box_a .TopBpx .green{ box-shadow:0px 0px 50px 5px #ff000c; }
+.Content .box_a .TopBpx .nameBox{ float:left; width:67%; height:100%; overflow:hidden; 
+	/*background:url(/assets/tvwall/Upper-Metal-Bar.png) -25px no-repeat;*/
+	background-size: 100% 8%;
+}
+.Content .box_a .TopBpx .nameBox p.name{ color:#FFF; padding-left:7%;}
+.Content .box_a .TopBpx .answer10{ float:left; width:25%;}
+
+.Content .box_a .s1 .photo{ width:20%;}
+  
+.Content .box_a .TopBpx .br_line01{ width:47%;
+	//background:url(/assets/tvwall/name_line_01.png) right 18px no-repeat;
+	/*background:url(/assets/tvwall/Upper-Metal-Bar.png) -5px no-repeat;*/
+	background-size: 100% 8%;
+}
+.Content .box_a .TopBpx .br_line01_less5{ width:42%;
+	//background:url(/assets/tvwall/name_line_01.png) right 18px no-repeat;
+	/*background:url(/assets/tvwall/Upper-Metal-Bar.png) -5px no-repeat;*/
+	background-size: 100% 8%;
+}
+.Content .box_a .TopBpx .br_line02{ 
+	//background:url(/assets/tvwall/name_line_02.png) right 18px no-repeat;
+	/*background:url(/assets/tvwall/Upper-Metal-Bar.png) -35px no-repeat;*/
+	background-size: 100% 8%;
+}
+.Content .box_a .TopBpx .br_line03{ width:35%;
+	//background:url(/assets/tvwall/name_line_03.png) right 25px no-repeat;
+	/*background:url(/assets/tvwall/Upper-Metal-Bar.png) -20px no-repeat;*/
+	background-size: 100% 8%;
+}
+.Content .box_a .TopBpx .br_line04{ width:35%; 
+	//background:url(/assets/tvwall/name_line_04.png) right 18px no-repeat;
+	/*background:url(/assets/tvwall/Upper-Metal-Bar.png) -15px no-repeat;*/
+	background-size: 100% 8%;
+}
+
+.Content .box_a .Grid{ 
+	width:99%; position:relative; 
+	/*border:5px solid #fff; border-radius: 7px; 
+	box-shadow:0px 0px 15px 5px rgba(75,217,255,0.7),inset 0px 0px 5px 3px rgba(75,217,255,0.6);*/
+}
+
+.Content .box_a .Grid-Kino{
+	width:100%;position:relative; padding: 16px;
+	background: url('/assets/tvwall/Metal-Frame.png') no-repeat; background-size: 100% 100%;
+}
+.Content .box_a .Grid .write,
+.Content .box_a .Grid-Kino .write{ 
+	width:95%; position:absolute; left:2%; top:2%; z-index:40;
+}
+
+.Content .box_a .Grid .correct,
+.Content .box_a .GridMix .correct,
+.Content .box_a .Grid-Kino .correct{ width:32%; position:absolute; right:1%; bottom:2%; z-index:50;display:none;}
+/*.Content .box_a .bor_g{ 
+	border:5px solid #ff000c; box-shadow:0px 0px 15px 5px rgba(255,0,12,0.7),inset 0px 0px 5px 3px rgba(255,0,12,0.6);
+}*/
+.Content .box_a .bor_r{ //border:0.2vw solid #ff001c;}
+.Content .box_a .GridMix .inner_glow,
+.Content .box_a .Grid .inner_glow{ width:100%; height:100%; position:absolute; top:0px; left:0px;
+	display:none;
+	box-shadow:0px 0px 10px 5px rgba(255, 0, 28, 0.8), 0px 0px 7px 3px rgba(255, 0, 28, 0.8) inset;
+}
+
+.Content .box_a .GridMix{
+	position: relative;
+}
+
+.Content .box_a .GridMix .Grid{
+	width:100%; position:relative;
+	/*margin: 0.2em;*/
+	/*border:0.2em solid rgba(0,0,0,0);*/
+	/*background-color: rgb(60,60,60);*/
+}
+
+.Zoom .GridMix .Grid{
+	width:100%; position:relative;
+	/*border:solid rgba(0,0,0,1);
+	background-color: rgb(60,60,60);	*/
+}
+.Zoom .GridMix{
+	/*background-color: black;*/
+}
+
+.Zoom canvas[id^=_zoomTmp_]{
+	/*background-color: black;*/
+}
+
+.Content .box_a .GridMix .inner_metal,
+.Content .box_a .Grid .inner_metal{ width:100%; position:absolute; top:0px; left:0px;}
+.Content .box_a .Grid-Kino .inner_glow{
+	width:100%; height:100%; position:absolute; top:0px; left:0px;display:none;
+	box-shadow:0px 0px 60px 11px rgb(39, 245, 130) inset
+}
+.Content .box_a .Grid-Kino .inner_metal{
+	display: none;
+}
+
+.Content .box_a table tr td{ padding-bottom:10px;}
+
+.Content .box_a .out{ width:105%; position:absolute; bottom:0px; left:0px; z-index:60;display:none;}
+.Content .box_a .out img{ opacity: 0.8 }
+.Content .box_a .black{ width:105%; height:100%; background-color:#000; opacity:0.3; position:absolute; bottom:0px; left:0px; z-index:55;display:none;}
+
+.HP_bar{
+	border-radius:10px;overflow:hidden;
+	overflow: hidden;
+    height: 20px;
+    background-color: #3e3e3e;
+    border: 2px solid #323232;
+    -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+
+}
+.HP_bar_inner {
+    width: 0%;
+    height: 100%;
+    box-shadow: 0px 0px 5px 0.5px #3e3e3e inset;
+    font-size: 12px;
+    line-height: 20px;
+    color: white;
+    text-align: center;
+    background-color: #52daff;
+    -webkit-box-shadow: inset 0px 0px 6px 1px rgba(128, 128, 128, 0.7);
+    box-shadow: inset 0px 0px 6px 1px rgba(128, 128, 128, 0.7);
+    -webkit-transition: width 0.1s ease;
+    -o-transition: width 0.1s ease;
+    transition: width 0.1s ease;
+}
+.HP_bar .hp{ width:100%;}
+.HP_bar .red{ background-color:#ff0c00;}
+.HP_bar .yello{ background-color:#fcff00;}
+
+table.Chessboard p{ color:#ddced0; text-align:center;}
+
+.Content .box_b .photo{ width:68%; margin:0 auto;}
+.Content .box_b .green{ box-shadow:0px 0px 20px 8px rgba(34,255,34,1);}
+.Content .box_b .red{ box-shadow:0px 0px 20px 8px rgba(255,34,34,1);}
+.Content .box_b p.name{ color:#FFF; text-align:center;}
+
+.Content table.Chessboard .Grid{ width:100%; position:relative; border:0.2vw solid #000000; margin:0 auto; background-color: rgb(60,60,60);}
+.Content table.Chessboard .Grid .write{ width:90%; position:absolute; left:2%; top:2%; z-index:40;}
+.Content table.Chessboard .Grid .inner_glow{ width:100%; position:absolute; top:0px; left:0px;display:none;
+	box-shadow:0px 0px 15px 10px rgba(55, 197, 78, 1) inset;
+}
+.Content .color-selector{
+	width:40px;
+	height:40px;
+	margin:10px;
+	border-radius: 2px;
+	/*border: 1px solid white;*/
+}
+.Content .color-selector-border{
+	border: 3px solid rgb(75,217,98) !important;
+	box-shadow: 0px 0px 30px 4px rgba(55, 197, 78, 1);
+}
+.Zoom{
+	position: absolute;
+	display: none;
+	/*opacity: 0;*/
+	/*background-color: rgba(123,123,123,0);*/
+	/*width: 300px;
+	height: 300px;*/
+	left: 50%;
+	top: 50%;
+}
+.Zoom-inner{
+	position: relative;
+	background-color: rgba(0,0,0,0.5);
+	left: -50%;
+	top: -50%;
+	z-index: 2000;
+	/*width: 100%;
+	height: 100%;*/
+}
+
+
+
+

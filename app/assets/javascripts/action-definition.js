@@ -204,7 +204,7 @@ Action.onUserOut = (function(key){
   // *** tv: B2 B3 no action
   key = Commons.getCommonGenKey(key, [
     "A1+console", "A2+console", "A3+console", "B1+console", "B2_v1+console","mix+console",
-    "A1+tv", "A2+tv", "A3+tv", "B1+tv", "B2_v1+tv","mix+tv"
+    "A1+tv", "A2+tv", "A3+tv", "B1+tv", "B2_v1+tv","mix+tv","C1+tv"
   ]);
   return {
     // server: A1 A2 A3 B1 B2_v1

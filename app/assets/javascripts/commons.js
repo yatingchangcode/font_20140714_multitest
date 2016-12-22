@@ -220,7 +220,7 @@
     return -1;
   };
   
-  var generateBorderBase64 = function(dependEl, px, splits){
+  var generateBorderBase64 = function(dependEl, px, splits, background){
     var w = $(dependEl).width();
     var h = $(dependEl).height();
     var canvasEl = document.createElement('canvas');
@@ -266,16 +266,18 @@
       canvasContext.fill();
     }
 
-    var innerBackgroundPosition = [[px, px], [px, h - px], [w - px, px], [w - px, h - px]];
-    canvasContext.fillStyle = '#000000';
-    canvasContext.beginPath();
-    // canvasContext.moveTo.apply(canvasContext, innerBackgroundPosition[0]);
-    // canvasContext.lineTo.apply(canvasContext, innerBackgroundPosition[1]);
-    // canvasContext.lineTo.apply(canvasContext, innerBackgroundPosition[2]);
-    // canvasContext.lineTo.apply(canvasContext, innerBackgroundPosition[3]);
-    canvasContext.fillRect(px, px, w - px - px, h - px - px);
-    // canvasContext.fill();
-
+    if(background != false){
+      var innerBackgroundPosition = [[px, px], [px, h - px], [w - px, px], [w - px, h - px]];
+      canvasContext.fillStyle = background || '#000000';
+      canvasContext.beginPath();
+      // canvasContext.moveTo.apply(canvasContext, innerBackgroundPosition[0]);
+      // canvasContext.lineTo.apply(canvasContext, innerBackgroundPosition[1]);
+      // canvasContext.lineTo.apply(canvasContext, innerBackgroundPosition[2]);
+      // canvasContext.lineTo.apply(canvasContext, innerBackgroundPosition[3]);
+      canvasContext.fillRect(px, px, w - px - px, h - px - px);
+      // canvasContext.fill();
+    }
+    
     return canvasEl.toDataURL();
   };
 

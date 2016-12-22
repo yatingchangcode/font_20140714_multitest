@@ -323,6 +323,7 @@ class GamesController < ApplicationController
     @range = 1..@visitors.size
 
     @second = params[:second]
+    @counting = params[:counting]
   end
 
   def tvwall_C2
@@ -331,6 +332,7 @@ class GamesController < ApplicationController
     @range = 1..@visitors.size
 
     @second = params[:second]
+    @counting = params[:counting]
   end
 
   def tvwall_C3
@@ -339,6 +341,7 @@ class GamesController < ApplicationController
     @range = 1..@visitors.size
 
     @second = params[:second]
+    @counting = params[:counting]
   end
 
   def tvwall_c_idioms

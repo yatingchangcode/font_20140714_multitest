@@ -156,7 +156,7 @@ View.collectGamers = function(list){
 
 View.registerCanvas = (function(key){
   key = Commons.getCommonGenKey(key, ["A1+console","A2+console","A3+console","B1+console","B2_v1+console"]);
-  key = Commons.getCommonGenKey(key, ["A1+tv","A2+tv","A3+tv","B1+tv","B2_v1+tv"]);
+  key = Commons.getCommonGenKey(key, ["A1+tv","A2+tv","A3+tv","B1+tv","B2_v1+tv","C1+tv"]);
   key = Commons.getCommonGenKey(key, ["B2+console","B2+tv"]);
   key = Commons.getCommonGenKey(key, ["B3+console","B3+tv"]);
   return {
@@ -250,6 +250,20 @@ View.loadSketchSecond = (function(key){
         Commons.sketchSecondIns[id].setSecond(Commons.timeRemaining);
       });
     },
+    "C1+tv":function(){
+      if(!Commons.sketchSecondIns) Commons.sketchSecondIns = {};
+      Commons.gamers.all().forEach(function(id){
+        if(!Commons.sketchSecondIns[id]){
+          //Commons.sketchSecondIns[id] = Processing.getInstanceById('sketchSecond_' + id);
+          Commons.sketchSecondIns[id] = TimeBar.getInstanceById('sketchSecond_' + id, {
+            startColor: "#52daff", endColor: "#ff0c00"
+          });
+        }
+        // var p = $(document.getElementById('sketchSecond_' + id).parentElement);
+        // Commons.sketchSecondIns[id].setSize(p.width(), p.height());
+        Commons.sketchSecondIns[id].setSecond(Commons.timeRemaining);
+      });
+    },
     "mix+tv":function(){
       if(Settings.hasTimeCounter){
         if(Settings.commonWriting){
@@ -294,7 +308,7 @@ View.setGameCurrentInfo = function(){
 View.setDownLocationStyle = (function(key){
   key = Commons.getCommonGenKey(key, [
     "A1+console","A2+console","A3+console","B1+console","B2_v1+console",
-    "A1+tv","A2+tv","A3+tv","B1+tv","B2_v1+tv"
+    "A1+tv","A2+tv","A3+tv","B1+tv","B2_v1+tv","C1+tv"
   ]);
   key = Commons.getCommonGenKey(key, ["B2+console","B2+tv","mix+console","mix+tv"]);
   key = Commons.getCommonGenKey(key, ["B3+console","B3+tv"]);
@@ -320,7 +334,7 @@ View.setDownLocationStyle = (function(key){
 View.setMoveLocationStyle = (function(key){
   key = Commons.getCommonGenKey(key, [
     "A1+console","A2+console","A3+console","B1+console","B2_v1+console",
-    "A1+tv","A2+tv","A3+tv","B1+tv","B2_v1+tv"
+    "A1+tv","A2+tv","A3+tv","B1+tv","B2_v1+tv","C1+tv"
   ]);
   key = Commons.getCommonGenKey(key, ["B2+console","B2+tv","mix+console","mix+tv"]);
   key = Commons.getCommonGenKey(key, ["B3+console","B3+tv"]);
@@ -349,6 +363,7 @@ View.setStartStyle = (function(key){
   key = Commons.getCommonGenKey(key, ["A3+tv","B1+tv","B2_v1+tv","B2_v1+console","B2+tv"]);
   key = Commons.getCommonGenKey(key, ["A1+console","A3+console","B1+console"]);
   key = Commons.getCommonGenKey(key, ["A2+console","mix+console"]);
+  key = Commons.getCommonGenKey(key, ["A2+tv","C1+tv"]);
   return {
     // tv: A3 B1 B2 B2_v1
     // server: B2_v1
@@ -403,6 +418,7 @@ View.setStartStyle = (function(key){
 View.setStopStyle = (function(key){
   key = Commons.getCommonGenKey(key, ["A1+console","A2+console","A3+console","B1+console","B2_v1+console","mix+console"]);
   key = Commons.getCommonGenKey(key, ["A3+tv","B1+tv","B2+tv","B2_v1+tv"]);
+  key = Commons.getCommonGenKey(key, ["A2+tv","C1+tv"]);
   return {
     // server: A1 A2 A3 B1 B2_v1
     "A1+console":function(o){
@@ -457,7 +473,7 @@ View.setStopStyle = (function(key){
 
 View.setSubmitStyle = (function(key){
   key = Commons.getCommonGenKey(key, ["A1+console","A2+console","A3+console","B1+console","B2_v1+console"]);
-  key = Commons.getCommonGenKey(key, ["A1+tv","A2+tv","A3+tv","B1+tv","B2_v1+tv"]);
+  key = Commons.getCommonGenKey(key, ["A1+tv","A2+tv","A3+tv","B1+tv","B2_v1+tv","C1+tv"]);
   key = Commons.getCommonGenKey(key, ["B3+console","B3+tv"]);
   return {
     // server: A1 A2 A3 B1 B2_v1
@@ -511,7 +527,7 @@ View.setCancelSubmitStyle = (function(key){
   // *** server: B2 B3 no action
   // *** tv: B2 B3 no action
   key = Commons.getCommonGenKey(key, ["A1+console","A2+console","A3+console","B1+console","B2_v1+console"]);
-  key = Commons.getCommonGenKey(key, ["A1+tv","A2+tv","A3+tv","B1+tv","B2_v1+tv"]);
+  key = Commons.getCommonGenKey(key, ["A1+tv","A2+tv","A3+tv","B1+tv","B2_v1+tv","C1+tv"]);
   return {
     // server: A1 A2 A3 B1 B2_v1
     "A1+console":function(o){
@@ -550,7 +566,7 @@ View.setCancelSubmitStyle = (function(key){
 View.setClearStyle = (function(key){
   key = Commons.getCommonGenKey(key, [
     "A1+console","A2+console","A3+console","B1+console","B2_v1+console",
-    "A1+tv","A2+tv","A3+tv","B1+tv","B2_v1+tv"
+    "A1+tv","A2+tv","A3+tv","B1+tv","B2_v1+tv","C1+tv"
   ]);
   key = Commons.getCommonGenKey(key, ["B2+console","B2+tv"]);
   key = Commons.getCommonGenKey(key, ["B3+console","B3+tv"]);
@@ -741,7 +757,7 @@ View.setRightStyle = (function(key){
   // *** tv: B3 no action
   key = Commons.getCommonGenKey(key, [
     "A1+console","A2+console","A3+console","B1+console","B2_v1+console",
-    "A1+tv","A2+tv","A3+tv","B1+tv","B2_v1+tv"
+    "A1+tv","A2+tv","A3+tv","B1+tv","B2_v1+tv","C1+tv"
   ]);
   key = Commons.getCommonGenKey(key, ["B2+console","B2+tv","mix+console","mix+tv" ]);
   return {
@@ -763,7 +779,7 @@ View.setRemoveOStyle = (function(key){
   // *** tv: B3 no action
   key = Commons.getCommonGenKey(key, [
     "A1+console","A2+console","A3+console","B1+console","B2_v1+console",
-    "A1+tv","A2+tv","A3+tv","B1+tv","B2_v1+tv"
+    "A1+tv","A2+tv","A3+tv","B1+tv","B2_v1+tv","C1+tv"
   ]);
   key = Commons.getCommonGenKey(key, ["B2+console","B2+tv","mix+console","mix+tv"]);
   return {
@@ -831,6 +847,10 @@ View.setCorrectCountStyle = (function(key){
     "A2+tv":function(o){
       $("#no_correct_" + o.user_id).css('opacity', 1);
       $("#no_correct_" + o.user_id).text(o.count).css('opacity', 1).css('color', 'black');
+    },
+    "C1+tv":function(o){
+      $("#no_correct_" + o.user_id).css('opacity', 1);
+      $("#no_correct_" + o.user_id).text(o.count).css('opacity', 1).css('color', '#feeb09');
     },
     // tv: B1
     "B1+tv":function(o){
@@ -1002,6 +1022,11 @@ View.setUserOutStyle = (function(key){
       $('#black_' + o.user_id).show();
       Commons.sketchSecondIns[o.user_id].clearBar();
     },
+    "C1+tv":function(o){
+      $('#out_' + o.user_id).show();
+      $('#black_' + o.user_id).show();
+      Commons.sketchSecondIns[o.user_id].clearBar();
+    },
     "mix+tv":function(o){
       $('#out_' + o.user_id).show();
       $('#black_' + o.user_id).show();
@@ -1014,6 +1039,7 @@ View.setUserOutStyle = (function(key){
 View.setResetStyle = (function(key){
   // *** server: A3 B1 B2_v1 B2 B3 no action
   // *** tv: A3 B1 B2_v1 B2 B3 no action
+  key = Commons.getCommonGenKey(key, ["A2+tv","C1+tv"]);
   return {
     // server: A1
     "A1+console":function(o){
@@ -1222,7 +1248,7 @@ View.setContinueWriteStyle = (function(key){
 
 
 View.setZoomStyle = (function(key){
-  key = Commons.getCommonGenKey(key, ["A1+tv", "A2+tv", "A3+tv", "B1+tv", "B2_v1+tv"]);
+  key = Commons.getCommonGenKey(key, ["A1+tv", "A2+tv", "A3+tv", "B1+tv", "B2_v1+tv", "C1+tv"]);
   key = Commons.getCommonGenKey(key, ["A1+console","A2+console","A3+console","B1+console","B2_v1+console","mix+console"]);
   return {
     "A1+tv":function(o){
@@ -1262,7 +1288,7 @@ View.setZoomStyle = (function(key){
 })(Settings.genKey);
 
 View.setUnZoomStyle = (function(key){
-  key = Commons.getCommonGenKey(key, ["A1+tv", "A2+tv", "A3+tv", "B1+tv", "B2_v1+tv"]);
+  key = Commons.getCommonGenKey(key, ["A1+tv", "A2+tv", "A3+tv", "B1+tv", "B2_v1+tv","C1+tv"]);
   key = Commons.getCommonGenKey(key, ["A1+console","A2+console","A3+console","B1+console","B2_v1+console","mix+console"]);
   return {
     "A1+tv":function(o){

@@ -11,8 +11,10 @@
   @video_position = "80px"
   @video_position_left = "0px"
   @video_zoom = "100%"
+  @grid_border = 5
   case @visitors.length
   when 2
+    @grid_border = 7
     @canvas_scale = 0.243
     @canvas_border = 15
     @split_width = "10%"
@@ -21,10 +23,11 @@
     @space_right = "24%"
     @timebar_height = "16px"
   when 3
+    @grid_border = 7
     @canvas_scale = 0.217
     @canvas_border = 13
-    @space_left = "18%"
-    @space_right = "17%"
+    @split_width = "14%"
+    @space_left = "14%"
     @timebar_height = "15px"
   when 4
     @font_formula = "w / 3 * 16.2 / 15"
@@ -38,33 +41,45 @@
   when 6
     @font_formula = "w / 3 * 16 / 15"
     @bar_formula = "(w + 3) / 2"
-    @canvas_scale = 0.141
+    @canvas_scale = 0.121
     @canvas_border = 7
-    @space_left = "9%"
-    @space_right = "8%"
-    @split_width = "3%"
+    @grid_border = 6
+    @space_left = "12%"
+    @split_width = "2%"
     @timebar_height = "14px"
     @video_position = "130px"
   end
+  @grid_style = "border-radius:" + (@grid_border * 7 / 5).to_s + "px;box-shadow:0px 0px " + (@grid_border * 3).to_s + "px " + @grid_border.to_s + "px rgba(75,217,255,0.7),inset 0px 0px " + @grid_border.to_s + "px " + (@grid_border * 3 / 5).to_s + "px rgba(75,217,255,0.6);"
+  @grid_bor_g_style = "box-shadow:0px 0px " + (@grid_border * 3).to_s + "px " + @grid_border.to_s + "px rgba(255,0,12,0.7),inset 0px 0px " + @grid_border.to_s + "px " + (@grid_border * 3 / 5).to_s + "px rgba(255,0,12,0.6);"
 %>
 <% content_for :stylesheets do %>
-<%= stylesheet_link_tag 'reset','tvwall' %>
+<%= stylesheet_link_tag 'reset','tvwall-new' %>
 <style type="text/css">
 p{
   padding-top:1.25%;
 }
 
 body,.container{
-  background-color: #000000;
+  /*background-color: #000000;*/
   width: 100%;
   height:100%;
-  //width:1920px;
-  //height:1080px;
   overflow:hidden;
+  /*width:1920px;
+  height:1080px;*/
 }
+.Content .box_a .Grid{ 
+  border:<%= @grid_border %>px solid #fff; 
+  <%= @grid_style %>
+}
+.Content .box_a .bor_g{ 
+  border:<%= @grid_border %>px solid #ff000c; 
+  <%= @grid_bor_g_style %>
+}
+
 </style>
 <% end %>
 
+<% if @visitors.length < 6 %>
 <div class="Content"> 
   <table width="100%" border="0" cellspacing="0" cellpadding="0">
     <tr>
@@ -89,7 +104,11 @@ body,.container{
                   <div id="user_photo_<%= visitor.number %>" class="photo">
                     <%= render_gamer_photo(visitor,"medium",'100%','100%',"") %>
                   </div>
+                  <% if @counting == '1' %>
+                  <div class="nameBox br_line01">
+                  <% else %>
                   <div class="nameBox br_line02">
+                  <% end %>
                     <% if(visitor.title) %>
                     <p class="name"><%= visitor.title %></p>
                     <% else %>
@@ -97,6 +116,10 @@ body,.container{
                     <% end %>
                     <p class="name"><%= visitor.name %></p>
                   </div>
+                  <% if @counting == '1' %>
+                  <div class="answer10" style="padding:15px 10px 10px 0; text-align: center;">
+                  <span id="no_correct_<%= visitor.number %>" width="100%" class="label" style="padding:.2em;opacity:0;font-size:3em;">0</span></div>
+                  <% end %>
                   <br class="CLEAR" />
                 </div>
               </td>
@@ -106,7 +129,6 @@ body,.container{
                 <div id="grid_<%= visitor.number %>" class="Grid">
                   <canvas id="origin_<%= visitor.number %>" width="100%" ></canvas>
                   <div id="metal_<%= visitor.number %>" class="inner_metal"></div>
-                  <div id="glow_<%= visitor.number %>" class="inner_glow"><img src="/assets/tvwall/img_Grid_b_green.png" width="100%"/></div>
                   <div id="yes_img_<%= visitor.number %>" class="correct"><img src="/assets/tvwall/red_ring.png" width="100%"/></div>
                 </div>
               </td>
@@ -137,19 +159,104 @@ body,.container{
     <td width="<%= @split_width %>"></td>
     <% end %>
 
-    <td width="<%= @space_right %>"></td>
+    <!-- <td width="<%= @space_right %>"></td> -->
   </tr>
-
-  <tr>
-      <td colspan="15" height="1%">
-        <video width="<%= @video_zoom %>" autoplay="autoplay" loop="loop" style="padding-top:<%= @video_position %>;margin-left:<%= @video_position_left %>;">
-          <source src="/assets/cycle1111ok.mp4" type="video/mp4"></source>
-        </video>
-      </td>
-
-    </tr>
 </table>
 </div>
+
+<% else %>
+
+<div class="Content"> 
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td colspan="11" height="<%= @space_top %>">&nbsp;</td>
+    </tr>
+
+    <tr>
+
+      <td width="<%= @space_left %>"></td>
+
+      <% @visitors.each_with_index do |visitor, index| %>
+      <td>
+        <div class="box_a">
+          <div id="out_<%= visitor.number %>" class="out">
+            <img src="/assets/tvwall/out.png" width="100%"/>
+          </div>
+          <div id="black_<%= visitor.number %>" class="black"></div>
+          <table width="100%" border="0" cellspacing="0" cellpadding="0">
+            <tr>
+              <td>
+                <div class="TopBpx">
+                  <div id="user_photo_<%= visitor.number %>" class="photo">
+                    <%= render_gamer_photo(visitor,"medium",'100%','100%',"") %>
+                  </div>
+                  <% if @counting == '1' %>
+                  <div class="nameBox br_line01">
+                  <% else %>
+                  <div class="nameBox br_line02">
+                  <% end %>
+                    <% if(visitor.title) %>
+                    <p class="name"><%= visitor.title %></p>
+                    <% else %>
+                    <p class="name">&nbsp;</p>
+                    <% end %>
+                    <p class="name"><%= visitor.name %></p>
+                  </div>
+                  <% if @counting == '1' %>
+                  <div class="answer10" style="padding:15px 10px 10px 0; text-align: center;">
+                  <span id="no_correct_<%= visitor.number %>" width="100%" class="label" style="padding:.2em;opacity:0;font-size:3em;">0</span></div>
+                  <% end %>
+                  <br class="CLEAR" />
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div id="grid_<%= visitor.number %>" class="Grid">
+                  <canvas id="origin_<%= visitor.number %>" width="100%" ></canvas>
+                  <div id="metal_<%= visitor.number %>" class="inner_metal"></div>
+                  <div id="yes_img_<%= visitor.number %>" class="correct"><img src="/assets/tvwall/red_ring.png" width="100%"/></div>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                  <tr>
+                    <td width="10%">&nbsp;</td>
+                    <td>
+                      <!-- <div class="HP_bar" style="height:<%= @timebar_height %>;">
+                        <canvas id="sketchSecond_<%= visitor.number %>" data-processing-sources="/assets/timebar.pde"></canvas>
+                      </div> -->
+                      <div class="HP_bar" style="height:<%= @timebar_height %>;"> 
+                        <div id="sketchSecond_<%= visitor.number %>" class="HP_bar_inner" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%;">
+                        </div>
+                      </div>
+                    </td>
+                    <td width="10%">&nbsp;</td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+
+          </table>
+        </div>
+      </td>
+
+      <% if(index % 2 == 0) %>
+      <td width="<%= @split_width %>"></td>
+      <% else %>
+      <td width="<%= @space_left %>"></td>
+      <% end %>
+
+    <% end %>
+
+    <!-- <td width="<%= @space_right %>"></td> -->
+  </tr>
+</table>
+</div>
+<% end %>
+
 <div class="Zoom">
   <div class="Zoom-inner">
     <canvas id="_zoomTmp" width="100%" ></canvas>
@@ -163,8 +270,9 @@ document.write('<script src="//'+ location.hostname + ':5001/socket.io/socket.io
 </script>
 <script>
 // cache stage name for server1-tvwall.js
-window.stageName = 'A2';
+window.stageName = 'C1';
 window.pageType = "tv";  // type: console, client, tv
+window.counting = <%= @counting == '1' %>;
 window.hasCounter = true;
 window.timeRemaining = <%= @second %>;
 
@@ -184,22 +292,20 @@ window.borderWidth = <%= @canvas_border %>;
 window.responsiveMethod = function(){
   var jqGridEl = $('[id^=grid_]');
   var w = $(window).width() * <%= @canvas_scale %>;
+  // var w = $(".container").width() * <%= @canvas_scale %>;
   var zoomEl = $('.Zoom');
   var zoomInnerEl = $('.Zoom-inner');
   var zoomSize = $(window).height() * 0.75;
   var zoomScale = zoomSize / w;
+  var borderWidth = <%= @grid_border %> * zoomScale;
   jqGridEl.height(w);
   jqGridEl.width(w);
   zoomEl.width(zoomSize).height(zoomSize);
   zoomInnerEl.width(zoomSize).height(zoomSize);
 
-  jqGridEl.css("background-image", ["url(",")"].join(
-    Commons.generateBorderBase64(jqGridEl, window.borderWidth, ['0 #ffffff', '0.5 #aaaaaa', '1 #aaaaaa'])
-  )).css("padding", window.borderWidth);
-
-  zoomInnerEl.css("background-image", ["url(",")"].join(
-    Commons.generateBorderBase64(zoomEl, window.borderWidth * zoomScale, ['0 #ffffff', '0.5 #aaaaaa', '1 #aaaaaa'] )
-  )).css("padding", window.borderWidth * zoomScale);
+  zoomInnerEl.children().css("border", borderWidth + "px solid #fff")
+    .css("border-radius", (borderWidth * 7 / 5) + "px")
+    .css("box-shadow", "0px 0px " + (borderWidth * 3) + "px " + borderWidth + "px rgba(75,217,255,0.7),inset 0px 0px " + borderWidth + "px " + (borderWidth * 3 / 5) + "px rgba(75,217,255,0.6)");
 };
 
 window.tuneLinePosition = function(){
@@ -223,10 +329,10 @@ $(document).ready(function() {
     width: 500,
     height: 500,
     lineWidth: 13,
-    lineColor: '#ececec',
+    lineColor: '#f0f0f0',
     targetZoomScale: 0.2,
     responsiveByParent: true,
-    backgroundLine: '7px rgba(255,0,0,0.6)'
+    backgroundLine: '7px rgba(158,173,188,0.6)'
     //backgroundImage: '/assets/tvwall/img_Grid_b.gif'
   });
 
