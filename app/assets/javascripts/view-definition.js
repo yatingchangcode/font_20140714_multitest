@@ -158,7 +158,7 @@ View.registerCanvas = (function(key){
   key = Commons.getCommonGenKey(key, ["A1+console","A2+console","A3+console","B1+console","B2_v1+console"]);
   key = Commons.getCommonGenKey(key, ["A1+tv","A2+tv","A3+tv","B1+tv","B2_v1+tv","C1+tv"]);
   key = Commons.getCommonGenKey(key, ["B2+console","B2+tv"]);
-  key = Commons.getCommonGenKey(key, ["B3+console","B3+tv"]);
+  key = Commons.getCommonGenKey(key, ["B3+console","B3+tv","C4+tv"]);
   return {
     "A1+console":function(list, prefix){
       prefix = prefix || 'origin_';
@@ -238,6 +238,14 @@ View.loadSketchSecond = (function(key){
       // Commons.sketchSecondIns.setSize(p.width(), p.height());
       Commons.sketchSecondIns.setSecond(Commons.timeRemaining);
     },
+    "C4+tv":function(){
+      if(!Commons.sketchSecondIns){
+        Commons.sketchSecondIns = TimeBar.getInstanceById('sketchSecond', {
+          startColor: "#52daff", endColor: "#ff0c00"
+        });
+      }
+      Commons.sketchSecondIns.setSecond(Commons.timeRemaining);
+    },
     "A2+tv":function(){
       if(!Commons.sketchSecondIns) Commons.sketchSecondIns = {};
       Commons.gamers.all().forEach(function(id){
@@ -311,7 +319,7 @@ View.setDownLocationStyle = (function(key){
     "A1+tv","A2+tv","A3+tv","B1+tv","B2_v1+tv","C1+tv"
   ]);
   key = Commons.getCommonGenKey(key, ["B2+console","B2+tv","mix+console","mix+tv"]);
-  key = Commons.getCommonGenKey(key, ["B3+console","B3+tv"]);
+  key = Commons.getCommonGenKey(key, ["B3+console","B3+tv","C4+tv"]);
   return {
     // server: A1 A2 A3 B1 B2_v1
     // tv: A1 A2 A3 B1 B2_v1
@@ -337,7 +345,7 @@ View.setMoveLocationStyle = (function(key){
     "A1+tv","A2+tv","A3+tv","B1+tv","B2_v1+tv","C1+tv"
   ]);
   key = Commons.getCommonGenKey(key, ["B2+console","B2+tv","mix+console","mix+tv"]);
-  key = Commons.getCommonGenKey(key, ["B3+console","B3+tv"]);
+  key = Commons.getCommonGenKey(key, ["B3+console","B3+tv","C4+tv"]);
   return {
     // server: A1 A2 A3 B1 B2_v1
     // tv: A1 A2 A3 B1 B2_v1
@@ -364,6 +372,7 @@ View.setStartStyle = (function(key){
   key = Commons.getCommonGenKey(key, ["A1+console","A3+console","B1+console"]);
   key = Commons.getCommonGenKey(key, ["A2+console","mix+console"]);
   key = Commons.getCommonGenKey(key, ["A2+tv","C1+tv"]);
+  key = Commons.getCommonGenKey(key, ["B3+tv","C4+tv"]);
   return {
     // tv: A3 B1 B2 B2_v1
     // server: B2_v1
@@ -458,6 +467,15 @@ View.setStopStyle = (function(key){
         }
       }
     },
+    "C4+tv": function(o){
+      // $('#user_photo_' + o.user_id).removeClass("green");
+      Commons.sketchSecondIns.doStop();
+      for(var x = 1; x <= 8; x++){
+        for(var y = 1; y <= 12; y++){
+          $(document.getElementById('grid_' + x + '_' + y)).removeClass("bor_g");
+        }
+      }
+    },
     "mix+tv":function(o){
       $('#user_photo_' + o.user_id).removeClass("green");
       if(Settings.hasTimeCounter){
@@ -489,6 +507,9 @@ View.setSubmitStyle = (function(key){
     // server: B3
     "B3+console":function(o){
       $(document.getElementById('glow_' + o.block.row + '_' + o.block.column)).show();
+    },
+    "C4+tv":function(o){
+      $(document.getElementById('grid_' + o.block.row + '_' + o.block.column)).addClass("bor_g");
     },
     "B2+console":function(o){
       $('[name=word_' + o.cid + ']').css("background-color", "#060");
@@ -569,7 +590,7 @@ View.setClearStyle = (function(key){
     "A1+tv","A2+tv","A3+tv","B1+tv","B2_v1+tv","C1+tv"
   ]);
   key = Commons.getCommonGenKey(key, ["B2+console","B2+tv"]);
-  key = Commons.getCommonGenKey(key, ["B3+console","B3+tv"]);
+  key = Commons.getCommonGenKey(key, ["B3+console","B3+tv","C4+tv"]);
   key = Commons.getCommonGenKey(key, ["A1+client","B2+client","B3+client"]);
   return {
     // server: A1 A2 A3 B1 B2_v1
@@ -1148,6 +1169,9 @@ View.setMoveBlockStyle = (function(key){
       // set color
       CM('origin_' + o.block.row + '_' + o.block.column).color(o.color);
     },
+    "C4+tv":function(o){
+      $('#grid_' + o.block.row + '_' + o.block.column).removeClass("bor_g");
+    },
     // tv: B2
     "B2+tv":function(o){
       $('#glow_' + o.cid).hide();
@@ -1183,6 +1207,15 @@ View.setSendTextStyle = (function(key){
       context.font = (w * 13 / 15) + "px Sans-serif";
       context.fillText(o.text, w / 15, w * 12 / 15);
     },
+    "C4+tv":function(o){
+      var testCan = document.getElementById('origin_'+ o.block.row +'_' + o.block.column);
+      var w = $(testCan).width();
+      var context = testCan.getContext("2d");
+      context.fillStyle = o.color || "#f0f0f0";
+      //context.font = "bold " + (w * 13 / 15) + "px 標楷體";
+      context.font = (w * 13 / 15) + "px Sans-serif";
+      context.fillText(o.text, w / 15, w * 12 / 15);
+    },
     "mix+console":function(o){
       var r = o.block.row,
           c = o.block.column;
@@ -1207,7 +1240,7 @@ View.setEndRoundStyle = Commons.emptyFn;
 View.setRewriteStyle = (function(key){
   // *** tv: A1 A2 A3 B1 B2_v1 B2 no action
   // *** server: A1 A2 A3 B1 B2_v1 B2 no action
-  key = Commons.getCommonGenKey(key, ["B3+console","B3+tv"]);
+  key = Commons.getCommonGenKey(key, ["B3+console","B3+tv","C4+tv"]);
   return {
     // server: B3
     // tv: B3
@@ -1234,6 +1267,7 @@ View.setRewriteStyle = (function(key){
 View.setContinueWriteStyle = (function(key){
   // *** tv: A1 A2 A3 B1 B2_v1 B2 no action
   // *** server: A1 A2 A3 B1 B2_v1 B2 no action
+  key = Commons.getCommonGenKey(key, ["B3+tv","C4+tv"]);
   return {
     "B3+console":function(o){
       $('#user_photo_' + o.user_id).addClass("green");

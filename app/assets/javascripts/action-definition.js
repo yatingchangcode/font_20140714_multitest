@@ -36,7 +36,7 @@ Action.onUpLocation = Commons.emptyFn;
 Action.onStart = (function(key){
   // *** server: A1 A3 B1 B2 B2_v1 no action
   // *** tv: A1 B2 B2_v1 no action
-  key = Commons.getCommonGenKey(key, ["A2+console","B3+console","A2+tv","B3+tv"]);
+  key = Commons.getCommonGenKey(key, ["A2+console","B3+console","A2+tv","B3+tv","C4+tv"]);
   key = Commons.getCommonGenKey(key, ["A3+tv","B1+tv","mix+tv"]);
   return {
     // server: A2 B3
@@ -285,7 +285,7 @@ Action.onRewrite = Commons.emptyFn;
 Action.onContinueWrite = (function(key){
   // *** tv: A1 A2 A3 B1 B2_v1 B2 no action
   // *** server: A1 A2 A3 B1 B2_v1 B2 no action
-  key = Commons.getCommonGenKey(key, ["B3+console", "B3+tv"]);
+  key = Commons.getCommonGenKey(key, ["B3+console", "B3+tv","C4+tv"]);
   return {
     // server: B3
     // tv: B3

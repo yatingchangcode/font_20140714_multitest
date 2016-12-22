@@ -72,9 +72,7 @@ body{
 .Content .box_a .Grid .correct,
 .Content .box_a .GridMix .correct,
 .Content .box_a .Grid-Kino .correct{ width:32%; position:absolute; right:1%; bottom:2%; z-index:50;display:none;}
-/*.Content .box_a .bor_g{ 
-	border:5px solid #ff000c; box-shadow:0px 0px 15px 5px rgba(255,0,12,0.7),inset 0px 0px 5px 3px rgba(255,0,12,0.6);
-}*/
+
 .Content .box_a .bor_r{ //border:0.2vw solid #ff001c;}
 .Content .box_a .GridMix .inner_glow,
 .Content .box_a .Grid .inner_glow{ width:100%; height:100%; position:absolute; top:0px; left:0px;
@@ -151,18 +149,28 @@ body{
 .HP_bar .red{ background-color:#ff0c00;}
 .HP_bar .yello{ background-color:#fcff00;}
 
-table.Chessboard p{ color:#ddced0; text-align:center;}
+table.Chessboard p{ color:#ff0c00; text-align:center;}
 
 .Content .box_b .photo{ width:68%; margin:0 auto;}
 .Content .box_b .green{ box-shadow:0px 0px 20px 8px rgba(34,255,34,1);}
 .Content .box_b .red{ box-shadow:0px 0px 20px 8px rgba(255,34,34,1);}
 .Content .box_b p.name{ color:#FFF; text-align:center;}
-
+/*
 .Content table.Chessboard .Grid{ width:100%; position:relative; border:0.2vw solid #000000; margin:0 auto; background-color: rgb(60,60,60);}
 .Content table.Chessboard .Grid .write{ width:90%; position:absolute; left:2%; top:2%; z-index:40;}
 .Content table.Chessboard .Grid .inner_glow{ width:100%; position:absolute; top:0px; left:0px;display:none;
 	box-shadow:0px 0px 15px 10px rgba(55, 197, 78, 1) inset;
 }
+*/
+.Content table.Chessboard .Grid{ width:97%; position:relative; border:5px solid #fff; border-width:1px 2px 1px 2px; margin:0 auto;box-shadow:0px 0px 3px 0px rgba(75,217,255,0.7),inset 0px 0px 3px 2px rgba(75,217,255,0.6);}
+.Content table.Chessboard .Grid .write{ width:90%; position:absolute; left:2%; top:2%; z-index:40;}
+.Content table.Chessboard .Grid .inner_glow{ width:97%; position:absolute; top:0px; left:0px;}
+.Content table.Chessboard .Grid:hover img{ opacity:0.5;}
+
+.Content table.Chessboard .bor_g{ 
+	border-color:#ff000c; box-shadow:0px 0px 3px 0px rgba(255,0,12,0.7),inset 0px 0px 3px 2px rgba(255,0,12,0.6);
+}
+
 .Content .color-selector{
 	width:40px;
 	height:40px;
