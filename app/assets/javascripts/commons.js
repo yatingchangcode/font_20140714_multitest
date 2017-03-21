@@ -281,6 +281,48 @@
     return canvasEl.toDataURL();
   };
 
+  var generateAlphaVideo = function(){
+    var cycleOutputCanvas = document.getElementById('cycleOutput'),
+        cycleOutput = cycleOutputCanvas.getContext('2d'),
+        cycleBufferCanvas = document.getElementById('cycleBuffer'),
+        cycleBuffer = cycleBufferCanvas.getContext('2d'),
+        cycleVideo = document.getElementById('cycleVideo');
+    // 0.156  
+    var wrap = document.getElementById('cycleWrap'),
+        width = Math.ceil(wrap.clientWidth || 0),
+        height = Math.ceil(wrap.clientWidth * 0.156),
+        interval;
+      
+    cycleBufferCanvas.width = cycleOutputCanvas.width = width;
+    cycleBufferCanvas.height = cycleOutputCanvas.height = height;
+    
+    function processFrame() {
+      cycleBuffer.drawImage(cycleVideo, 0, 0, width, height);
+      
+      // this can be done without alphaData, except in Firefox which doesn't like it when image is bigger than the canvas
+      var image = cycleBuffer.getImageData(0, 0, width, height),
+        imageData = image.data,
+        // alphaData = cycleBuffer.getImageData(0, height, width, height).data;
+        alphaData = cycleBuffer.getImageData(0, 0, width, height).data;
+      
+      for (var i = 3, len = imageData.length; i < len; i = i + 4) {
+        imageData[i] = alphaData[i-1];
+      }
+      
+      cycleOutput.putImageData(image, 0, 0, 0, 0, width, height);
+    }
+    
+    cycleVideo.addEventListener('play', function() {
+      clearInterval(interval);
+      interval = setInterval(processFrame, 40)
+    }, false);
+    
+    // Firefox doesn't support looping video, so we emulate it this way
+    cycleVideo.addEventListener('ended', function() {
+      cycleVideo.play();
+    }, false);
+  };
+
   var getCommonGenKey = function(key, list){
     if(Array.isArray(list) && list.length && ~list.indexOf(key)){
       return list[0];
@@ -300,6 +342,7 @@
   scope.Commons.indexOfBlock = indexOfBlock;
   scope.Commons.generateBorderBase64 = generateBorderBase64;
   scope.Commons.getCommonGenKey = getCommonGenKey;
+  scope.Commons.generateAlphaVideo = generateAlphaVideo;
   
   var genKey = Settings.genKey;
   

@@ -328,17 +328,19 @@ body,.container{
 
     <!-- <td width="<%= @space_right %>"></td> -->
   </tr>
-
-  <tr>
-    <td colspan="<%= @td_colspan %>" height="1%">
-      <video width="100%" autoplay="autoplay" loop="loop" style="padding-top:<%= @video_position %>;">
-        <source src="/assets/cycle1111ok.mp4" type="video/mp4"></source>
-      </video>
-    </td>
-  </tr>
+  
 </table>
 </div>
 <% end %>
+
+<div id="cycleWrap" style="width: 100%; z-index: 100; position: absolute; bottom: 0px;">
+  <video id="cycleVideo" width="100%" autoplay="autoplay" style="display: none;">
+    <source src="/assets/cycle1111ok.mp4" type="video/mp4">
+    <source src="/assets/cycle1111ok.webm" type="video/webm">
+  </video>
+  <canvas id="cycleBuffer" style="display: none;"></canvas>
+  <canvas id="cycleOutput"></canvas>
+</div>
 
 <div class="Zoom">
   <div class="Zoom-inner">
@@ -371,6 +373,8 @@ window.borderWidth = <%= @canvas_border %>;
 
 
 <script>
+
+window.Commons.generateAlphaVideo();
 
 window.responsiveMethod = function(){
   var jqGridEl = $('[id^=grid_]');

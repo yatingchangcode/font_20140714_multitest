@@ -12,6 +12,8 @@
   @video_position_left = "0px"
   @video_zoom = "100%"
   @grid_border = 5
+  @td_colspan = 11
+
   case @visitors.length
   when 2
     @grid_border = 7
@@ -63,6 +65,7 @@ body,.container{
   width: 100%;
   height:100%;
   overflow:hidden;
+
   /*width:1920px;
   height:1080px;*/
 }
@@ -160,7 +163,17 @@ body,.container{
 
     <!-- <td width="<%= @space_right %>"></td> -->
   </tr>
+
 </table>
+</div>
+
+<div id="cycleWrap" style="width: 100%; z-index: 100; position: absolute; bottom: 0px;">
+  <video id="cycleVideo" width="100%" autoplay="autoplay" style="display: none;">
+    <source src="/assets/cycle1111ok.mp4" type="video/mp4">
+    <source src="/assets/cycle1111ok.webm" type="video/webm">
+  </video>
+  <canvas id="cycleBuffer" style="display: none;"></canvas>
+  <canvas id="cycleOutput"></canvas>
 </div>
 
 <div class="Zoom">
@@ -194,6 +207,8 @@ window.borderWidth = <%= @canvas_border %>;
 
 
 <script>
+
+window.Commons.generateAlphaVideo();
 
 window.responsiveMethod = function(){
   var jqGridEl = $('[id^=grid_]');
