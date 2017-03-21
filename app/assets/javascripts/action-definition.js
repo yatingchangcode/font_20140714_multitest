@@ -179,7 +179,7 @@ Action.onRemoveO = Commons.emptyFn;
 
 Action.onSetCorrectCount = (function(key){
   // *** server: all stages are no action
-  key = Commons.getCommonGenKey(key, ["A1+tv","B1+tv","mix+tv"]);
+  key = Commons.getCommonGenKey(key, ["A1+tv","B1+tv","mix+tv","C1+tv"]);
   key = Commons.getCommonGenKey(key, ["A3+tv","B2+tv"]);
   return {
     // tv: A1 B1

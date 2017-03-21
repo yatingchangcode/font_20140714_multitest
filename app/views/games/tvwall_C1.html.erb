@@ -12,6 +12,7 @@
   @video_position_left = "0px"
   @video_zoom = "100%"
   @grid_border = 5
+  @td_colspan = 11
   case @visitors.length
   when 2
     @grid_border = 7
@@ -48,6 +49,18 @@
     @split_width = "2%"
     @timebar_height = "14px"
     @video_position = "130px"
+  when 8
+    @space_top = "120"
+    @font_formula = "w / 3 * 16 / 15"
+    @bar_formula = "(w + 3) / 2"
+    @canvas_scale = 0.121
+    @canvas_border = 7
+    @grid_border = 6
+    @space_left = "10%"
+    @space_right = "8%"
+    @split_width = "6%"
+    @timebar_height = "14px"
+    @video_position = "100px"
   end
   @grid_style = "border-radius:" + (@grid_border * 7 / 5).to_s + "px;box-shadow:0px 0px " + (@grid_border * 3).to_s + "px " + @grid_border.to_s + "px rgba(75,217,255,0.7),inset 0px 0px " + @grid_border.to_s + "px " + (@grid_border * 3 / 5).to_s + "px rgba(75,217,255,0.6);"
   @grid_bor_g_style = "box-shadow:0px 0px " + (@grid_border * 3).to_s + "px " + @grid_border.to_s + "px rgba(255,0,12,0.7),inset 0px 0px " + @grid_border.to_s + "px " + (@grid_border * 3 / 5).to_s + "px rgba(255,0,12,0.6);"
@@ -64,7 +77,8 @@ body,.container{
   width: 100%;
   height:100%;
   overflow:hidden;
-  /*width:1920px;
+
+/*  width:1920px;
   height:1080px;*/
 }
 .Content .box_a .Grid{ 
@@ -79,11 +93,166 @@ body,.container{
 </style>
 <% end %>
 
-<% if @visitors.length < 6 %>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td colspan="3" height="<%= @space_top %>">&nbsp;</td>
+  </tr>
+  <tr>
+    <td width="32%">&nbsp;</td>
+    <td>
+    <!-- <div class="HP_bar" style="height:<%= @timebar_height %>;"><canvas id="sketchSecond" data-processing-sources="/assets/timebar.pde"></canvas></div></div> -->
+    <div class="HP_bar" style="height:<%= @timebar_height %>;"> 
+      <div id="sketchSecond" class="HP_bar_inner" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%;">
+      </div>
+    </div>
+    </td>
+    <td width="33%">&nbsp;</td>
+  </tr>
+  
+</table>
+
+<% if @visitors.length <= 8 %>
 <div class="Content"> 
   <table width="100%" border="0" cellspacing="0" cellpadding="0">
     <tr>
-      <td colspan="11" height="<%= @space_top %>">&nbsp;</td>
+      <td colspan="<%= @td_colspan %>" height="<%= @bar_spacing %>">&nbsp;</td>
+    </tr>
+    
+    <tr>
+      <td width="<%= @space_left %>"></td>
+      <% @visitors.each_with_index do |visitor, index| %>
+        <% if(index % 2 == 0) %>
+        <td>
+          <div class="box_a">
+            <div id="out_<%= visitor.number %>" class="out">
+              <img src="/assets/tvwall/out.png" width="100%"/>
+            </div>
+            <div id="black_<%= visitor.number %>" class="black"></div>
+            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+              <tr>
+                <td>
+                  <div class="TopBpx">
+                    <div id="user_photo_<%= visitor.number %>" class="photo">
+                      <%= render_gamer_photo(visitor,"medium",'100%','100%',"") %>
+                    </div>
+                    <% if @counting == '1' %>
+                    <div class="nameBox br_line01">
+                    <% else %>
+                    <div class="nameBox br_line02">
+                    <% end %>
+                      <p class="name"><%= visitor.title || '　' %></p>
+                      <p class="name"><%= visitor.name %></p>
+                    </div>
+                    <% if @counting == '1' %>
+                    <div class="answer10" style="padding:15px 10px 10px 0; text-align: center;">
+                    <span id="no_correct_<%= visitor.number %>" width="100%" class="label" style="padding:.2em;opacity:0;font-size:3em;">0</span></div>
+                    <% end %>
+                    <br class="CLEAR" />
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <div id="grid_<%= visitor.number %>" class="Grid">
+                    <canvas id="origin_<%= visitor.number %>" width="100%" ></canvas>
+                    <div id="metal_<%= visitor.number %>" class="inner_metal"></div>
+                    <div id="glow_<%= visitor.number %>" class="inner_glow"></div>
+                    <div id="yes_img_<%= visitor.number %>" class="correct"><img src="/assets/tvwall/red_ring.png" width="100%"/></div>
+                  </div>
+                </td>
+              </tr>
+            </table>
+          </div>
+        </td>
+        
+        <td width="<%= @split_width %>"></td>
+        <% end %>
+      <% end %>
+
+      <td width="<%= @space_right %>"></td>
+    </tr>
+    
+    <tr>
+      <td colspan="<%= @td_colspan %>" height="<%= @td_split_height %>">&nbsp;</td>
+    </tr>
+  </table>
+
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td width="<%= @space_right %>"></td>
+      
+      <% @visitors.each_with_index do |visitor, index| %>
+        <% if(index % 2 == 1) %>
+        <td width="<%= @split_width %>"></td>
+        <td>
+          <div class="box_a">
+            <div id="out_<%= visitor.number %>" class="out">
+              <img src="/assets/tvwall/out.png" width="100%"/>
+            </div>
+            <div id="black_<%= visitor.number %>" class="black"></div>
+            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+              <tr>
+                <td>
+                  <div class="TopBpx">
+                    <div id="user_photo_<%= visitor.number %>" class="photo">
+                      <%= render_gamer_photo(visitor,"medium",'100%','100%',"") %>
+                    </div>
+                    <% if @counting == '1' %>
+                    <div class="nameBox br_line01">
+                    <% else %>
+                    <div class="nameBox br_line02">
+                    <% end %>
+                      <% if(visitor.title) %>
+                      <p class="name"><%= visitor.title %></p>
+                      <% else %>
+                      <p class="name">&nbsp;</p>
+                      <% end %>
+                      <p class="name"><%= visitor.name %></p>
+                    </div>
+                    <% if @counting == '1' %>
+                    <div class="answer10" style="padding:15px 10px 10px 0; text-align: center;">
+                    <span id="no_correct_<%= visitor.number %>" width="100%" class="label" style="padding:.2em;opacity:0;font-size:3em;">0</span></div>
+                    <% end %>
+                    <br class="CLEAR" />
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <div id="grid_<%= visitor.number %>" class="Grid">
+                    <canvas id="origin_<%= visitor.number %>" width="100%" ></canvas>
+                    <div id="metal_<%= visitor.number %>" class="inner_metal"></div>
+                    <div id="glow_<%= visitor.number %>" class="inner_glow"></div>
+                    <div id="yes_img_<%= visitor.number %>" class="correct"><img src="/assets/tvwall/red_ring.png" width="100%"/></div>
+                  </div>
+                </td>
+              </tr>
+            </table>
+          </div>
+        </td>
+        <% end %>
+      <% end %>
+      <td width="<%= @space_left %>"></td>
+    </tr>
+    
+    <tr>
+      <td colspan="<%= @td_colspan %>" height="1%">
+        <video width="100%" autoplay="autoplay" loop="loop" style="padding-top:<%= @video_position %>;">
+          <source src="/assets/cycle1111ok.mp4" type="video/mp4"></source>
+        </video>
+      </td>
+    </tr>
+    
+  </table>
+</div>
+
+<% else %>
+
+<div class="Content"> 
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td colspan="<%= @td_colspan %>" height="<%= @bar_spacing %>">&nbsp;</td>
     </tr>
 
     <tr>
@@ -139,13 +308,11 @@ body,.container{
                  <tr>
                   <td width="10%">&nbsp;</td>
                   <td>
-                    <!-- <div class="HP_bar" style="height:<%= @timebar_height %>;">
-                      <canvas id="sketchSecond_<%= visitor.number %>" data-processing-sources="/assets/timebar.pde"></canvas>
-                    </div> -->
-                    <div class="HP_bar" style="height:<%= @timebar_height %>;"> 
-                      <div id="sketchSecond_<%= visitor.number %>" class="HP_bar_inner" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%;">
-                      </div>
+                  <!-- <div class="HP_bar" style="height:<%= @timebar_height %>;"><canvas id="sketchSecond_<%= visitor.number %>" data-processing-sources="/assets/timebar.pde"></canvas></div> -->
+                  <!-- <div class="HP_bar" style="height:<%= @timebar_height %>;"> 
+                    <div id="sketchSecond_<%= visitor.number %>" class="HP_bar_inner" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%;">
                     </div>
+                  </div> -->
                   </td>
                   <td width="10%">&nbsp;</td>
                 </tr>
@@ -161,97 +328,13 @@ body,.container{
 
     <!-- <td width="<%= @space_right %>"></td> -->
   </tr>
-</table>
-</div>
 
-<% else %>
-
-<div class="Content"> 
-  <table width="100%" border="0" cellspacing="0" cellpadding="0">
-    <tr>
-      <td colspan="11" height="<%= @space_top %>">&nbsp;</td>
-    </tr>
-
-    <tr>
-
-      <td width="<%= @space_left %>"></td>
-
-      <% @visitors.each_with_index do |visitor, index| %>
-      <td>
-        <div class="box_a">
-          <div id="out_<%= visitor.number %>" class="out">
-            <img src="/assets/tvwall/out.png" width="100%"/>
-          </div>
-          <div id="black_<%= visitor.number %>" class="black"></div>
-          <table width="100%" border="0" cellspacing="0" cellpadding="0">
-            <tr>
-              <td>
-                <div class="TopBpx">
-                  <div id="user_photo_<%= visitor.number %>" class="photo">
-                    <%= render_gamer_photo(visitor,"medium",'100%','100%',"") %>
-                  </div>
-                  <% if @counting == '1' %>
-                  <div class="nameBox br_line01">
-                  <% else %>
-                  <div class="nameBox br_line02">
-                  <% end %>
-                    <% if(visitor.title) %>
-                    <p class="name"><%= visitor.title %></p>
-                    <% else %>
-                    <p class="name">&nbsp;</p>
-                    <% end %>
-                    <p class="name"><%= visitor.name %></p>
-                  </div>
-                  <% if @counting == '1' %>
-                  <div class="answer10" style="padding:15px 10px 10px 0; text-align: center;">
-                  <span id="no_correct_<%= visitor.number %>" width="100%" class="label" style="padding:.2em;opacity:0;font-size:3em;">0</span></div>
-                  <% end %>
-                  <br class="CLEAR" />
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <div id="grid_<%= visitor.number %>" class="Grid">
-                  <canvas id="origin_<%= visitor.number %>" width="100%" ></canvas>
-                  <div id="metal_<%= visitor.number %>" class="inner_metal"></div>
-                  <div id="yes_img_<%= visitor.number %>" class="correct"><img src="/assets/tvwall/red_ring.png" width="100%"/></div>
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <table width="100%" border="0" cellspacing="0" cellpadding="0">
-                  <tr>
-                    <td width="10%">&nbsp;</td>
-                    <td>
-                      <!-- <div class="HP_bar" style="height:<%= @timebar_height %>;">
-                        <canvas id="sketchSecond_<%= visitor.number %>" data-processing-sources="/assets/timebar.pde"></canvas>
-                      </div> -->
-                      <div class="HP_bar" style="height:<%= @timebar_height %>;"> 
-                        <div id="sketchSecond_<%= visitor.number %>" class="HP_bar_inner" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%;">
-                        </div>
-                      </div>
-                    </td>
-                    <td width="10%">&nbsp;</td>
-                  </tr>
-                </table>
-              </td>
-            </tr>
-
-          </table>
-        </div>
-      </td>
-
-      <% if(index % 2 == 0) %>
-      <td width="<%= @split_width %>"></td>
-      <% else %>
-      <td width="<%= @space_left %>"></td>
-      <% end %>
-
-    <% end %>
-
-    <!-- <td width="<%= @space_right %>"></td> -->
+  <tr>
+    <td colspan="<%= @td_colspan %>" height="1%">
+      <video width="100%" autoplay="autoplay" loop="loop" style="padding-top:<%= @video_position %>;">
+        <source src="/assets/cycle1111ok.mp4" type="video/mp4"></source>
+      </video>
+    </td>
   </tr>
 </table>
 </div>

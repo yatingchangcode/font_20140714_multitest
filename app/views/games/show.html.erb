@@ -61,10 +61,10 @@
     <%= link_to "掌握先機(舊版) (4人)","#",id: "stageB2_v1",class: "btn btn-lg btn-default"  %>
 
     <br/><br/>
-    <%= link_to "選手賽一：字字珠璣","#",id: "stageC1",class: "btn btn-lg btn-primary"  %>
-    <%= link_to "選手賽二：成雙成對","#",id: "stageC2",class: "btn btn-lg btn-primary"  %>
-    <%= link_to "選手賽三：外掛幫你搶獎金","#",id: "stageC3",class: "btn btn-lg btn-primary"  %>
-    <%= link_to "來賓挑戰賽：隻字片語","#",id: "stageCidioms",class: "btn btn-lg btn-primary"  %>
+    <%= link_to "字字珠璣or缺一不可","#",id: "stageC1",class: "btn btn-lg btn-primary"  %>
+    <%= link_to "成雙成對 (鎖定或不鎖)","#",id: "stageC2",class: "btn btn-lg btn-primary"  %>
+    <%= link_to "隻字片語","#",id: "stageCidioms",class: "btn btn-lg btn-primary"  %>
+    <%= link_to "東拼西湊","#",id: "stageC3",class: "btn btn-lg btn-primary"  %>
   </div>
 </div>
 
@@ -160,7 +160,7 @@ $(document).ready(function(){
   // news
   document.getElementById('stageC1').onclick = function(e){
     var join_visitors_number = getVisitorsNumberArray(e);
-    location.href = '/games/<%= @game.id %>/stage2?stage=C1&join_visitors_number=' + join_visitors_number;
+    location.href = '/games/<%= @game.id %>/stage1?stage=C1&join_visitors_number=' + join_visitors_number;
   }
   document.getElementById('stageC2').onclick = function(e){
     var join_visitors_number = getVisitorsNumberArray(e);

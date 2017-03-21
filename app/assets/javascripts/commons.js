@@ -317,7 +317,7 @@
   }
 
   if(~["A3+tv","B2+tv"].indexOf(genKey) || 
-    (~["A1+tv","B1+tv"].indexOf(genKey) && Settings.hasCorrectCounting)){
+    (~["C1+tv","A1+tv","B1+tv"].indexOf(genKey) && Settings.hasCorrectCounting)){
     scope.Commons.tempcount = {};
   }else if(~["mix+console","mix+tv"].indexOf(genKey) && Settings.hasCorrectCounting){
     scope.Commons.tempcount = {};

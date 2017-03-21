@@ -80,13 +80,17 @@ class GamesController < ApplicationController
     @game = Game.find(params[:id])
     @visitors = @game.visitors.where(number: params[:join_visitors_number].split(","))
     @range = 1..@visitors.size
+    
     @second = params[:second]
     @counting = params[:counting]
-
-    Setting.messaging['second'] = params[:second]
-    Setting.messaging['game'] = params[:id]
-    Setting.messaging['stage'] = params[:stage]
     @stage = params[:stage]
+    if @stage == 'C1'
+      @stage = 'A1'
+    end
+
+    Setting.messaging['second'] = @second
+    Setting.messaging['game'] = params[:id]
+    Setting.messaging['stage'] = @stage
     #Setting.messaging['record_url'] = "http://0.0.0.0:3000/games/#{params[:id]}/record?join_visitors_number=#{params[:join_visitors_number]}"
     #@user_unregs = [1,4]
     # if Setting.messaging['is_record_open'] != true
@@ -102,7 +106,7 @@ class GamesController < ApplicationController
     @second = params[:second]
     @counting = params[:counting]
     @stage = params[:stage]
-    if ['C1','C2','C3'].include? @stage
+    if ['C2','C3'].include? @stage
       @stage = "A2"
     end
 

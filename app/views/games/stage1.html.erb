@@ -8,10 +8,10 @@
   <div class="col-md-12">
     <h1>Game <%= @game.id %> > Stage <%= @stage %></h1>
     <h2>規則</h2>
-    <% if ['A1','A3','B1'].include? @stage %>
+    <% if ['C1','A1','A3','B1'].include? @stage %>
     <h3>使用者可同時做答<h3>
     <% end %>
-    <% if @stage == 'A1' %>
+    <% if ['C1','A1'].include? @stage %>
     <h3>使用者畫面上不顯示秒數</h3>
     <h3>限時 <input id="second" type="number"/> 秒</h3>
     <% elsif ['A3','B1','B2_v1','B2'].include? @stage %>
@@ -24,8 +24,10 @@
       <h3>使用者個別書寫(搶答制)<h3>
       <% end %>
     <% end %>
-    <% if ['A1','B1'].include? @stage %>
+    <% if ['C1','A1','B1'].include? @stage %>
     <h3> <input id="counting" type="checkbox" /> 計分</h3>
+    <% end %>
+    <% if ['A1','B1'].include? @stage %>
     <h3> <input id="rice" type="checkbox" /> 米字格 </h3>
     <% end %>
     <%= link_to "確認","#",id: "confirm", class: "btn btn-lg btn-success"  %>
