@@ -106,8 +106,8 @@ class GamesController < ApplicationController
     @second = params[:second]
     @counting = params[:counting]
     @stage = params[:stage]
-    if ['C2','C3'].include? @stage
-      @stage = "A2"
+    if @stage == 'C2'
+      @stage = 'A2'
     end
 
     Setting.messaging['second'] = @second

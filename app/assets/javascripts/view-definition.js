@@ -156,7 +156,7 @@ View.collectGamers = function(list){
 
 View.registerCanvas = (function(key){
   key = Commons.getCommonGenKey(key, ["A1+console","A2+console","A3+console","B1+console","B2_v1+console"]);
-  key = Commons.getCommonGenKey(key, ["A1+tv","A2+tv","A3+tv","B1+tv","B2_v1+tv","C1+tv"]);
+  key = Commons.getCommonGenKey(key, ["A1+tv","A2+tv","A3+tv","B1+tv","B2_v1+tv","C1+tv","C2+tv"]);
   key = Commons.getCommonGenKey(key, ["B2+console","B2+tv"]);
   key = Commons.getCommonGenKey(key, ["B3+console","B3+tv","C4+tv"]);
   return {
@@ -266,6 +266,17 @@ View.loadSketchSecond = (function(key){
       }
       Commons.sketchSecondIns.setSecond(Commons.timeRemaining);
     },
+    "C2+tv":function(){
+      if(!Commons.sketchSecondIns) Commons.sketchSecondIns = {};
+      Commons.gamers.all().forEach(function(id){
+        if(!Commons.sketchSecondIns[id]){
+          Commons.sketchSecondIns[id] = TimeBar.getInstanceById('sketchSecond_' + id, {
+            startColor: "#52daff", endColor: "#ff0c00"
+          });
+        }
+        Commons.sketchSecondIns[id].setSecond(Commons.timeRemaining);
+      });
+    },
     "mix+tv":function(){
       if(Settings.hasTimeCounter){
         if(Settings.commonWriting){
@@ -310,7 +321,7 @@ View.setGameCurrentInfo = function(){
 View.setDownLocationStyle = (function(key){
   key = Commons.getCommonGenKey(key, [
     "A1+console","A2+console","A3+console","B1+console","B2_v1+console",
-    "A1+tv","A2+tv","A3+tv","B1+tv","B2_v1+tv","C1+tv"
+    "A1+tv","A2+tv","A3+tv","B1+tv","B2_v1+tv","C1+tv","C2+tv"
   ]);
   key = Commons.getCommonGenKey(key, ["B2+console","B2+tv","mix+console","mix+tv"]);
   key = Commons.getCommonGenKey(key, ["B3+console","B3+tv","C4+tv"]);
@@ -336,7 +347,7 @@ View.setDownLocationStyle = (function(key){
 View.setMoveLocationStyle = (function(key){
   key = Commons.getCommonGenKey(key, [
     "A1+console","A2+console","A3+console","B1+console","B2_v1+console",
-    "A1+tv","A2+tv","A3+tv","B1+tv","B2_v1+tv","C1+tv"
+    "A1+tv","A2+tv","A3+tv","B1+tv","B2_v1+tv","C1+tv","C2+tv"
   ]);
   key = Commons.getCommonGenKey(key, ["B2+console","B2+tv","mix+console","mix+tv"]);
   key = Commons.getCommonGenKey(key, ["B3+console","B3+tv","C4+tv"]);
@@ -366,6 +377,7 @@ View.setStartStyle = (function(key){
   key = Commons.getCommonGenKey(key, ["A1+console","A3+console","B1+console"]);
   key = Commons.getCommonGenKey(key, ["A2+console","mix+console"]);
   key = Commons.getCommonGenKey(key, ["A1+tv","C1+tv"]);
+  key = Commons.getCommonGenKey(key, ["A2+tv","C2+tv"]);
   key = Commons.getCommonGenKey(key, ["B3+tv","C4+tv"]);
   return {
     // tv: A3 B1 B2 B2_v1
@@ -422,6 +434,7 @@ View.setStopStyle = (function(key){
   key = Commons.getCommonGenKey(key, ["A1+console","A2+console","A3+console","B1+console","B2_v1+console","mix+console"]);
   key = Commons.getCommonGenKey(key, ["A3+tv","B1+tv","B2+tv","B2_v1+tv"]);
   key = Commons.getCommonGenKey(key, ["A1+tv","C1+tv"]);
+  key = Commons.getCommonGenKey(key, ["A2+tv","C2+tv"]);
   return {
     // server: A1 A2 A3 B1 B2_v1
     "A1+console":function(o){
@@ -485,7 +498,7 @@ View.setStopStyle = (function(key){
 
 View.setSubmitStyle = (function(key){
   key = Commons.getCommonGenKey(key, ["A1+console","A2+console","A3+console","B1+console","B2_v1+console"]);
-  key = Commons.getCommonGenKey(key, ["A1+tv","A2+tv","A3+tv","B1+tv","B2_v1+tv","C1+tv"]);
+  key = Commons.getCommonGenKey(key, ["A1+tv","A2+tv","A3+tv","B1+tv","B2_v1+tv","C1+tv","C2+tv"]);
   key = Commons.getCommonGenKey(key, ["B3+console","B3+tv"]);
   return {
     // server: A1 A2 A3 B1 B2_v1
@@ -542,7 +555,7 @@ View.setCancelSubmitStyle = (function(key){
   // *** server: B2 B3 no action
   // *** tv: B2 B3 no action
   key = Commons.getCommonGenKey(key, ["A1+console","A2+console","A3+console","B1+console","B2_v1+console"]);
-  key = Commons.getCommonGenKey(key, ["A1+tv","A2+tv","A3+tv","B1+tv","B2_v1+tv","C1+tv"]);
+  key = Commons.getCommonGenKey(key, ["A1+tv","A2+tv","A3+tv","B1+tv","B2_v1+tv","C1+tv","C2+tv"]);
   return {
     // server: A1 A2 A3 B1 B2_v1
     "A1+console":function(o){
@@ -581,7 +594,7 @@ View.setCancelSubmitStyle = (function(key){
 View.setClearStyle = (function(key){
   key = Commons.getCommonGenKey(key, [
     "A1+console","A2+console","A3+console","B1+console","B2_v1+console",
-    "A1+tv","A2+tv","A3+tv","B1+tv","B2_v1+tv","C1+tv"
+    "A1+tv","A2+tv","A3+tv","B1+tv","B2_v1+tv","C1+tv","C2+tv"
   ]);
   key = Commons.getCommonGenKey(key, ["B2+console","B2+tv"]);
   key = Commons.getCommonGenKey(key, ["B3+console","B3+tv","C4+tv"]);
@@ -773,7 +786,7 @@ View.setRightStyle = (function(key){
   // *** tv: B3 no action
   key = Commons.getCommonGenKey(key, [
     "A1+console","A2+console","A3+console","B1+console","B2_v1+console",
-    "A1+tv","A2+tv","A3+tv","B1+tv","B2_v1+tv","C1+tv"
+    "A1+tv","A2+tv","A3+tv","B1+tv","B2_v1+tv","C1+tv","C2+tv"
   ]);
   key = Commons.getCommonGenKey(key, ["B2+console","B2+tv","mix+console","mix+tv" ]);
   return {
@@ -795,7 +808,7 @@ View.setRemoveOStyle = (function(key){
   // *** tv: B3 no action
   key = Commons.getCommonGenKey(key, [
     "A1+console","A2+console","A3+console","B1+console","B2_v1+console",
-    "A1+tv","A2+tv","A3+tv","B1+tv","B2_v1+tv","C1+tv"
+    "A1+tv","A2+tv","A3+tv","B1+tv","B2_v1+tv","C1+tv","C2+tv"
   ]);
   key = Commons.getCommonGenKey(key, ["B2+console","B2+tv","mix+console","mix+tv"]);
   return {
@@ -864,10 +877,10 @@ View.setCorrectCountStyle = (function(key){
       $("#no_correct_" + o.user_id).css('opacity', 1);
       $("#no_correct_" + o.user_id).text(o.count).css('opacity', 1).css('color', 'black');
     },
-    // "C1+tv":function(o){
-    //   $("#no_correct_" + o.user_id).css('opacity', 1);
-    //   $("#no_correct_" + o.user_id).text(o.count).css('opacity', 1).css('color', '#feeb09');
-    // },
+    "C2+tv":function(o){
+      $("#no_correct_" + o.user_id).css('opacity', 1);
+      $("#no_correct_" + o.user_id).text(o.count).css('opacity', 1).css('color', '#feeb09');
+    },
     // tv: B1
     "B1+tv":function(o){
       if (Settings.hasCorrectCounting){
@@ -1005,6 +1018,7 @@ View.setUserOutStyle = (function(key){
   // *** tv: B2 B3 no action
   key = Commons.getCommonGenKey(key, ["A1+console","A3+console","B1+console","B2_v1+console"]);
   key = Commons.getCommonGenKey(key, ["A1+tv","A3+tv","B1+tv","B2_v1+tv","C1+tv"]);
+  key = Commons.getCommonGenKey(key, ["A2+tv","C2+tv"]);
   return {
     // server: A1 A3 B1 B2_v1
     "A1+console":function(o){
@@ -1062,11 +1076,6 @@ View.setUserOutStyle = (function(key){
       $('#black_' + o.user_id).show();
       Commons.sketchSecondIns[o.user_id].clearBar();
     },
-    // "C1+tv":function(o){
-    //   $('#out_' + o.user_id).show();
-    //   $('#black_' + o.user_id).show();
-    //   Commons.sketchSecondIns[o.user_id].clearBar();
-    // },
     "mix+tv":function(o){
       $('#out_' + o.user_id).show();
       $('#black_' + o.user_id).show();
@@ -1080,6 +1089,7 @@ View.setResetStyle = (function(key){
   // *** server: A3 B1 B2_v1 B2 B3 no action
   // *** tv: A3 B1 B2_v1 B2 B3 no action
   key = Commons.getCommonGenKey(key, ["A1+tv","C1+tv"]);
+  key = Commons.getCommonGenKey(key, ["A2+tv","C2+tv"]);
   return {
     // server: A1
     "A1+console":function(o){
@@ -1301,7 +1311,7 @@ View.setContinueWriteStyle = (function(key){
 
 
 View.setZoomStyle = (function(key){
-  key = Commons.getCommonGenKey(key, ["A1+tv", "A2+tv", "A3+tv", "B1+tv", "B2_v1+tv", "C1+tv"]);
+  key = Commons.getCommonGenKey(key, ["A1+tv", "A2+tv", "A3+tv", "B1+tv", "B2_v1+tv", "C1+tv", "C2+tv"]);
   key = Commons.getCommonGenKey(key, ["A1+console","A2+console","A3+console","B1+console","B2_v1+console","mix+console"]);
   return {
     "A1+tv":function(o){
@@ -1341,7 +1351,7 @@ View.setZoomStyle = (function(key){
 })(Settings.genKey);
 
 View.setUnZoomStyle = (function(key){
-  key = Commons.getCommonGenKey(key, ["A1+tv", "A2+tv", "A3+tv", "B1+tv", "B2_v1+tv","C1+tv"]);
+  key = Commons.getCommonGenKey(key, ["A1+tv", "A2+tv", "A3+tv", "B1+tv", "B2_v1+tv","C1+tv","C2+tv"]);
   key = Commons.getCommonGenKey(key, ["A1+console","A2+console","A3+console","B1+console","B2_v1+console","mix+console"]);
   return {
     "A1+tv":function(o){
