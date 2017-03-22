@@ -9,11 +9,11 @@ Object.defineProperty(Settings, 'stageName', {
 //   writable: false
 // });
 Object.defineProperty(Settings, 'hasCorrectCounting', {
-  value: !!window.counting || (window.stageName == "A3") || (window.stageName == "B2"), 
+  value: !!window.counting || ~["A3","C3"].indexOf(Settings.stageName) || (Settings.stageName == "B2"), 
   writable: false
 });
 Object.defineProperty(Settings, 'hasTimeCounter', {
-  value: Settings.stageName == 'A1' || (Settings.stageName == "mix" && window.timeRemaining),
+  value: ~["A1","C1"].indexOf(Settings.stageName) || (Settings.stageName == "mix" && window.timeRemaining),
   writable: false
 });
 Object.defineProperty(Settings, 'commonWriting', {

@@ -359,7 +359,7 @@
     scope.Commons.alarm = {};
   }
 
-  if(~["A3+tv","B2+tv"].indexOf(genKey) || 
+  if(~["A3+tv","B2+tv","C3+tv"].indexOf(genKey) || 
     (~["C1+tv","A1+tv","B1+tv"].indexOf(genKey) && Settings.hasCorrectCounting)){
     scope.Commons.tempcount = {};
   }else if(~["mix+console","mix+tv"].indexOf(genKey) && Settings.hasCorrectCounting){

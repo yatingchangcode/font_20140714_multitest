@@ -169,7 +169,7 @@ $(document).ready(function(){
   }
   document.getElementById('stageC3').onclick = function(e){
     var join_visitors_number = getVisitorsNumberArray(e);
-    location.href = '/games/<%= @game.id %>/stage2?stage=C3&join_visitors_number=' + join_visitors_number;
+    location.href = '/games/<%= @game.id %>/stage1?stage=C3&join_visitors_number=' + join_visitors_number;
   }
 
   document.getElementById('stageCidioms').onclick = function(e){

@@ -150,9 +150,13 @@ body{
 .HP_bar .yello{ background-color:#fcff00;}
 
 table.Chessboard p{ color:#ff0c00; text-align:center;}
-
+/*
 .Content .box_b .photo{ width:68%; margin:0 auto;}
 .Content .box_b .green{ box-shadow:0px 0px 20px 8px rgba(34,255,34,1);}
+*/
+.Content .box_b .photo{ width:68%; margin:0 auto; border-radius: 50%; overflow: hidden; box-shadow:0px 0px 5px 1px black;}
+.Content .box_b .green{ box-shadow:0px 0px 50px 5px #ff000c; }
+
 .Content .box_b .red{ box-shadow:0px 0px 20px 8px rgba(255,34,34,1);}
 .Content .box_b p.name{ color:#FFF; text-align:center;}
 /*

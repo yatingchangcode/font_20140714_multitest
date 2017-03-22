@@ -156,7 +156,7 @@ View.collectGamers = function(list){
 
 View.registerCanvas = (function(key){
   key = Commons.getCommonGenKey(key, ["A1+console","A2+console","A3+console","B1+console","B2_v1+console"]);
-  key = Commons.getCommonGenKey(key, ["A1+tv","A2+tv","A3+tv","B1+tv","B2_v1+tv","C1+tv","C2+tv"]);
+  key = Commons.getCommonGenKey(key, ["A1+tv","A2+tv","A3+tv","B1+tv","B2_v1+tv","C1+tv","C2+tv","C3+tv"]);
   key = Commons.getCommonGenKey(key, ["B2+console","B2+tv"]);
   key = Commons.getCommonGenKey(key, ["B3+console","B3+tv","C4+tv"]);
   return {
@@ -321,7 +321,7 @@ View.setGameCurrentInfo = function(){
 View.setDownLocationStyle = (function(key){
   key = Commons.getCommonGenKey(key, [
     "A1+console","A2+console","A3+console","B1+console","B2_v1+console",
-    "A1+tv","A2+tv","A3+tv","B1+tv","B2_v1+tv","C1+tv","C2+tv"
+    "A1+tv","A2+tv","A3+tv","B1+tv","B2_v1+tv","C1+tv","C2+tv","C3+tv"
   ]);
   key = Commons.getCommonGenKey(key, ["B2+console","B2+tv","mix+console","mix+tv"]);
   key = Commons.getCommonGenKey(key, ["B3+console","B3+tv","C4+tv"]);
@@ -347,7 +347,7 @@ View.setDownLocationStyle = (function(key){
 View.setMoveLocationStyle = (function(key){
   key = Commons.getCommonGenKey(key, [
     "A1+console","A2+console","A3+console","B1+console","B2_v1+console",
-    "A1+tv","A2+tv","A3+tv","B1+tv","B2_v1+tv","C1+tv","C2+tv"
+    "A1+tv","A2+tv","A3+tv","B1+tv","B2_v1+tv","C1+tv","C2+tv","C3+tv"
   ]);
   key = Commons.getCommonGenKey(key, ["B2+console","B2+tv","mix+console","mix+tv"]);
   key = Commons.getCommonGenKey(key, ["B3+console","B3+tv","C4+tv"]);
@@ -373,7 +373,7 @@ View.setMoveLocationStyle = (function(key){
 View.setUpLocationStyle = Commons.emptyFn;
 
 View.setStartStyle = (function(key){
-  key = Commons.getCommonGenKey(key, ["A3+tv","B1+tv","B2_v1+tv","B2_v1+console","B2+tv"]);
+  key = Commons.getCommonGenKey(key, ["A3+tv","B1+tv","B2_v1+tv","B2_v1+console","B2+tv","C3+tv"]);
   key = Commons.getCommonGenKey(key, ["A1+console","A3+console","B1+console"]);
   key = Commons.getCommonGenKey(key, ["A2+console","mix+console"]);
   key = Commons.getCommonGenKey(key, ["A1+tv","C1+tv"]);
@@ -432,7 +432,7 @@ View.setStartStyle = (function(key){
 
 View.setStopStyle = (function(key){
   key = Commons.getCommonGenKey(key, ["A1+console","A2+console","A3+console","B1+console","B2_v1+console","mix+console"]);
-  key = Commons.getCommonGenKey(key, ["A3+tv","B1+tv","B2+tv","B2_v1+tv"]);
+  key = Commons.getCommonGenKey(key, ["A3+tv","B1+tv","B2+tv","B2_v1+tv","C3+tv"]);
   key = Commons.getCommonGenKey(key, ["A1+tv","C1+tv"]);
   key = Commons.getCommonGenKey(key, ["A2+tv","C2+tv"]);
   return {
@@ -475,7 +475,7 @@ View.setStopStyle = (function(key){
       }
     },
     "C4+tv": function(o){
-      // $('#user_photo_' + o.user_id).removeClass("green");
+      $('#user_photo_' + o.user_id).removeClass("green");
       Commons.sketchSecondIns.doStop();
       for(var x = 1; x <= 8; x++){
         for(var y = 1; y <= 12; y++){
@@ -498,7 +498,7 @@ View.setStopStyle = (function(key){
 
 View.setSubmitStyle = (function(key){
   key = Commons.getCommonGenKey(key, ["A1+console","A2+console","A3+console","B1+console","B2_v1+console"]);
-  key = Commons.getCommonGenKey(key, ["A1+tv","A2+tv","A3+tv","B1+tv","B2_v1+tv","C1+tv","C2+tv"]);
+  key = Commons.getCommonGenKey(key, ["A1+tv","A2+tv","A3+tv","B1+tv","B2_v1+tv","C1+tv","C2+tv","C3+tv"]);
   key = Commons.getCommonGenKey(key, ["B3+console","B3+tv"]);
   return {
     // server: A1 A2 A3 B1 B2_v1
@@ -555,7 +555,7 @@ View.setCancelSubmitStyle = (function(key){
   // *** server: B2 B3 no action
   // *** tv: B2 B3 no action
   key = Commons.getCommonGenKey(key, ["A1+console","A2+console","A3+console","B1+console","B2_v1+console"]);
-  key = Commons.getCommonGenKey(key, ["A1+tv","A2+tv","A3+tv","B1+tv","B2_v1+tv","C1+tv","C2+tv"]);
+  key = Commons.getCommonGenKey(key, ["A1+tv","A2+tv","A3+tv","B1+tv","B2_v1+tv","C1+tv","C2+tv","C3+tv"]);
   return {
     // server: A1 A2 A3 B1 B2_v1
     "A1+console":function(o){
@@ -594,7 +594,7 @@ View.setCancelSubmitStyle = (function(key){
 View.setClearStyle = (function(key){
   key = Commons.getCommonGenKey(key, [
     "A1+console","A2+console","A3+console","B1+console","B2_v1+console",
-    "A1+tv","A2+tv","A3+tv","B1+tv","B2_v1+tv","C1+tv","C2+tv"
+    "A1+tv","A2+tv","A3+tv","B1+tv","B2_v1+tv","C1+tv","C2+tv","C3+tv"
   ]);
   key = Commons.getCommonGenKey(key, ["B2+console","B2+tv"]);
   key = Commons.getCommonGenKey(key, ["B3+console","B3+tv","C4+tv"]);
@@ -663,7 +663,7 @@ View.setClearStyle = (function(key){
 View.setClearAllStyle = (function(key){
   // *** server: A2 B3 no action
   key = Commons.getCommonGenKey(key, ["A3+console","B1+console","B2_v1+console"]);
-  key = Commons.getCommonGenKey(key, ["A3+tv","B1+tv"]);
+  key = Commons.getCommonGenKey(key, ["A3+tv","B1+tv","C3+tv"]);
   key = Commons.getCommonGenKey(key, ["A1+client","B2+client","B3.client"]);
   key = Commons.getCommonGenKey(key, ["A1+tv","C1+tv"]);
   return {
@@ -786,7 +786,7 @@ View.setRightStyle = (function(key){
   // *** tv: B3 no action
   key = Commons.getCommonGenKey(key, [
     "A1+console","A2+console","A3+console","B1+console","B2_v1+console",
-    "A1+tv","A2+tv","A3+tv","B1+tv","B2_v1+tv","C1+tv","C2+tv"
+    "A1+tv","A2+tv","A3+tv","B1+tv","B2_v1+tv","C1+tv","C2+tv","C3+tv"
   ]);
   key = Commons.getCommonGenKey(key, ["B2+console","B2+tv","mix+console","mix+tv" ]);
   return {
@@ -808,7 +808,7 @@ View.setRemoveOStyle = (function(key){
   // *** tv: B3 no action
   key = Commons.getCommonGenKey(key, [
     "A1+console","A2+console","A3+console","B1+console","B2_v1+console",
-    "A1+tv","A2+tv","A3+tv","B1+tv","B2_v1+tv","C1+tv","C2+tv"
+    "A1+tv","A2+tv","A3+tv","B1+tv","B2_v1+tv","C1+tv","C2+tv","C3+tv"
   ]);
   key = Commons.getCommonGenKey(key, ["B2+console","B2+tv","mix+console","mix+tv"]);
   return {
@@ -830,6 +830,7 @@ View.setCorrectCountStyle = (function(key){
   // *** tv: A2 B3 no action
   key = Commons.getCommonGenKey(key, ["A1+console","A3+console","B1+console"]);
   key = Commons.getCommonGenKey(key, ["A2+tv","A3+tv"]);
+  key = Commons.getCommonGenKey(key, ["C2+tv","C3+tv"]);
   return {
     // server: A1 A3 B1
     "A1+console":function(o){
@@ -1017,7 +1018,7 @@ View.setUserOutStyle = (function(key){
   // *** server: B2 B3 no action
   // *** tv: B2 B3 no action
   key = Commons.getCommonGenKey(key, ["A1+console","A3+console","B1+console","B2_v1+console"]);
-  key = Commons.getCommonGenKey(key, ["A1+tv","A3+tv","B1+tv","B2_v1+tv","C1+tv"]);
+  key = Commons.getCommonGenKey(key, ["A1+tv","A3+tv","B1+tv","B2_v1+tv","C1+tv","C3+tv"]);
   key = Commons.getCommonGenKey(key, ["A2+tv","C2+tv"]);
   return {
     // server: A1 A3 B1 B2_v1
@@ -1311,7 +1312,7 @@ View.setContinueWriteStyle = (function(key){
 
 
 View.setZoomStyle = (function(key){
-  key = Commons.getCommonGenKey(key, ["A1+tv", "A2+tv", "A3+tv", "B1+tv", "B2_v1+tv", "C1+tv", "C2+tv"]);
+  key = Commons.getCommonGenKey(key, ["A1+tv", "A2+tv", "A3+tv", "B1+tv", "B2_v1+tv", "C1+tv", "C2+tv","C3+tv"]);
   key = Commons.getCommonGenKey(key, ["A1+console","A2+console","A3+console","B1+console","B2_v1+console","mix+console"]);
   return {
     "A1+tv":function(o){
@@ -1351,7 +1352,7 @@ View.setZoomStyle = (function(key){
 })(Settings.genKey);
 
 View.setUnZoomStyle = (function(key){
-  key = Commons.getCommonGenKey(key, ["A1+tv", "A2+tv", "A3+tv", "B1+tv", "B2_v1+tv","C1+tv","C2+tv"]);
+  key = Commons.getCommonGenKey(key, ["A1+tv", "A2+tv", "A3+tv", "B1+tv", "B2_v1+tv","C1+tv","C2+tv","C3+tv"]);
   key = Commons.getCommonGenKey(key, ["A1+console","A2+console","A3+console","B1+console","B2_v1+console","mix+console"]);
   return {
     "A1+tv":function(o){

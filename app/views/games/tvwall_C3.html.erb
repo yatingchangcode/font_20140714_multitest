@@ -103,11 +103,7 @@ body,.container{
                   <div id="user_photo_<%= visitor.number %>" class="photo">
                     <%= render_gamer_photo(visitor,"medium",'100%','100%',"") %>
                   </div>
-                  <% if @counting == '1' %>
                   <div class="nameBox br_line01">
-                  <% else %>
-                  <div class="nameBox br_line02">
-                  <% end %>
                     <% if(visitor.title) %>
                     <p class="name"><%= visitor.title %></p>
                     <% else %>
@@ -115,10 +111,8 @@ body,.container{
                     <% end %>
                     <p class="name"><%= visitor.name %></p>
                   </div>
-                  <% if @counting == '1' %>
                   <div class="answer10" style="padding:15px 10px 10px 0; text-align: center;">
                   <span id="no_correct_<%= visitor.number %>" width="100%" class="label" style="padding:.2em;opacity:0;font-size:3em;">0</span></div>
-                  <% end %>
                   <br class="CLEAR" />
                 </div>
               </td>
@@ -160,6 +154,15 @@ body,.container{
 </table>
 </div>
 
+<div id="cycleWrap" style="width: 100%; z-index: 100; position: absolute; bottom: 0px;">
+  <video id="cycleVideo" width="100%" autoplay="autoplay" style="display: none;">
+    <source src="/assets/cycle1111ok.mp4" type="video/mp4">
+    <source src="/assets/cycle1111ok.webm" type="video/webm">
+  </video>
+  <canvas id="cycleBuffer" style="display: none;"></canvas>
+  <canvas id="cycleOutput"></canvas>
+</div>
+
 <div class="Zoom">
   <div class="Zoom-inner">
     <canvas id="_zoomTmp" width="100%" ></canvas>
@@ -173,11 +176,8 @@ document.write('<script src="//'+ location.hostname + ':5001/socket.io/socket.io
 </script>
 <script>
 // cache stage name for server1-tvwall.js
-window.stageName = 'C1';
+window.stageName = 'C3';
 window.pageType = "tv";  // type: console, client, tv
-window.counting = <%= @counting == '1' %>;
-window.hasCounter = true;
-window.timeRemaining = <%= @second %>;
 
 window.borderWidth = <%= @canvas_border %>;
 
@@ -191,6 +191,8 @@ window.borderWidth = <%= @canvas_border %>;
 
 
 <script>
+
+window.Commons.generateAlphaVideo();
 
 window.responsiveMethod = function(){
   var jqGridEl = $('[id^=grid_]');

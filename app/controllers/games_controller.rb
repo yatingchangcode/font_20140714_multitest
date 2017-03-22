@@ -87,6 +87,9 @@ class GamesController < ApplicationController
     if @stage == 'C1'
       @stage = 'A1'
     end
+    if @stage == 'C3'
+      @stage = 'A3'
+    end
 
     Setting.messaging['second'] = @second
     Setting.messaging['game'] = params[:id]
