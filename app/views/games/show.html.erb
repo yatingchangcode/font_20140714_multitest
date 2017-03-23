@@ -173,10 +173,13 @@ $(document).ready(function(){
   }
 
   document.getElementById('stageCidioms').onclick = function(e){
-
     var join_visitors_number = getVisitorsNumberArray(e);
-
     location.href = '/games/<%= @game.id %>/stage_idioms?stage=C-idioms&join_visitors_number=' + join_visitors_number;
+  }
+
+  document.getElementById('stageCmix').onclick = function(e){
+    var join_visitors_number = getVisitorsNumberArray(e);
+    location.href = '/games/<%= @game.id %>/stage_mix?stage=C-mix&join_visitors_number=' + join_visitors_number;
   }
 
 

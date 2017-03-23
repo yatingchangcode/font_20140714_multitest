@@ -52,6 +52,7 @@ Rails.application.routes.draw do
       get 'tvwall_C2'
       get 'tvwall_C3'
       get 'tvwall_c_idioms'
+      get 'tvwall_c_mix'
       get 'tvwall_multi'
       get 'tvwall_mix'
       get 'convert_page'

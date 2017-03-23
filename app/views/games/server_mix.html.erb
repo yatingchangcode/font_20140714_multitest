@@ -233,8 +233,13 @@
       
       <script>
 
+      <% if params[:stage] == 'C-mix' %>
+      var tvwall = window.open("tvwall_c_mix?" + window.location.search.split('&').slice(1).join('&'),
+        "tvwallWindow","width=800, height=800");
+      <% else %>
       var tvwall = window.open("tvwall_<%= params[:stage] %>?" + window.location.search.split('&').slice(1).join('&'),
         "tvwallWindow","width=800, height=800");
+      <% end %>
 
       $(document).ready(function() {
         CM.prop({

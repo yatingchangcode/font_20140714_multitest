@@ -91,6 +91,10 @@ class GamesController < ApplicationController
       @stage = 'A3'
     end
 
+    if @second == nil
+      @second = 999
+    end
+
     Setting.messaging['second'] = @second
     Setting.messaging['game'] = params[:id]
     Setting.messaging['stage'] = @stage
@@ -252,11 +256,14 @@ class GamesController < ApplicationController
     @counting = params[:counting]
     @common = params[:common]
     @locking = params[:locking]
-
-    Setting.messaging['second'] = params[:second]
-    Setting.messaging['game'] = params[:id]
-    Setting.messaging['stage'] = params[:stage]
+    
     @stage = params[:stage]
+    if @stage == 'C-mix'
+      @stage = "mix"
+    end
+    Setting.messaging['second'] = @second
+    Setting.messaging['game'] = params[:id]
+    Setting.messaging['stage'] = @stage
     # Setting.messaging['record_url'] = "http://0.0.0.0:3000/games/#{params[:id]}/record?join_visitors_number=#{params[:join_visitors_number]}"
     #@user_unregs = [1,4]
     # if Setting.messaging['is_record_open'] != true
@@ -373,6 +380,18 @@ class GamesController < ApplicationController
   end
 
   def tvwall_mix
+    @game = Game.find(params[:id])
+    @visitors = @game.visitors.where(number: params[:join_visitors_number].split(","))
+    @range = 1..@visitors.size
+
+    @stage = params[:stage]
+    @second = params[:second]
+    @counting = params[:counting]
+    @common = params[:common]
+    @locking = params[:locking]
+  end
+
+  def tvwall_c_mix
     @game = Game.find(params[:id])
     @visitors = @game.visitors.where(number: params[:join_visitors_number].split(","))
     @range = 1..@visitors.size
