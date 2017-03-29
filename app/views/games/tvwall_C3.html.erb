@@ -12,6 +12,8 @@
   @video_position_left = "0px"
   @video_zoom = "100%"
   @grid_border = 5
+  @count_padding = "0.2em"
+  @count_size = "3em"
   case @visitors.length
   when 2
     @grid_border = 7
@@ -112,7 +114,7 @@ body,.container{
                     <p class="name"><%= visitor.name %></p>
                   </div>
                   <div class="answer10" style="padding:15px 10px 10px 0; text-align: center;">
-                  <span id="no_correct_<%= visitor.number %>" width="100%" class="label" style="padding:.2em;opacity:0;font-size:3em;">0</span></div>
+                  <span id="no_correct_<%= visitor.number %>" width="100%" class="label" style="padding:<%= @count_padding %>;opacity:0;font-size:<%= @count_size %>;">0</span></div>
                   <br class="CLEAR" />
                 </div>
               </td>

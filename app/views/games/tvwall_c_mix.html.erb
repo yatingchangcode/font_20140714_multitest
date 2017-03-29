@@ -14,6 +14,8 @@
   @block_margin = "3px"
   @split_width_up = "3%"
   @split_width_down = "3%"
+  @count_padding = "0.2em"
+  @count_size = "3em"
   case @visitors.length
   when 1
     @canvas_scale = 0.263
@@ -173,7 +175,7 @@ body,.container{
                   </div>
                   <% if @counting == '1' %>
                   <div class="answer10" style="padding:20px 0 0 10px;">
-                  <span id="no_correct_<%= visitor.number %>" width="100%" class="label " style="opacity:0;font-size:2.5em;">0</span></div>
+                  <span id="no_correct_<%= visitor.number %>" width="100%" class="label" style="padding:<%= @count_padding %>;opacity:0;font-size:<%= @count_size %>;">0</span></div>
                   <% end %>
                   <br class="CLEAR" />
                 </div>
@@ -583,9 +585,10 @@ window.responsiveMethod = function(){
   // jqGridEl.css("background-image", ["url(",")"].join(
   //   Commons.generateBorderBase64(jqGridEl, window.borderWidth, ['0 #ffffff', '0.5 #aaaaaa', '1 #aaaaaa'])
   // )).css("padding", window.borderWidth);
-
+  var scaleBorderWidth = window.borderWidth * zoomScale;
   // // zoomGridEl.css("padding", originBorderWidth * zoomScale).width(w * zoomScale).height(w * zoomScale);
-  zoomGridEl.width(w * zoomScale).height(w * zoomScale).
+  zoomGridEl.width(w * zoomScale + scaleBorderWidth * 2).height(w * zoomScale + scaleBorderWidth * 2).
+    css("padding", scaleBorderWidth).
     css("margin-bottom", originBorderWidth * zoomScale).css("margin-right", originBorderWidth * zoomScale);
 
   // zoomGridEl.css("background-image", ["url(",")"].join(
@@ -594,7 +597,6 @@ window.responsiveMethod = function(){
 
   // zoomInnerEl.find("table").css("margin", originBorderWidth * zoomScale);
 
-  var scaleBorderWidth = window.borderWidth * zoomScale
   zoomInnerEl.find("canvas").css("border", scaleBorderWidth + "px solid #fff")
     .css("border-radius", (scaleBorderWidth * 7 / 5) + "px")
     .css("box-shadow", "0px 0px " + (scaleBorderWidth * 3) + "px " + scaleBorderWidth + "px rgba(75,217,255,0.7),inset 0px 0px " + scaleBorderWidth + "px " + (scaleBorderWidth * 3 / 5) + "px rgba(75,217,255,0.6)");

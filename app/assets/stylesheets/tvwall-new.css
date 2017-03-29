@@ -100,8 +100,8 @@ body{
 	/*background-color: black;*/
 }
 
-.Zoom canvas[id^=_zoomTmp_]{
-	/*background-color: black;*/
+.Zoom canvas[id^=_zoomTmp]{
+	background-color: black;
 }
 
 .Content .box_a .GridMix .inner_metal,
