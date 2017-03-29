@@ -101,7 +101,7 @@ body{
 }
 
 .Zoom canvas[id^=_zoomTmp]{
-	background-color: black;
+	/*background-color: black;*/
 }
 
 .Content .box_a .GridMix .inner_metal,
@@ -116,8 +116,8 @@ body{
 
 .Content .box_a table tr td{ padding-bottom:10px;}
 
-.Content .box_a .out{ width:105%; position:absolute; bottom:0px; left:0px; z-index:60;display:none;}
-.Content .box_a .out img{ opacity: 0.8 }
+.Content .box_a .out{padding-bottom: 5px; position:absolute; bottom:0px; left:0px; z-index:60;display:none;}
+.Content .box_a .out img{  }
 .Content .box_a .black{ width:105%; height:100%; background-color:#000; opacity:0.3; position:absolute; bottom:0px; left:0px; z-index:55;display:none;}
 
 .HP_bar{
@@ -198,7 +198,7 @@ table.Chessboard p{ color:#ff0c00; text-align:center;}
 }
 .Zoom-inner{
 	position: relative;
-	background-color: rgba(0,0,0,0.5);
+	background-color: rgba(0,0,0,1);
 	left: -50%;
 	top: -50%;
 	z-index: 2000;
