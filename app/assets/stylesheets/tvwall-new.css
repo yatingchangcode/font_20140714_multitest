@@ -95,6 +95,7 @@ body{
 	width:100%; position:relative;
 	/*border:solid rgba(0,0,0,1);
 	background-color: rgb(60,60,60);	*/
+	background-color: black;
 }
 .Zoom .GridMix{
 	/*background-color: black;*/

@@ -150,10 +150,6 @@ body,.container{
       <% @visitors[0..((@visitors.length/2.0).ceil-1)].each do |visitor| %>
       <td>
         <div class="box_a">
-          <div id="out_<%= visitor.number %>" class="out">
-            <img src="/assets/tvwall/out.png" width="100%"/>
-          </div>
-          <div id="black_<%= visitor.number %>" class="black"></div>
           <table width="100%" border="0" cellspacing="0" cellpadding="0">
             <tr>
               <td>
@@ -218,6 +214,9 @@ body,.container{
                     <!-- <div id="yes_img_<%= visitor.number %>" class="correct"><img src="/assets/tvwall/red_ring.png" width="100%"/></div> -->
                   </div>
                 </div>
+                <div id="out_<%= visitor.number %>" class="out">
+                  <img src="/assets/tvwall/out_s.png" width="100%"/>
+                </div>
               </td>
             </tr>
 
@@ -266,10 +265,6 @@ body,.container{
       <td width="<%= @split_width_down %>"></td>
       <td>
         <div class="box_a">
-          <div id="out_<%= visitor.number %>" class="out">
-            <img src="/assets/tvwall/out.png" width="100%"/>
-          </div>
-          <div id="black_<%= visitor.number %>" class="black"></div>
           <table width="100%" border="0" cellspacing="0" cellpadding="0">
             <tr>
               <td>
@@ -334,6 +329,9 @@ body,.container{
                     <!-- <div id="yes_img_<%= visitor.number %>" class="correct"><img src="/assets/tvwall/red_ring.png" width="100%"/></div> -->
                   </div>
                 </div>
+                <div id="out_<%= visitor.number %>" class="out">
+                  <img src="/assets/tvwall/out_s.png" width="100%"/>
+                </div>
               </td>
             </tr>
             <% if @common != '1' and @second.to_i > 0 %>
@@ -391,10 +389,6 @@ body,.container{
       <% @visitors.each do |visitor| %>
       <td>
         <div class="box_a">
-          <div id="out_<%= visitor.number %>" class="out">
-            <img src="/assets/tvwall/out.png" width="100%"/>
-          </div>
-          <div id="black_<%= visitor.number %>" class="black"></div>
           <table width="100%" border="0" cellspacing="0" cellpadding="0">
             <tr>
               <td>
@@ -458,6 +452,9 @@ body,.container{
                     </div>
                     <!-- <div id="yes_img_<%= visitor.number %>" class="correct"><img src="/assets/tvwall/red_ring.png" width="100%"/></div> -->
                   </div>
+                </div>
+                <div id="out_<%= visitor.number %>" class="out">
+                  <img src="/assets/tvwall/out_s.png" width="100%"/>
                 </div>
               </td>
             </tr>
@@ -523,7 +520,7 @@ body,.container{
             <% if x == 2 or y == 2 %>
             <td style="padding:0">
               <div class="Grid">
-                <canvas id="_zoomTmp_<%= x %>_<%= y %>" width="100%" ></canvas>
+                <canvas id="_zoomTmp_<%= x %>_<%= y %>" style="width: 100%;"></canvas>
               </div>
             </td>
             <% else %>
@@ -587,8 +584,7 @@ window.responsiveMethod = function(){
   // )).css("padding", window.borderWidth);
   var scaleBorderWidth = window.borderWidth * zoomScale;
   // // zoomGridEl.css("padding", originBorderWidth * zoomScale).width(w * zoomScale).height(w * zoomScale);
-  zoomGridEl.width(w * zoomScale + scaleBorderWidth * 2).height(w * zoomScale + scaleBorderWidth * 2).
-    css("padding", scaleBorderWidth).
+  zoomGridEl.width(w * zoomScale).height(w * zoomScale).
     css("margin-bottom", originBorderWidth * zoomScale).css("margin-right", originBorderWidth * zoomScale);
 
   // zoomGridEl.css("background-image", ["url(",")"].join(
@@ -597,7 +593,7 @@ window.responsiveMethod = function(){
 
   // zoomInnerEl.find("table").css("margin", originBorderWidth * zoomScale);
 
-  zoomInnerEl.find("canvas").css("border", scaleBorderWidth + "px solid #fff")
+  zoomGridEl.css("border", scaleBorderWidth + "px solid #fff")
     .css("border-radius", (scaleBorderWidth * 7 / 5) + "px")
     .css("box-shadow", "0px 0px " + (scaleBorderWidth * 3) + "px " + scaleBorderWidth + "px rgba(75,217,255,0.7),inset 0px 0px " + scaleBorderWidth + "px " + (scaleBorderWidth * 3 / 5) + "px rgba(75,217,255,0.6)");
 };

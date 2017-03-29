@@ -1089,7 +1089,6 @@ View.setUserOutStyle = (function(key){
   key = Commons.getCommonGenKey(key, ["A1+console","A3+console","B1+console","B2_v1+console"]);
   key = Commons.getCommonGenKey(key, ["A1+tv","A3+tv","B1+tv","B2_v1+tv"]);
   key = Commons.getCommonGenKey(key, ["C1+tv","C3+tv"]);
-  key = Commons.getCommonGenKey(key, ["mix+tv","C5+tv"]);
   return {
     // server: A1 A3 B1 B2_v1
     "A1+console":function(o){
@@ -1164,6 +1163,14 @@ View.setUserOutStyle = (function(key){
       $('#grid_' + o.user_id).css("opacity", 0.3);
       $('#sketchSecond_' + o.user_id).parent().css("opacity", 0.3);
       Commons.sketchSecondIns[o.user_id].clearBar();
+    },
+    "C5+tv": function(o){
+      $('#out_' + o.user_id).show();
+      $('#out_' + o.user_id).prev().css("opacity", 0.3);
+      if(Settings.hasTimeCounter && !Settings.commonWriting)
+        Commons.sketchSecondIns[o.user_id].clearBar();
+      $('#user_photo_' + o.user_id).parent().css("opacity", 0.3);
+      $('#sketchSecond_' + o.user_id).parent().css("opacity", 0.3);
     }
   }[key] || Commons.emptyFn;
 })(Settings.genKey);
