@@ -114,9 +114,9 @@ body{
 	display: none;
 }
 
-.Content .box_a table tr td{ padding-bottom:10px;}
+.Content .box_a table tr td{ padding-bottom:10px; position: relative; }
 
-.Content .box_a .out{padding-bottom: 5px; position:absolute; bottom:0px; left:0px; z-index:60;display:none;}
+.Content .box_a .out{ position:absolute; top:0px; left:0px; z-index:60;display:none;}
 .Content .box_a .out img{  }
 .Content .box_a .black{ width:105%; height:100%; background-color:#000; opacity:0.3; position:absolute; bottom:0px; left:0px; z-index:55;display:none;}
 
