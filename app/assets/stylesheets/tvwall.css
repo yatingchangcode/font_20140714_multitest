@@ -62,7 +62,7 @@ a{ text-decoration:none; outline: none; /* for Firefox */  hlbr:expression(this.
 
 .Content .box_a .Grid .correct,
 .Content .box_a .GridMix .correct,
-.Content .box_a .Grid-Kino .correct{ width:32%; position:absolute; right:1%; bottom:2%; z-index:50;display:none;}
+.Content .box_a .Grid-Kino .correct{ width:32%; position:absolute; right:1%; bottom:2%; z-index:50;display:none; opacity: 0.8;}
 .Content .box_a .bor_g{ //border:0.2vw solid #98c4a7;}
 .Content .box_a .GridMix .inner_glow,
 .Content .box_a .Grid .inner_glow{ width:100%; height:100%; position:absolute; top:0px; left:0px;

@@ -71,7 +71,7 @@ body{
 
 .Content .box_a .Grid .correct,
 .Content .box_a .GridMix .correct,
-.Content .box_a .Grid-Kino .correct{ width:32%; position:absolute; right:1%; bottom:2%; z-index:50;display:none;}
+.Content .box_a .Grid-Kino .correct{ width: 46%; position:absolute; right:-16%; bottom:-15%; z-index:50;display:none; opacity: 0.94;}
 
 .Content .box_a .bor_r{ //border:0.2vw solid #ff001c;}
 .Content .box_a .GridMix .inner_glow,
