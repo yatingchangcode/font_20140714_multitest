@@ -28,8 +28,9 @@
     @grid_border = 7
     @canvas_scale = 0.217
     @canvas_border = 13
-    @split_width = "14%"
-    @space_left = "14%"
+    @split_width = "6%"
+    @space_left = "16%"
+    @space_right = "12%"
     @timebar_height = "15px"
   when 4
     @font_formula = "w / 3 * 16.2 / 15"
@@ -37,7 +38,8 @@
     @canvas_scale = 0.191
     @canvas_border = 11
     @space_left = "10%"
-    @space_right = "9%"
+    @space_right = "8%"
+    @split_width = "4%"
     @timebar_height = "14px"
     @video_position = "130px"
   when 6
@@ -154,14 +156,10 @@ body,.container{
         </table>
       </div>
     </td>
-      <% if(index % 2 == 0) %>
       <td width="<%= @split_width %>"></td>
-      <% else %>
-      <td width="<%= @space_left %>"></td>
-      <% end %>
     <% end %>
 
-    <!-- <td width="<%= @space_right %>"></td> -->
+    <td width="<%= @space_right %>"></td>
   </tr>
 
 </table>
