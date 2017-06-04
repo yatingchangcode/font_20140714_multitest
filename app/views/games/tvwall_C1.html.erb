@@ -42,15 +42,17 @@
     @timebar_height = "14px"
     @video_position = "130px"
   when 6
+    @space_top = "80"
     @font_formula = "w / 3 * 16 / 15"
     @bar_formula = "(w + 3) / 2"
     @canvas_scale = 0.121
     @canvas_border = 7
-    @grid_border = 6
-    @space_left = "12%"
-    @split_width = "2%"
+    @grid_border = 5
+    @space_left = "15%"
+    @space_right = "15%"
+    @split_width = "10%"
     @timebar_height = "14px"
-    @video_position = "130px"
+    @video_position = "100px"
   when 8
     @space_top = "80"
     @font_formula = "w / 3 * 16 / 15"
@@ -58,9 +60,21 @@
     @canvas_scale = 0.121
     @canvas_border = 7
     @grid_border = 5
-    @space_left = "10%"
-    @space_right = "8%"
+    @space_left = "8%"
+    @space_right = "12%"
     @split_width = "6%"
+    @timebar_height = "14px"
+    @video_position = "100px"
+  when 10
+    @space_top = "80"
+    @font_formula = "w / 3 * 15.5 / 15"
+    @bar_formula = "(w + 3) / 2"
+    @canvas_scale = 0.111
+    @canvas_border = 6
+    @grid_border = 4
+    @space_left = "7%"
+    @space_right = "11%"
+    @split_width = "5%"
     @timebar_height = "14px"
     @video_position = "100px"
   end
@@ -113,7 +127,7 @@ body,.container{
   
 </table>
 
-<% if @visitors.length <= 8 %>
+<% if @visitors.length <= 10 %>
 <div class="Content"> 
   <table width="100%" border="0" cellspacing="0" cellpadding="0">
     <tr>
@@ -166,7 +180,10 @@ body,.container{
           </div>
         </td>
         
+        <% if index != @visitors.length - 2 %>
         <td width="<%= @split_width %>"></td>
+        <% end %>
+
         <% end %>
       <% end %>
 
@@ -185,7 +202,9 @@ body,.container{
       
       <% @visitors.each_with_index do |visitor, index| %>
         <% if(index % 2 == 1) %>
+        <% if index != 1 %>
         <td width="<%= @split_width %>"></td>
+        <% end %>
         <td>
           <div class="box_a">
             <table width="100%" border="0" cellspacing="0" cellpadding="0">
