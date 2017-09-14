@@ -61,6 +61,7 @@
     <%= link_to "掌握先機(舊版) (4人)","#",id: "stageB2_v1",class: "btn btn-lg btn-default"  %>
 
     <br/><br/>
+    <%= link_to "明星藝言堂 (11人)","#",id: "stageA1new",class: "btn btn-lg btn-primary"  %>
     <%= link_to "字字珠璣、缺一不可","#",id: "stageC1",class: "btn btn-lg btn-primary"  %>
     <%= link_to "成雙成對 (字有發揮版)","#",id: "stageC2",class: "btn btn-lg btn-primary"  %>
     <%= link_to "成雙成對 (一字千金版)","#",id: "stageC3",class: "btn btn-lg btn-primary"  %>
@@ -159,9 +160,13 @@ $(document).ready(function(){
   }
 
   // news
-  document.getElementById('stageC1').onclick = function(e){
+  document.getElementById('stageA1new').onclick = function(e){
     var join_visitors_number = getVisitorsNumberArray(e);
     location.href = '/games/<%= @game.id %>/stage1?stage=C1&join_visitors_number=' + join_visitors_number;
+  }
+  document.getElementById('stageC1').onclick = function(e){
+    var join_visitors_number = getVisitorsNumberArray(e);
+    location.href = '/games/<%= @game.id %>/stage1?stage=C1&dir=vertical&join_visitors_number=' + join_visitors_number;
   }
   document.getElementById('stageC2').onclick = function(e){
     var join_visitors_number = getVisitorsNumberArray(e);
