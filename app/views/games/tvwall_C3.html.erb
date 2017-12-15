@@ -16,14 +16,16 @@
   @count_size = "3em"
   case @visitors.length
   when 2
+    @font_formula = "w / 3 * 15.2 / 15"
+    @bar_formula = "(w + 3) / 2"
+    @canvas_scale = 0.231
+    @canvas_border = 13
     @grid_border = 7
-    @canvas_scale = 0.243
-    @canvas_border = 15
-    @split_width = "10%"
-    @space_top = "140"
     @space_left = "25%"
-    @space_right = "24%"
+    @space_right = "25%"
+    @split_width = "10%"
     @timebar_height = "16px"
+    @video_position = "130px"
   when 3
     @grid_border = 7
     @canvas_scale = 0.217
@@ -91,7 +93,12 @@ body,.container{
 
       <td width="<%= @space_left %>"></td>
 
-      <% @visitors.each do |visitor| %>
+      <% @visitors.each_with_index do |visitor, index| %>
+
+      <% if index != 0 %>
+      <td width="<%= @split_width %>"></td>
+      <% end %>
+
       <td>
         <div class="box_a">
           <table width="100%" border="0" cellspacing="0" cellpadding="0">
@@ -147,10 +154,10 @@ body,.container{
         </table>
       </div>
     </td>
-    <td width="<%= @split_width %>"></td>
+    
     <% end %>
 
-    <!-- <td width="<%= @space_right %>"></td> -->
+    <td width="<%= @space_right %>"></td>
   </tr>
 </table>
 </div>

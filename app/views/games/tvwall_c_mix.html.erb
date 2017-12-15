@@ -285,7 +285,7 @@ body,.container{
                   </div>
                   <% if @counting == '1' %>
                   <div class="answer10" style="padding:20px 0 0 10px;">
-                  <span id="no_correct_<%= visitor.number %>" width="100%" class="label " style="opacity:0;font-size:2.5em;">0</span></div>
+                  <span id="no_correct_<%= visitor.number %>" width="100%" class="label " style="opacity:0;font-size:<%= @count_size %>;">0</span></div>
                   <% end %>
                   <br class="CLEAR" />
                 </div>
@@ -401,7 +401,7 @@ body,.container{
                   </div>
                   <% if @counting == '1' %>
                   <div class="answer10" style="padding:20px 0 0 10px;">
-                  <span id="no_correct_<%= visitor.number %>" width="100%" class="label " style="opacity:0;font-size:2.5em;">0</span></div>
+                  <span id="no_correct_<%= visitor.number %>" width="100%" class="label " style="opacity:0;font-size:<%= @count_size %>;">0</span></div>
                   <% end %>
                   <br class="CLEAR" />
                 </div>
