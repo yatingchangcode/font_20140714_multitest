@@ -31,7 +31,7 @@ module.exports = {
             require('./controller/write_b2_controller')(socket,io);
             require('./controller/write_idiom_controller')(socket,io);
             require('./controller/write_mix_controller')(socket,io);
-
+            require('./controller/write_group_controller')(socket,io);
 
             helper.emitUserId('0', function (x) {
               io.to(x).emit('client_connected', get_connection_status());
