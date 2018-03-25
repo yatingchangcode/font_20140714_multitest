@@ -116,6 +116,29 @@ View.startCounter = (function(key){
       })(secObj, $('#progress_bar'), timesupFn(passId)), 100);
       if(Settings.commonWriting) Commons.alarm = intV;
       else Commons.alarm[thisvalue] = intV;
+    },
+    "group+console": function(){
+      if(Commons.alarm) return;
+      var s = parseFloat($('#second').text()).toFixed(1);
+      if (s === (0.0).toFixed(1)) View.setResetStyle();
+      Commons.alarm = setInterval((function(secondJQ, progressJQ){
+        return function(){
+          var s = parseFloat(secondJQ.text()).toFixed(1);
+          if (s > 0){
+            var percent = 100 * (s-0.1) / Commons.timeRemaining;
+            progressJQ.css("width", percent+"%").attr('aria-valuenow', percent)
+            .text((s-0.1).toFixed(1)+"s");
+            secondJQ.text((s - 0.1).toFixed(1));
+          } else {
+            clearInterval(Commons.alarm);
+            Commons.alarm = null;
+            Commons.gamers.all().forEach(function(id){
+              SocketController.triggerAction({action:'stop',user_id:id},"group.");
+              SocketController.receiveSubmitHandler({user_id:id});
+            });
+          }
+        };
+      })($('#second'), $('#progress_bar')), 100);
     }
   }[key] || Commons.emptyFn;
 })(Settings.genKey);
@@ -133,7 +156,7 @@ View.updateTrackButtons = (function(key){
 })(Settings.genKey);
 
 View.addCorrectCount = (function(key){
-  key = Commons.getCommonGenKey(key, ["A1+console","A2+console","A3+console","B1+console","B2+console","B2_v1+console", "mix+console"]);
+  key = Commons.getCommonGenKey(key, ["A1+console","A2+console","A3+console","B1+console","B2+console","B2_v1+console", "mix+console","group+console"]);
   return {
     // server: A1 A3 B1 B2 B2_v1
     "A1+console":function(id, val){
@@ -160,6 +183,7 @@ View.registerCanvas = (function(key){
   key = Commons.getCommonGenKey(key, ["B2+console","B2+tv"]);
   key = Commons.getCommonGenKey(key, ["B3+console","B3+tv","C4+tv"]);
   key = Commons.getCommonGenKey(key, ["mix+tv","C5+tv"]);
+  key = Commons.getCommonGenKey(key, ["group+console","group+tv"]);
   return {
     "A1+console":function(list, prefix){
       prefix = prefix || 'origin_';
@@ -223,12 +247,22 @@ View.registerCanvas = (function(key){
             CM.reg('_zoomTmp' + "_" + row + "_" + col);
         }
       }
+    },
+    "group+console": function(list){
+      var prefix = 'origin_';
+      count = Settings.totalBlocks;
+      for(var idx in list){
+        for(var b = 1; b <= count; b++){
+          CM.reg(prefix + list[idx] + "_" + b);
+        }
+      }
     }
   }[key] || Commons.emptyFn;
 })(Settings.genKey);
 
 View.loadSketchSecond = (function(key){
   key = Commons.getCommonGenKey(key, ["A1+tv","B3+tv"]);
+  key = Commons.getCommonGenKey(key, ["C1+tv","group+tv"]);
   return {
     "A1+tv":function(){    
       if(!Commons.sketchSecondIns){
@@ -348,6 +382,7 @@ View.setDownLocationStyle = (function(key){
   ]);
   key = Commons.getCommonGenKey(key, ["B2+console","B2+tv","mix+console","mix+tv","C5+tv"]);
   key = Commons.getCommonGenKey(key, ["B3+console","B3+tv","C4+tv"]);
+  key = Commons.getCommonGenKey(key, ["group+console","group+tv"]);
   return {
     // server: A1 A2 A3 B1 B2_v1
     // tv: A1 A2 A3 B1 B2_v1
@@ -363,6 +398,9 @@ View.setDownLocationStyle = (function(key){
     // tv: B3
     "B3+console":function(o){
       CM('origin_' + o.block.row + '_' + o.block.column).point({ x: o.x, y: o.y });
+    },
+    "group+console": function(o){
+      CM('origin_' + o.user_id + '_' + o.block).point({ x: o.x, y: o.y });
     }
   }[key] || Commons.emptyFn;
 })(Settings.genKey);
@@ -374,6 +412,7 @@ View.setMoveLocationStyle = (function(key){
   ]);
   key = Commons.getCommonGenKey(key, ["B2+console","B2+tv","mix+console","mix+tv","C5+tv"]);
   key = Commons.getCommonGenKey(key, ["B3+console","B3+tv","C4+tv"]);
+  key = Commons.getCommonGenKey(key, ["group+console","group+tv"]);
   return {
     // server: A1 A2 A3 B1 B2_v1
     // tv: A1 A2 A3 B1 B2_v1
@@ -389,6 +428,9 @@ View.setMoveLocationStyle = (function(key){
     // tv: B3
     "B3+console":function(o){
       CM('origin_' + o.block.row + '_' + o.block.column).line({ x: o.x, y: o.y });
+    },
+    "group+console": function(o){
+      CM('origin_' + o.user_id + '_' + o.block).line({ x: o.x, y: o.y });
     }
   }[key] || Commons.emptyFn;
 })(Settings.genKey);
@@ -397,9 +439,9 @@ View.setUpLocationStyle = Commons.emptyFn;
 
 View.setStartStyle = (function(key){
   key = Commons.getCommonGenKey(key, ["A3+tv","B1+tv","B2_v1+tv","B2_v1+console","B2+tv","C3+tv"]);
-  key = Commons.getCommonGenKey(key, ["A1+console","A3+console","B1+console"]);
+  key = Commons.getCommonGenKey(key, ["A1+console","A3+console","B1+console","group+console"]);
   key = Commons.getCommonGenKey(key, ["A2+console","mix+console"]);
-  key = Commons.getCommonGenKey(key, ["A1+tv","C1+tv"]);
+  key = Commons.getCommonGenKey(key, ["A1+tv","C1+tv","group+tv"]);
   key = Commons.getCommonGenKey(key, ["A2+tv","C2+tv"]);
   key = Commons.getCommonGenKey(key, ["B3+tv","C4+tv"]);
   key = Commons.getCommonGenKey(key, ["mix+tv","C5+tv"]);
@@ -455,9 +497,9 @@ View.setStartStyle = (function(key){
 })(Settings.genKey);
 
 View.setStopStyle = (function(key){
-  key = Commons.getCommonGenKey(key, ["A1+console","A2+console","A3+console","B1+console","B2_v1+console","mix+console"]);
+  key = Commons.getCommonGenKey(key, ["A1+console","A2+console","A3+console","B1+console","B2_v1+console","mix+console","group+console"]);
   key = Commons.getCommonGenKey(key, ["A3+tv","B1+tv","B2+tv","B2_v1+tv","C3+tv"]);
-  key = Commons.getCommonGenKey(key, ["A1+tv","C1+tv"]);
+  key = Commons.getCommonGenKey(key, ["A1+tv","C1+tv","group+tv"]);
   key = Commons.getCommonGenKey(key, ["A2+tv","C2+tv"]);
   key = Commons.getCommonGenKey(key, ["mix+tv","C5+tv"]);
   return {
@@ -572,6 +614,18 @@ View.setSubmitStyle = (function(key){
       $('#grid_' + cid).addClass("bor_g");
       // $("#grid_" + cid).css("opacity", "0");
       // $('#grid_' + cid).css("opacity", "1");
+    },
+    "group+console": function(o){
+      if(o.cid){
+        $('#word_' + o.cid).css("background-color", "#060");
+      }else{
+        $('#visitor_' + o.user_id).css("background-color", "#ff0");
+      }
+    },
+    "group+tv": function(o){
+      if(!o.cid){
+        $('#grid_' + o.user_id).addClass("bor_g");
+      }
     }
   }[key] || Commons.emptyFn;
 })(Settings.genKey);
@@ -616,6 +670,18 @@ View.setCancelSubmitStyle = (function(key){
     "C5+tv":function(o){
       var cid = o.cid || [o.user_id, 2, 2].join('_');
       $('#grid_' + cid).removeClass("bor_g");
+    },
+    "group+console": function(o){
+      if(o.cid){
+        $('#word_' + o.cid).css("background-color", "#999");
+      }else{
+        $('#visitor_' + o.user_id).css("background-color", "");
+      }
+    },
+    "group+tv": function(o){
+      if(!o.cid){
+        $('#grid_' + o.user_id).removeClass("bor_g");
+      }
     }
   }[key] || Commons.emptyFn;
 })(Settings.genKey);
@@ -629,6 +695,7 @@ View.setClearStyle = (function(key){
   key = Commons.getCommonGenKey(key, ["B3+console","B3+tv","C4+tv"]);
   key = Commons.getCommonGenKey(key, ["A1+client","B2+client","B3+client"]);
   key = Commons.getCommonGenKey(key, ["mix+tv","C5+tv"]);
+  key = Commons.getCommonGenKey(key, ["group+console","group+tv"]);
   return {
     // server: A1 A2 A3 B1 B2_v1
     // tv: A1 A2 A3 B1 B2_v1
@@ -686,6 +753,15 @@ View.setClearStyle = (function(key){
           }
         }
       }
+    },
+    "group+console": function(o){
+      if(o.cid){
+        CM('origin_' + o.cid).clear();
+      }else{
+        for(var i = 1; i <= Settings.totalBlocks; i++){
+          CM('origin_' + o.user_id + '_' + i).clear();
+        }
+      }
     }
   }[key] || Commons.emptyFn;
 })(Settings.genKey);
@@ -695,8 +771,9 @@ View.setClearAllStyle = (function(key){
   key = Commons.getCommonGenKey(key, ["A3+console","B1+console","B2_v1+console"]);
   key = Commons.getCommonGenKey(key, ["A3+tv","B1+tv","C3+tv"]);
   key = Commons.getCommonGenKey(key, ["A1+client","B2+client","B3.client"]);
-  key = Commons.getCommonGenKey(key, ["A1+tv","C1+tv"]);
+  key = Commons.getCommonGenKey(key, ["A1+tv","C1+tv","group+tv"]);
   key = Commons.getCommonGenKey(key, ["mix+tv","C5+tv"]);
+  key = Commons.getCommonGenKey(key, ["A1+console","group+console"]);
   return {
     // server: A3 B1 B2_v1
     "A3+console":function(o){
@@ -713,8 +790,8 @@ View.setClearAllStyle = (function(key){
       $('[id^=yes_img_]').hide();
       $('#progress_bar').css("width", "100%").attr("aria-valuenow","100%").text(Commons.timeRemaining+"s");
       Commons.gamers.all().forEach(function(id){
-        CM('origin_' + id).clear();
-        $('#visitor_' + id).css("background-color", "#ebf0fa");
+        SocketController.receiveClearHandler({user_id: id});
+        SocketController.receiveCancelSubmitHandler({user_id:id});
         $("#correct_button_" + id).removeClass("btn-success");
         SocketController.receiveActionHandler({name:'stop', user_id:id});
       });
@@ -771,7 +848,7 @@ View.setClearAllStyle = (function(key){
     "A1+tv":function(o){
       $('[id^=yes_img_]').hide();
       Commons.gamers.all().forEach(function(id){
-        CM('origin_' + id).clear();
+        SocketController.receiveClearHandler({user_id: id});
         SocketController.receiveCancelSubmitHandler({user_id:id});
         SocketController.receiveActionHandler({name:'stop', user_id:id});
       });
@@ -817,7 +894,8 @@ View.setRightStyle = (function(key){
   // *** tv: B3 no action
   key = Commons.getCommonGenKey(key, [
     "A1+console","A2+console","A3+console","B1+console","B2_v1+console",
-    "A1+tv","A2+tv","A3+tv","B1+tv","B2_v1+tv","C1+tv","C2+tv","C3+tv"
+    "A1+tv","A2+tv","A3+tv","B1+tv","B2_v1+tv","C1+tv","C2+tv","C3+tv",
+    "group+console","group+tv"
   ]);
   key = Commons.getCommonGenKey(key, ["B2+console","B2+tv","mix+console","mix+tv","C5+tv" ]);
   return {
@@ -839,7 +917,8 @@ View.setRemoveOStyle = (function(key){
   // *** tv: B3 no action
   key = Commons.getCommonGenKey(key, [
     "A1+console","A2+console","A3+console","B1+console","B2_v1+console",
-    "A1+tv","A2+tv","A3+tv","B1+tv","B2_v1+tv","C1+tv","C2+tv","C3+tv"
+    "A1+tv","A2+tv","A3+tv","B1+tv","B2_v1+tv","C1+tv","C2+tv","C3+tv",
+    "group+console","group+tv"
   ]);
   key = Commons.getCommonGenKey(key, ["B2+console","B2+tv","mix+console","mix+tv","C5+tv"]);
   return {
@@ -859,7 +938,7 @@ View.setRemoveOStyle = (function(key){
 View.setCorrectCountStyle = (function(key){
   // *** server: B3 no action
   // *** tv: A2 B3 no action
-  key = Commons.getCommonGenKey(key, ["A1+console","A3+console","B1+console"]);
+  key = Commons.getCommonGenKey(key, ["A1+console","A3+console","B1+console","group+console"]);
   key = Commons.getCommonGenKey(key, ["A2+tv","A3+tv"]);
   key = Commons.getCommonGenKey(key, ["C2+tv","C3+tv"]);
   return {
@@ -949,6 +1028,8 @@ View.setShowCorrectUsersStyle = (function(key){
   // *** server: A2 A3 B1 B2_v1 B3 no actions.
   // *** tv: A2 A3 B1 B2_v1 B3 no actions.
   key = Commons.getCommonGenKey(key, ["B2+console","B2+tv","mix+console","mix+tv"]);
+  key = Commons.getCommonGenKey(key, ["A1+console","group+console"]);
+  key = Commons.getCommonGenKey(key, ["C1+tv","group+tv"]);
   return {
     // server: A1
     "A1+console":function(o){
@@ -1088,7 +1169,7 @@ View.setUserOutStyle = (function(key){
   // *** tv: B2 B3 no action
   key = Commons.getCommonGenKey(key, ["A1+console","A3+console","B1+console","B2_v1+console"]);
   key = Commons.getCommonGenKey(key, ["A1+tv","A3+tv","B1+tv","B2_v1+tv"]);
-  key = Commons.getCommonGenKey(key, ["C1+tv","C3+tv"]);
+  key = Commons.getCommonGenKey(key, ["C1+tv","C3+tv","group+tv"]);
   return {
     // server: A1 A3 B1 B2_v1
     "A1+console":function(o){
@@ -1140,6 +1221,20 @@ View.setUserOutStyle = (function(key){
       $("#remove_writing_button_" + user_id).attr("disabled", true);
       $('#visitor_' + user_id).attr('style','opacity:0.2;border:3px solid #f8f8f8');
     },
+    "group+console": function(o){
+      var user_id = o.user_id;
+      for(var i = 1; i <= Settings.totalBlocks; i++){
+        CM.unreg('origin_' + user_id + '_' + i);
+      }
+      $("#remove_writing_button_" + user_id).attr("disabled", true);
+      $("#correct_button_" + user_id).attr("disabled", true);
+      $("#out_button_" + user_id).attr("disabled", true);
+      $("#start_button_" + user_id).attr("disabled", true);
+      $("#stop_button_" + user_id).attr("disabled", true);
+      $("#remove_O_button_" + user_id).attr("disabled", true);
+      // $("#zoom_button_" + user_id).attr("disabled", true);
+      $('#visitor_' + user_id).attr('style','opacity:0.2;border:3px solid #f8f8f8');
+    },
     // tv: A2
     "A2+tv":function(o){
       $('#out_' + o.user_id).show();
@@ -1178,9 +1273,10 @@ View.setUserOutStyle = (function(key){
 View.setResetStyle = (function(key){
   // *** server: A3 B1 B2_v1 B2 B3 no action
   // *** tv: A3 B1 B2_v1 B2 B3 no action
-  key = Commons.getCommonGenKey(key, ["A1+tv","C1+tv"]);
+  key = Commons.getCommonGenKey(key, ["A1+tv","C1+tv","group+tv"]);
   key = Commons.getCommonGenKey(key, ["A2+tv","C2+tv"]);
   key = Commons.getCommonGenKey(key, ["mix+tv","C5+tv"]);
+  key = Commons.getCommonGenKey(key, ["A1+console","group+console"]);
   return {
     // server: A1
     "A1+console":function(o){
@@ -1246,7 +1342,7 @@ View.setIsConnectedStyle = (function(key){
   // *** tv: all stages no action
   // *** server: B3 no action
   key = Commons.getCommonGenKey(key, [
-    "A1+console","A2+console","A3+console","B1+console","B2_v1+console","B2+console","mix+console"
+    "A1+console","A2+console","A3+console","B1+console","B2_v1+console","B2+console","mix+console","group+console"
   ]);
   return {
     // server: A1 A2 A3 B1 B2_v1 B2
@@ -1265,7 +1361,7 @@ View.setClientConnectedStyle = (function(key){
   // *** tv: all stages no action
   // *** server: B3 no action
   key = Commons.getCommonGenKey(key, [
-    "A1+console","A2+console","A3+console","B1+console","B2_v1+console","B2+console","mix+console"
+    "A1+console","A2+console","A3+console","B1+console","B2_v1+console","B2+console","mix+console","group+console"
   ]);
   return {
     // server: A1 A2 A3 B1 B2_v1 B2
@@ -1281,6 +1377,7 @@ View.setMoveBlockStyle = (function(key){
   // *** server: A1 A2 A3 B1 B2_v1 B2 no action
   // *** tv: A1 A2 A3 B1 B2_v1 no action
   key = Commons.getCommonGenKey(key, ["B3+console","B3+tv"]);
+  key = Commons.getCommonGenKey(key, ["mix+console","group+console"]);
   return {
     // server: B3
     // tv: B3
@@ -1525,6 +1622,12 @@ View.onContinueWriteClick = (function(key){
       SocketController.triggerCancelSubmit({user_id: id});
       if(Settings.commonWriting) View.setStartStyle({user_id: id});
       else SocketController.triggerAction({action:'start', user_id: id}, "mix.");
+    },
+    "group+console": function(){
+      var id = this.value;
+      SocketController.triggerContinueWrite({user_id: id}, "group.");
+      SocketController.triggerCancelSubmit({user_id: id});
+      View.setStartStyle({user_id: id});
     }
   }[key] || Commons.emptyFn;
 })(Settings.genKey);
@@ -1550,6 +1653,9 @@ View.onClearClick = (function(key){
     },
     "mix+console":function(){
       SocketController.triggerClear({user_id:this.value},"mix.");
+    },
+    "group+console":function(){
+      SocketController.triggerClear({user_id:this.value},"group.");
     },
     "A1+client":function(){
       SocketController.triggerClear({user_id:Settings.clientUserId, stamp: (new Date()).getTime() });
@@ -1582,6 +1688,7 @@ View.onClearClick = (function(key){
 
 View.onClearAllClick = (function(key){
   key = Commons.getCommonGenKey(key, ["A3+console","B1+console","B2_v1+console"]);
+  key = Commons.getCommonGenKey(key, ["A1+console","group+console"]);
   return {
     // server: A3 B1 B2_v1 B2
     "A3+console":function(){
@@ -1643,13 +1750,20 @@ View.onClearBlockClick = (function(key){
       var block = { row: xy[0], column:xy[1] };
       Commons.fromServerCommand = true;
       SocketController.triggerClear({user_id:uid, block:block },"mix.");
+    },
+    "group+console":function(){
+      var val = this.value.split(',');  // length 2
+      var uid = val.shift();
+      var block = val.join('');
+      Commons.fromServerCommand = true;
+      SocketController.triggerClear({user_id:uid, block: block}, "group.");
     }
   }[key] || Commons.emptyFn;
 })(Settings.genKey);
 
 View.onOutClick = (function(key){
   key = Commons.getCommonGenKey(key, [
-    "A1+console","A2+console","A3+console","B1+console","B2_v1+console","mix+console"
+    "A1+console","A2+console","A3+console","B1+console","B2_v1+console","mix+console","group+console"
   ]);
   return {
     // server: A1 A2 A3 B1 B2_v1
@@ -1708,6 +1822,12 @@ View.onStartAllClick = (function(key){
     "mix+console":function(){
       Commons.gamers.all().forEach(function(id){
         SocketController.triggerAction({action:'start', user_id: id},"mix.");
+      });
+      View.startCounter();
+    },
+    "group+console":function(){
+      Commons.gamers.all().forEach(function(id){
+        SocketController.triggerAction({action:'start', user_id: id},"group.");
       });
       View.startCounter();
     }
@@ -1796,12 +1916,22 @@ View.onStopAllClick = (function(key){
         SocketController.triggerAction({action:'stop', user_id: id},"mix.");
         View.setStopStyle({user_id:id});
       });
+    },
+    "group+console":function(){
+      if (!Commons.alarm) return;
+      clearInterval(Commons.alarm);
+      Commons.alarm = null;
+      Commons.gamers.all().forEach(function(id){
+        SocketController.triggerAction({action:'stop', user_id: id},"group.");
+        View.setStopStyle({user_id:id});
+      });
     }
   }[key] || Commons.emptyFn;
 })(Settings.genKey);
 
 View.onCorrectClick = (function(key){
   key = Commons.getCommonGenKey(key, ["A2+console","A3+console","B2_v1+console"]);
+  key = Commons.getCommonGenKey(key, ["A1+console","group+console"]);
   return {
     // server: B1
     "B1+console":function(){
@@ -1884,7 +2014,7 @@ View.onCorrectClick = (function(key){
 })(Settings.genKey);
 
 View.onRemoveOClick = (function(key){
-  key = Commons.getCommonGenKey(key, ["A1+console","A2+console","A3+console","B1+console","B2_v1+console"]);
+  key = Commons.getCommonGenKey(key, ["A1+console","A2+console","A3+console","B1+console","B2_v1+console","group+console"]);
   return {
     // server: A1 A2 A3 B1 B2_v1
     "A1+console":function(){
@@ -1939,7 +2069,7 @@ View.onRemoveAllOClick = (function(key){
 })(Settings.genKey);
 
 View.onMinusOneClick = (function(key){
-  key = Commons.getCommonGenKey(key, ["A1+console","A3+console","B1+console","B2_v1+console","mix+console"]);
+  key = Commons.getCommonGenKey(key, ["A1+console","A3+console","B1+console","B2_v1+console","mix+console","group+console"]);
   return {
     // server: A1 A3 B1 B2_v1
     "A1+console":function(){
@@ -1956,7 +2086,7 @@ View.onMinusOneClick = (function(key){
 })(Settings.genKey);
 
 View.onShowCorrectClick = (function(key){
-  key = Commons.getCommonGenKey(key, ["A1+console","mix+console"]);
+  key = Commons.getCommonGenKey(key, ["A1+console","mix+console","group+console"]);
   return {
     // server: A1
     "A1+console":function(){
@@ -1969,7 +2099,7 @@ View.onShowCorrectClick = (function(key){
 })(Settings.genKey);
 
 View.onSecondUpdateClick = (function(key){
-  key = Commons.getCommonGenKey(key, ["A1+console","mix+console"]);
+  key = Commons.getCommonGenKey(key, ["A1+console","mix+console","group+console"]);
   return {
     // server: A1
     "A1+console":function(){
@@ -2048,6 +2178,14 @@ View.onNextQuestionClick = (function(key){
         SocketController.triggerClear({user_id:newgamer}, "mix.");
         SocketController.triggerAction({action:'start',user_id:newgamer},"mix.");
       }
+    },
+    "group+console":function(){
+      Commons.correct_users = null;
+      SocketController.triggerClearAll({});
+      Commons.gamers.all().forEach( function(id) {
+        SocketController.triggerAction({action:'stop',user_id:id},"group.");
+      });
+      SocketController.triggerReset({second:Commons.timeRemaining});
     },
     // server A3 B1 B2_v1
     "A3+console":function(){

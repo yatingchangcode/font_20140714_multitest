@@ -14,7 +14,6 @@ module.exports = function (socket, io) {
 		if(msg.block){
 			return msg.user_id + '_' + msg.block;
 		}
-		return msg.user_id;
 	}
 
 	function server_control_action(action) {
@@ -115,7 +114,7 @@ module.exports = function (socket, io) {
 	    });
 
 	    var cid = msg.cid;
-	    if (user_id_file_path[cid]) {
+	    if (cid && user_id_file_path[cid]) {
 	    	cache_action(cid, "clear", null, null, msg.stamp);
 	    }
 	});

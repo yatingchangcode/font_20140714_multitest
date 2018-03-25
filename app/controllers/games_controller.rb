@@ -76,6 +76,14 @@ class GamesController < ApplicationController
     @join_visitors_number = params[:join_visitors_number]
   end
 
+  def stage_group
+    @game = Game.find(params[:id])
+
+    @stage = params[:stage]
+
+    @join_visitors_number = params[:join_visitors_number]
+  end
+
   def server1
     @game = Game.find(params[:id])
     @visitors = @game.visitors.where(number: params[:join_visitors_number].split(","))
@@ -271,6 +279,21 @@ class GamesController < ApplicationController
     # end
   end
 
+  def server_group
+    @game = Game.find(params[:id])
+    @visitors = @game.visitors.where(number: params[:join_visitors_number].split(","))
+    @range = 1..@visitors.size
+    @second = params[:second]
+    @counting = params[:counting]
+    @blocks = params[:blocks]
+    @stage = params[:stage]
+
+    Setting.messaging['second'] = @second
+    Setting.messaging['game'] = params[:id]
+    Setting.messaging['stage'] = @stage
+    Setting.messaging['blocks'] = @blocks
+  end
+
   def tvwall_A1
     @game = Game.find(params[:id])
     @visitors = @game.visitors.where(number: params[:join_visitors_number].split(","))
@@ -403,6 +426,17 @@ class GamesController < ApplicationController
     @locking = params[:locking]
   end
 
+  def tvwall_group
+    @game = Game.find(params[:id])
+    @visitors = @game.visitors.where(number: params[:join_visitors_number].split(","))
+    @range = 1..@visitors.size
+
+    @stage = params[:stage]
+    @second = params[:second]
+    @counting = params[:counting]
+    @blocks = params[:blocks]
+  end
+
   def record
     @game = Game.find(params[:id])
     @visitors = @game.visitors.where(number: params[:join_visitors_number].split(","))
@@ -431,6 +465,7 @@ class GamesController < ApplicationController
           second: Setting.messaging['second'],
           common: Setting.messaging['common'],
           locking: Setting.messaging['locking'],
+          blocks: Setting.messaging['blocks'],
           game: Setting.messaging['game'], 
           stage: Setting.messaging['stage'],
           recordUrl: Setting.messaging['record_url']} }

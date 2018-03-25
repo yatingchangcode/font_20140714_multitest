@@ -1,0 +1,237 @@
+<%
+  @col_md_num = 2
+  case @visitors.length
+  when 4
+    @col_md_num = 3
+  end
+%>
+<% content_for :stylesheets do %>
+<style type="text/css">
+
+.progress-bar {
+  transition: width 0.1s;
+}
+
+.canvasblock {
+  margin-left: 0;
+  margin-right: 0;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.nopadding {
+  padding: 0;
+  margin: 0;
+ }
+
+.origincanvas {
+  background-color: #fff;
+}
+
+</style>
+<% end %>
+      <div class="jumbotron">
+        <h2>一字千金 操作後台</h2>
+<!--         <h4>目前上線人數<span id="user_count">0</span>人</h4>
+ -->    <% if @second.to_i > 0 %>
+          <h3>倒數計時 <span id="second" style="color:red"><%= @second %></span> 秒 </h3>
+          <div style="padding:5px;">
+            <input id="secondInput" value="<%= @second %>" style="width:60px;" />
+            <button id="secondUpdate">更新秒數</button>
+          </div>
+        <% end %>
+      </div>
+      <div style="">
+        <div id="gamers_div" class="row">
+          <% @visitors.each_with_index do |x,index| %>
+          <div class="visitor col-md-<%= @col_md_num %>" id="visitor_<%= x.number %>" style="background-color:#ebf0fa; border:3px solid #f8f8f8">
+          <div class="row">
+            <%= index+1 %>
+            <div class="row-fluid">
+                <button id="correct_button_<%= x.number %>" style="font-size:12px;" value="<%= x.number %>" type="button" class="correct_button btn btn-default navbar-btn">答對</button>
+                <button id="continue_<%= x.number %>" style="font-size:12px;" value="<%= x.number %>" type="button" class="btn btn-default navbar-btn">繼續寫</button>
+                <button id="out_button_<%= x.number %>" style="font-size:12px;" value="<%= x.number %>" type="button" class="btn btn-default navbar-btn">淘汰</button>
+            </div>
+            <!--
+            <div class="col-md-1">
+              <input type="checkbox" name="gamer" value="<%= x.number %>"/>
+
+            </div>
+            -->
+            <div class="row">
+                <div class="col-md-3">
+                <%= render_gamer_photo(x,"thumb",50,50) %>
+                </div>
+                <div class="col-md-9">
+                  <div class="row-fluid"><%= x.name %></div>
+                  <div class="col-md-4">
+                    <div id="status_<%= x.number %>" class="label label-danger">OffLine</div>
+                  </div>
+                  <% if @counting == '1' %>
+                  <div class="col-md-4">
+                    <div>答對:</div>
+                    <div id="no_correct_<%= x.number %>" class="badge">0題</div>
+                  </div>
+                  <% end -%>
+                </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <!-- <canvas id="origin_<%= x.number %>" class="orgincanvas" style="z-index:1"></canvas> -->
+                <% (1..@blocks).to_a.each do |b| %>
+                <div class="row nopadding">
+                  <div id="word_<%= x.number %>_<%= b %>" class="col-md-4 nopadding" style="background-color:#999;border:3px solid rgba(0,0,0,.4)">
+                    <button id="clear_button_<%= x.number %>_<%= b %>" value="<%= x.number %>,<%= b %>" type="button" class="btn btn-xs btn-default" style="position:absolute;top:0px;left:0px;opacity:0.6;z-index:2;text-decoration:line-through;">✎</button>
+                    <!-- <button name="correct_button_<%= x.number %>_<%= b %>" value="<%= x.number %>,<%= b %>" type="button" class="btn btn-xs btn-default" style="position:absolute;top:0px;left:21px;opacity:0.6;z-index:2">◯</button>
+                    <button name="remove_O_button_<%= x.number %>_<%= b %>" value="<%= x.number %>,<%= b %>" type="button" class="btn btn-xs btn-default" style="position:absolute;top:0px;left:42px;opacity:0.6;z-index:2;text-decoration:line-through;">◯</button> -->
+                    <canvas id="origin_<%= x.number %>_<%= b %>" class="origincanvas" style="z-index:1"></canvas>
+                  </div>
+                </div>
+                <% end %>
+                <img id="yes_img_<%= x.number %>" src="/assets/O-mark.png" height="150" style="display:none;z-index:10;position:absolute;right:20px;bottom:0px;" ></img>
+              </div>
+            </div>
+            <div class="row-fluid" style="margin:auto">
+              <!-- <button id="out_button_<%= x.number %>" style="font-size:12px;" value="<%= x.number %>" type="button" class="btn btn-default navbar-btn">淘汰</button> -->
+
+              
+              <!-- <button name="remove_all_O_button_<%= x.number %>" value="<%= x.number %>" style="font-size:12px;" value="<%= x.number %>" type="button" class="correct_button btn btn-default navbar-btn">清除圈圈</button> -->
+              <% if @counting == '1' %>
+              <button id="minus_one_button_<%= x.number %>" value="<%= x.number %>" style="font-size:12px;" value="<%= x.number %>" type="button" class="correct_button btn btn-default navbar-btn">扣一分</button>
+              <% end %>
+              <button id="remove_O_button_<%= x.number %>" style="font-size:12px;" value="<%= x.number %>" type="button" class="correct_button btn btn-default navbar-btn">清除圈圈</button>
+              <button id="remove_writing_button_<%= x.number %>" value="<%= x.number %>" style="font-size:12px;" value="<%= x.number %>" type="button" class="correct_button btn btn-default navbar-btn">清除筆跡</button>
+              <!-- <button id="zoom_button_<%= x.number %>" style="font-size:12px;" value="<%= x.number %>" type="button" class="correct_button btn btn-default navbar-btn">放大</button> -->
+            </div>
+          </div>
+          </div>
+          <% end %>
+        </div>
+        <div class="row">
+          <div class="col-md-6">
+            <button id="show_correct_button" style="font-size:15px;">顯示正確使用者</button>
+            <button id="start_button" style="font-size:15px;">全部開始</button>
+            <button id="stop_all_button" style="font-size:15px;">全部停止</button>
+            <button id="clear_button" style="font-size:15px;">全部清除</button>
+            <button id="next_question_button" style="font-size:15px;">下一題</button>
+            <!-- <button id="clear_correct_button" style="font-size:15px;">清空答題記錄</button> -->
+          </div>
+          <% if @second.to_i > 0 %>
+          <div class="col-md-4">
+            <div class="progress"> 
+              <div id="progress_bar" class="progress-bar" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%;">
+              <%= @second %>s
+              </div>
+            </div>
+          </div>
+          <% end %>
+        </div>
+      </div>
+
+      <% content_for :javascripts do %>
+
+      <script>
+      document.write('<script src="//'+ location.hostname + ':5001/socket.io/socket.io.js">\x3C/script>');
+      </script>
+
+      <script>
+      // cache stage name for server1-tvwall.js
+      window.stageName = '<%= @stage %>';
+      window.pageType = "console";  // type: console, client, tv
+      window.counting = <%= @counting == '1' %>;
+      <% if @second.to_i > 0 %>
+      window.timeRemaining = <%= @second %>;
+      <% end %>
+
+      window.totalBlocks = <%= @blocks %>;
+
+      </script>
+
+      <%= javascript_include_tag 'socketevent-generator' %>
+      <%= javascript_include_tag 'commons' %>
+      <%= javascript_include_tag 'action-definition' %>
+      <%= javascript_include_tag 'view-definition' %>
+      <%= javascript_include_tag 'socketevent-hooker' %>
+      
+      <script>
+
+      var tvwall = window.open("tvwall_<%= @stage %>?" + window.location.search.split('&').slice(1).join('&'),
+        "tvwallWindow","width=800, height=800");
+
+      $(document).ready(function() {
+        CM.prop({
+          width: 500,
+          height: 500,
+          lineWidth: 15,
+          lineColor: '#333333',
+          targetZoomScale: 0.1,
+          responsiveByParent: true
+          //backgroundImage: '/assets/block-524.png'
+
+        });
+        
+        var gamerList = [];
+        <% @visitors.each do |visitor| %>
+        gamerList.push('<%= visitor.number %>');
+        <% end %>
+      
+        View.setGameCurrentInfo();
+        View.registerCanvas(gamerList);
+        View.collectGamers(gamerList);
+        
+        SocketController.triggerReset({stage:'<%= @stage %>'});
+        SocketController.triggerSetGameinfoToSocket({
+          game: <%= @game.id %>,
+          stage: "<%= @stage %>",
+          visitors: "<%= @visitors.to_json %>"
+        },"group.");
+
+        $('[id^=continue_]').click(View.onContinueWriteClick);
+
+        // $('[id^=zoom_button_]').click(View.onZoomClick);
+
+        $("[id^=out_button_]").click(View.onOutClick);
+
+        // $('[id^=start_button_]').click(View.onStartClick);
+
+        // $('[id^=stop_button_]').click(View.onStopClick);
+
+        $('[id^=correct_button_]').click(View.onCorrectClick);
+        // $('[name^=correct_button_]').click(View.onCorrectClick);
+
+        // clear block
+        $('[id^=clear_button_]').click(View.onClearBlockClick);
+
+        // $('[name^=remove_O_button_]').click(View.onRemoveOClick);
+        $('[id^=remove_O_button_]').click(View.onRemoveOClick);
+
+        // clear person
+        $('[id^=remove_writing_button_]').click(View.onClearClick);
+
+        $('[id^=minus_one_button_]').click(View.onMinusOneClick);
+
+        // $('#reset_time_button').click(View.onSecondUpdateClick);
+        $('#secondUpdate').click(View.onSecondUpdateClick);
+
+        // $('#showTextButton').click(View.onShowTextClick);
+
+        // clear all persons
+        $('#clear_button').click(View.onClearAllClick);
+
+        $('#start_button').click(View.onStartAllClick);
+
+        $('#show_correct_button').click(View.onShowCorrectClick);
+
+        $('#stop_all_button').click(View.onStopAllClick);
+
+        $('#next_question_button').click(View.onNextQuestionClick);
+
+        CM.doAllResponsive();
+        <% @visitors.each do |visitor| %>
+        SocketController.triggerIsConnected({user_id:Settings.consoleUserId,check_id:<%= visitor.number %>});
+        <% end %>
+
+      });
+
+      </script>
+      <% end %>

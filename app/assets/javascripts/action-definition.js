@@ -69,7 +69,7 @@ Action.onStop = (function(key){
   // *** tv: A2 B2 B3 no actions
   key = Commons.getCommonGenKey(key, [
     "A1+console","A3+console","B1+console","B2_v1+console","B2+console",
-    "A1+tv","A3+tv","B1+tv","B2_v1+tv","C1+tv","C3+tv"
+    "A1+tv","A3+tv","B1+tv","B2_v1+tv","C1+tv","C3+tv","group+console","group+tv"
   ]);
   return {
     // server: A1 A3 B1 B2 B2_v1
@@ -179,7 +179,7 @@ Action.onRemoveO = Commons.emptyFn;
 
 Action.onSetCorrectCount = (function(key){
   // *** server: all stages are no action
-  key = Commons.getCommonGenKey(key, ["A1+tv","B1+tv","mix+tv","C1+tv","C5+tv"]);
+  key = Commons.getCommonGenKey(key, ["A1+tv","B1+tv","mix+tv","C1+tv","C5+tv","group+tv"]);
   key = Commons.getCommonGenKey(key, ["A3+tv","B2+tv","C3+tv"]);
   return {
     // tv: A1 B1
@@ -204,7 +204,8 @@ Action.onUserOut = (function(key){
   // *** tv: B2 B3 no action
   key = Commons.getCommonGenKey(key, [
     "A1+console", "A2+console", "A3+console", "B1+console", "B2_v1+console","mix+console",
-    "A1+tv", "A2+tv", "A3+tv", "B1+tv", "B2_v1+tv","mix+tv","C1+tv","C2+tv","C3+tv","C5+tv"
+    "A1+tv", "A2+tv", "A3+tv", "B1+tv", "B2_v1+tv","mix+tv","C1+tv","C2+tv","C3+tv","C5+tv",
+    "group+console","group+tv"
   ]);
   return {
     // server: A1 A2 A3 B1 B2_v1

@@ -67,6 +67,9 @@
     <%= link_to "成雙成對 (一字千金版)","#",id: "stageC3",class: "btn btn-lg btn-primary"  %>
     <%= link_to "隻字片語","#",id: "stageCidioms",class: "btn btn-lg btn-primary"  %>
     <%= link_to "東拼西湊","#",id: "stageCmix",class: "btn btn-lg btn-primary"  %>
+
+    <br/><br/>
+    <%= link_to "成語對對碰、字裡乾坤 (4~6人)","#",id: "stage_group",class: "btn btn-lg btn-info"  %>
   </div>
 </div>
 
@@ -187,7 +190,10 @@ $(document).ready(function(){
     location.href = '/games/<%= @game.id %>/stage_mix?stage=C-mix&join_visitors_number=' + join_visitors_number;
   }
 
-
+  document.getElementById('stage_group').onclick = function(e){
+    var join_visitors_number = getVisitorsNumberArray(e);
+    location.href = '/games/<%= @game.id %>/stage_group?stage=group&join_visitors_number=' + join_visitors_number;
+  }
 
 });
 </script>

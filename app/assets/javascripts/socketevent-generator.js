@@ -52,6 +52,10 @@ Object.defineProperty(Settings, 'socketProtocol', {
   value: window.socketProtocol || 'http',
   writable: false
 });
+Object.defineProperty(Settings, 'totalBlocks', {
+  value: window.totalBlocks || 3,
+  writable: false
+});
 
 // ======== Listening Events ========
 var socketListenEvents = [
