@@ -78,7 +78,7 @@
             <div class="row">
               <div class="col-md-12">
                 <!-- <canvas id="origin_<%= x.number %>" class="orgincanvas" style="z-index:1"></canvas> -->
-                <% (1..@blocks).to_a.each do |b| %>
+                <% (1..@blocks.to_i).to_a.each do |b| %>
                 <div class="row nopadding">
                   <div id="word_<%= x.number %>_<%= b %>" class="col-md-4 nopadding" style="background-color:#999;border:3px solid rgba(0,0,0,.4)">
                     <button id="clear_button_<%= x.number %>_<%= b %>" value="<%= x.number %>,<%= b %>" type="button" class="btn btn-xs btn-default" style="position:absolute;top:0px;left:0px;opacity:0.6;z-index:2;text-decoration:line-through;">✎</button>

@@ -153,7 +153,7 @@ body,.container{
                 <div class="GridMix">
                   <div id="grid_<%= visitor.number %>" class="Grid">
                     <table style="table-layout:fixed;">
-                      <% (1..@blocks).to_a.each do |b| %>
+                      <% (1..@blocks.to_i).to_a.each do |b| %>
                       <tr>
                         <td style="padding:0">
                           <canvas id="origin_<%= visitor.number %>_<%= b %>" width="100%" ></canvas>
