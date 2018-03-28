@@ -9,7 +9,7 @@
     <h1>Game <%= @game.id %> > Stage <%= @stage %></h1>
     <h2>規則</h2>
     <% if ['C1','C3','A1','A3','B1'].include? @stage %>
-    <h3>使用者可同時做答<h3>
+    <h3>使用者可同時做答</h3>
     <% end %>
     <% if ['C1','A1'].include? @stage %>
     <h3>使用者畫面上不顯示秒數</h3>
