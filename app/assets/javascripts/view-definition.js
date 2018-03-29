@@ -359,16 +359,10 @@ View.setGameCurrentInfo = function(){
   var params = [
     'second=' + (Commons.timeRemaining || ""),
     'common=' + (Settings.commonWriting? 1 : 0),
-    'locking=' + (Settings.lockOthers? 1 : 0)
+    'locking=' + (Settings.lockOthers? 1 : 0),
+    'blocks=' + (Commons.showBlocks || "")
   ];
-  $.post('/games/set_game_data.json?' + params.join('&'),
-    function(data){            
-      //var res = JSON.parse(data);
-      console.log("update settings:" + JSON.stringify(data));
-    }
-  ).fail(function(e){
-    console.log('error' + JSON.stringify(e));
-  });
+  return $.post('/games/set_game_data.json?' + params.join('&'));
 };
 
 
@@ -1273,10 +1267,9 @@ View.setUserOutStyle = (function(key){
 View.setResetStyle = (function(key){
   // *** server: A3 B1 B2_v1 B2 B3 no action
   // *** tv: A3 B1 B2_v1 B2 B3 no action
-  key = Commons.getCommonGenKey(key, ["A1+tv","C1+tv","group+tv"]);
+  key = Commons.getCommonGenKey(key, ["A1+tv","C1+tv"]);
   key = Commons.getCommonGenKey(key, ["A2+tv","C2+tv"]);
   key = Commons.getCommonGenKey(key, ["mix+tv","C5+tv"]);
-  key = Commons.getCommonGenKey(key, ["A1+console","group+console"]);
   return {
     // server: A1
     "A1+console":function(o){
@@ -1307,6 +1300,25 @@ View.setResetStyle = (function(key){
         }
       }
     },
+    "group+console":function(o){
+      if (o.second != null) {
+        // resetSetStyle(o.second);
+        $('#progress_bar').css("width", "100%").attr("aria-valuenow","100%").text(Commons.timeRemaining+"s");
+        // console.log(Commons.timeRemaining);
+        $('#second').text(Commons.timeRemaining);
+      }
+      if (o.showBlocks != null){
+        // class: canvas-wrap
+        Commons.gamers.all().forEach(function(id){
+          for(var idx = o.showBlocks + 1; idx <= window.totalBlocks; idx++ ){
+            $(".canvas-wrap-" + id + "-" + idx).hide();
+          }
+          for(var idx = 1; idx <= o.showBlocks; idx++){
+            $(".canvas-wrap-" + id + "-" + idx).show();
+          }
+        });
+      }
+    },
     // tv: A1
     "A1+tv":function(o){
       Commons.sketchSecondIns.resetBar();
@@ -1333,6 +1345,21 @@ View.setResetStyle = (function(key){
             Commons.sketchSecondIns[id].setSecond(parseInt(o.second));
           });
         }
+      }
+    },
+    "group+tv":function(o){
+      Commons.sketchSecondIns.resetBar();
+      Commons.sketchSecondIns.setSecond(parseInt(o.second));
+      if (o.showBlocks != null){
+        // class: canvas-wrap
+        Commons.gamers.all().forEach(function(id){
+          for(var idx = o.showBlocks + 1; idx <= window.totalBlocks; idx++ ){
+            $(".canvas-wrap-" + id + "-" + idx).css("display","none");
+          }
+          for(var idx = 1; idx <= o.showBlocks; idx++){
+            $(".canvas-wrap-" + id + "-" + idx).css("display","");
+          }
+        });
       }
     }
   }[key] || Commons.emptyFn;
@@ -2127,6 +2154,17 @@ View.onSecondUpdateClick = (function(key){
       //   console.log('error' + JSON.stringify(e));
       // });
       View.setGameCurrentInfo();
+    }
+  }[key] || Commons.emptyFn;
+})(Settings.genKey);
+
+View.onBlockUpdateClick = (function(key){
+  return {
+    "group+console": function(){
+      Commons.showBlocks = parseInt($('#blockInput').val()); 
+      View.setGameCurrentInfo().done(function(){
+        SocketController.triggerReset({ stage: window.stageName, showBlocks: Commons.showBlocks });
+      });
     }
   }[key] || Commons.emptyFn;
 })(Settings.genKey);

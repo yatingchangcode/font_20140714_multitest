@@ -497,6 +497,12 @@ class GamesController < ApplicationController
       Setting.messaging['locking'] = params[:locking]
       res['success'] = true
     end
+
+    if params[:blocks]
+      Setting.messaging['blocks'] = params[:blocks]
+      res['success'] = true
+    end
+
     respond_to do |format|
       format.json { render :json => res }
     end
