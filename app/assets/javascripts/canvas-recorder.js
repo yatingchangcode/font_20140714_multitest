@@ -185,7 +185,7 @@
 		this.scale_ = minWidth / sourceMinWidth;
 		
 		var con = this.context_ = this.el_.getContext('2d');
-		var back = this.prop_.backgroundImage || prop_.backgroundImage;
+		var back = prop_.backgroundImage;
 		if(back){
 			if(typeof back == 'string'){
 				this.backImg_ = new Image();
@@ -400,6 +400,17 @@
 		if(property && Object.prototype.toString.call(property) == '[object Object]'){
 			for(var p in property){
 				this.prop_[p] = property[p];
+
+				// for image load
+				if(p == "backgroundImage"){
+					var back = property[p];
+					// currently only accept image element
+					if(Object.prototype.toString.call(back) == '[object HTMLImageElement]'){
+						this.backImg_ = back;
+						this.context_.drawImage(back, 0, 0, this.width_, this.height_);
+						this.backImgLoad_ = true;
+					}
+				}
 			}
 			return this;
 		}
@@ -492,19 +503,19 @@
 			for(var ins in instanceMap_){
 				instanceMap_[ins].prop(property);
 			}
-			var back = prop_.backgroundImage;
-			if(back){
-				if(typeof back == 'string'){
-					var imgEl = new Image();
-					imgEl.onload = function(){
-						prop_.backgroundImage = this;
-					};
-					imgEl.src = back;
-				}else if(Object.prototype.toString.call(back) == '[object HTMLImageElement]'){
-				}else{
-					console.error('CR can not handle the invalid image url/element.');
-				}
-			}
+			// var back = prop_.backgroundImage;
+			// if(back){
+			// 	if(typeof back == 'string'){
+			// 		var imgEl = new Image();
+			// 		imgEl.onload = function(){
+			// 			prop_.backgroundImage = this;
+			// 		};
+			// 		imgEl.src = back;
+			// 	}else if(Object.prototype.toString.call(back) == '[object HTMLImageElement]'){
+			// 	}else{
+			// 		console.error('CR can not handle the invalid image url/element.');
+			// 	}
+			// }
 		}
 		return prop_;
 	};

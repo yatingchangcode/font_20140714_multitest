@@ -10,14 +10,42 @@
     </div>
   </div>
   <div class="row">
-  	<% @files.each do |x| %>
-  	  <div>
-  	  	<span>name: </span>
-  	  	<span style="color:#2087b1;"><%= link_to x.split('/').last,x %></span>
-  	  	<span>status: </span>
-  	  	<span id="<%= x.split('/').last %>" style="color:#2087b1;">尚未開始</span>
-  	  </div>
-	<% end %>  
+    <div class="col-md-2">
+      <h3>九宮格</h3>
+      <img id="night-blocks-image" src="/assets/block-524-black-with-line.png" width="150" />      
+    </div>
+    <div class="col-md-2">
+      <h3>純黑</h3>
+      <img id="only-black-image" src="/assets/block-524-black.png" width="150" />
+    </div>
+  </div>
+  <div class="row">
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Background</th>
+          <th>Status</th> 
+        </tr>
+      </thead>
+      <tbody>
+    	<% @files.each do |x| %>
+        <tr>
+          <%
+            @file_name = x.split('/').last
+          %>
+          <td style="color:#2087b1;"><%= link_to @file_name,x %></td>
+          <td>
+            <input map-img="night-blocks-image" id="nightBlocks-<%= @file_name %>" type="radio" name="chooseBack-<%= @file_name %>" checked>
+            <label for="nightBlocks-<%= @file_name %>">九宮格</label>
+            <input map-img="only-black-image" id="onlyBlack-<%= @file_name %>" type="radio" name="chooseBack-<%= @file_name %>">
+            <label for="onlyBlack-<%= @file_name %>">純黑</label>
+          </td>
+          <td id="<%= @file_name %>" style="color:#2087b1;">尚未開始</td>
+        </tr>
+      <% end %>  
+      </tbody>
+    </table>
   </div>
 
   <% content_for :javascripts do %>
@@ -67,13 +95,15 @@
 	return renew;
   }
 
-  var parsePoints = function(info){
+  var parsePoints = function(info, back){
   	var file_name = info.file_path.split('/').pop();
   	//var stage = file_name.split('stage')[1].substr(0, 2);
   	// var crkey = file_name.substr(0, file_name.length - 7) + "_" + (info.cid || "");
     var crkey = file_name.split('stage')[1].substr(0, 2) + "_" + (info.cid || "");
   	var points = info.data;
   	CR.reg(crkey);
+    if(back) CR(crkey).prop( { backgroundImage: back } );
+
   	console.log(crkey);
 
   	for(var i = 0, len = points.length; i < len; i++){
@@ -259,13 +289,13 @@
       // lineColor: '#f0f0f0',
       frameRate: 50,
       //cacheLastFrame: true,
-      lazyOutput: false,
-      backgroundImage: '/assets/block-524-black-with-line.png'
+      lazyOutput: false
+      // backgroundImage: '/assets/block-524-black-with-line.png'
     });
 
+    // backgroundImage: '/assets/block-524-black.png'
+
     //cacheLastFrame
-
-
 
     //window.pinhole = new Pinhole('0');
     window.pinhole = new Pinhole('record');
@@ -374,9 +404,18 @@
               return function(data){
                 var id = url.split('/').pop();
                 var el = document.getElementById(id);
+                var chooseBack;
                 //var res = JSON.parse(data);
                 $(el).html("轉換檔案中...");
-                parsePoints(data);
+
+                $("input[name='chooseBack-" + id + "']").each(function(idx, val){
+                  if(val.checked){
+                    chooseBack = document.getElementById( $(val).attr("map-img") );
+                  }
+                });
+
+                parsePoints(data, chooseBack);
+                
                 // $(el).html("轉換OK");
                 // window.isIdle = true;
                 // window.currentUrl = null;
