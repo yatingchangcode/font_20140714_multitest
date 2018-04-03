@@ -1359,6 +1359,8 @@ View.setResetStyle = (function(key){
           for(var idx = 1; idx <= o.showBlocks; idx++){
             $(".canvas-wrap-" + id + "-" + idx).css("display","");
           }
+          var outEl = $("#out_" + id);
+          outEl.css("top", (outEl.parent().height() - outEl.height()) / 2 );
         });
       }
     }

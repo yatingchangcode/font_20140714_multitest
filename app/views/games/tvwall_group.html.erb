@@ -1,39 +1,44 @@
 <%
   # NOT yet confirm
+  @table_width_increase = 0
+  if @counting == '1' 
+    @table_width_increase = 5
+  end
+
   @name_split_height = 10
   @bar_spacing = "30"
   @space_top = "80"
   @space_left = "4%"
   @space_left = "3%"
   @space_right = "3%"
-  @canvas_scale = 0.101
-  @font_formula = "w / 3 * 14 / 15"
-  @bar_formula = "(w + 5) / 2"
+  @space_width = (100 - 3 * 2) / @visitors.length
+  @canvas_scale = 0.079
+  @font_formula = "w / 3 * 0.83"
   @timebar_height = "16px"
   @video_position = "80px"
   @video_position_left = "0px"
   @video_zoom = "100%"
   @grid_border = 6.5
   @td_colspan = 11
-  @wrap_table_width = 60
+  @wrap_table_width = 72 + @table_width_increase
   @count_padding = "0.2em"
-  @count_size = "3em"
+  @count_size = "3.2em"
   case @visitors.length
   when 4
-    @font_formula = "w / 3 * 14 / 15"
-    @bar_formula = "(w + 3) / 2"
-    @canvas_scale = 0.101
-    @wrap_table_width = 65
+    @count_size = "3.8em"
+    @count_padding = "0.3em"
+    # @canvas_scale = 0.075
+    @wrap_table_width = 66 + @table_width_increase
     @grid_border = 7
     @split_width = "6%"
     @video_position = "100px"
   when 6
-    @font_formula = "w / 3 * 14 / 15"
-    @bar_formula = "(w + 3) / 2"
-    @canvas_scale = 0.1
+    @count_size = "3em"
+    @font_formula = "w / 3 * 0.88"
+    # @canvas_scale = 0.075
     @grid_border = 6
     @name_split_height = 12
-    @wrap_table_width = 70
+    @wrap_table_width = 79 + @table_width_increase
     @split_width = "4%"
     @video_position = "100px"
   end
@@ -103,7 +108,7 @@ body,.container{
     <tr>
       <td width="<%= @space_left %>"></td>
       <% @visitors.each do |visitor| %>
-      <td>
+      <td width="<%= @space_width %>%">
         <div class="box_a">
           <!-- <div id="out_<%= visitor.number %>" class="out">
             <img src="/assets/tvwall/out.png" width="100%"/>
@@ -152,9 +157,9 @@ body,.container{
                     </table>
                     <div id="yes_img_<%= visitor.number %>" class="correct"><img src="/assets/tvwall/red_ring.png" width="100%"/></div>
                   </div>
-                </div>
-                <div id="out_<%= visitor.number %>" class="out">
-                  <img src="/assets/tvwall/out_s.png" width="100%"/>
+                  <div id="out_<%= visitor.number %>" class="out">
+                    <img src="/assets/tvwall/out_s.png" width="100%"/>
+                  </div>
                 </div>
               </td>
             </tr>
@@ -215,6 +220,14 @@ window.responsiveMethod = function(){
   jqGridEl.width(w);
   outEl.width(jqGridEl.outerWidth());
 
+  // tune left top
+  var gridParent = jqGridEl.parent();
+
+  outEl.css("left", ( gridParent.width() - outEl.width() ) / 2 );
+  setTimeout(function(){
+    outEl.css("top", ( gridParent.height() - outEl.height() ) / 2 );
+  }, 800);
+
   // zoomEl.width(zoomSize).height(zoomSize);
   // zoomInnerEl.width(zoomSize).height(zoomSize);
   // zoomInnerEl.css("border", borderWidth + "px solid #fff")
@@ -231,7 +244,7 @@ window.tuneLinePosition = function(){
   // 44 means picture height
   //namebox.css('background-position-y', w / 2 - parseFloat(name.css('padding-top')) * 1.8 - w / 3 / 15 * 0.2 );
   //namebox.css('background-position-y', w / 2 - parseFloat(name.css('padding-top')) * 2 - (44 - 38) / 2 );
-  namebox.css('background-position-y', <%= @bar_formula %> );
+  // namebox.css('background-position-y', bar_formula );
   //alert(w);
 
   $(".box_a").height($(".box_a").height());
