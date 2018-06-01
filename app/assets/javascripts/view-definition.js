@@ -670,6 +670,9 @@ View.setCancelSubmitStyle = (function(key){
         $('#word_' + o.cid).css("background-color", "#999");
       }else{
         $('#visitor_' + o.user_id).css("background-color", "");
+        for(var i = 1; i <= Settings.totalBlocks; i++){
+          $('#word_' + o.user_id + '_' + i ).css("background-color", "#999");
+        }
       }
     },
     "group+tv": function(o){
