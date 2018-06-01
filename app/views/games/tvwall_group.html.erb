@@ -1,6 +1,7 @@
 <%
   # NOT yet confirm
   @table_width_increase = 0
+  @isCounting = @counting == '1'
   if @counting == '1' 
     @table_width_increase = 5
   end
@@ -8,10 +9,10 @@
   @name_split_height = 10
   @bar_spacing = "30"
   @space_top = "80"
-  @space_left = "4%"
   @space_left = "3%"
   @space_right = "3%"
   @space_width = (100 - 3 * 2) / @visitors.length
+  @counting_padding_top = "15px"
   @canvas_scale = 0.079
   @font_formula = "w / 3 * 0.83"
   @timebar_height = "16px"
@@ -24,6 +25,32 @@
   @count_padding = "0.2em"
   @count_size = "3.2em"
   case @visitors.length
+  when 2
+    @space_left = "18%"
+    @space_right = "18%"
+    @space_width = (100 - 18 * 2) / @visitors.length
+    @counting_padding_top = "35px"
+    @count_size = "4em"
+    @count_padding = "0.4em"
+    @font_formula = @isCounting? "w / 3 * 0.88" : "w / 3 * 0.83"
+    # @canvas_scale = 0.075
+    @wrap_table_width = 70 + @table_width_increase
+    @grid_border = 8
+    @split_width = "8%"
+    @video_position = "100px"
+  when 3
+    @space_left = "12%"
+    @space_right = "12%"
+    @space_width = (100 - 12 * 2) / @visitors.length
+    @counting_padding_top = "24px"
+    @count_size = "4em"
+    @count_padding = "0.4em"
+    @font_formula = @isCounting? "w / 3 * 0.88" : "w / 3 * 0.83"
+    # @canvas_scale = 0.075
+    @wrap_table_width = 75 + @table_width_increase
+    @grid_border = 8
+    @split_width = "8%"
+    @video_position = "100px"
   when 4
     @count_size = "3.8em"
     @count_padding = "0.3em"
@@ -96,7 +123,7 @@ body,.container{
 </table>
 <% end %>
 
-<% if @visitors.length >= 4 and @visitors.length <= 6 %>
+<% if @visitors.length >= 2 and @visitors.length <= 6 %>
 <div class="Content">
   <table width="100%" border="0" cellspacing="0" cellpadding="0">
     <tr>
@@ -135,7 +162,7 @@ body,.container{
                     <p class="name"><%= visitor.name %></p>
                   </div>
                   <% if @counting == '1' %>
-                  <div class="answer10" style="padding:15px 0 5px 10px;">
+                  <div class="answer10" style="padding:<%= @counting_padding_top %> 0 5px 10px;">
                   <span id="no_correct_<%= visitor.number %>" width="100%" class="label" style="opacity:0;font-size:<%= @count_size %>;padding:<%= @count_padding %>;">0</span></div>
                   <% end %>
                   <br class="CLEAR" />
