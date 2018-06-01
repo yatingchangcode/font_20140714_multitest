@@ -1947,9 +1947,10 @@ View.onStopAllClick = (function(key){
       });
     },
     "group+console":function(){
-      if (!Commons.alarm) return;
-      clearInterval(Commons.alarm);
-      Commons.alarm = null;
+      if ( Commons.alarm ) {
+        clearInterval(Commons.alarm);
+        Commons.alarm = null;  
+      }
       Commons.gamers.all().forEach(function(id){
         SocketController.triggerAction({action:'stop', user_id: id},"group.");
         View.setStopStyle({user_id:id});
@@ -2220,12 +2221,9 @@ View.onNextQuestionClick = (function(key){
       }
     },
     "group+console":function(){
-      Commons.correct_users = null;
-      SocketController.triggerClearAll({});
-      Commons.gamers.all().forEach( function(id) {
-        SocketController.triggerAction({action:'stop',user_id:id},"group.");
-      });
-      SocketController.triggerReset({second:Commons.timeRemaining});
+      View.onStopAllClick();
+      View.onClearAllClick();
+      View.onSecondUpdateClick();
     },
     // server A3 B1 B2_v1
     "A3+console":function(){
