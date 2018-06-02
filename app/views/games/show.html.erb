@@ -70,6 +70,7 @@
 
     <br/><br/>
     <%= link_to "成語對對碰、字裡乾坤 (4~6人)","#",id: "stage_group",class: "btn btn-lg btn-info"  %>
+    <%= link_to "成語對對碰、字裡乾坤 搶答 (2~5人)","#",id: "stage_group_lock",class: "btn btn-lg btn-info"  %>
   </div>
 </div>
 
@@ -193,6 +194,11 @@ $(document).ready(function(){
   document.getElementById('stage_group').onclick = function(e){
     var join_visitors_number = getVisitorsNumberArray(e);
     location.href = '/games/<%= @game.id %>/stage_group?stage=group&join_visitors_number=' + join_visitors_number;
+  }
+
+  document.getElementById('stage_group_lock').onclick = function(e){
+    var join_visitors_number = getVisitorsNumberArray(e);
+    location.href = '/games/<%= @game.id %>/stage_group?stage=group&locking=1&join_visitors_number=' + join_visitors_number;
   }
 
 });

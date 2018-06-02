@@ -82,6 +82,8 @@ class GamesController < ApplicationController
     @stage = params[:stage]
 
     @join_visitors_number = params[:join_visitors_number]
+
+    @locking = params[:locking] == '1'
   end
 
   def server1
@@ -287,6 +289,7 @@ class GamesController < ApplicationController
     @counting = params[:counting]
     @blocks = params[:blocks]
     @stage = params[:stage]
+    @locking = params[:locking]
 
     Setting.messaging['second'] = @second
     Setting.messaging['game'] = params[:id]

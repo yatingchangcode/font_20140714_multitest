@@ -118,6 +118,7 @@ View.startCounter = (function(key){
       else Commons.alarm[thisvalue] = intV;
     },
     "group+console": function(){
+      if(!Settings.hasTimeCounter) return;
       if(Commons.alarm) return;
       var s = parseFloat($('#second').text()).toFixed(1);
       if (s === (0.0).toFixed(1)) View.setResetStyle();
@@ -294,12 +295,14 @@ View.loadSketchSecond = (function(key){
       });
     },
     "C1+tv":function(){
-      if(!Commons.sketchSecondIns){
-        Commons.sketchSecondIns = TimeBar.getInstanceById('sketchSecond', {
-          startColor: "#52daff", endColor: "#ff0c00"
-        });
+      if(Settings.hasTimeCounter){
+        if(!Commons.sketchSecondIns){
+          Commons.sketchSecondIns = TimeBar.getInstanceById('sketchSecond', {
+            startColor: "#52daff", endColor: "#ff0c00"
+          });
+        }
+        Commons.sketchSecondIns.setSecond(Commons.timeRemaining);
       }
-      Commons.sketchSecondIns.setSecond(Commons.timeRemaining);
     },
     "C2+tv":function(){
       if(!Commons.sketchSecondIns) Commons.sketchSecondIns = {};
@@ -471,7 +474,9 @@ View.setStartStyle = (function(key){
     },
     "A1+tv":function(o){
       $('#user_photo_' + o.user_id).addClass("green");
-      Commons.sketchSecondIns.doStart();
+      if(Settings.hasTimeCounter){
+        Commons.sketchSecondIns.doStart();
+      }
     },
     "A2+tv":function(o){
       $('#user_photo_' + o.user_id).addClass("green");
@@ -520,7 +525,9 @@ View.setStopStyle = (function(key){
     },
     "A1+tv":function(o){
       $('#user_photo_' + o.user_id).removeClass("green");
-      Commons.sketchSecondIns.doStop();
+      if(Settings.hasTimeCounter){
+        Commons.sketchSecondIns.doStop();
+      }
     },
     "A2+tv":function(o){
       $('#user_photo_' + o.user_id).removeClass("green");
@@ -849,7 +856,9 @@ View.setClearAllStyle = (function(key){
         SocketController.receiveCancelSubmitHandler({user_id:id});
         SocketController.receiveActionHandler({name:'stop', user_id:id});
       });
-      Commons.sketchSecondIns.resetBar();
+      if(Settings.hasTimeCounter){
+        Commons.sketchSecondIns.resetBar();
+      }
     },
     // tv: A3 B1
     "A3+tv":function(o){
@@ -1304,7 +1313,7 @@ View.setResetStyle = (function(key){
       }
     },
     "group+console":function(o){
-      if (o.second != null) {
+      if ( Settings.hasTimeCounter && o.second != null) {
         // resetSetStyle(o.second);
         $('#progress_bar').css("width", "100%").attr("aria-valuenow","100%").text(Commons.timeRemaining+"s");
         // console.log(Commons.timeRemaining);
@@ -1351,8 +1360,10 @@ View.setResetStyle = (function(key){
       }
     },
     "group+tv":function(o){
-      Commons.sketchSecondIns.resetBar();
-      Commons.sketchSecondIns.setSecond(parseInt(o.second));
+      if(Settings.hasTimeCounter){
+        Commons.sketchSecondIns.resetBar();
+        Commons.sketchSecondIns.setSecond(parseInt(o.second));
+      }
       if (o.showBlocks != null){
         // class: canvas-wrap
         Commons.gamers.all().forEach(function(id){
@@ -1731,9 +1742,11 @@ View.onClearAllClick = (function(key){
     "A1+console":function(){
       SocketController.triggerClearAll({});
       Commons.correct_users = null;
-      clearInterval(Commons.alarm);
-      Commons.alarm = null;
-      SocketController.triggerReset({second: Commons.timeRemaining});
+      if(Settings.hasTimeCounter){
+        clearInterval(Commons.alarm);
+        Commons.alarm = null;
+        SocketController.triggerReset({second: Commons.timeRemaining});
+      }
     },
     "B2+console":function(){
       SocketController.triggerClearAll({},"B2.");
@@ -1950,7 +1963,7 @@ View.onStopAllClick = (function(key){
       });
     },
     "group+console":function(){
-      if ( Commons.alarm ) {
+      if ( Settings.hasTimeCounter && Commons.alarm ) {
         clearInterval(Commons.alarm);
         Commons.alarm = null;  
       }
@@ -2226,7 +2239,9 @@ View.onNextQuestionClick = (function(key){
     "group+console":function(){
       View.onStopAllClick();
       View.onClearAllClick();
-      View.onSecondUpdateClick();
+      if(Settings.hasTimeCounter){
+        View.onSecondUpdateClick();
+      }
     },
     // server A3 B1 B2_v1
     "A3+console":function(){

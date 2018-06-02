@@ -141,6 +141,11 @@ Action.onSubmit = (function(key){
     // server: B2
     "B2+console":function(o){
       Commons.isNotSave = true;
+    },
+    "group+console": function(o){
+      if(!o.cid && Settings.lockOthers){
+        View.onStopAllClick();
+      }
     }
   }[key] || Commons.emptyFn;
 })(Settings.genKey);

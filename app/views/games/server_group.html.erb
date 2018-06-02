@@ -34,14 +34,16 @@
         <h2>一字千金 操作後台</h2>
 <!--         <h4>目前上線人數<span id="user_count">0</span>人</h4>
  -->    <% if @second.to_i > 0 %>
-          <h3>倒數計時 <span id="second" style="color:red"><%= @second %></span> 秒 </h3>
-          <div style="padding:5px;">
-            <input id="secondInput" value="<%= @second %>" style="width:60px;" />
-            <button id="secondUpdate">更新秒數</button>
-            <input id="blockInput" value="<%= @blocks %>" style="width:60px;" min="1" max="<%= @blocks %>" />
-            <button id="blockUpdate">更新格子數</button>
-          </div>
+        <h3>倒數計時 <span id="second" style="color:red"><%= @second %></span> 秒 </h3>
         <% end %>
+        <div style="padding:5px;">
+          <% if @second.to_i > 0 %>
+          <input id="secondInput" value="<%= @second %>" style="width:60px;" />
+          <button id="secondUpdate">更新秒數</button>
+          <% end %>
+          <input id="blockInput" value="<%= @blocks %>" style="width:60px;" min="1" max="<%= @blocks %>" />
+          <button id="blockUpdate">更新格子數</button>
+        </div>
       </div>
       <div style="">
         <div id="gamers_div" class="row">
@@ -145,6 +147,7 @@
       window.timeRemaining = <%= @second %>;
       <% end %>
 
+      window.locking = <%= @locking == '1' %>;
       window.totalBlocks = <%= @blocks %>;
 
       </script>

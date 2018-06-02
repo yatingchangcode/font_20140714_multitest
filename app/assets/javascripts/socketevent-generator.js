@@ -13,7 +13,7 @@ Object.defineProperty(Settings, 'hasCorrectCounting', {
   writable: false
 });
 Object.defineProperty(Settings, 'hasTimeCounter', {
-  value: ~["A1","C1"].indexOf(Settings.stageName) || (~["C5","mix"].indexOf(Settings.stageName) && window.timeRemaining),
+  value: ~["A1","C1"].indexOf(Settings.stageName) || (~["C5","mix","group"].indexOf(Settings.stageName) && window.timeRemaining),
   writable: false
 });
 Object.defineProperty(Settings, 'commonWriting', {
@@ -21,7 +21,7 @@ Object.defineProperty(Settings, 'commonWriting', {
   writable: false
 });
 Object.defineProperty(Settings, 'lockOthers', {
-  value: ~["C5","mix"].indexOf(Settings.stageName) && window.locking,
+  value: ~["C5","mix","group"].indexOf(Settings.stageName) && window.locking,
   writable: false
 });
 Object.defineProperty(Settings, 'genKey', {

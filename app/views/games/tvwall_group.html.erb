@@ -8,7 +8,7 @@
 
   @name_split_height = 10
   @bar_spacing = "30"
-  @space_top = "80"
+  @space_top = "120"
   @space_left = "3%"
   @space_right = "3%"
   @space_width = (100 - 3 * 2) / @visitors.length
@@ -214,6 +214,7 @@ window.counting = <%= @counting == '1' %>;
 window.timeRemaining = <%= @second %>;
 <% end %>
 
+window.locking = <%= @locking == '1' %>;
 window.borderWidth = <%= @grid_border %>;
 window.totalBlocks = <%= @blocks %>;
 
