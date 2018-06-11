@@ -19,8 +19,8 @@ body{
 .Content .box_a .TopBpx{ width:100%;}
 .Content .box_a .TopBpx .photo{ float:left; width:28%; border-radius: 50%; overflow: hidden; box-shadow:0px 0px 5px 1px black;}
 .Content .box_a .TopBpx .green{ box-shadow:0px 0px 50px 5px #ff000c; }
-.Content .box_a .TopBpx .nameBox{ float:left; width:67%; height:100%; overflow:hidden; 
-	/*background:url(/assets/tvwall/Upper-Metal-Bar.png) -25px no-repeat;*/
+.Content .box_a .TopBpx .nameBox{ float:left; width:67%; height:100%;  
+	/*background:url(/assets/tvwall/Upper-Metal-Bar.png) -25px no-repeat; overflow:hidden;*/
 	background-size: 100% 8%;
 }
 .Content .box_a .TopBpx .nameBox p.name{ color:#FFF; padding-left:7%;}
