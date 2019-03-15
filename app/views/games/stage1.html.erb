@@ -28,6 +28,9 @@
     <% if ['C1','C3','A1','B1'].include? @stage %>
     <h3> <input id="counting" type="checkbox" /> 計分</h3>
     <% end %>
+    <% if ['C1','C3'].include? @stage %>
+    <h3> <input id="loopvideo" type="checkbox" checked="checked" /> 顯示循環播放</h3>
+    <% end %>
     <% if ['A1','B1'].include? @stage %>
     <h3> <input id="rice" type="checkbox" /> 米字格 </h3>
     <% end %>
@@ -44,8 +47,9 @@ $(document).ready(function(){
     var second = document.getElementById('second');
     var counting = document.getElementById('counting');
     var rice = document.getElementById('rice');
+    var loopvideo = document.getElementById('loopvideo');
     location.href = '/games/<%= @game.id %>/server1?stage=<%= params[:stage] %>&dir=<%= params[:dir] %>&join_visitors_number=<%= @join_visitors_number %>&second='+second.value+(counting? ('&counting=' + (counting.checked? '1': '0')) : "")+
-      '&rice='+((rice && rice.checked)?'1':'0');
+      '&rice='+((rice && rice.checked)?'1':'0') + '&loopvideo=' + (loopvideo.checked ? '1' : '0');
   }
 });
 </script>

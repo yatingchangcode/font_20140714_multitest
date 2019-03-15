@@ -524,7 +524,7 @@ body,.container{
 <% end %>
 
 
-
+<% if params[:loopvideo] == '1' %>
 <div id="cycleWrap" style="width: 100%; z-index: 100; position: absolute; bottom: 0px;">
   <video id="cycleVideo" width="100%" autoplay="autoplay" style="display: none;">
     <source src="/assets/cycle1111ok.mp4" type="video/mp4">
@@ -533,6 +533,7 @@ body,.container{
   <canvas id="cycleBuffer" style="display: none;"></canvas>
   <canvas id="cycleOutput"></canvas>
 </div>
+<% end %>
 
 <div class="Zoom">
   <div class="Zoom-inner">
@@ -566,7 +567,9 @@ window.borderWidth = <%= @canvas_border %>;
 
 <script>
 
+<% if params[:loopvideo] == '1' %>
 window.Commons.generateAlphaVideo();
+<% end %>
 
 window.responsiveMethod = function(){
   var jqGridEl = $('[id^=grid_]');
