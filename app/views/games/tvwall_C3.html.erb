@@ -102,7 +102,7 @@ body,.container{
       <td>
         <div class="box_a">
           <table width="100%" border="0" cellspacing="0" cellpadding="0">
-            <tr>
+            <tr style="opacity: 0;">
               <td>
                 <div class="TopBpx">
                   <div id="user_photo_<%= visitor.number %>" class="photo">
@@ -162,17 +162,6 @@ body,.container{
 </table>
 </div>
 
-<% if params[:loopvideo] == '1' %>
-<div id="cycleWrap" style="width: 100%; z-index: 100; position: absolute; bottom: 0px;">
-  <video id="cycleVideo" width="100%" autoplay="autoplay" style="display: none;">
-    <source src="/assets/cycle1111ok.mp4" type="video/mp4">
-    <source src="/assets/cycle1111ok.webm" type="video/webm">
-  </video>
-  <canvas id="cycleBuffer" style="display: none;"></canvas>
-  <canvas id="cycleOutput"></canvas>
-</div>
-<% end %>
-
 <div class="Zoom">
   <div class="Zoom-inner">
     <canvas id="_zoomTmp" style="width: 100%;"></canvas>
@@ -201,10 +190,6 @@ window.borderWidth = <%= @canvas_border %>;
 
 
 <script>
-
-<% if params[:loopvideo] == '1' %>
-window.Commons.generateAlphaVideo();
-<% end %>
 
 window.responsiveMethod = function(){
   var jqGridEl = $('[id^=grid_]');
@@ -250,8 +235,8 @@ $(document).ready(function() {
     lineWidth: 13,
     lineColor: '#f0f0f0',
     targetZoomScale: 0.2,
-    responsiveByParent: true,
-    backgroundLine: '7px rgba(158,173,188,0.6)'
+    responsiveByParent: true
+    // backgroundLine: '7px rgba(158,173,188,0.6)'
     //backgroundImage: '/assets/tvwall/img_Grid_b.gif'
   });
 

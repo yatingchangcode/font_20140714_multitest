@@ -120,9 +120,10 @@ Action.onSubmit = (function(key){
     },
     // server: A3
     "A3+console":function(o){
-      Commons.gamers.all().forEach(function(id){
-        SocketController.triggerAction({action:'stop',user_id:id});
-      });
+      // Commons.gamers.all().forEach(function(id){
+      //   SocketController.triggerAction({action:'stop',user_id:id});
+      // });
+      SocketController.triggerAction({action:'stop',user_id:o.user_id});
     },
     "mix+console":function(o){
       if(o.cid){
