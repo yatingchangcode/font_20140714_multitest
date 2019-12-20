@@ -1431,6 +1431,7 @@ View.setMoveBlockStyle = (function(key){
     },
     "C4+tv":function(o){
       $('#grid_' + o.block.row + '_' + o.block.column).removeClass("bor_g");
+      CM('origin_' + o.block.row + '_' + o.block.column).color(o.color);
     },
     // tv: B2
     "B2+tv":function(o){
