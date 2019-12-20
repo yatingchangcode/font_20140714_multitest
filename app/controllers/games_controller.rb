@@ -517,7 +517,12 @@ class GamesController < ApplicationController
     file_dir = "#{record_path}/game#{game.id}"
     web_url = "/record/game#{game.id}"
     Dir.chdir(file_dir) 
-    files = Dir.glob("*.json").map { |x| "#{web_url}/#{x}" } 
+    # files = Dir.glob("*.json").map { |x| "#{web_url}/#{x}" }
+    files = Dir.glob("*.json").reject do |path|
+      filename = path.to_s.split('.')[0]
+      File.exist?("#{file_dir}/#{filename}.mp4")
+    end 
+    files = files.map { |x| "#{web_url}/#{x}" }
   end
 
 
