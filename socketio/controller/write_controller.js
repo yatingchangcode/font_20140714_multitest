@@ -8,6 +8,21 @@ var stage_name = '';
 var visitors = [];
 var user_id_file_path = {};
 
+function lessTenAddZero(v) { return v < 10? ("0" + v) : v; };
+
+function dateToFormat(dte){
+  var year = dte.getUTCFullYear(),
+    month = dte.getUTCMonth() + 1,
+    day = dte.getUTCDate(),
+    hour = dte.getUTCHours(),
+    min = dte.getUTCMinutes(),
+    sec = dte.getUTCSeconds();
+  return [
+    [year, lessTenAddZero(month), lessTenAddZero(day)].join(""), 
+    [lessTenAddZero(hour), lessTenAddZero(min), lessTenAddZero(sec)].join("")
+  ].join("_");
+}
+
 module.exports = function (socket, io) {
 
   socket.on('down_location', function (msg) {
@@ -114,7 +129,7 @@ module.exports = function (socket, io) {
       return visitor.number == uid;
     });
 
-    var now_time_string = new Date().toISOString().replace(/T/, '_').replace(/\..+/, '');
+    var now_time_string = dateToFormat(new Date());
     var file_name = visitor.name + '_stage' + stage + '_' + now_time_string;
 
     ///Users/motephyr/Projects/Ruby/font_20140714/socketio/controller
