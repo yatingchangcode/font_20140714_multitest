@@ -11,12 +11,12 @@ var user_id_file_path = {};
 function lessTenAddZero(v) { return v < 10? ("0" + v) : v; };
 
 function dateToFormat(dte){
-  var year = dte.getUTCFullYear(),
-    month = dte.getUTCMonth() + 1,
-    day = dte.getUTCDate(),
-    hour = dte.getUTCHours(),
-    min = dte.getUTCMinutes(),
-    sec = dte.getUTCSeconds();
+  var year = dte.getFullYear(),
+    month = dte.getMonth() + 1,
+    day = dte.getDate(),
+    hour = dte.getHours(),
+    min = dte.getMinutes(),
+    sec = dte.getSeconds();
   return [
     [year, lessTenAddZero(month), lessTenAddZero(day)].join(""), 
     [lessTenAddZero(hour), lessTenAddZero(min), lessTenAddZero(sec)].join("")
