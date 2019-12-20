@@ -2146,24 +2146,11 @@ View.onShowCorrectClick = (function(key){
 })(Settings.genKey);
 
 View.onSecondUpdateClick = (function(key){
-  key = Commons.getCommonGenKey(key, ["A1+console","mix+console","group+console"]);
+  key = Commons.getCommonGenKey(key, ["A1+console","A2+console","mix+console","group+console"]);
   return {
-    // server: A1
+    // server: A1 A2
     "A1+console":function(){
       Commons.timeRemaining = parseInt($('#secondInput').val());
-      SocketController.triggerReset({second:Commons.timeRemaining});
-      // $.post('/games/set_game_data.json?second=' + Commons.timeRemaining,
-      //   function(data){            
-      //     //var res = JSON.parse(data);
-      //     console.log("update second:" + JSON.stringify(data));
-      //   }
-      // ).fail(function(e){
-      //   console.log('error' + JSON.stringify(e));
-      // });
-      View.setGameCurrentInfo();
-    },
-    // server: A2
-    "A2+console":function(){
       SocketController.triggerReset({second:Commons.timeRemaining});
       // $.post('/games/set_game_data.json?second=' + Commons.timeRemaining,
       //   function(data){            

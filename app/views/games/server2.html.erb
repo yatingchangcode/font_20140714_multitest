@@ -5,6 +5,12 @@
       <div class="jumbotron">
         <h2>一字千金 操作後台</h2>
 <!--         <h4>目前上線人數<span id="user_count">0</span>人</h4> -->  
+        <% if @second.to_i > 0 %>
+          <div style="padding:5px;">
+            <input id="secondInput" value="<%= @second %>" style="width:60px;" />
+            <button id="secondUpdate">更新秒數</button>
+          </div>
+        <% end %>
       </div>
       <div style="">
         <div class="row-fluid">
@@ -246,6 +252,7 @@
         //   window.chatApp.reset({second: seconds});
         // });
         $('#reset_time_button').click(View.onSecondUpdateClick);
+        $('#secondUpdate').click(View.onSecondUpdateClick);
 
 
         // $('#next_button').click(function(){
