@@ -21,6 +21,14 @@ module.exports = {
             console.log(socket.request.session);
             var currentSocketIoUserId = socket.request.session['user_id'];
 
+            if (currentSocketIoUserId == undefined) {
+                console.log("user_id not defined, fall back to using _rtuserid as user_id")
+                currentSocketIoUserId = socket.handshake.query['_rtuserid'];
+            }
+            console.log(socket.handshake.query);
+            console.log("Using currentSocketIoUserId=" + currentSocketIoUserId);
+
+
             if (!client_id[currentSocketIoUserId]){
                 client_id[currentSocketIoUserId] = [];
             }
