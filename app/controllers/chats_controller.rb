@@ -58,6 +58,7 @@ class ChatsController < WebsocketRails::BaseController
     file_path = controller_store[:user_id_file_path][message[:trade_key]][0]
     arranged = arrange_frames(controller_store[:user_id_file_path][message[:trade_key]][1..-1], framerate)
     controller_store[:user_id_file_path][message[:trade_key]] = nil
+    p arranged.count
     arranged.each do |frame|
       file_name = frame[0]
       f = File.open("#{file_path}/#{file_name}.png", 'wb') {|f| f.write(frame[1])}
@@ -108,10 +109,43 @@ class ChatsController < WebsocketRails::BaseController
     ms = 1000 / framerate
     startTime = origin_data[0][0].to_i
     endTime = origin_data[-1][0].to_i
+    offsetTime = endTime - startTime
+    p offsetTime
+    i = 0
+    j = 0
+    small = 0 # 1:small 2:big
+    big = 0
+    p "offT = #{offsetTime}"
+#===============
+    arylen = origin_data.length
+    while offsetTime < 0 do
+            i+=1
+            small = 1
+            startTime = origin_data[i][0].to_i
+            offsetTime = endTime - startTime
+    end
+    if small == 1 then
+            origin_data = origin_data[i..arylen]
+    end
+#===============
+    arylen = origin_data.length
+    while offsetTime > 10000 do
+	    j+=1
+	    big= 1
+	    startTime = origin_data[j][0].to_i
+	    offsetTime = endTime - startTime
+    end
+    arylen = origin_data.length
+    if big == 1 then
+	    origin_data = origin_data[j..arylen]
+    end
+#===============
+    startTime = origin_data[0][0].to_i
     it = startTime
-
+    offsetTime = endTime - startTime
     frameCount = 0
     lessNear = nil
+
     while it <= endTime  do
       origin_data.each_with_index do |d, index|
         si = d[0].to_i
